@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Navigation
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.ui.navigation;singleton:=true
+Bundle-Version: 0.1.4.qualifier
+Bundle-Activator: de.uni_jena.iaa.linktype.atomic.ui.navigation.Activator
+Bundle-Vendor: "Towards a corpus-based typology of clause linkage" research project at the Friedrich Schiller University Jena
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.uni_jena.iaa.linktype.atomic.core;bundle-version="0.1.4",
+ org.eclipse.core.resources,
+ org.eclipse.ui.navigator,
+ org.eclipse.ui.navigator.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

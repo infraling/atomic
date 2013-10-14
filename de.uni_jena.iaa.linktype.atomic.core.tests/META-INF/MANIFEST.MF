@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Core Tests Fragment
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.core.tests
+Bundle-Version: 0.1.4.qualifier
+Fragment-Host: de.uni_jena.iaa.linktype.atomic.core;bundle-version="0.1.4"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.0.0"

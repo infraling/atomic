@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.uni_jena.iaa.linktype.atomic</groupId>
+  <artifactId>de.uni_jena.iaa.linktype.atomic.parent</artifactId>
+  <version>0.1.4-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Atomic Parent Project</name>
+  <modules>
+  	<module>../de.uni_jena.iaa.linktype.atomic.core</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.core.tests</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.repository</module>
+  	<!-- Not needed, Tycho will get all needed plug-ins from the p2 repositories -->
+  	<!-- <module>../de.uni_jena.iaa.linktype.atomic.target_platform</module> -->
+  	<module>../de.uni_jena.iaa.linktype.atomic.ui.navigation</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.feature</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.model.salt</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.model.feature</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.model.pepper</module>
+  	<module>../de.uni_jena.iaa.linktype.atomic.model.salt.editor</module>
+  </modules>
+  
+  <properties>
+    <tycho-version>0.17.0</tycho-version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <repositories>
+    <repository>
+      <id>indigo</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/releases/indigo/</url>
+    </repository>
+    
+    <repository>
+      <id>salt4eclipse</id>
+      <layout>p2</layout>
+      <url>http://linktype.iaa.uni-jena.de/salt4eclipse/updates/</url>
+    </repository>
+  </repositories>
+  
+   <build>
+    <plugins>
+      <plugin>
+        <!-- enable tycho build extension -->
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <extensions>true</extensions>
+      </plugin>
+    
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+           <!-- <target>
+              <artifact>
+                 <groupId>de.uni_jena.iaa.linktype.atomic</groupId>
+                 <artifactId>de.uni_jena.iaa.linktype.atomic.target_platform</artifactId>
+                 <version>0.1.4-SNAPSHOT</version>
+              </artifact>
+           </target> -->
+           <resolver>p2</resolver>
+            <!--<pomDependencies>consider</pomDependencies>-->
+            <!-- configure the p2 target environments for multi-platform build -->
+            <environments>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86</arch>
+              </environment>
+	          <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>macosx</os>
+                <ws>cocoa</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>macosx</os>
+                <ws>cocoa</ws>
+                <arch>x86_64</arch>
+              </environment>
+            </environments>
+        </configuration>
+      </plugin>
+    </plugins>
+    </build>
+  
+</project>

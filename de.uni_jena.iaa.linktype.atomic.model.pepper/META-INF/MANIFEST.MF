@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Pepper Plug-In
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.model.pepper
+Bundle-Version: 0.1.4.qualifier
+Bundle-Activator: de.uni_jena.iaa.linktype.atomic.model.pepper.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ de.hu_berlin.german.korpling.saltnpepper.salt-graph;bundle-version="1.1.6",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon;bundle-version="1.1.6",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.6"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

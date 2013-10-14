@@ -1,0 +1,13 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</artifactId>
+  <packaging>eclipse-feature</packaging>
+  <name>Atomic Platform Dependencies Feature</name>
+  <description>This feature encapsulates all plugin dependencies needed for Atomic which are not part of the Eclipse RCP Feature, in order to avoid bloating the platform by adding whole features to the product when only single plug-ins from a feature are needed.</description>
+  <parent>
+  	<groupId>de.uni_jena.iaa.linktype.atomic</groupId>
+  	<artifactId>de.uni_jena.iaa.linktype.atomic.parent</artifactId>
+  	<version>0.1.4-SNAPSHOT</version>
+  	<relativePath>../de.uni_jena.iaa.linktype.atomic.parent</relativePath>
+  </parent>
+</project>

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Core Plug-in
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.core; singleton:=true
+Bundle-Version: 0.1.4.qualifier
+Bundle-Activator: de.uni_jena.iaa.linktype.atomic.core.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.ide;bundle-version="3.7.0",
+ org.eclipse.core.resources;bundle-version="3.7.101"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

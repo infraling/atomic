@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="de.uni_jena.iaa.linktype.atomic.core.Atomic">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Default Perspective"
+            class="de.uni_jena.iaa.linktype.atomic.core.Perspective"
+            id="de.uni_jena.iaa.linktype.atomic.core.perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="de.uni_jena.iaa.linktype.atomic.core.application"
+            name="Atomic">
+         <property
+               name="windowImages"
+               value="icons/atomic_16x16x32.png,icons/atomic_32x32x32.png,icons/atomic_48x48x32.png">
+         </property>
+         <property
+               name="appName"
+               value="Atomic">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.fileMenu"
+               label="File"
+               mnemonic="F">
+            <command
+                  commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+                  label="Exit"
+                  mnemonic="x"
+                  style="push"
+                  tooltip="Exit Atomic">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.save"
+                  label="Save"
+                  mnemonic="S"
+                  style="push"
+                  tooltip="Save project">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="de.uni_jena.iaa.linktype.atomic.core.toolbar"
+               label="Atomic Toolbar">
+            <command
+                  commandId="org.eclipse.ui.file.save"
+                  label="Save"
+                  style="push"
+                  tooltip="Save project">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="de.uni_jena.iaa.linktype.atomic.core.commands.ExitHandler"
+            id="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            name="Exit">
+      </command>
+   </extension>
+
+</plugin>
