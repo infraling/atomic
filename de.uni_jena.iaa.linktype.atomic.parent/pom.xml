@@ -6,19 +6,20 @@
   <packaging>pom</packaging>
   <name>Atomic Parent Project</name>
   <modules>
-  	<module>../de.uni_jena.iaa.linktype.atomic.core</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.core.tests</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.repository</module>
-  	<!-- Not needed, Tycho will get all needed plug-ins from the p2 repositories -->
-  	<!-- <module>../de.uni_jena.iaa.linktype.atomic.target_platform</module> -->
-  	<module>../de.uni_jena.iaa.linktype.atomic.ui.navigation</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.feature</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.model.salt</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.model.feature</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.model.pepper</module>
-  	<module>../de.uni_jena.iaa.linktype.atomic.model.salt.editor</module>
+
+  <module>../de.uni_jena.iaa.linktype.atomic.core</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.core.feature</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.core.tests</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.model.feature</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.model.pepper</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.model.salt</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.model.salt.editor</module>
+  <module>
+  	../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature
+  </module>
+  <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.ui.navigation</module>
   </modules>
   
   <properties>

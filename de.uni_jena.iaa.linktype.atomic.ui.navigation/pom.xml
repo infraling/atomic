@@ -7,6 +7,6 @@
   	<groupId>de.uni_jena.iaa.linktype.atomic</groupId>
   	<artifactId>de.uni_jena.iaa.linktype.atomic.parent</artifactId>
   	<version>0.1.4-SNAPSHOT</version>
-  	<relativePath>../../../git/atomic/de.uni_jena.iaa.linktype.atomic.parent</relativePath>
+  	<relativePath>../de.uni_jena.iaa.linktype.atomic.parent</relativePath>
   </parent>
 </project>
