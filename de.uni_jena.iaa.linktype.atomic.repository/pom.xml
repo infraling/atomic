@@ -32,6 +32,14 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+			<products>
+				<product>
+					<id>de.uni_jena.iaa.linktype.atomic.product</id>
+					<archiveFileName>atomic-${project.version}</archiveFileName>
+				</product>
+			</products>
+		</configuration>
       </plugin>
     </plugins>
   </build>
