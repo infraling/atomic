@@ -21,9 +21,7 @@ package de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.Request;
 import org.eclipse.gef.requests.CreateConnectionRequest;
-import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.gef.tools.ConnectionCreationTool;
 import org.eclipse.swt.widgets.Display;
 
@@ -34,7 +32,7 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SPointingRela
  * @author Stephan Druskat
  *
  */
-public class ConnectionCreationAndDirectEditTool extends ConnectionCreationTool {
+public class UnannotatedConnectionCreationTool extends ConnectionCreationTool {
 	
 	/**
 	 * Method that is called when the gesture to create the connection has been
@@ -58,15 +56,12 @@ public class ConnectionCreationAndDirectEditTool extends ConnectionCreationTool 
 		if(editPartObject instanceof EditPart) {
 			Display.getCurrent().asyncExec(new Runnable() {
 			         
-				@Override public void run() {
-					EditPart part = (EditPart) editPartObject;
+				@Override 
+				public void run() {
 					if (editPartObject instanceof SDominanceRelationEditPart)
-						((SDominanceRelationEditPart) editPartObject).setLabelled(true);
+						((SDominanceRelationEditPart) editPartObject).setLabelled(false);
 					else if (editPartObject instanceof SPointingRelationEditPart)
-						((SPointingRelationEditPart) editPartObject).setLabelled(true);
-			        Request request = new DirectEditRequest();
-			        part.performRequest(request);
-			        part.refresh();
+						((SPointingRelationEditPart) editPartObject).setLabelled(false);
 				}
 			});
 		}

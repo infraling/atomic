@@ -28,9 +28,8 @@ import org.eclipse.gef.palette.SelectionToolEntry;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SDominanceRelationFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SPointingRelationFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SStructureFactory;
-import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.ConnectionCreationAndDirectEditTool;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.CreationAndDirectEditTool;
-import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.LabellessConnectionCreationTool;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.UnannotatedConnectionCreationTool;
 
 /**
  * @author Stephan Druskat
@@ -45,9 +44,7 @@ public class AtomicEditorPalette extends PaletteRoot {
 		addSelectionTool();
 		addSStructureTool();
 		addSPointingRelationTool();
-		addLabellessSPointingRelationTool();
 		addSDominanceRelationTool();
-		addLabellessSDominanceRelationTool();
 	}
 	
 	private void addGroup() {
@@ -61,32 +58,20 @@ public class AtomicEditorPalette extends PaletteRoot {
 	}
 	
 	private void addSStructureTool() {
-		CreationToolEntry entry = new CreationToolEntry("SStructure", "Create a new SStructure", new SStructureFactory(), null, null);
+		CreationToolEntry entry = new CreationToolEntry("Structure node", "Create a new SStructure", new SStructureFactory(), null, null);
 		entry.setToolClass(CreationAndDirectEditTool.class);
 		group.add(entry);
 	}
 
 	private void addSPointingRelationTool() {
-		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("SPointingRelation", "Create a new SPointingRelation", new SPointingRelationFactory(), null, null);
-		entry.setToolClass(ConnectionCreationAndDirectEditTool.class);
-		group.add(entry);
-	}
-
-	private void addLabellessSPointingRelationTool() {
-		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("0 SPpointRel", "Create a new SPointingRelation", new SPointingRelationFactory(), null, null);
-		entry.setToolClass(LabellessConnectionCreationTool.class);
+		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Pointing relation", "Create a new pointing relation", new SPointingRelationFactory(), null, null);
+		entry.setToolClass(UnannotatedConnectionCreationTool.class);
 		group.add(entry);
 	}
 	
 	private void addSDominanceRelationTool() {
-		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("SDominanceRelation", "Create a new SDominanceRelation", new SDominanceRelationFactory(), null, null);
-		entry.setToolClass(ConnectionCreationAndDirectEditTool.class);
-		group.add(entry);
-	}
-	
-	private void addLabellessSDominanceRelationTool() {
-		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("0 SDomRel", "Create a new SDominanceRelation", new SDominanceRelationFactory(), null, null);
-		entry.setToolClass(LabellessConnectionCreationTool.class);
+		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Dominance relation", "Create a new dominance relation", new SDominanceRelationFactory(), null, null);
+		entry.setToolClass(UnannotatedConnectionCreationTool.class);
 		group.add(entry);
 	}
 
