@@ -16,7 +16,13 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.model.salt.editor;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -26,6 +32,9 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.uni_jena.iaa.linktype.atomic.model.salt.editor"; //$NON-NLS-1$
+	public static final String DIRECTED_EDGE_ICON = "directed edge icon";
+	public static final String UNDIRECTED_EDGE_ICON = "undirected edge icon";
+	public static final String NODE_ICON = "node icon";
 
 	// The shared instance
 	private static Activator plugin;
@@ -62,5 +71,18 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
+	
+	@Override
+	protected void initializeImageRegistry(ImageRegistry registry) {
+		super.initializeImageRegistry(registry);
+        Bundle bundle = Platform.getBundle(PLUGIN_ID);
+
+        ImageDescriptor directed = ImageDescriptor.createFromURL(FileLocator.find(bundle, new Path("icons/directed.gif"), null));
+        ImageDescriptor undirected = ImageDescriptor.createFromURL(FileLocator.find(bundle, new Path("icons/undirected.gif"), null));
+        ImageDescriptor node = ImageDescriptor.createFromURL(FileLocator.find(bundle, new Path("icons/node.gif"), null));
+        registry.put(DIRECTED_EDGE_ICON, directed);
+        registry.put(UNDIRECTED_EDGE_ICON, undirected);
+        registry.put(NODE_ICON, node);
+    }
 
 }
