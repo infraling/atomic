@@ -12,7 +12,7 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_16x16x32.png" i32="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_32x32x32.png" i48="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_48x48x32.png"/>
+   <windowImages i16="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_16x16x32.png" i32="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_32x32x32.png" i48="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_48x48x32.png" i64="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_64x64.png"/>
 
    <splash
       location="de.uni_jena.iaa.linktype.atomic.core" />
