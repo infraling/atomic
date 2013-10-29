@@ -5,7 +5,7 @@ Atomic
 
 > ***Atomic*** is an open source annotation software for multi-level deep linguistic annotation of text corpora. It is based on the *Eclipse RCP*, a modular rich client platform. It features a graphical editor which can be controlled via keyboard, mouse, and command shell (with the native annotation language *AtomicAL*). It works on a concrete implementation of a generic graph-based meta-model, with an embedded complementary conversion framework allowing for n : m mapping between data formats.
 
-<img src="http://www.personal.uni-jena.de/~fo32hup/atomic/img/screenshot.png" width="60%">
+<img src="http://www.personal.uni-jena.de/~fo32hup/atomic/img/screenshot.png" width="61%">
 
 ---
 
