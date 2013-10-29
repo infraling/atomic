@@ -37,6 +37,7 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
@@ -79,6 +80,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	public AtomicSaltEditor() {
 		setEditDomain(new DefaultEditDomain(this));
+		getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
 	}
 	
 	public Object getAdapter(Class type) {
