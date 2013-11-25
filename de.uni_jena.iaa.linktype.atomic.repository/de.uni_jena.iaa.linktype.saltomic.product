@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog</programArgs>
+      <programArgs>-data @noDefault -consoleLog</programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -67,25 +67,9 @@
       <feature id="de.uni_jena.iaa.linktype.atomic.core.feature" version="0.1.4.qualifier"/>
       <feature id="de.uni_jena.iaa.linktype.atomic.ui.feature" version="0.1.4.qualifier"/>
       <feature id="de.uni_jena.iaa.linktype.atomic.model.feature" version="0.1.4.qualifier"/>
-      <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper" version="1.1.5.201302070905"/>
-      <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper-modules" version="1.1.5.201302070905"/>
-      <feature id="de.uni_jena.iaa.linktype.salt4eclipse.salt.feature" version="1.1.6"/>
    </features>
 
    <configurations>
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" autoStart="true" startLevel="4" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-CoNLLModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DoNothingModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DotModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-EXMARaLDAModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-FALKOModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-PAULAModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-RelANNISModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-SaltXMLModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TigerModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TreetaggerModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TueBaDZModules" autoStart="true" startLevel="3" />
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-UAMModules" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
    </configurations>
