@@ -18,6 +18,8 @@
 package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -110,6 +112,12 @@ public class PepperImportWizard extends Wizard implements IImportWizard
     if (pepperImporters == null)
     {
       pepperImporters = pepperConverter.getPepperModuleResolver().getPepperImporters();
+      Collections.sort(pepperImporters, new Comparator<PepperImporter>() {
+		@Override
+		public int compare(PepperImporter o1, PepperImporter o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+      });
     }
     
     return pepperImporters;
