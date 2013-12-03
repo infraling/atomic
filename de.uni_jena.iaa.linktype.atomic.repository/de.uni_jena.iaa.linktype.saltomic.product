@@ -73,7 +73,8 @@
    </features>
 
    <configurations>
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" autoStart="false" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-logReader" autoStart="false" startLevel="1" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
    </configurations>
