@@ -134,5 +134,10 @@ public class PepperImportWizardPageProjectName extends WizardPage
     }
 
     super.setVisible(visible);
+
+    if (visible)
+    {
+      text.setFocus();
+    }
   }
 }
