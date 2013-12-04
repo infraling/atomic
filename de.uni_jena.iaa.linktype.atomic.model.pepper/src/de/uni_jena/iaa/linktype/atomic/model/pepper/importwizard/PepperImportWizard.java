@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -49,6 +51,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParams
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParamsFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.saltXML.SaltXMLExporter;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.Activator;
+import de.uni_jena.iaa.linktype.atomic.model.salt.project.AtomicProjectService;
 
 public class PepperImportWizard extends Wizard implements IImportWizard
 {
@@ -75,6 +78,7 @@ public class PepperImportWizard extends Wizard implements IImportWizard
   protected PepperModuleProperties pepperModuleProperties;
   protected FormatDefinition formatDefinition;
   protected String importDirectory;
+  protected String projectName;
 
   public PepperImportWizard()
   {
@@ -114,6 +118,7 @@ public class PepperImportWizard extends Wizard implements IImportWizard
     addPage(new PepperImportWizardPageFormat(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
     addPage(new PepperImportWizardPageDirectory(this, "selectDirectory", "Select Import Directory", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
     addPage(new PepperImportWizardPageProperties(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
+    addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
   }
 
   protected List<PepperImporter> getPepperImportersModules()
@@ -160,6 +165,16 @@ public class PepperImportWizard extends Wizard implements IImportWizard
   protected void setImportDirectory(String importDirectory)
   {
     this.importDirectory = importDirectory;
+  }
+
+  public String getProjectName()
+  {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName)
+  {
+    this.projectName = projectName;
   }
 
   public PepperModuleProperties getPepperModuleProperties()
@@ -253,8 +268,16 @@ public class PepperImportWizard extends Wizard implements IImportWizard
   {
     try
     {
-      if (pepperImporter != null && formatDefinition != null && importDirectory != null)
+      AtomicProjectService atomicProjectService = AtomicProjectService.getInstance();
+      if ( pepperImporter != null 
+        && formatDefinition != null 
+        && importDirectory != null
+        && projectName != null
+        && ! atomicProjectService.isProjectExisting(projectName)
+         )
       {
+        IProject project = atomicProjectService.createIProject(projectName);
+
         ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
         importerParams.setModuleName(pepperImporter.getName());
         importerParams.setFormatName(formatDefinition.getFormatName());
@@ -284,8 +307,7 @@ public class PepperImportWizard extends Wizard implements IImportWizard
         exporterParams.setModuleName(saltXMLExporter.getName());
         exporterParams.setFormatName(SALT_XML_FORMAT_NAME);
         exporterParams.setFormatVersion(SALT_XML_FORMAT_VERSION);
-        // TODO in den Workspace ausgeben
-        exporterParams.setDestinationPath(URI.createFileURI(new File(System.getProperty("java.io.tmpdir")).getAbsolutePath()));
+        exporterParams.setDestinationPath(URI.createURI(project.getLocationURI().toString()));
         
         PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
         pepperJobParams.setId(PEPPER_JOB_ID.incrementAndGet());
@@ -295,10 +317,12 @@ public class PepperImportWizard extends Wizard implements IImportWizard
         PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
         pepperParams.getPepperJobParams().add(pepperJobParams);
         pepperConverter.setPepperParams(pepperParams);
-  
+
         // TODO bei Fehlern im Job (Paula: falsches Verzeichnis) blockiert Thread
         pepperConverter.start();
-  
+
+        project.refreshLocal(IResource.DEPTH_INFINITE, null);
+
         return true;
       }
       else

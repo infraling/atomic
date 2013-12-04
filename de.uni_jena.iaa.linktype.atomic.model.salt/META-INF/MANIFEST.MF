@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.ui,
  de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.6";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: de.uni_jena.iaa.linktype.atomic.model.salt.project

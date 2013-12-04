@@ -17,29 +17,25 @@
 
 package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
 
-import java.io.File;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import de.uni_jena.iaa.linktype.atomic.model.salt.project.AtomicProjectService;
 
 /**
  * 
  * @author Michael Grübsch
  * @version $Revision: 1.2 $, $Date: 2012/03/29 22:59:03 $
  */
-public class PepperImportWizardPageDirectory extends WizardPage
+public class PepperImportWizardPageProjectName extends WizardPage
 {
   protected final PepperImportWizard pepperImportWizard;
   protected Text text;
@@ -47,11 +43,11 @@ public class PepperImportWizardPageDirectory extends WizardPage
   /**
    * Create the wizard.
    */
-  public PepperImportWizardPageDirectory(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage)
+  public PepperImportWizardPageProjectName(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage)
   {
     super(pageName, title, titleImage);
     setPageComplete(false);
-    setDescription("Select the pepper import directory.");
+    setDescription("Enter the name of the project whose data should be imported.");
 
     this.pepperImportWizard = pepperImportWizard;
   }
@@ -73,7 +69,7 @@ public class PepperImportWizardPageDirectory extends WizardPage
 
     Label lblNewLabel = new Label(container, SWT.NONE);
     lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
-    lblNewLabel.setText("Directory, from which data should be imported");
+    lblNewLabel.setText("Project name; must be unique");
 
     text = new Text(container, SWT.BORDER);
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -85,25 +81,9 @@ public class PepperImportWizardPageDirectory extends WizardPage
         updatePageComplete();
       }
     });
-
-    Button button = new Button(container, SWT.NONE);
-    button.addSelectionListener(new SelectionAdapter()
-    {
-      @Override
-      public void widgetSelected(SelectionEvent e)
-      {
-        DirectoryDialog dialog = new DirectoryDialog(getShell());
-        String directory = dialog.open();
-        if (directory != null)
-        {
-          text.setText(directory);
-        }
-      }
-    });
-    button.setText("...");
   }
 
-  protected String getDirectoryPath()
+  protected String getProjectName()
   {
     String path = text.getText().trim();
     return 0 < path.length() ? path : null;
@@ -111,34 +91,20 @@ public class PepperImportWizardPageDirectory extends WizardPage
 
   protected void updatePageComplete()
   {
-    String directoryPath = getDirectoryPath();
-    if (directoryPath != null)
+    String projectName = getProjectName();
+    if (projectName != null)
     {
-      File directory = new File(directoryPath);
-      boolean available = directory.isDirectory();
-
-      if (available)
+      if (AtomicProjectService.getInstance().isProjectExisting(projectName))
       {
-        File[] files = directory.listFiles();
-        
-        if (files != null && 0 < files.length)
-        {
-          setMessage(null);
-          setErrorMessage(null);
-          setPageComplete(true);
-        }
-        else
-        {
-          setMessage("Directory contains no files!", WARNING);
-          setErrorMessage(null);
-          setPageComplete(false);
-        }
+        setMessage(null);
+        setErrorMessage("Project does already exist - choose another name.");
+        setPageComplete(false);
       }
       else
       {
         setMessage(null);
-        setErrorMessage("Directory does not exist.");
-        setPageComplete(false);
+        setErrorMessage(null);
+        setPageComplete(true);
       }
     }
     else
@@ -148,7 +114,7 @@ public class PepperImportWizardPageDirectory extends WizardPage
       setPageComplete(false);
     }
 
-    pepperImportWizard.setImportDirectory(directoryPath);
+    pepperImportWizard.setProjectName(projectName);
   }
 
 
@@ -160,10 +126,10 @@ public class PepperImportWizardPageDirectory extends WizardPage
   {
     if (visible)
     {
-      String directory = pepperImportWizard.getImportDirectory();
-      if (directory != null)
+      String projectName = pepperImportWizard.getProjectName();
+      if (projectName != null)
       {
-        text.setText(directory);
+        text.setText(projectName);
       }
     }
 
