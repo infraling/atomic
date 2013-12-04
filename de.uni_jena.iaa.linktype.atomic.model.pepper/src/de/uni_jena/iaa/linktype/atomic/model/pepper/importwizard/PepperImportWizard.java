@@ -18,6 +18,8 @@
 package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -37,6 +40,8 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.util.PepperFWProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperty;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ExporterParams;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ImporterParams;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperJobParams;
@@ -67,6 +72,7 @@ public class PepperImportWizard extends Wizard implements IImportWizard
   protected PepperConverter pepperConverter;
   protected List<PepperImporter> pepperImporters;
   protected PepperImporter pepperImporter;
+  protected PepperModuleProperties pepperModuleProperties;
   protected FormatDefinition formatDefinition;
   protected String importDirectory;
 
@@ -93,6 +99,8 @@ public class PepperImportWizard extends Wizard implements IImportWizard
       properties.setProperty(PepperFWProperties.PROP_REMOVE_SDOCUMENTS_AFTER_PROCESSING, "true");
       pepperConverter.setProperties(properties);
     }
+
+    pepperModuleProperties = new PepperModuleProperties();
   }
   
 
@@ -105,6 +113,7 @@ public class PepperImportWizard extends Wizard implements IImportWizard
     addPage(new PepperImportWizardPageImporter(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
     addPage(new PepperImportWizardPageFormat(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
     addPage(new PepperImportWizardPageDirectory(this, "selectDirectory", "Select Import Directory", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
+    addPage(new PepperImportWizardPageProperties(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
   }
 
   protected List<PepperImporter> getPepperImportersModules()
@@ -153,6 +162,71 @@ public class PepperImportWizard extends Wizard implements IImportWizard
     this.importDirectory = importDirectory;
   }
 
+  public PepperModuleProperties getPepperModuleProperties()
+  {
+    return pepperModuleProperties;
+  }
+
+  public void addPepperModuleProperty(PepperModuleProperty<?> pepperModuleProperty)
+  {
+    pepperModuleProperties.addProperty(pepperModuleProperty);
+  }
+
+  public boolean containsPepperModuleProperty(String propertyName)
+  {
+    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
+    return property != null;
+  }
+
+  public String getPepperModulePropertyValue(String propertyName)
+  {
+    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
+    Object value = property != null ? property.getValue() : null;
+
+    return value != null ? value.toString() : null;
+  }
+
+  public void setPepperModulePropertyValue(String propertyName, String propertyValueString)
+  {
+    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
+    if (property != null)
+    {
+      property.setValueString(propertyValueString);
+    }
+  }
+
+  public void removePepperModuleProperty(String propertyName)
+  {
+    // es gibt kein remove in PepperModuleProperties 
+    PepperModuleProperty<?> property;
+    property = pepperModuleProperties.getProperty(propertyName);
+    if (property != null)
+    {
+      PepperModuleProperties properties = new PepperModuleProperties();
+      for (String name : pepperModuleProperties.getPropertyNames())
+      {
+        if ( ! name.equals(propertyName))
+        {
+          properties.addProperty(pepperModuleProperties.getProperty(name));
+        }
+      }
+      pepperModuleProperties = properties;
+    }
+  }
+
+  protected void advance()
+  {
+    IWizardPage currentPage = getContainer().getCurrentPage();
+    if (currentPage != null)
+    {
+      IWizardPage nextPage = getNextPage(currentPage);
+      if (nextPage != null)
+      {
+        getContainer().showPage(nextPage);
+      }
+    }
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -177,38 +251,64 @@ public class PepperImportWizard extends Wizard implements IImportWizard
   @Override
   public boolean performFinish()
   {
-    if (pepperImporter != null && formatDefinition != null && importDirectory != null)
+    try
     {
-      ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
-      importerParams.setModuleName(pepperImporter.getName());
-      importerParams.setFormatName(formatDefinition.getFormatName());
-      importerParams.setFormatVersion(formatDefinition.getFormatVersion());
-      importerParams.setSourcePath(URI.createFileURI(new File(importDirectory).getAbsolutePath()));
-      
-      ExporterParams exporterParams = PepperParamsFactory.eINSTANCE.createExporterParams();
-      SaltXMLExporter saltXMLExporter = new SaltXMLExporter();
-      exporterParams.setModuleName(saltXMLExporter.getName());
-      exporterParams.setFormatName(SALT_XML_FORMAT_NAME);
-      exporterParams.setFormatVersion(SALT_XML_FORMAT_VERSION);
-      // TODO in den Workspace ausgeben
-      exporterParams.setDestinationPath(URI.createFileURI(new File(System.getProperty("java.io.tmpdir")).getAbsolutePath()));
-      
-      PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
-      pepperJobParams.setId(PEPPER_JOB_ID.incrementAndGet());
-      pepperJobParams.getImporterParams().add(importerParams);
-      pepperJobParams.getExporterParams().add(exporterParams);
+      if (pepperImporter != null && formatDefinition != null && importDirectory != null)
+      {
+        ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
+        importerParams.setModuleName(pepperImporter.getName());
+        importerParams.setFormatName(formatDefinition.getFormatName());
+        importerParams.setFormatVersion(formatDefinition.getFormatVersion());
+        importerParams.setSourcePath(URI.createFileURI(new File(importDirectory).getAbsolutePath()));
+        
+        Properties properties = pepperModuleProperties.getProperties();
+        if (0 < properties.size())
+        {
+          File tempFile = File.createTempFile("pepper", ".properties");
+          tempFile.deleteOnExit();
+          
+          Writer writer = new FileWriter(tempFile);
+          try
+          {
+            properties.store(writer, "Generated pepper properties");
+            importerParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
+          }
+          finally
+          {
+            writer.close();
+          }
+        }
 
-      PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
-      pepperParams.getPepperJobParams().add(pepperJobParams);
-      pepperConverter.setPepperParams(pepperParams);
-
-      // TODO bei Fehlern im Job (Paula: falsches Verzeichnis) blockiert Thread
-      pepperConverter.start();
-
-      return true;
+        ExporterParams exporterParams = PepperParamsFactory.eINSTANCE.createExporterParams();
+        SaltXMLExporter saltXMLExporter = new SaltXMLExporter();
+        exporterParams.setModuleName(saltXMLExporter.getName());
+        exporterParams.setFormatName(SALT_XML_FORMAT_NAME);
+        exporterParams.setFormatVersion(SALT_XML_FORMAT_VERSION);
+        // TODO in den Workspace ausgeben
+        exporterParams.setDestinationPath(URI.createFileURI(new File(System.getProperty("java.io.tmpdir")).getAbsolutePath()));
+        
+        PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
+        pepperJobParams.setId(PEPPER_JOB_ID.incrementAndGet());
+        pepperJobParams.getImporterParams().add(importerParams);
+        pepperJobParams.getExporterParams().add(exporterParams);
+  
+        PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
+        pepperParams.getPepperJobParams().add(pepperJobParams);
+        pepperConverter.setPepperParams(pepperParams);
+  
+        // TODO bei Fehlern im Job (Paula: falsches Verzeichnis) blockiert Thread
+        pepperConverter.start();
+  
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
-    else
+    catch (Exception X)
     {
+      X.printStackTrace();
       return false;
     }
   }
