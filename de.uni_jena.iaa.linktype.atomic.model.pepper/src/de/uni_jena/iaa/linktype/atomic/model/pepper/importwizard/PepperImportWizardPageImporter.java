@@ -23,6 +23,8 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -135,8 +137,17 @@ public class PepperImportWizardPageImporter extends WizardPage implements IWizar
         ISelection selection = event.getSelection();
         
         boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
-        setPageComplete( selected);
+        setPageComplete(selected);
         pepperImportWizard.setPepperImporter(selected ? (PepperImporter) ((IStructuredSelection) selection).getFirstElement() : null);
+      }
+    });
+    
+    tableViewer.addDoubleClickListener(new IDoubleClickListener()
+    {
+      @Override
+      public void doubleClick(DoubleClickEvent event)
+      {
+        PepperImportWizardPageImporter.this.pepperImportWizard.advance();
       }
     });
   }
