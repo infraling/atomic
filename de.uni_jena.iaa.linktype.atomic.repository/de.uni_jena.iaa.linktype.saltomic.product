@@ -67,9 +67,9 @@
       <feature id="de.uni_jena.iaa.linktype.atomic.core.feature" version="0.1.4.qualifier"/>
       <feature id="de.uni_jena.iaa.linktype.atomic.ui.feature" version="0.1.4.qualifier"/>
       <feature id="de.uni_jena.iaa.linktype.atomic.model.feature" version="0.1.4.qualifier"/>
-      <feature id="de.uni_jena.iaa.linktype.salt4eclipse.salt.feature" version="1.1.6"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper.core"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper.modules"/>
+      <feature id="de.hu_berlin.german.korpling.saltnpepper.salt"/>
    </features>
 
    <configurations>
