@@ -19,22 +19,36 @@ package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.ServiceReference;
 
@@ -278,52 +292,11 @@ public class PepperImportWizard extends Wizard implements IImportWizard
       {
         IProject project = atomicProjectService.createIProject(projectName);
 
-        ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
-        importerParams.setModuleName(pepperImporter.getName());
-        importerParams.setFormatName(formatDefinition.getFormatName());
-        importerParams.setFormatVersion(formatDefinition.getFormatVersion());
-        importerParams.setSourcePath(URI.createFileURI(new File(importDirectory).getAbsolutePath()));
-        
-        Properties properties = pepperModuleProperties.getProperties();
-        if (0 < properties.size())
-        {
-          File tempFile = File.createTempFile("pepper", ".properties");
-          tempFile.deleteOnExit();
-          
-          Writer writer = new FileWriter(tempFile);
-          try
-          {
-            properties.store(writer, "Generated pepper properties");
-            importerParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
-          }
-          finally
-          {
-            writer.close();
-          }
-        }
+        boolean cancelable = false; // FIXME can't cancel forked pepper tasks 
+        ImportRunnable importRunnable = new ImportRunnable(project, cancelable);
+        PlatformUI.getWorkbench().getProgressService().run(false, cancelable, importRunnable);
 
-        ExporterParams exporterParams = PepperParamsFactory.eINSTANCE.createExporterParams();
-        SaltXMLExporter saltXMLExporter = new SaltXMLExporter();
-        exporterParams.setModuleName(saltXMLExporter.getName());
-        exporterParams.setFormatName(SALT_XML_FORMAT_NAME);
-        exporterParams.setFormatVersion(SALT_XML_FORMAT_VERSION);
-        exporterParams.setDestinationPath(URI.createURI(project.getLocationURI().toString()));
-        
-        PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
-        pepperJobParams.setId(PEPPER_JOB_ID.incrementAndGet());
-        pepperJobParams.getImporterParams().add(importerParams);
-        pepperJobParams.getExporterParams().add(exporterParams);
-  
-        PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
-        pepperParams.getPepperJobParams().add(pepperJobParams);
-        pepperConverter.setPepperParams(pepperParams);
-
-        // TODO bei Fehlern im Job (Paula: falsches Verzeichnis) blockiert Thread
-        pepperConverter.start();
-
-        project.refreshLocal(IResource.DEPTH_INFINITE, null);
-
-        return true;
+        return importRunnable.get().booleanValue();
       }
       else
       {
@@ -337,5 +310,295 @@ public class PepperImportWizard extends Wizard implements IImportWizard
     }
   }
 
+  protected class ImportRunnable
+    implements 
+      IRunnableWithProgress
+    , Future<Boolean>
+  {
+    protected final IProject project;
+    protected final boolean cancelable;
+    
+    protected final Object cancelLock = new Object();
 
+    protected Semaphore semaphore = new Semaphore(0);
+    protected Boolean outcome = Boolean.FALSE;
+    protected Throwable throwable = null;
+    protected volatile boolean cancelled = false;
+    protected volatile boolean done = false;
+    protected volatile Thread importThread = null;
+    
+    public ImportRunnable(IProject project, boolean cancelable)
+    {
+      this.project = project;
+      this.cancelable = cancelable;
+    }
+
+    protected void importProject() throws IOException, CoreException
+    {
+      ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
+      importerParams.setModuleName(pepperImporter.getName());
+      importerParams.setFormatName(formatDefinition.getFormatName());
+      importerParams.setFormatVersion(formatDefinition.getFormatVersion());
+      importerParams.setSourcePath(URI.createFileURI(new File(importDirectory).getAbsolutePath()));
+      
+      Properties properties = pepperModuleProperties.getProperties();
+      if (0 < properties.size())
+      {
+        File tempFile = File.createTempFile("pepper", ".properties");
+        tempFile.deleteOnExit();
+        
+        Writer writer = new FileWriter(tempFile);
+        try
+        {
+          properties.store(writer, "Generated pepper properties");
+          importerParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
+        }
+        finally
+        {
+          writer.close();
+        }
+      }
+
+      ExporterParams exporterParams = PepperParamsFactory.eINSTANCE.createExporterParams();
+      SaltXMLExporter saltXMLExporter = new SaltXMLExporter();
+      exporterParams.setModuleName(saltXMLExporter.getName());
+      exporterParams.setFormatName(SALT_XML_FORMAT_NAME);
+      exporterParams.setFormatVersion(SALT_XML_FORMAT_VERSION);
+      exporterParams.setDestinationPath(URI.createURI(project.getLocationURI().toString()));
+      
+      PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
+      pepperJobParams.setId(PEPPER_JOB_ID.incrementAndGet());
+      pepperJobParams.getImporterParams().add(importerParams);
+      pepperJobParams.getExporterParams().add(exporterParams);
+
+      PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
+      pepperParams.getPepperJobParams().add(pepperJobParams);
+      pepperConverter.setPepperParams(pepperParams);
+
+      // TODO bei Fehlern im Job (Paula: falsches Verzeichnis) blockiert Thread
+      pepperConverter.start();
+
+      project.refreshLocal(IResource.DEPTH_INFINITE, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+    {
+      try
+      {
+        synchronized (cancelLock)
+        {
+          // prüfen, ob Ausführung bereits vor dem Start abgebroche worden ist
+          if (cancelled)
+          {
+            throw new InterruptedException();
+          }
+          else
+          {
+            // Thread in dem der Import ausgeführt wird und der bei Abbruch im
+            // Progressmonitor unterbrochen werden soll
+            importThread = Thread.currentThread();
+          }
+        }
+
+        // Progressmonitor asynchron auf Abbruch überwachen
+        ScheduledFuture<?> cancellationCheck;
+        if (cancelable)
+        {
+          // Überwachungsthread
+          cancellationCheck = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay
+            ( new Runnable()
+              {
+                @Override
+                public void run()
+                {
+                  if (monitor.isCanceled())
+                  {
+                    importThread.interrupt();
+                  }
+                }
+              }
+            , 500
+            , 500
+            , TimeUnit.MILLISECONDS
+            );
+        }
+        else
+        {
+          cancellationCheck = null;
+        }
+
+        // Monitor starten
+        monitor.beginTask("Import running ...", IProgressMonitor.UNKNOWN);
+        outcome = Boolean.FALSE;
+        try
+        {
+          // Import ausführen
+          importProject();
+          outcome = Boolean.TRUE;
+        }
+        finally
+        {
+          // Monitor beenden
+          monitor.done();
+
+          // Überwachungsthread stoppen
+          if (cancellationCheck != null)
+          {
+            cancellationCheck.cancel(true);
+          }
+
+          // Abbruch signalisieren
+          if (Thread.currentThread().isInterrupted())
+          {
+            throw new InterruptedException();
+          }
+        }
+      }
+      catch (InterruptedException X)
+      {
+        // Abbruchsignal empfangen
+        cancelled = true;
+        throw X;
+      }
+      catch (Throwable T)
+      {
+        throw new InvocationTargetException(throwable = T);
+      }
+      finally
+      {
+        importThread = null;
+        done = true;
+        semaphore.release(Integer.MAX_VALUE);
+      }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning)
+    {
+      if (cancelable)
+      {
+        synchronized (cancelLock)
+        {
+          Thread thread = importThread;
+          if (thread != null)
+          {
+            if (mayInterruptIfRunning)
+            {
+              thread.interrupt();
+              return true;
+            }
+            else
+            {
+              return false;
+            }
+          }
+          else
+          {
+            cancelled = true;
+            return true;
+          }
+        }
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCancelled()
+    {
+      return cancelled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDone()
+    {
+      return done;
+    }
+
+    protected Boolean getOutcome() throws ExecutionException
+    {
+      if (throwable != null)
+      {
+        throw new ExecutionException(throwable);
+      }
+      else
+      {
+        return outcome;
+      }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Boolean get() throws InterruptedException, CancellationException, ExecutionException
+    {
+      if (cancelled)
+      {
+        throw new CancellationException();
+      }
+      else
+      {
+        semaphore.acquire();
+        try
+        {
+          return getOutcome();
+        }
+        finally
+        {
+          semaphore.release();
+        }
+      }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Boolean get(long timeout, TimeUnit unit) 
+      throws 
+        InterruptedException
+      , CancellationException
+      , ExecutionException
+      , TimeoutException
+    {
+      if (cancelled)
+      {
+        throw new CancellationException();
+      }
+      else
+      {
+        if (semaphore.tryAcquire(timeout, unit))
+        {
+          try
+          {
+            return getOutcome();
+          }
+          finally
+          {
+            semaphore.release();
+          }
+        }
+        else
+        {
+          return null;
+        }
+      }
+    }
+  }
 }
