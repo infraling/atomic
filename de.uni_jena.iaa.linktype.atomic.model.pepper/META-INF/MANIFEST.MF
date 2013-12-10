@@ -1,22 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atomic Pepper Plug-In
-Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.model.pepper;singleton:=true
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.model.pepper
 Bundle-Version: 0.1.4.qualifier
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.model.pepper.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.emf.common;bundle-version="2.7.0",
- org.eclipse.emf.ecore;bundle-version="2.7.0",
- org.eclipse.emf.ecore.xmi;bundle-version="2.7.0",
  de.hu_berlin.german.korpling.saltnpepper.salt-graph;bundle-version="1.1.6",
  de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon;bundle-version="1.1.6",
- de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.6",
- de.hu_berlin.german.korpling.saltnpepper.pepper-framework;bundle-version="1.1.5",
- de.hu_berlin.german.korpling.saltnpepper.pepper-exceptions;bundle-version="1.1.5",
- de.hu_berlin.german.korpling.saltnpepper.pepper-logReader;bundle-version="1.1.5",
- de.hu_berlin.german.korpling.saltnpepper.pepper-modules;bundle-version="1.1.5",
- de.hu_berlin.german.korpling.saltnpepper.pepper-workflow;bundle-version="1.1.5",
- de.hu_berlin.german.korpling.saltnpepper.pepperModules-SaltXMLModules;bundle-version="1.1.3"
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.6"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

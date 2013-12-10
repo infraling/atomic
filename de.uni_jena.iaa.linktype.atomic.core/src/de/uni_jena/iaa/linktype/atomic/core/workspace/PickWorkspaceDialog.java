@@ -368,7 +368,7 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	                    fin.close();
 	                }
 	                if (fout != null) {
-	                    fout.close();
+	                    fin.close();
 	                }
 	            }
 	        }
