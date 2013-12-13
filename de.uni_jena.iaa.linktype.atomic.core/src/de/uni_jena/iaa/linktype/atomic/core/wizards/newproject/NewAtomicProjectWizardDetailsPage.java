@@ -32,7 +32,7 @@ import de.uni_jena.iaa.linktype.atomic.core.Messages;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicCoreUtils;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicTokenizerUtils;
 
-public class AtomicProjectBasicsWizardPage extends WizardPage {
+public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	
 	private Text txtProjectName;
 	private ArrayList<String> projectNames;
@@ -45,7 +45,7 @@ public class AtomicProjectBasicsWizardPage extends WizardPage {
 	/**
 	 * Create the wizard.
 	 */
-	public AtomicProjectBasicsWizardPage() {
+	public NewAtomicProjectWizardDetailsPage() {
 		super("wizardPage"); //$NON-NLS-1$
 		setPageComplete(false);
 		setTitle("Create a new Atomic project"); //$NON-NLS-1$

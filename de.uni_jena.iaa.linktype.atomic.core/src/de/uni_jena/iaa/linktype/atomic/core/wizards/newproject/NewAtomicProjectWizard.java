@@ -47,7 +47,7 @@ import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicTokenizerUtils;
  */
 public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	
-	private AtomicProjectBasicsWizardPage page;
+	private NewAtomicProjectWizardDetailsPage page;
 	private Object[] typedTokenizerToUse;
 	public IFile projectIFile;
 	
@@ -66,7 +66,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public void addPages() {
 		setWindowTitle("New Atomic project");
-		page = new AtomicProjectBasicsWizardPage();
+		page = new NewAtomicProjectWizardDetailsPage();
 		addPage(page);
 	}
 
