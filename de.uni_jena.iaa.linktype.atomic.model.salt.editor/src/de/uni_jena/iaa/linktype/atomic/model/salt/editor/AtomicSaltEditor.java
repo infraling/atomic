@@ -207,20 +207,6 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		IConsole[] existing = conMan.getConsoles();
 		for (int i = 0; i < existing.length; i++)
 			conMan.removeConsoles(existing);
-		hideView(IConsoleConstants.ID_CONSOLE_VIEW, null, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage());
 	}
 	
-	private void hideView(final String viewID, final String secondaryID, final IWorkbenchPage page) {
-		IViewReference ref = null;
-		if (null == secondaryID) {
-			ref = page.findViewReference(viewID); // FIXME: Throws NullPointerException sometimes!
-		} 
-		else {
-			ref = page.findViewReference(viewID, secondaryID);
-		}
-		if (null != ref) {
-			page.hideView(ref);
-		}
-	}
-
 }

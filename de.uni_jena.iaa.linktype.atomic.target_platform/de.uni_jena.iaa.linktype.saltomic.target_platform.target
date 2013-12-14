@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
 
-<target name="de.uni_jena.iaa.linktype.atomic.target_platform" sequenceNumber="16">
+<target name="de.uni_jena.iaa.linktype.atomic.target_platform" sequenceNumber="15">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jdt.feature.group" version="3.7.2.v20120120-1414-7z8gFcuFMP7BW5XTz0jLTnz0l9B1"/>
@@ -13,6 +13,13 @@
 <repository location="http://download.eclipse.org/releases/indigo"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.log4j.source" version="1.2.15.v201012070815"/>
+<unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
+<unit id="org.apache.commons.lang.source" version="2.6.0.v201205030909"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201205030909"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.hu_berlin.german.korpling.saltnpepper.salt.feature.group" version="1.2.0.201312091325"/>
 <unit id="de.hu_berlin.german.korpling.saltnpepper.pepper.core.source.feature.group" version="1.2.0.201312091325"/>
 <unit id="de.hu_berlin.german.korpling.saltnpepper.pepper.modules.source.feature.group" version="1.2.0.201312091325"/>
@@ -20,17 +27,6 @@
 <unit id="de.hu_berlin.german.korpling.saltnpepper.salt.source.feature.group" version="1.2.0.201312091325"/>
 <unit id="de.hu_berlin.german.korpling.saltnpepper.pepper.core.feature.group" version="1.2.0.201312091325"/>
 <repository location="http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.log4j.source" version="1.2.15.v201012070815"/>
-<unit id="org.slf4j.log4j.source" version="1.7.2.v20130115-1340"/>
-<unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
-<unit id="org.apache.commons.lang.source" version="2.6.0.v201205030909"/>
-<unit id="org.slf4j.log4j" version="1.7.2.v20130115-1340"/>
-<unit id="org.slf4j.api.source" version="1.7.2.v20121108-1250"/>
-<unit id="org.apache.commons.lang" version="2.6.0.v201205030909"/>
-<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository/"/>
 </location>
 </locations>
 </target>
