@@ -53,6 +53,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.ServiceReference;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleResolver;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.util.PepperFWProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
@@ -139,13 +140,17 @@ public class PepperImportWizard extends Wizard implements IImportWizard
   {
     if (pepperImporters == null)
     {
-      pepperImporters = pepperConverter.getPepperModuleResolver().getPepperImporters();
-      Collections.sort(pepperImporters, new Comparator<PepperImporter>() {
-		@Override
-		public int compare(PepperImporter o1, PepperImporter o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-      });
+      PepperModuleResolver pepperModuleResolver = pepperConverter.getPepperModuleResolver();
+      if (pepperModuleResolver != null)
+      {
+    	  pepperImporters = pepperModuleResolver.getPepperImporters();
+	      Collections.sort(pepperImporters, new Comparator<PepperImporter>() {
+			@Override
+			public int compare(PepperImporter o1, PepperImporter o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+	      });
+      }
     }
     
     return pepperImporters;
