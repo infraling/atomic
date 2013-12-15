@@ -3,6 +3,7 @@
 
 <product name="Atomic" uid="de.uni_jena.iaa.linktype.atomic.product" id="de.uni_jena.iaa.linktype.atomic.core.product" application="de.uni_jena.iaa.linktype.atomic.core.application" version="0.1.4.qualifier" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -25,12 +26,14 @@
       </win>
    </launcher>
 
+
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>
@@ -73,7 +76,23 @@
    </features>
 
    <configurations>
-      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" autoStart="false" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" autoStart="true" startLevel="6" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-CoNLLModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DoNothingModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DotModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-EXMARaLDAModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-ElanModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-FALKOModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-MMAX2Modules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-PAULAModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-RelANNISModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-RidgesModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-SaltXMLModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TigerModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TreetaggerModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TueBaDZModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-UAMModules" autoStart="true" startLevel="5" />
+      <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-nlpModules" autoStart="true" startLevel="5" />
       <plugin id="de.uni_jena.iaa.linktype.atomic.workspace" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
