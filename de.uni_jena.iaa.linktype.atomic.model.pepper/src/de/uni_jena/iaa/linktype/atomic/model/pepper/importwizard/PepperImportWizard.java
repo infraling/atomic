@@ -140,17 +140,26 @@ public class PepperImportWizard extends Wizard implements IImportWizard
   {
     if (pepperImporters == null)
     {
-      PepperModuleResolver pepperModuleResolver = pepperConverter.getPepperModuleResolver();
-      if (pepperModuleResolver != null)
+      List<PepperImporter> importers = null;
+      if (pepperConverter != null)
       {
-    	  pepperImporters = pepperModuleResolver.getPepperImporters();
-	      Collections.sort(pepperImporters, new Comparator<PepperImporter>() {
-			@Override
-			public int compare(PepperImporter o1, PepperImporter o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-	      });
+	      PepperModuleResolver pepperModuleResolver = pepperConverter.getPepperModuleResolver();
+	      if (pepperModuleResolver != null)
+	      {
+	    	  importers = pepperModuleResolver.getPepperImporters();
+	    	  if (importers != null)
+	    	  {
+			      Collections.sort(importers, new Comparator<PepperImporter>() {
+					@Override
+					public int compare(PepperImporter o1, PepperImporter o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+			      });
+	    	  }
+	      }
       }
+
+      pepperImporters = importers != null ? importers : Collections.<PepperImporter>emptyList();
     }
     
     return pepperImporters;
