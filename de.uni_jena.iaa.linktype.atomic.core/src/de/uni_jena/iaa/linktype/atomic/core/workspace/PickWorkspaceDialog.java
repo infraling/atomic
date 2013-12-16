@@ -19,6 +19,8 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.workspace;
 
+import org.eclipse.swt.widgets.Display;
+
 
 /**
  * @author Stephan Druskat
@@ -33,7 +35,7 @@ public class PickWorkspaceDialog extends de.uni_jena.iaa.linktype.atomic.workspa
 	     * @param wizardImage Image to show
 	     */
 	    public PickWorkspaceDialog(boolean switchWorkspace/*, Image wizardImage*/) {
-	        super(switchWorkspace);
+	        super(Display.getCurrent().getActiveShell(), switchWorkspace);
 	    }
 
 
