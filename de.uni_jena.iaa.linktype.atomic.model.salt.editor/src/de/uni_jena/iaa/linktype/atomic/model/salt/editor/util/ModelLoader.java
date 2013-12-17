@@ -47,7 +47,10 @@ public class ModelLoader {
 		saltProject = SaltFactory.eINSTANCE.createSaltProject();
 		SDocumentGraph inputToLoad = null;
 		
+		System.err.println("iFile " + iFile2);
 		File file = new File(iFile2.getLocation().toString());
+		System.err.println("FILE from iFile " + file);
+		System.err.println("FILE ABS PATH " + file.getAbsolutePath());
 		URI uri = URI.createFileURI(file.getAbsolutePath());
 		saltProject.loadSaltProject(uri);
 		inputToLoad = saltProject.getSCorpusGraphs().get(0).getSDocuments().get(0).getSDocumentGraph();

@@ -20,7 +20,9 @@
 package de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
@@ -33,6 +35,8 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SDocumentGraphXYLayoutEditPolicy;
 
 /**
@@ -42,11 +46,19 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SDocument
 public class SDocumentGraphEditPart extends AbstractGraphicalEditPart {
 	
 	private SDocumentGraphAdapter adapter;
+	private HashMap<SToken, Integer> tokenMap; // Perhaps change to HashTable later if sync is needed
 	
-	public SDocumentGraphEditPart() {
+	public SDocumentGraphEditPart(SDocumentGraph model) {
 		super();
+		setModel(model);
 		adapter = new SDocumentGraphAdapter();
 		setAdapter(adapter);
+		List<SToken> tokenList = ((SDocumentGraph) getModel()).getSTokens();
+		tokenMap = new HashMap<SToken, Integer>();
+		for (int i = 0; i < tokenList.size(); i++) {
+			tokenMap.put(tokenList.get(i), i);
+		}
+
 	}
 
 	/* (non-Javadoc)
@@ -134,6 +146,10 @@ public class SDocumentGraphEditPart extends AbstractGraphicalEditPart {
 
 	public void setAdapter(SDocumentGraphAdapter adapter) {
 		this.adapter = adapter;
+	}
+
+	public HashMap<SToken, Integer> getTokenMap() {
+		return tokenMap;
 	}
 
 }

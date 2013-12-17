@@ -95,6 +95,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		// TODO: Look into resource-based loading, and replace if necessary.
 		// Note: SaltProject.loadSaltProject may already implement resource-based loading...
 		file = ModelLoader.getIFileFromInput(input);
+		System.err.println("FILE: " + file);
 		graph = ModelLoader.loadSDocumentGraph(file);
 		project = ModelLoader.getSaltProject();
 		String oldPartName = getPartName();
