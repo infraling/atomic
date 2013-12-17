@@ -117,7 +117,7 @@ public class STokenEditPart extends AbstractGraphicalEditPart implements NodeEdi
 		Rectangle calculatedLayout = null;
 		
 		List<SToken> tokenList = graph.getSTokens();
-		int indexOfThisTokenInTokenList = tokenList.indexOf(model);
+		int indexOfThisTokenInTokenList = parent.getTokenMap().get(model);
 		
 		if (indexOfThisTokenInTokenList != 0) {
 			SToken lastSToken = tokenList.get(indexOfThisTokenInTokenList - 1);

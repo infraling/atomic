@@ -51,7 +51,7 @@ public class SaltEditPartFactory implements EditPartFactory {
 		EditPart part = null;
 		
 		if (model instanceof SDocumentGraph) {
-			part = new SDocumentGraphEditPart();
+			part = new SDocumentGraphEditPart((SDocumentGraph) model);
 		}
 		else if (model instanceof SToken) {
 			part = new STokenEditPart();
