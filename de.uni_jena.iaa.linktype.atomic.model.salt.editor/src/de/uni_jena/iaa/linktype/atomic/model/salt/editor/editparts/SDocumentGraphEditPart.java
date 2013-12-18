@@ -36,6 +36,10 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+<<<<<<< HEAD
+=======
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
+>>>>>>> refs/remotes/origin/pepper_i9n
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SDocumentGraphXYLayoutEditPolicy;
 
 /**

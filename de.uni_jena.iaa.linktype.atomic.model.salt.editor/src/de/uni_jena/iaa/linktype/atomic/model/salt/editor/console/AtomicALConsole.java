@@ -161,11 +161,6 @@ private EditPart topLevelEditPart;
 						String atomicALCommand = AtomicALParser.parseCommand(input);
 						String rawParameters = AtomicALParser.parseRawParameters(input);
 						HashMap<Object, Object> atomicALParameters = AtomicALParser.parseParameters(rawParameters);
-//						for (Object key : atomicALParameters.keySet()) // FIXME: Delete test output
-//				        {
-//				            Object val = atomicALParameters.get(key);
-//				            System.err.println(key + " : " + val);// DELETE: Delete me
-//				        }
 						editor = page.getActiveEditor();
 						if (editor instanceof AtomicSaltEditor) {
 							EditPartViewer editPartViewer = ((AtomicSaltEditor) editor).getEditPartViewer();
