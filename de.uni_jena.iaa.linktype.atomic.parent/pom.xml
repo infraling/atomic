@@ -36,10 +36,17 @@
     </repository>
     
     <repository>
-      <id>salt4eclipse</id>
+      <id>pepper4eclipse</id>
       <layout>p2</layout>
-      <url>http://linktype.iaa.uni-jena.de/salt4eclipse/updates/</url>
+      <url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/</url>
     </repository>
+    
+    <repository>
+      <id>eclipse-orbit</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository/</url>
+    </repository>
+    
   </repositories>
   
    <build>
