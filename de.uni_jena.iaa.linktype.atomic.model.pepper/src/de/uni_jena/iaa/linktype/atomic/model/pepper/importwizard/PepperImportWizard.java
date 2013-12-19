@@ -156,10 +156,15 @@ public class PepperImportWizard extends Wizard implements IImportWizard
 					}
 			      });
 	    	  }
+	    	  else
+	    	  	System.err.println("getPepperImporters returns null");
 	      }
+	      else
+	    	  System.err.println("PepperModuleResolver = null");
       }
 
       pepperImporters = importers != null ? importers : Collections.<PepperImporter>emptyList();
+      System.err.println("SO? " + pepperImporters);
     }
     
     return pepperImporters;
