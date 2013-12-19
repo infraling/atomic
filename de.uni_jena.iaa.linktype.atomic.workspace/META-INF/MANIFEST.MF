@@ -7,5 +7,5 @@ Bundle-Activator: de.uni_jena.iaa.linktype.atomic.workspace.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: de.uni_jena.iaa.linktype.atomic.workspace
