@@ -23,11 +23,13 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SDominanceRelationCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SPointingRelationCreateCommand;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SSpanningRelationCreateCommand;
 
 /**
  * @author Stephan Druskat
@@ -47,6 +49,11 @@ public class STokenGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 			SDominanceRelationCreateCommand sDominanceRelationResult = (SDominanceRelationCreateCommand) request.getStartCommand();
 		    sDominanceRelationResult.setTarget((SToken) getHost().getModel());
 		    result = sDominanceRelationResult;
+		}
+		else if (request.getStartCommand() instanceof SSpanningRelationCreateCommand) {
+			SSpanningRelationCreateCommand sSpanningRelationResult = (SSpanningRelationCreateCommand) request.getStartCommand();
+		    sSpanningRelationResult.setTarget((SToken) getHost().getModel());
+		    result = sSpanningRelationResult;
 		}
 	    return result;
 	}

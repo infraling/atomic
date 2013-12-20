@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Display;
 
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SDominanceRelationEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SPointingRelationEditPart;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SSpanningRelationEditPart;
 
 /**
  * @author Stephan Druskat
@@ -62,6 +63,8 @@ public class UnannotatedConnectionCreationTool extends ConnectionCreationTool {
 						((SDominanceRelationEditPart) editPartObject).setLabelled(false);
 					else if (editPartObject instanceof SPointingRelationEditPart)
 						((SPointingRelationEditPart) editPartObject).setLabelled(false);
+					else if (editPartObject instanceof SSpanningRelationEditPart)
+						((SSpanningRelationEditPart) editPartObject).setLabelled(false);
 				}
 			});
 		}

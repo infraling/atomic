@@ -26,6 +26,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
@@ -36,6 +37,7 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SDominanceRel
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SPointingRelationEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SProcessingAnnotationEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SSpanEditPart;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SSpanningRelationEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SStructureEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.STokenEditPart;
 
@@ -63,6 +65,9 @@ public class SaltEditPartFactory implements EditPartFactory {
 		}
 		else if (model instanceof SPointingRelation) {
 			part = new SPointingRelationEditPart();
+		}
+		else if (model instanceof SSpanningRelation) {
+			part = new SSpanningRelationEditPart();
 		}
 		else if (model instanceof SDominanceRelation) {
 			part = new SDominanceRelationEditPart();

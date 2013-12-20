@@ -33,6 +33,7 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.Activator;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SDominanceRelationFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SPointingRelationFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SSpanFactory;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SSpanningRelationFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SStructureFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.CreationAndDirectEditTool;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.UnannotatedConnectionCreationTool;
@@ -44,7 +45,7 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.Unannotat
 public class AtomicEditorPalette extends PaletteRoot {
 	
 	PaletteGroup group;
-	private ImageDescriptor DIRECTED_ICON, UNDIRECTED_ICON, NODE_ICON, SPAN_ICON;
+	private ImageDescriptor DIRECTED_ICON, UNDIRECTED_ICON, NODE_ICON, SPAN_ICON, SPANNINGREL_ICON;
 	
 	public AtomicEditorPalette() {
 		AbstractUIPlugin plugin = Activator.getDefault();
@@ -53,11 +54,13 @@ public class AtomicEditorPalette extends PaletteRoot {
 		UNDIRECTED_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.UNDIRECTED_EDGE_ICON));
 		NODE_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.NODE_ICON));
 		SPAN_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.SPAN_ICON));
+		SPANNINGREL_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.SPANNINGREL_ICON));
 				
 		addGroup();
 		addSelectionTool();
 		addSStructureTool();
 		addSSpanTool();
+		addSSpanningRelationTool();
 		addSPointingRelationTool();
 		addSDominanceRelationTool();
 	}
@@ -86,6 +89,12 @@ public class AtomicEditorPalette extends PaletteRoot {
 	
 	private void addSPointingRelationTool() {
 		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Pointing relation", "Create a new pointing relation", new SPointingRelationFactory(), DIRECTED_ICON, DIRECTED_ICON);
+		entry.setToolClass(UnannotatedConnectionCreationTool.class);
+		group.add(entry);
+	}
+	
+	private void addSSpanningRelationTool() {
+		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Spanning relation", "Create a new spanning relation", new SSpanningRelationFactory(), SPANNINGREL_ICON, SPANNINGREL_ICON);
 		entry.setToolClass(UnannotatedConnectionCreationTool.class);
 		group.add(entry);
 	}

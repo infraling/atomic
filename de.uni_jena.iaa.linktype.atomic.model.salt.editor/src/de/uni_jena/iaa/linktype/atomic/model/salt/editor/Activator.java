@@ -36,6 +36,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String UNDIRECTED_EDGE_ICON = "undirected edge icon";
 	public static final String NODE_ICON = "node icon";
 	public static final String SPAN_ICON = "span icon";
+	public static final String SPANNINGREL_ICON = "spanningrel icon";
 
 	// The shared instance
 	private static Activator plugin;
@@ -82,10 +83,12 @@ public class Activator extends AbstractUIPlugin {
         ImageDescriptor undirected = ImageDescriptor.createFromURL(FileLocator.find(bundle, new Path("icons/undirected.gif"), null));
         ImageDescriptor node = ImageDescriptor.createFromURL(FileLocator.find(bundle, new Path("icons/node.gif"), null));
         ImageDescriptor span = ImageDescriptor.createFromURL(FileLocator.find(bundle, new Path("icons/span.gif"), null));
+        ImageDescriptor spanningrel = ImageDescriptor.createFromURL(FileLocator.find(bundle, new Path("icons/spanningrel.gif"), null));
         registry.put(DIRECTED_EDGE_ICON, directed);
         registry.put(UNDIRECTED_EDGE_ICON, undirected);
         registry.put(NODE_ICON, node);
         registry.put(SPAN_ICON, span);
+        registry.put(SPANNINGREL_ICON, spanningrel);
     }
 
 }

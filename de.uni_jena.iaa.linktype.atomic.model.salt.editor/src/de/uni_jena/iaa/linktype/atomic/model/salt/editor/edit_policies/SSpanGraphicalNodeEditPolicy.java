@@ -27,8 +27,10 @@ import org.eclipse.gef.requests.ReconnectRequest;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SDominanceRelationCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SPointingRelationCreateCommand;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SSpanningRelationCreateCommand;
 
 /**
  * @author Stephan Druskat
@@ -49,6 +51,10 @@ public class SSpanGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 		    sDominanceRelationResult.setTarget((SSpan) getHost().getModel());
 		    result = sDominanceRelationResult;
 		}
+		else if (request.getStartCommand() instanceof SSpanningRelationCreateCommand) {
+//			SSpans cannot be the target of SSpanningRelations
+		}
+	    
 	    return result;
 	}
 	 
@@ -62,6 +68,14 @@ public class SSpanGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 		    sPointingRelationResult.setGraph(((SSpan) getHost().getModel()).getSDocumentGraph());
 		    request.setStartCommand(sPointingRelationResult);
 		    result = sPointingRelationResult;
+		}
+		if (request.getNewObject() instanceof SSpanningRelation) {
+			SSpanningRelationCreateCommand sSpanningRelationResult = new SSpanningRelationCreateCommand();
+		    sSpanningRelationResult.setSource((SSpan) getHost().getModel());
+		    sSpanningRelationResult.setSSpanningRelation((SSpanningRelation) request.getNewObject());
+		    sSpanningRelationResult.setGraph(((SSpan) getHost().getModel()).getSDocumentGraph());
+		    request.setStartCommand(sSpanningRelationResult);
+		    result = sSpanningRelationResult;
 		}
 		else if (request.getNewObject() instanceof SDominanceRelation) {
 			// An instance of SToken cannot be the source of an SDominanceRelation!
