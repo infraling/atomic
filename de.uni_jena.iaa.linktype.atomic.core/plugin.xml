@@ -45,11 +45,11 @@
                label="File"
                mnemonic="F">
             <command
-                  commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
-                  label="Exit"
-                  mnemonic="x"
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New Project"
+                  mnemonic="N"
                   style="push"
-                  tooltip="Exit Atomic">
+                  tooltip="Opens a wizard dialog to help with the creation of new projects">
             </command>
             <command
                   commandId="org.eclipse.ui.file.save"
@@ -58,6 +58,17 @@
                   style="push"
                   tooltip="Save project">
             </command>
+            <command
+                  commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+                  label="Exit"
+                  mnemonic="x"
+                  style="push"
+                  tooltip="Exit Atomic">
+            </command>
+         </menu>
+         <menu
+               id="menu:new?after=additions"
+               label="label">
          </menu>
       </menuContribution>
       <menuContribution
