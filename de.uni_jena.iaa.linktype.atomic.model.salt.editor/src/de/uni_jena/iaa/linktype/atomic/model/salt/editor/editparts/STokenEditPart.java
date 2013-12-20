@@ -110,7 +110,6 @@ public class STokenEditPart extends AbstractGraphicalEditPart implements NodeEdi
 		Rectangle layout = calculateLayout(figure, parent, model, graph);
 		
 		parent.setLayoutConstraint(this, figure, layout); // FIXME: Let this be calculated dynamically
-		parent.refresh();
 	}
 	
 	private Rectangle calculateLayout(STokenFigure figure, SDocumentGraphEditPart parent, SToken model, SDocumentGraph graph) {

@@ -107,22 +107,7 @@ public class SDocumentGraphEditPart extends AbstractGraphicalEditPart {
 	public class SDocumentGraphAdapter extends EContentAdapter {
 		 
 	    @Override public void notifyChanged(Notification notification) {
-			switch (notification.getEventType()) {
-				case Notification.ADD:
-					refreshChildren();
-					break;
-	
-				case Notification.REMOVE:
-					if (!(getChildren().contains(notification.getOldValue())))
-						break;
-					else
-						refreshChildren();
-					break;
-	
-				default:
-					break;
-			}
-	    	
+	    	refreshChildren();
 	    }
 	 
 		@Override public Notifier getTarget() {
