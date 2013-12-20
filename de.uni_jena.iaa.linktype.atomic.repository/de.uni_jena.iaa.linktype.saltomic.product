@@ -15,7 +15,7 @@
 
    <splash
       location="de.uni_jena.iaa.linktype.atomic.core" />
-   <launcher name="atomic_0_1_4">
+   <launcher name="atomic">
       <linux icon="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_64x64-png.xpm"/>
       <macosx icon="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic.icns"/>
       <solaris/>
