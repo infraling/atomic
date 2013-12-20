@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
@@ -129,6 +130,10 @@ public class SAnnotationAnnotateCommand extends Command {
 		}
 		else if (modelParent2 instanceof SToken) {
 			SToken parent = (SToken) modelParent2;
+			existingAnnotationsFromModelParent = parent.getSAnnotations();
+		}
+		else if (modelParent2 instanceof SSpan) {
+			SSpan parent = (SSpan) modelParent2;
 			existingAnnotationsFromModelParent = parent.getSAnnotations();
 		}
 		else if (modelParent2 instanceof SDominanceRelation) {

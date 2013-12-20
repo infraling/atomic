@@ -85,6 +85,7 @@ public class SDocumentGraphEditPart extends AbstractGraphicalEditPart {
 		SDocumentGraph graph = (SDocumentGraph) getModel();
 		childrenList.addAll(graph.getSTokens());
 		childrenList.addAll(graph.getSStructures());
+		childrenList.addAll(graph.getSSpans());
 		return childrenList;
 	}
 	
