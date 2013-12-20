@@ -9,17 +9,16 @@
 
   <module>../de.uni_jena.iaa.linktype.atomic.core</module>
   <module>../de.uni_jena.iaa.linktype.atomic.core.feature</module>
-  <module>../de.uni_jena.iaa.linktype.atomic.core.tests</module>
+  <!-- <module>../de.uni_jena.iaa.linktype.atomic.core.tests</module> -->
   <module>../de.uni_jena.iaa.linktype.atomic.model.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.pepper</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.salt</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.salt.editor</module>
-  <module>
-  	../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature
-  </module>
+  <module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
   <module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.ui.navigation</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.workspace</module>
   </modules>
   
   <properties>
@@ -35,10 +34,17 @@
     </repository>
     
     <repository>
-      <id>salt4eclipse</id>
+      <id>pepper4eclipse</id>
       <layout>p2</layout>
-      <url>http://linktype.iaa.uni-jena.de/salt4eclipse/updates/</url>
+      <url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/</url>
     </repository>
+    
+    <repository>
+      <id>eclipse-orbit</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository/</url>
+    </repository>
+    
   </repositories>
   
    <build>

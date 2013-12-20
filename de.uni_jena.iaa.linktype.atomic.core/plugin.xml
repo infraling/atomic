@@ -83,5 +83,26 @@
             name="Exit">
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.uni_jena.iaa.linktype.atomic.core.AtomicNewWizardCategory"
+            name="Atomic">
+      </category>
+      <primaryWizard
+            id="de.uni_jena.iaa.linktype.atomic.core.newAtomicProjectWizard">
+      </primaryWizard>
+      <wizard
+            canFinishEarly="false"
+            category="de.uni_jena.iaa.linktype.atomic.core.AtomicNewWizardCategory"
+            class="de.uni_jena.iaa.linktype.atomic.core.wizards.newproject.NewAtomicProjectWizard"
+            descriptionImage="icons/atomic_64x64.png"
+            finalPerspective="de.uni_jena.iaa.linktype.atomic.core.perspective"
+            icon="icons/atomic.ico"
+            id="de.uni_jena.iaa.linktype.atomic.core.newAtomicProjectWizard"
+            name="New Atomic Project"
+            project="true">
+      </wizard>
+   </extension>
 
 </plugin>

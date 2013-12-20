@@ -17,7 +17,7 @@
 /**
  * 
  */
-package de.uni_jena.iaa.linktype.atomic.core.workspace;
+package de.uni_jena.iaa.linktype.atomic.workspace;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -88,8 +87,8 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	     * @param switchWorkspace true if we're using this dialog as a switch workspace dialog
 	     * @param wizardImage Image to show
 	     */
-	    public PickWorkspaceDialog(boolean switchWorkspace/*, Image wizardImage*/) {
-	        super(Display.getDefault().getActiveShell());
+	    public PickWorkspaceDialog(Shell shell, boolean switchWorkspace/*, Image wizardImage*/) {
+	        super(shell);
 	        this._switchWorkspace = switchWorkspace;
 //	        if (wizardImage != null) {
 //	            setTitleImage(wizardImage);
@@ -234,13 +233,13 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	                    String txt = _workspacePathCombo.getText();
 	                    File workspaceDirectory = new File(txt);
 	                    if (!workspaceDirectory.exists()) {
-	                        MessageDialog.openError(Display.getDefault().getActiveShell(), "Error",
+	                        MessageDialog.openError(PickWorkspaceDialog.this.getShell(), "Error",
 	                                "The currently entered workspace path does not exist. Please enter a valid path.");
 	                        return;
 	                    }
 
 	                    if (!workspaceDirectory.canRead()) {
-	                        MessageDialog.openError(Display.getDefault().getActiveShell(), "Error",
+	                        MessageDialog.openError(PickWorkspaceDialog.this.getShell(), "Error",
 	                                "The currently entered workspace path is not readable. Please check file system permissions.");
 	                        return;
 	                    }
@@ -248,26 +247,26 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	                    // check for workspace file (empty indicator that it's a workspace)
 	                    File wsFile = new File(txt + File.separator + WS_IDENTIFIER);
 	                    if (!wsFile.exists()) {
-	                        MessageDialog.openError(Display.getDefault().getActiveShell(), "Error",
+	                        MessageDialog.openError(PickWorkspaceDialog.this.getShell(), "Error",
 	                                "The currently entered workspace path does not contain a valid workspace.");
 	                        return;
 	                    }
 
-	                    DirectoryDialog dd = new DirectoryDialog(Display.getDefault().getActiveShell());
+	                    DirectoryDialog dd = new DirectoryDialog(PickWorkspaceDialog.this.getShell());
 	                    dd.setFilterPath(txt);
 	                    String directory = dd.open();
 	                    if (directory == null) { return; }
 
 	                    File targetDirectory = new File(directory);
 	                    if (targetDirectory.getAbsolutePath().equals(workspaceDirectory.getAbsolutePath())) {
-	                        MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", "Source and target workspaces are the same");
+	                        MessageDialog.openError(PickWorkspaceDialog.this.getShell(), "Error", "Source and target workspaces are the same");
 	                        return;
 	                    }
 
 	                    // recursive check, if new directory is a subdirectory of our workspace, that's a big no-no or we'll
 	                    // create directories forever
 	                    if (isTargetSubdirOfDir(workspaceDirectory, targetDirectory)) {
-	                        MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", "Target folder is a subdirectory of the current workspace");
+	                        MessageDialog.openError(PickWorkspaceDialog.this.getShell(), "Error", "Target folder is a subdirectory of the current workspace");
 	                        return;
 	                    }
 
@@ -275,17 +274,17 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	                        copyFiles(workspaceDirectory, targetDirectory);
 	                    } catch (Exception err) {
 	                        MessageDialog
-	                                .openError(Display.getDefault().getActiveShell(), "Error", "There was an error cloning the workspace: " + err.getMessage());
+	                                .openError(PickWorkspaceDialog.this.getShell(), "Error", "There was an error cloning the workspace: " + err.getMessage());
 	                        return;
 	                    }
 
-	                    boolean setActive = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Workspace Cloned",
+	                    boolean setActive = MessageDialog.openConfirm(PickWorkspaceDialog.this.getShell(), "Workspace Cloned",
 	                            "Would you like to set the newly cloned workspace to be the active one?");
 	                    if (setActive) {
 	                        _workspacePathCombo.setText(directory);
 	                    }
 	                } catch (Exception err) {
-	                    MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", "There was an internal error, please check the logs");
+	                    MessageDialog.openError(PickWorkspaceDialog.this.getShell(), "Error", "There was an internal error, please check the logs");
 	                    err.printStackTrace();
 	                }
 	            }
