@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SDominanceRelationFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SPointingRelationFigure;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SSpanFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SStructureFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.STokenFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.elements.IDLabel;
@@ -63,6 +64,12 @@ public class AtomicCellEditorLocator implements CellEditorLocator {
 			x = rect.x + 3;
 		}
 		else if (figure instanceof STokenFigure) {
+			rect = figure.getBounds().getCopy();
+			figure.translateToAbsolute(rect);
+			y = rect.y + 17; // FIXME Calculate dynamically
+			x = rect.x + 3;
+		}
+		else if (figure instanceof SSpanFigure) {
 			rect = figure.getBounds().getCopy();
 			figure.translateToAbsolute(rect);
 			y = rect.y + 17; // FIXME Calculate dynamically
