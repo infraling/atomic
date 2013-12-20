@@ -44,7 +44,7 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.Unannotat
 public class AtomicEditorPalette extends PaletteRoot {
 	
 	PaletteGroup group;
-	private ImageDescriptor DIRECTED_ICON, UNDIRECTED_ICON, NODE_ICON;
+	private ImageDescriptor DIRECTED_ICON, UNDIRECTED_ICON, NODE_ICON, SPAN_ICON;
 	
 	public AtomicEditorPalette() {
 		AbstractUIPlugin plugin = Activator.getDefault();
@@ -52,6 +52,7 @@ public class AtomicEditorPalette extends PaletteRoot {
 		DIRECTED_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.DIRECTED_EDGE_ICON));
 		UNDIRECTED_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.UNDIRECTED_EDGE_ICON));
 		NODE_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.NODE_ICON));
+		SPAN_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.SPAN_ICON));
 				
 		addGroup();
 		addSelectionTool();
@@ -78,7 +79,7 @@ public class AtomicEditorPalette extends PaletteRoot {
 	}
 
 	private void addSSpanTool() {
-		CreationToolEntry entry = new CreationToolEntry("Span node", "Create a new SSpan", new SSpanFactory(), NODE_ICON, NODE_ICON);
+		CreationToolEntry entry = new CreationToolEntry("Span node", "Create a new SSpan", new SSpanFactory(), SPAN_ICON, SPAN_ICON);
 		entry.setToolClass(CreationAndDirectEditTool.class);
 		group.add(entry);
 	}

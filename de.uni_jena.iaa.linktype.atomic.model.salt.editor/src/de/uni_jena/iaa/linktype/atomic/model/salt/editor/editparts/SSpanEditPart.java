@@ -122,7 +122,7 @@ public class SSpanEditPart extends AbstractGraphicalEditPart implements NodeEdit
 		}
 		
 		// Example: SName = "structure123" -> displayID = "N123"
-		return "N" + displayID.getFirst(); 
+		return "S" + displayID.getFirst(); 
 	}
 
 	private Rectangle calculateLayout(SSpan model, SSpanFigure figure) {

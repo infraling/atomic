@@ -67,6 +67,9 @@ public class SaltEditPartFactory implements EditPartFactory {
 		else if (model instanceof SDominanceRelation) {
 			part = new SDominanceRelationEditPart();
 		}
+		else if (model instanceof SDominanceRelation) {
+			part = new SDominanceRelationEditPart();
+		}
 		else if (model instanceof SAnnotation) {
 			part = new SAnnotationEditPart();
 		}

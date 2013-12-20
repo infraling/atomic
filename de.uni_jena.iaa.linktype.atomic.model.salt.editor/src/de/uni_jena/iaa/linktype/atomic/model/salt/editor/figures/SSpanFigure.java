@@ -20,9 +20,11 @@
 package de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures;
 
 import org.eclipse.draw2d.ChopboxAnchor;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.ToolbarLayout;
+
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.elements.SSpanFigureBorder;
 
 /**

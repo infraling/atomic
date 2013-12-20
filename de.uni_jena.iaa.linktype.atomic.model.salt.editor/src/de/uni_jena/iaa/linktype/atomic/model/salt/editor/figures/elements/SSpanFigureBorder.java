@@ -25,6 +25,7 @@ import org.eclipse.draw2d.GroupBoxBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
@@ -47,10 +48,11 @@ public class SSpanFigureBorder extends GroupBoxBorder {
         Rectangle rect = figure.getBounds();
         graphics.clipRect(rect);
         Rectangle r = rect.getResized(-1, -9).translate(0, 8);
-        graphics.setForegroundColor(ColorConstants.red);
+        graphics.setForegroundColor(ColorConstants.orange);
+//        graphics.setLineStyle(SWT.LINE_DOT);
         graphics.drawRoundRectangle(r, 10, 10);
-        graphics.setForegroundColor(ColorConstants.blue);
-        graphics.setBackgroundColor(new Color(Display.getCurrent(), 222, 222, 222));
+        graphics.setForegroundColor(ColorConstants.black);
+        graphics.setBackgroundColor(ColorConstants.orange);
         graphics.fillText(getLabel(), r.x + 8, r.y - 8);
         graphics.popState();
 	}
