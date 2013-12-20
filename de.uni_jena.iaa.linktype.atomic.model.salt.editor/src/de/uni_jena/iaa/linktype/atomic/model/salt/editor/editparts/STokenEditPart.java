@@ -133,7 +133,7 @@ public class STokenEditPart extends AbstractGraphicalEditPart implements NodeEdi
 		else { // TODO: Calculate correct position for token line! Viewport?
 			if (!(model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X") != null))
 				model.createSProcessingAnnotation(null, "ATOMIC_GEF_COORDINATES__X", 10, SDATATYPE.SNUMERIC);
-			calculatedLayout = new Rectangle(10, 550, figure.getPreferredSize().width, figure.getPreferredSize().height);
+			calculatedLayout = new Rectangle(10, 300, figure.getPreferredSize().width, figure.getPreferredSize().height);
 		}
 		return calculatedLayout;
 	}

@@ -19,10 +19,12 @@
  */
 package de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -55,8 +57,15 @@ public class SAnnotationAnnotateCommand extends Command {
 	public void execute() {
 		// Parse annotation String
 		String[] annotationKeyValue = annotationInput.split(":");
-		String key = annotationKeyValue[0];
-		String value = annotationKeyValue[1];
+		String key = null;
+		String value = null;
+		try {
+			key = annotationKeyValue[0];
+			value = annotationKeyValue[1];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Annotation error", "The annotation format is not correct.\nPlease use [key]:[value], where neither\nvalue may be empty.");
+			return;
+		}
 		// Determine type of model parent & get its List of annotations
 		EList<SAnnotation> existingAnnotations = getExistingAnnotationsFromModelParent(modelParent);
 		if (existingAnnotations != null) {
