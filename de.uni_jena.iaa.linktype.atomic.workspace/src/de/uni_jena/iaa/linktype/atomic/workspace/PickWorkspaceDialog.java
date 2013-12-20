@@ -62,7 +62,8 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	    private static Preferences  _preferences           = Preferences.userNodeForPackage(PickWorkspaceDialog.class);
 
 	    // various dialog messages
-	    private static final String _StrMsg                = "Your workspace is where settings and various important files will be stored.";
+	    private static final String _StrMsg                = "Your workspace is where your projects (and some settings) will be stored.\n"
+	    		+ "It is portable, and you can have more than one workspace, e.g., for different use cases.";
 	    private static final String _StrInfo               = "Please select a directory that will be the workspace root";
 	    private static final String _StrError              = "You must set a directory";
 
