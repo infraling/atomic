@@ -64,12 +64,7 @@ public class SSpanGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 		    result = sPointingRelationResult;
 		}
 		else if (request.getNewObject() instanceof SDominanceRelation) {
-			SDominanceRelationCreateCommand sDominanceRelationResult = new SDominanceRelationCreateCommand();
-		    sDominanceRelationResult.setSource((SSpan) getHost().getModel());
-		    sDominanceRelationResult.setSDominanceRelation((SDominanceRelation) request.getNewObject());
-		    sDominanceRelationResult.setGraph(((SSpan) getHost().getModel()).getSDocumentGraph());
-		    request.setStartCommand(sDominanceRelationResult);
-		    result = sDominanceRelationResult;
+			// An instance of SToken cannot be the source of an SDominanceRelation!
 		}
 	    return result;
 	}
