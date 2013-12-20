@@ -32,6 +32,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.Activator;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SDominanceRelationFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SPointingRelationFactory;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SSpanFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SStructureFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.CreationAndDirectEditTool;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools.UnannotatedConnectionCreationTool;
@@ -55,6 +56,7 @@ public class AtomicEditorPalette extends PaletteRoot {
 		addGroup();
 		addSelectionTool();
 		addSStructureTool();
+		addSSpanTool();
 		addSPointingRelationTool();
 		addSDominanceRelationTool();
 	}
@@ -75,6 +77,12 @@ public class AtomicEditorPalette extends PaletteRoot {
 		group.add(entry);
 	}
 
+	private void addSSpanTool() {
+		CreationToolEntry entry = new CreationToolEntry("Span node", "Create a new SSpan", new SSpanFactory(), NODE_ICON, NODE_ICON);
+		entry.setToolClass(CreationAndDirectEditTool.class);
+		group.add(entry);
+	}
+	
 	private void addSPointingRelationTool() {
 		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Pointing relation", "Create a new pointing relation", new SPointingRelationFactory(), DIRECTED_ICON, DIRECTED_ICON);
 		entry.setToolClass(UnannotatedConnectionCreationTool.class);
