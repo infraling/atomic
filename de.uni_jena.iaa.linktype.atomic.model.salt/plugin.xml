@@ -1,27 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:de.uni_jena.iaa.linktype.atomic.menus.fileMenu?before=de.uni_jena.iaa.linktype.atomic.core.commands.Exit">
-         <command
-               commandId="de.uni_jena.iaa.linktype.atomic.model.salt.commands.createSaltProject"
-               label="New multilevel annotation project"
-               mnemonic="N"
-               style="push">
-         </command>
-      </menuContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="de.uni_jena.iaa.linktype.atomic.model.salt.commands.CreateSaltProjectHandler"
-            description="Creates a new multilevel annotation project (SaltProject) and adds it to the workspace."
-            id="de.uni_jena.iaa.linktype.atomic.model.salt.commands.createSaltProject"
-            name="New multilevel annotation project">
-      </command>
-   </extension>
 
 </plugin>
