@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Text;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SDominanceRelationFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SPointingRelationFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SSpanFigure;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SSpanningRelationFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SStructureFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.STokenFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.elements.IDLabel;
@@ -85,6 +86,13 @@ public class AtomicCellEditorLocator implements CellEditorLocator {
 		else if (figure instanceof SPointingRelationFigure) {
 			IDLabel iDLabel = ((SPointingRelationFigure) figure).getiDLabel();
 			rect = ((SPointingRelationFigure) figure).getiDLabel().getBounds().getCopy();
+			figure.translateToAbsolute(rect);
+			y = (rect.y - 1) + iDLabel.getPreferredSize().height;
+			x = rect.x;
+		}
+		else if (figure instanceof SSpanningRelationFigure) {
+			IDLabel iDLabel = ((SSpanningRelationFigure) figure).getiDLabel();
+			rect = ((SSpanningRelationFigure) figure).getiDLabel().getBounds().getCopy();
 			figure.translateToAbsolute(rect);
 			y = (rect.y - 1) + iDLabel.getPreferredSize().height;
 			x = rect.x;

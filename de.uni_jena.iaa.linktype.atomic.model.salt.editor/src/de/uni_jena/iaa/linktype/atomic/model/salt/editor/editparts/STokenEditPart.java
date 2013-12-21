@@ -38,6 +38,8 @@ import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.jface.viewers.TextCellEditor;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
@@ -48,7 +50,6 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.STokenDir
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.STokenGraphicalNodeEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.AtomicMultiLineDirectEditManager;
-import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.TooltipAndTextCellEditor;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.STokenFigure;
 
 /**
@@ -91,7 +92,7 @@ public class STokenEditPart extends AbstractGraphicalEditPart implements NodeEdi
 	}
 	
 	private void performDirectEditing() {
-		AtomicMultiLineDirectEditManager manager = new AtomicMultiLineDirectEditManager(this, TooltipAndTextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
+		AtomicMultiLineDirectEditManager manager = new AtomicMultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
 		manager.show();
 	}
 
