@@ -88,11 +88,11 @@ public class AtomicEditorPalette extends PaletteRoot {
 		SPANNINGREL_ICON = ImageDescriptor.createFromImage(imageRegistry.get(Activator.SPANNINGREL_ICON));
 	}
 	
-	private PaletteToolbar createToolsGroup(AtomicEditorPalette palette) {
+	private PaletteToolbar createToolsGroup(AtomicEditorPalette atomicEditorPalette) {
 		PaletteToolbar toolbar = new PaletteToolbar("Tools");
 		ToolEntry tool = new PanningSelectionToolEntry();
 		toolbar.add(tool);
-		palette.setDefaultEntry(tool);
+		atomicEditorPalette.setDefaultEntry(tool);
 		toolbar.add(new MarqueeToolEntry());
 		return toolbar;
 	}
