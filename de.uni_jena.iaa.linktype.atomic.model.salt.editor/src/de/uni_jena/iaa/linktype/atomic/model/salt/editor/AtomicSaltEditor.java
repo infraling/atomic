@@ -62,7 +62,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.console.AtomicALConsole;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories.SaltEditPartFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.handlers.CustomGraphicalViewerKeyHandler;
-import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.AtomicEditorPalette;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.AtomicEditorPaletteFactory;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.util.ModelLoader;
 
 /**
@@ -162,7 +162,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	protected PaletteRoot getPaletteRoot() {
-		return new AtomicEditorPalette();
+		return AtomicEditorPaletteFactory.createPalette();
 	}
 
 	/* (non-Javadoc)
