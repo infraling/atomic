@@ -28,7 +28,13 @@ public class Activator extends AbstractUIPlugin
   {
     super.start(context);
 
-    Display display = PlatformUI.createDisplay();
+    // Bug fix: Avoid SWTException (invalid thread) on Mac OS X
+    Display display = null;
+    if (Display.getCurrent() != null) {
+    	display = Display.getCurrent();
+    }
+    else 
+    	display = PlatformUI.createDisplay();
     try
     {
       // Get current instance location
