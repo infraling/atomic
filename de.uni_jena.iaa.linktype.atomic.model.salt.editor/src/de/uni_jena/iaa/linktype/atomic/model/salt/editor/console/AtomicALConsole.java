@@ -75,6 +75,7 @@ private SDocumentGraph graph;
 private String layerSwitch = "s"; // Default layer, when no layer is set during the command
 private IEditorPart editor;
 private EditPart topLevelEditPart;
+private IOConsoleOutputStream out;
 
 	//	private IOConsoleInputStream inputStream;
 //	private IOConsoleOutputStream outputStream;
@@ -136,7 +137,7 @@ private EditPart topLevelEditPart;
 	public void run() {
 		try {
 			final IOConsoleOutputStream err = newOutputStream();
-			final IOConsoleOutputStream out = newOutputStream();
+			out = newOutputStream();
 			final IOConsoleOutputStream prompt = newOutputStream();
 
 			Display.getDefault().syncExec(new Runnable() {
@@ -184,6 +185,10 @@ private EditPart topLevelEditPart;
 	@SuppressWarnings("unchecked")
 	private void executeCommand(final CommandStack commandStack, String atomicALCommand, HashMap<Object, Object> atomicALParameters) {
 		// FIXME TODO Refactor for readability/re-usability + check for uncaught exceptions
+		if (atomicALCommand.equalsIgnoreCase("--help")) {
+			displayHelp();
+			return;
+		}
 		char commandChar = 0;
 		try {
 			commandChar = atomicALCommand.charAt(0);
@@ -492,6 +497,28 @@ private EditPart topLevelEditPart;
 			default:
 				break;
 			}
+	}
+
+	private void displayHelp() {
+		try {
+			out.write("Command                           Arguments                       Syntax example\n"+
+					"n (New node)*                     [key]:[value]                   n pos:np\n"+
+					"e (New edge)                      [source] [target] [key]:[value] e n1 n2 r:coref\n"+
+					"a (Annotate)*                     [element] [key]:[val] / [key]:  a n1 pos:np\n"+
+					"d (Delete element) [element]                                      d t1\n"+
+					"p (Group under new parent)*       [element] [element] [key]:[val] p t1 t2 pos:np\n"+
+					"c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"+
+					"t (Append new token)              [string]                        t Foobar\n"+
+					"l (Switch annotation level)*      [level]                         l -s\n"+
+					"j (Jump to sentence)              [0-9]*                          j 1234\n"+
+					"x (Set corpus excerpt to display) [[0-9]*]|[[0-9]*]               x 2|1\n"+
+					"\n"+
+					"*Level switches can be used with this command.");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@SuppressWarnings("unchecked")
