@@ -76,6 +76,7 @@ public class AtomicALParser {
 		hash.put("nodes".intern(), new ArrayList<String>()); // All nodes (SStructures)
 		hash.put("edges".intern(), new ArrayList<String>()); // All edges
 		hash.put("tokens".intern(), new ArrayList<String>()); // All Tokens
+		hash.put("spans".intern(), new ArrayList<String>()); // All Spans
 
 		// Regex 
 		HashMap<Object, Object> r = new HashMap<Object, Object>();
@@ -110,11 +111,15 @@ public class AtomicALParser {
 			else if ((m = ((Pattern) r.get("string")).matcher(rawParameters)).find()) {
 				String word = m.group(2) != null ? m.group(2).replace('\"', '"') : m.group(1);
 				((ArrayList<String>) hash.get("words")).add(word);
-				if (word.matches("^([DNPT]\\d+)|M$")) { // ENT (not ent as in ltraw) because in Atomic caps are used for IDs
+				if (word.matches("^([DNPTRS]\\d+)|M$")) { // ENT (not ent as in ltraw) because in Atomic caps are used for IDs
 					((ArrayList<String>) hash.get("elements")).add(word);
 					switch (word.charAt(0)) {
 					case 'N':
 						((ArrayList<String>) hash.get("nodes")).add(word);
+						((ArrayList<String>) hash.get("all_nodes")).add(word);
+						break;
+					case 'S':
+						((ArrayList<String>) hash.get("spans")).add(word);
 						((ArrayList<String>) hash.get("all_nodes")).add(word);
 						break;
 					case 'M':
@@ -125,6 +130,9 @@ public class AtomicALParser {
 						((ArrayList<String>) hash.get("edges")).add(word);
 						break;
 					case 'P':
+						((ArrayList<String>) hash.get("edges")).add(word);
+						break;
+					case 'R':
 						((ArrayList<String>) hash.get("edges")).add(word);
 						break;
 					case 'T':

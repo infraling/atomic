@@ -111,7 +111,7 @@ public class SSpanningRelationEditPart extends AbstractConnectionEditPart {
 		}
 		
 		// Example: SName = "pointingrelation123" -> displayID = "UE123"
-		return "P" + displayID.getFirst(); // TODO: for "directed edge"
+		return "R" + displayID.getFirst(); // TODO: for "directed edge"
 	}
 
 	

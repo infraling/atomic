@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
@@ -45,6 +46,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.graph.exceptions.GraphInser
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
@@ -288,6 +291,14 @@ private IOConsoleOutputStream out;
 							}
 							break;
 							
+						case 'S': // SSpan
+							for (SSpan span : graph.getSSpans()) {
+								String valueString = span.getSName().substring(5); // 5 -> "sSpan"
+								if (iD.equals(valueString)) 
+									elementsToAnnotate.add(span);
+							}
+							break;
+							
 						case 'P': // SPointingRelation
 							for (SPointingRelation pointingRelation : graph.getSPointingRelations()) {
 								String valueString = pointingRelation.getSName().substring(12); // 12 -> "sPointingRel"
@@ -301,6 +312,14 @@ private IOConsoleOutputStream out;
 								String valueString = dominanceRelation.getSName().substring(7); // 7 -> "sDomRel"
 								if (iD.equals(valueString)) 
 									elementsToAnnotate.add(dominanceRelation);
+							}
+							break;
+						
+						case 'R': // SSpanningRelation
+							for (final SSpanningRelation spanningRelation : graph.getSSpanningRelations()) {
+								String valueString = spanningRelation.getSName().substring(8); // 7 -> "sSpanRel"
+								if (iD.equals(valueString)) 
+									elementsToAnnotate.add(spanningRelation);
 							}
 							break;
 							
