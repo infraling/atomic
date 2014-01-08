@@ -32,7 +32,7 @@ import de.uni_jena.iaa.linktype.atomic.core.Messages;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicCoreUtils;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicTokenizerUtils;
 
-public class AtomicProjectBasicsWizardPage extends WizardPage {
+public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	
 	private Text txtProjectName;
 	private ArrayList<String> projectNames;
@@ -45,7 +45,7 @@ public class AtomicProjectBasicsWizardPage extends WizardPage {
 	/**
 	 * Create the wizard.
 	 */
-	public AtomicProjectBasicsWizardPage() {
+	public NewAtomicProjectWizardDetailsPage() {
 		super("wizardPage"); //$NON-NLS-1$
 		setPageComplete(false);
 		setTitle("Create a new Atomic project"); //$NON-NLS-1$
@@ -73,7 +73,7 @@ public class AtomicProjectBasicsWizardPage extends WizardPage {
 		
 		Label lblNewLabel_1 = new Label(container, SWT.NONE);
 		lblNewLabel_1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		lblNewLabel_1.setText("Enter the name for the new project, and choose the text file containing the raw corpus text.\r\nAlternatively, you can enter or paste the corpus text into the text field."); //$NON-NLS-1$ // FIXME: Put back in once Import is completely implemented: \r\n\r\nNOTE: If you want to import a pre-formatted existing corpus into Atomic, you can do so by\r\nstarting the Corpus Import Wizard: Right-click into the navigation window, and choose\r\n\"Import\" > \"Corpus Import\".
+		lblNewLabel_1.setText("Enter the name for the new project, and choose the text file containing the raw corpus text.\r\nAlternatively, you can enter or paste the corpus text into the text field.\r\n\r\nNOTE: If you want to import a pre-formatted existing corpus into Atomic, you can do so by\r\nstarting the Corpus Import Wizard: Right-click into the navigation window, and choose\r\n\"Import\" > \"Corpus Import\"."); //$NON-NLS-1$
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		
