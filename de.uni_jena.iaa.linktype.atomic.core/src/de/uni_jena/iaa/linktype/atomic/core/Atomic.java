@@ -16,7 +16,6 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -33,36 +32,22 @@ public class Atomic implements IApplication {
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 
-		Display display = PlatformUI.createDisplay();
-		// Custom Workspace code moved into bundle de.uni_jena.iaa.linktype.atomic.workspace
-			        
-			        // FIXME: May take up too much RAM! Alternatives?
-//			        IProject[] projectsArray = ResourcesPlugin.getWorkspace().getRoot().getProjects(); // All IProjects in workspace
-//			        ArrayList<IProject> projectList = new ArrayList<IProject>(); // empty ArrayList
-//			        Activator.getDefault().getSaltProjectProviderService().setOpenIProjectsArrayList(projectList); // globalize empty ArrayList
-//			        ArrayList<SaltProject> saltProjectsArrayList = new ArrayList<SaltProject>(); // empty ArrayList
-//			        Activator.getDefault().getSaltProjectProviderService().setExistingSaltProjectsArrayList(saltProjectsArrayList); // Globalize empty ArrayList
-//			        for (int i = 0; i < projectsArray.length; i++) {
-//			        	IProject project = projectsArray[i];
-//						if (project.isOpen() && project.getFile("saltProject.salt").exists()) {
-//							SaltProject saltProject = SaltFactory.eINSTANCE.createSaltProject();
-//							File file = project.getLocation().toFile();
-//							URI uri = URI.createFileURI(file.getAbsolutePath());
-//							saltProject.loadSaltProject(uri);
-//							Activator.getDefault().getSaltProjectProviderService().getOpenIProjectsArrayList().add(projectsArray[i]); // Add only open IProjects to global ArrayList
-//					        Activator.getDefault().getSaltProjectProviderService().getExistingSaltProjectsArrayList().add(saltProject); // Add only loaded SaltProjects to ArrayList
-//						}
-//					}
+		Display display = null;
+		if (Display.getCurrent() != null) {
+	    	display = Display.getCurrent();
+	    }
+	    else {
+	    	display = PlatformUI.createDisplay();
+	    }
 
-
-			try {
-				int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
-					if (returnCode == PlatformUI.RETURN_RESTART) return IApplication.EXIT_RESTART;
-					else return IApplication.EXIT_OK;
-			} 
-			finally {
-				display.dispose();
-			}
+		try {
+			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
+				if (returnCode == PlatformUI.RETURN_RESTART) return IApplication.EXIT_RESTART;
+				else return IApplication.EXIT_OK;
+		} 
+		finally {
+			display.dispose();
+		}
 	}
 
 	/* (non-Javadoc)

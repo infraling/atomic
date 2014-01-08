@@ -50,18 +50,18 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class PickWorkspaceDialog extends TitleAreaDialog {
 
-	    // the name of the file that tells us that the workspace directory belongs to our application
+	    // The name of the file that tells us that the workspace directory belongs to our application
 	    public static final String  WS_IDENTIFIER          = ".atomic_workspace";
 
-	    // you would probably normally define these somewhere in your Preference Constants
+	    // You would probably normally define these somewhere in your Preference Constants
 	    private static final String _KeyWorkspaceRootDir   = "wsRootDir";
 	    private static final String _KeyRememberWorkspace  = "wsRemember";
 	    private static final String _KeyLastUsedWorkspaces = "wsLastUsedWorkspaces";
 
-	    // this are our preferences we will be using as the IPreferenceStore is not available yet
+	    // These are our preferences we will be using as the IPreferenceStore is not available yet
 	    private static Preferences  _preferences           = Preferences.userNodeForPackage(PickWorkspaceDialog.class);
 
-	    // various dialog messages
+	    // Various dialog messages
 	    private static final String _StrMsg                = "Your workspace is where your projects (and some settings) will be stored.\n"
 	    		+ "It is portable, and you can have more than one workspace, e.g., for different use cases.";
 	    private static final String _StrInfo               = "Please select a directory that will be the workspace root";
@@ -91,9 +91,6 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	    public PickWorkspaceDialog(Shell shell, boolean switchWorkspace/*, Image wizardImage*/) {
 	        super(shell);
 	        this._switchWorkspace = switchWorkspace;
-//	        if (wizardImage != null) {
-//	            setTitleImage(wizardImage);
-//	        }
 	    }
 
 	    @Override
@@ -216,8 +213,8 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 
 	        buf.append(uHome);
 	        buf.append(File.separator);
-	        buf.append("My App Name");
-	        buf.append("_Workspace");
+	        buf.append("atomic");
+	        buf.append("-workspace");
 
 	        return buf.toString();
 	    }
