@@ -16,6 +16,7 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -31,7 +32,7 @@ public class Atomic implements IApplication {
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
-		
+
 		Display display = PlatformUI.createDisplay();
 		// Custom Workspace code moved into bundle de.uni_jena.iaa.linktype.atomic.workspace
 			        

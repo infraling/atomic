@@ -17,7 +17,7 @@
 /**
  * 
  */
-package de.uni_jena.iaa.linktype.atomic.workspace;
+package de.uni_jena.iaa.linktype.atomic.core.workspace;
 
 import java.io.File;
 import java.io.FileInputStream;

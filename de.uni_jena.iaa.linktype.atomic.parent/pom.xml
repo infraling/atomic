@@ -18,7 +18,7 @@
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
   <module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.ui.navigation</module>
-  <module>../de.uni_jena.iaa.linktype.atomic.workspace</module>
+  <!-- <module>../de.uni_jena.iaa.linktype.atomic.workspace</module> -->
   </modules>
   
   <properties>
