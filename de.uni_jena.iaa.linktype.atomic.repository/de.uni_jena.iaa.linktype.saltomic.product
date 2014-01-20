@@ -91,7 +91,7 @@
       <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TueBaDZModules" autoStart="true" startLevel="6" />
       <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-UAMModules" autoStart="true" startLevel="6" />
       <plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-nlpModules" autoStart="true" startLevel="6" />
-      <plugin id="de.uni_jena.iaa.linktype.atomic.workspace" autoStart="true" startLevel="0" />
+      <plugin id="de.uni_jena.iaa.linktype.atomic.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="1" />
