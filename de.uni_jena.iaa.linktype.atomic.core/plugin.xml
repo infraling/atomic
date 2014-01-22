@@ -77,6 +77,13 @@
          <toolbar
                id="de.uni_jena.iaa.linktype.atomic.core.toolbar"
                label="Atomic Toolbar">
+			<command
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New Project"
+                  mnemonic="N"
+                  style="push"
+                  tooltip="Opens a wizard dialog to help with the creation of new projects.">
+            </command>
             <command
                   commandId="org.eclipse.ui.file.save"
                   label="Save"
