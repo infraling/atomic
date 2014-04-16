@@ -44,6 +44,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperDocumentController;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperJob;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleController;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
@@ -279,18 +280,19 @@ public abstract class PepperModuleRunnable
    */
   protected void finishModuleThread(long gracePeriodInMillis) throws NoSuchFieldException, SecurityException, IllegalAccessException
   {
-    if (moduleThread != null && moduleThread.isAlive())
+    Thread thread = moduleThread;
+    if (thread != null && thread.isAlive())
     {
       try
       {
-        moduleThread.join(gracePeriodInMillis);
+        thread.join(gracePeriodInMillis);
       }
       catch (InterruptedException XX)
       {
         // siliently ignore
       }
 
-      if (moduleThread.isAlive())
+      if (thread.isAlive())
       {
         PepperConverter pepperConverter = pepperWizard.getPepperConverter();
         for (PepperJob pepperJob : pepperConverter.getPepperJobs())
@@ -309,6 +311,39 @@ public abstract class PepperModuleRunnable
     }
   }
   
+  /**
+   * Collects status information. Unfortunately this status is not appropriated
+   * to be displayed within the Eclipse progress monitor dialog.
+   * 
+   * @return status information
+   */
+  protected String getStatusString()
+  {
+    String status = null;
+    Thread thread = moduleThread;
+    if (thread != null && thread.isAlive())
+    {
+      PepperConverter pepperConverter = pepperWizard.getPepperConverter();
+      if (pepperConverter != null)
+      {
+        for (PepperJob pepperJob : pepperConverter.getPepperJobs())
+        {
+          PepperDocumentController documentController = pepperJob.getPepperDocumentController();
+          if (documentController != null)
+          {
+            String status4Print = documentController.getStatus4Print();
+            if (status4Print != null)
+            {
+              status = status != null ? status + "\n" + status4Print : status4Print;
+            }
+          }
+        }
+      }
+    }
+    
+    return status;
+  }
+
   /**
    * {@inheritDoc}
    */
