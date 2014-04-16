@@ -15,8 +15,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
+package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -41,16 +42,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
 
 /**
  *
  * @author  Michael Grübsch
  * @version $Revision$, $Date$
  */
-public class PepperImportWizardPageImporter extends WizardPage implements IWizardPage
+public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage implements IWizardPage
 {
-  protected final PepperImportWizard pepperImportWizard;
+  protected final AbstractPepperWizard<P> pepperWizard;
 
   protected TableViewer tableViewer;
 
@@ -60,13 +62,13 @@ public class PepperImportWizardPageImporter extends WizardPage implements IWizar
    * @param title
    * @param titleImage
    */
-  public PepperImportWizardPageImporter(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage)
+  public PepperWizardPageFormat(AbstractPepperWizard<P> pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
   {
     super(pageName, title, titleImage);
     setPageComplete(false);
-    setDescription("Select the pepper import module.");
+    setDescription(description);
 
-    this.pepperImportWizard = pepperImportWizard;
+    this.pepperWizard = pepperWizard;
   }
 
   /**
@@ -96,12 +98,12 @@ public class PepperImportWizardPageImporter extends WizardPage implements IWizar
       @Override
       public String getText(Object element)
       {
-        return super.getText(((PepperImporter) element).getName());
+        return super.getText(((FormatDefinition) element).getFormatName());
       }
     });
 
     tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Module");
+    tableColumn.setText("Format");
 
     tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(70));
 
@@ -111,7 +113,7 @@ public class PepperImportWizardPageImporter extends WizardPage implements IWizar
       @Override
       public String getText(Object element)
       {
-        return super.getText(((PepperImporter) element).getVersion());
+        return super.getText(((FormatDefinition) element).getFormatVersion());
       }
     });
 
@@ -128,17 +130,17 @@ public class PepperImportWizardPageImporter extends WizardPage implements IWizar
 
     table.setHeaderVisible(true);
     table.setLinesVisible(true);
-    
+
     tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
     {
       @Override
       public void selectionChanged(SelectionChangedEvent event)
       {
         ISelection selection = event.getSelection();
-        
+
         boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
         setPageComplete(selected);
-        pepperImportWizard.setPepperImporter(selected ? (PepperImporter) ((IStructuredSelection) selection).getFirstElement() : null);
+        pepperWizard.setFormatDefinition(selected ? (FormatDefinition) ((IStructuredSelection) selection).getFirstElement() : null);
       }
     });
     
@@ -147,7 +149,7 @@ public class PepperImportWizardPageImporter extends WizardPage implements IWizar
       @Override
       public void doubleClick(DoubleClickEvent event)
       {
-        PepperImportWizardPageImporter.this.pepperImportWizard.advance();
+        PepperWizardPageFormat.this.pepperWizard.advance();
       }
     });
   }
@@ -160,10 +162,20 @@ public class PepperImportWizardPageImporter extends WizardPage implements IWizar
   {
     if (visible)
     {
-      PepperImporter pepperImporter = pepperImportWizard.getPepperImporter();
+      EList<FormatDefinition> supportedFormats = pepperWizard.getSupportedFormats();
+      tableViewer.setInput(supportedFormats);
 
-      tableViewer.setInput(pepperImportWizard.getPepperImportersModules());
-      tableViewer.setSelection(pepperImporter != null ? new StructuredSelection(pepperImporter) : StructuredSelection.EMPTY);
+      FormatDefinition formatDefinition =
+          supportedFormats.size() == 1
+        ? supportedFormats.get(0)
+        : pepperWizard.getFormatDefinition();
+
+      if (formatDefinition == null)
+      {
+        formatDefinition = pepperWizard.getPreferredFormatDefinition();
+      }
+
+      tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
     }
 
     super.setVisible(visible);

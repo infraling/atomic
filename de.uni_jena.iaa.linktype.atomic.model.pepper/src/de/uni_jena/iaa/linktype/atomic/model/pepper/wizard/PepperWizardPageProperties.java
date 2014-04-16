@@ -15,7 +15,11 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
+package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -45,6 +49,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperty;
 
 /**
@@ -52,9 +58,9 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModul
  * @author  Michael Grübsch
  * @version $Revision$, $Date$
  */
-public class PepperImportWizardPageProperties extends WizardPage implements IWizardPage
+public class PepperWizardPageProperties<P extends PepperModule> extends WizardPage implements IWizardPage
 {
-  protected final PepperImportWizard pepperImportWizard;
+  protected final AbstractPepperWizard<P> pepperWizard;
 
   protected TableViewer tableViewer;
 
@@ -64,13 +70,13 @@ public class PepperImportWizardPageProperties extends WizardPage implements IWiz
    * @param title
    * @param titleImage
    */
-  public PepperImportWizardPageProperties(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage)
+  public PepperWizardPageProperties(AbstractPepperWizard<P> pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
   {
     super(pageName, title, titleImage);
     setPageComplete(false);
-    setDescription("Edit the pepper import module properties.");
+    setDescription(description);
 
-    this.pepperImportWizard = pepperImportWizard;
+    this.pepperWizard = pepperWizard;
   }
 
   /**
@@ -190,7 +196,7 @@ public class PepperImportWizardPageProperties extends WizardPage implements IWiz
               {
                 if (super.verifyText(text))
                 {
-                  return ! pepperImportWizard.containsPepperModuleProperty(text.trim());
+                  return ! pepperWizard.containsPepperModuleProperty(text.trim());
                 }
                 else
                 {
@@ -201,8 +207,9 @@ public class PepperImportWizardPageProperties extends WizardPage implements IWiz
           );
         if (textInputDialog.open() == Window.OK)
         {
-          PepperModuleProperty<String> property = new PepperModuleProperty<String>(textInputDialog.getInputText(), String.class, "<ENTER VALUE HERE>", "");
-          pepperImportWizard.addPepperModuleProperty(property);
+          PepperModuleProperty<String> property = new PepperModuleProperty<String>(textInputDialog.getInputText(), String.class, "", "");
+          property.setValueString("<ENTER VALUE HERE>");
+          pepperWizard.addPepperModuleProperty(property);
           tableViewer.add(property);
         }
       }
@@ -225,7 +232,7 @@ public class PepperImportWizardPageProperties extends WizardPage implements IWiz
           PepperModuleProperty<?> property = (PepperModuleProperty<?>)((IStructuredSelection) selection).getFirstElement();
           if (property != null)
           {
-            pepperImportWizard.removePepperModuleProperty(property.getName());
+            pepperWizard.removePepperModuleProperty(property.getName());
             tableViewer.remove(property);
           }
         }
@@ -252,11 +259,25 @@ public class PepperImportWizardPageProperties extends WizardPage implements IWiz
   {
     if (visible)
     {
-      tableViewer.setInput(pepperImportWizard.getPepperModuleProperties());
+      PepperModuleProperties pepperModuleProperties = pepperWizard.getPepperModuleProperties();
+      if (pepperModuleProperties != null)
+      {
+        Collection<String> propertyNames =  pepperModuleProperties.getPropertyNames();
+        if (propertyNames != null)
+        {
+          List<PepperModuleProperty<?>> propertyList = new ArrayList<PepperModuleProperty<?>>(propertyNames.size());
+          for (String propertyName : propertyNames)
+          {
+            propertyList.add(pepperModuleProperties.getProperty(propertyName));
+          }
+
+          tableViewer.setInput(propertyList);
+        }
+      }
+      
       setPageComplete(true);
     }
 
     super.setVisible(visible);
   }
-  
 }

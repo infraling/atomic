@@ -6,8 +6,20 @@
       <wizard
             class="de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard.PepperImportWizard"
             icon="saltnpepper_logo-16x16.png"
-            id="de.uni_jena.iaa.linktype.saltomic.model.pepper.wizard1"
+            id="de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard.PepperImportWizard"
             name="Pepper Module Import">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            class="de.uni_jena.iaa.linktype.atomic.model.pepper.exportwizard.PepperExportWizard"
+            icon="saltnpepper_logo-16x16.png"
+            id="de.uni_jena.iaa.linktype.atomic.model.pepper.exportwizard.PepperExportWizard"
+            name="Pepper Module Export">
+         <selection
+               class="org.eclipse.core.resources.IProject">
+         </selection>
       </wizard>
    </extension>
 

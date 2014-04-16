@@ -22,7 +22,7 @@
 
 
 
-package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
+package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -58,7 +58,7 @@ public class TextInputDialog
   
 
   /**
-   * Legt eine neue Instanz des Typs ItemSelectionDialog an.
+   * Legt eine neue Instanz des Typs TextInputDialog an.
    * @param parentShell
    * @param dialogTitle
    * @param dialogMessage

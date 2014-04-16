@@ -15,11 +15,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
+package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
 
 import java.io.File;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -34,26 +35,41 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
+
 /**
  * 
  * @author Michael Grübsch
  * @version $Revision: 1.2 $, $Date: 2012/03/29 22:59:03 $
  */
-public class PepperImportWizardPageDirectory extends WizardPage
+public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPage implements IWizardPage
 {
-  protected final PepperImportWizard pepperImportWizard;
+  protected final AbstractPepperWizard<P> pepperWizard;
+  protected final boolean directoryMightBeEmpty;
+  protected final String prompt;
+
   protected Text text;
 
   /**
    * Create the wizard.
    */
-  public PepperImportWizardPageDirectory(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage)
+  public PepperWizardPageDirectory
+    ( AbstractPepperWizard<P> pepperWizard
+    , String pageName
+    , String title
+    , ImageDescriptor titleImage
+    , String description
+    , boolean directoryMightBeEmpty
+    , String prompt
+    )
   {
     super(pageName, title, titleImage);
     setPageComplete(false);
-    setDescription("Select the pepper import directory.");
+    setDescription(description);
 
-    this.pepperImportWizard = pepperImportWizard;
+    this.pepperWizard = pepperWizard;
+    this.directoryMightBeEmpty = directoryMightBeEmpty;
+    this.prompt = prompt;
   }
 
   /**
@@ -73,7 +89,7 @@ public class PepperImportWizardPageDirectory extends WizardPage
 
     Label lblNewLabel = new Label(container, SWT.NONE);
     lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
-    lblNewLabel.setText("Directory, from which data should be imported");
+    lblNewLabel.setText(prompt);
 
     text = new Text(container, SWT.BORDER);
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -93,6 +109,7 @@ public class PepperImportWizardPageDirectory extends WizardPage
       public void widgetSelected(SelectionEvent e)
       {
         DirectoryDialog dialog = new DirectoryDialog(getShell());
+        dialog.setFilterPath(text.getText());
         String directory = dialog.open();
         if (directory != null)
         {
@@ -109,37 +126,51 @@ public class PepperImportWizardPageDirectory extends WizardPage
     return 0 < path.length() ? path : null;
   }
 
-  protected void updatePageComplete()
+  /**
+   *
+   * @param directory
+   * @return
+   */
+  protected String validateDirectory(File directory)
   {
-    String directoryPath = getDirectoryPath();
-    if (directoryPath != null)
+    if (directoryMightBeEmpty)
     {
-      File directory = new File(directoryPath);
+      return null;
+    }
+    else
+    {
       boolean available = directory.isDirectory();
-
+  
       if (available)
       {
         File[] files = directory.listFiles();
         
         if (files != null && 0 < files.length)
         {
-          setMessage(null);
-          setErrorMessage(null);
-          setPageComplete(true);
+          return null;
         }
         else
         {
-          setMessage("Directory contains no files!", WARNING);
-          setErrorMessage(null);
-          setPageComplete(false);
+          return "Directory contains no files!";
         }
       }
       else
       {
-        setMessage(null);
-        setErrorMessage("Directory does not exist.");
-        setPageComplete(false);
+        return "Directory does not exist!";
       }
+    }
+  }
+
+  protected void updatePageComplete()
+  {
+    String directoryPath = getDirectoryPath();
+    if (directoryPath != null)
+    {
+      String validationMessage = validateDirectory(new File(directoryPath));
+
+      setMessage(null);
+      setErrorMessage(validationMessage);
+      setPageComplete(validationMessage == null);
     }
     else
     {
@@ -148,7 +179,7 @@ public class PepperImportWizardPageDirectory extends WizardPage
       setPageComplete(false);
     }
 
-    pepperImportWizard.setImportDirectory(directoryPath);
+    pepperWizard.setExchangeDirectory(directoryPath);
   }
 
 
@@ -160,7 +191,7 @@ public class PepperImportWizardPageDirectory extends WizardPage
   {
     if (visible)
     {
-      String directory = pepperImportWizard.getImportDirectory();
+      String directory = pepperWizard.getExchangeDirectory();
       if (directory != null)
       {
         text.setText(directory);

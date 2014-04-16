@@ -15,9 +15,8 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
+package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -42,17 +41,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
 
 /**
  *
  * @author  Michael Grübsch
  * @version $Revision$, $Date$
  */
-public class PepperImportWizardPageFormat extends WizardPage implements IWizardPage
+public class PepperWizardPageModule<P extends PepperModule> extends WizardPage implements IWizardPage
 {
-  protected final PepperImportWizard pepperImportWizard;
+  protected final AbstractPepperWizard<P> pepperWizard;
 
   protected TableViewer tableViewer;
 
@@ -62,13 +60,19 @@ public class PepperImportWizardPageFormat extends WizardPage implements IWizardP
    * @param title
    * @param titleImage
    */
-  public PepperImportWizardPageFormat(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage)
+  public PepperWizardPageModule
+    ( AbstractPepperWizard<P> pepperWizard
+    , String pageName
+    , String title
+    , ImageDescriptor titleImage
+    , String description
+    )
   {
     super(pageName, title, titleImage);
     setPageComplete(false);
-    setDescription("Select the pepper import format.");
+    setDescription(description);
 
-    this.pepperImportWizard = pepperImportWizard;
+    this.pepperWizard = pepperWizard;
   }
 
   /**
@@ -95,25 +99,27 @@ public class PepperImportWizardPageFormat extends WizardPage implements IWizardP
     tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
     tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
     {
+      @SuppressWarnings("unchecked")
       @Override
       public String getText(Object element)
       {
-        return super.getText(((FormatDefinition) element).getFormatName());
+        return super.getText(((P) element).getName());
       }
     });
 
     tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Format");
+    tableColumn.setText("Module");
 
     tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(70));
 
     tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
     tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
     {
+      @SuppressWarnings("unchecked")
       @Override
       public String getText(Object element)
       {
-        return super.getText(((FormatDefinition) element).getFormatVersion());
+        return super.getText(((P) element).getVersion());
       }
     });
 
@@ -130,26 +136,27 @@ public class PepperImportWizardPageFormat extends WizardPage implements IWizardP
 
     table.setHeaderVisible(true);
     table.setLinesVisible(true);
-
+    
     tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
     {
+      @SuppressWarnings("unchecked")
       @Override
       public void selectionChanged(SelectionChangedEvent event)
       {
         ISelection selection = event.getSelection();
-
+        
         boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
-        setPageComplete( selected);
-        pepperImportWizard.setFormatDefinition(selected ? (FormatDefinition) ((IStructuredSelection) selection).getFirstElement() : null);
+        setPageComplete(selected);
+        pepperWizard.setPepperModule(selected ? (P) ((IStructuredSelection) selection).getFirstElement() : null);
       }
     });
-    
+
     tableViewer.addDoubleClickListener(new IDoubleClickListener()
     {
       @Override
       public void doubleClick(DoubleClickEvent event)
       {
-        PepperImportWizardPageFormat.this.pepperImportWizard.advance();
+        PepperWizardPageModule.this.pepperWizard.advance();
       }
     });
   }
@@ -162,19 +169,14 @@ public class PepperImportWizardPageFormat extends WizardPage implements IWizardP
   {
     if (visible)
     {
-      PepperImporter pepperImporter = pepperImportWizard.getPepperImporter();
-      if (pepperImporter != null)
+      P pepperModule = pepperWizard.getPepperModule();
+      if (pepperModule == null)
       {
-        EList<FormatDefinition> supportedFormats = pepperImporter.getSupportedFormats();
-        tableViewer.setInput(supportedFormats);
-
-        FormatDefinition formatDefinition =
-            supportedFormats.size() == 1
-          ? supportedFormats.get(0)
-          : pepperImportWizard.getFormatDefinition();
-
-        tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
+        pepperModule = pepperWizard.getPreferredPepperModule();
       }
+
+      tableViewer.setInput(pepperWizard.getPepperModules());
+      tableViewer.setSelection(pepperModule != null ? new StructuredSelection(pepperModule) : StructuredSelection.EMPTY);
     }
 
     super.setVisible(visible);
