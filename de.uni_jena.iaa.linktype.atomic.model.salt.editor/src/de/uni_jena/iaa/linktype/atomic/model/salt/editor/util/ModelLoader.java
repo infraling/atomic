@@ -23,11 +23,15 @@ import java.io.File;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.exceptions.SaltResourceException;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 
 /**
@@ -44,15 +48,26 @@ public class ModelLoader {
 	 * @param input
 	 */
 	public static SDocumentGraph loadSDocumentGraph(IFile iFile2) {
-		saltProject = SaltFactory.eINSTANCE.createSaltProject();
-		SDocumentGraph inputToLoad = null;
-		
-		File file = new File(iFile2.getLocation().toString());
-		URI uri = URI.createFileURI(file.getParentFile().getAbsolutePath());
-		saltProject.loadSaltProject(uri);
-		inputToLoad = saltProject.getSCorpusGraphs().get(0).getSDocuments().get(0).getSDocumentGraph();
-		
-		return inputToLoad;
+		SDocumentGraph graph = null;
+		// Make sure that the file is not a SaltProject file
+		if (iFile2.getName().equalsIgnoreCase("saltProject.salt")) {
+			return null;
+		}
+		else {
+			// Check if we're working on a .salt file at all
+			if (!iFile2.getName().split("\\.")[1].equals("salt")) {
+				return null;
+			}
+			File file = new File(iFile2.getLocation().toString());
+			URI uri = URI.createFileURI(file.getAbsolutePath());
+			try {
+				graph = SaltFactory.eINSTANCE.loadSDocumentGraph(uri);
+			} catch (SaltResourceException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return graph;
 	}
 
 	public static IFile getIFileFromInput(IEditorInput input) {

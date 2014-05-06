@@ -39,10 +39,12 @@ import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -94,11 +96,16 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		super.init(site, input);
 		// TODO: Look into resource-based loading, and replace if necessary.
 		// Note: SaltProject.loadSaltProject may already implement resource-based loading...
-		file = ModelLoader.getIFileFromInput(input);
-		graph = ModelLoader.loadSDocumentGraph(file);
-		project = ModelLoader.getSaltProject();
+		setFile(ModelLoader.getIFileFromInput(input));
+		SDocumentGraph loadedGraph = ModelLoader.loadSDocumentGraph(getFile());
+		if (loadedGraph != null)
+			setGraph(loadedGraph);
+		else {
+			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Document could not be loaded", "No corpus document could be loaded from " + getFile().getName() + ".");
+			return;
+		}
 		String oldPartName = getPartName();
-		String newPartName = oldPartName + " - " + file.getFullPath().toString();
+		String newPartName = oldPartName + " - " + getFile().getFullPath().toString();
 		setPartName(newPartName);
 		
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -133,7 +140,12 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
-		viewer.setContents(graph);
+		if (getGraph() != null)
+			viewer.setContents(getGraph());
+		else {
+			// FIXME Abort (close the EditorPart!)
+			return;
+		}
 		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) viewer.getRootEditPart();
 		ConnectionLayer connLayer = (ConnectionLayer) root.getLayer(LayerConstants.CONNECTION_LAYER);
 		GraphicalEditPart contentEditPart = (GraphicalEditPart) root.getContents();
@@ -175,7 +187,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 			@Override
 		    public void run() {
-				project.saveSaltProject(URI.createFileURI((file.getParent().getLocation().toFile()).getAbsolutePath()));
+				getProject().saveSaltProject(URI.createFileURI((getFile().getParent().getLocation().toFile()).getAbsolutePath()));
 				getCommandStack().markSaveLocation();
 		    }
 		});
@@ -207,6 +219,48 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		IConsole[] existing = conMan.getConsoles();
 		for (int i = 0; i < existing.length; i++)
 			conMan.removeConsoles(existing);
+	}
+
+	/**
+	 * @return the file
+	 */
+	public IFile getFile() {
+		return file;
+	}
+
+	/**
+	 * @param file the file to set
+	 */
+	public void setFile(IFile file) {
+		this.file = file;
+	}
+
+	/**
+	 * @return the graph
+	 */
+	public SDocumentGraph getGraph() {
+		return graph;
+	}
+
+	/**
+	 * @param graph the graph to set
+	 */
+	public void setGraph(SDocumentGraph graph) {
+		this.graph = graph;
+	}
+
+	/**
+	 * @return the project
+	 */
+	public SaltProject getProject() {
+		return project;
+	}
+
+	/**
+	 * @param project the project to set
+	 */
+	public void setProject(SaltProject project) {
+		this.project = project;
 	}
 	
 }
