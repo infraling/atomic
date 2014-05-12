@@ -83,15 +83,17 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     Composite container = new Composite(parent, SWT.NULL);
 
     setControl(container);
-    GridLayout gl_container = new GridLayout(2, false);
-    gl_container.marginBottom = 20;
-    container.setLayout(gl_container);
+    GridLayout gl = new GridLayout(2, false);
+    gl.marginBottom = 20;
+    container.setLayout(gl);
 
     Label label;
     
     Composite composite = new Composite(container, SWT.NONE);
     composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-    composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+    RowLayout rl = new RowLayout(SWT.HORIZONTAL);
+    rl.marginLeft = rl.marginRight = 0;
+    composite.setLayout(rl);
     
     label = new Label(composite, SWT.NONE);
     label.setText("Target path is a ");
