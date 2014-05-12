@@ -3,7 +3,7 @@ Atomic
 
 ![Atomic banner](http://www.personal.uni-jena.de/~fo32hup/atomic/img/atomic_banner.png)
 
-> ***Atomic*** (see also the [*Atomic* homepage](http://linktype.iaa.uni-jena.de/atomic/)) is an open source annotation software for multi-level deep linguistic annotation of text corpora. It is based on the *Eclipse RCP*, a modular rich client platform. It features a graphical editor which can be controlled via keyboard, mouse, and command shell (with the native annotation language *AtomicAL*). It works on a concrete implementation of the generic graph-based meta-model *Salt*, and embeds its complementary conversion framework *Pepper*, allowing for n : m mapping between data formats (cf. the [SaltNPepper homepage]((https://korpling.german.hu-berlin.de/p/projects/saltnpepper/wiki/)).
+> ***Atomic*** (see also the [*Atomic* homepage](http://linktype.iaa.uni-jena.de/atomic/)) is an open source annotation software for multi-level deep linguistic annotation of text corpora. It is based on the *Eclipse RCP*, a modular rich client platform. It features a graphical editor which can be controlled via keyboard, mouse, and command shell (with the native annotation language *AtomicAL*). It works on a concrete implementation of the generic graph-based meta-model *Salt*, and embeds its complementary conversion framework *Pepper*, allowing for n : m mapping between data formats (cf. the [SaltNPepper homepage](https://u.hu-berlin.de/saltnpepper/)).
 
 <img src="http://www.personal.uni-jena.de/~fo32hup/atomic/img/alpha_screenshot.png" border="0" width="60%">
 
