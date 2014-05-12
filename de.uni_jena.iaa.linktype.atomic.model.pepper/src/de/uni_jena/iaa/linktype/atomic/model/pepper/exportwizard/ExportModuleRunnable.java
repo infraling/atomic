@@ -55,7 +55,7 @@ public class ExportModuleRunnable extends PepperModuleRunnable
     exporterParams.setModuleName(pepperWizard.getPepperModule().getName());
     exporterParams.setFormatName(pepperWizard.getFormatDefinition().getFormatName());
     exporterParams.setFormatVersion(pepperWizard.getFormatDefinition().getFormatVersion());
-    exporterParams.setDestinationPath(URI.createFileURI(new File(pepperWizard.getExchangeDirectory()).getAbsolutePath()));
+    exporterParams.setDestinationPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath()));
     return exporterParams;
   }
 }

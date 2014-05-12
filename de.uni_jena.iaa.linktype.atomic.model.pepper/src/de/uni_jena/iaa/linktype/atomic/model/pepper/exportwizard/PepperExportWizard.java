@@ -54,7 +54,7 @@ public class PepperExportWizard
 
   public PepperExportWizard()
   {
-    super("Export via Pepper");
+    super("Export via Pepper", WizardMode.EXPORT);
   }
 
   @Override
@@ -103,7 +103,7 @@ public class PepperExportWizard
     {
       addPage(new PepperWizardPageModule<PepperExporter>(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export module."));
       addPage(new PepperWizardPageFormat<PepperExporter>(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export format."));
-      addPage(new PepperWizardPageDirectory<PepperExporter>(this, "selectDirectory", "Select Export Directory", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export directory.", true, "Target directory the data should be exported to"));
+      addPage(new PepperWizardPageDirectory<PepperExporter>(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export path."));
       addPage(new PepperWizardPageProperties<PepperExporter>(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper export module properties."));
     }
   }

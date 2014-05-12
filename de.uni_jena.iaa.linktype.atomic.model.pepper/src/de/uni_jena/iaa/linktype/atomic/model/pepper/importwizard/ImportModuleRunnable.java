@@ -43,7 +43,7 @@ public class ImportModuleRunnable extends PepperModuleRunnable
     importerParams.setModuleName(pepperWizard.getPepperModule().getName());
     importerParams.setFormatName(pepperWizard.getFormatDefinition().getFormatName());
     importerParams.setFormatVersion(pepperWizard.getFormatDefinition().getFormatVersion());
-    importerParams.setSourcePath(URI.createFileURI(new File(pepperWizard.getExchangeDirectory()).getAbsolutePath()));
+    importerParams.setSourcePath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath()));
     return importerParams;
   }
 

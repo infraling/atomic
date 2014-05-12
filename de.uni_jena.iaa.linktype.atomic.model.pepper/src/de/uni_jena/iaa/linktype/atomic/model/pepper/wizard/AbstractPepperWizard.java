@@ -53,12 +53,16 @@ public abstract class AbstractPepperWizard
   extends 
     Wizard 
 {
-  protected static final String DIALOG_SETTINGS_EXCHANGE_DIRECTORY = "exchangeDirectory";
+  protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_PATH = "exchangeTargetPath";
+  protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE = "exchangeTargetType";
   protected static final String DIALOG_SETTINGS_MODULE = "pepperModule";
   protected static final String DIALOG_SETTINGS_FORMAT_NAME = "formatName";
   protected static final String DIALOG_SETTINGS_FORMAT_VERSION = "formatVersion";
   protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_KEYS = "modulePropertyKeys";
   protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_VALUES = "modulePropertyValues";
+
+  @Deprecated
+  protected static final String DIALOG_SETTINGS_EXCHANGE_DIRECTORY = "exchangeDirectory";
 
   public static final String SALT_XML_FORMAT_NAME = "SaltXML";
   public static final String SALT_XML_FORMAT_VERSION = "1.0";
@@ -74,16 +78,20 @@ public abstract class AbstractPepperWizard
     System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
   }
 
+  protected final WizardMode wizardMode;
+
   protected ServiceReference<PepperConverter> reference;
   protected PepperConverter pepperConverter;
   protected List<P> pepperModuleList;
   protected P pepperModule;
   protected PepperModuleProperties pepperModuleProperties;
   protected FormatDefinition formatDefinition;
-  protected String exchangeDirectory;
+  protected String exchangeTargetPath;
+  protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
 
-  protected AbstractPepperWizard(String windowTitle)
+  protected AbstractPepperWizard(String windowTitle, WizardMode wizardMode)
   {
+    this.wizardMode = wizardMode;
     setWindowTitle(windowTitle);
     setNeedsProgressMonitor(true);
     setDefaultPageImageDescriptor(DEFAULT_PAGE_IAMGE_DESCRIPTOR);
@@ -125,7 +133,12 @@ public abstract class AbstractPepperWizard
     
     readDialogSettings();
   }
-  
+
+  public WizardMode getWizardMode()
+  {
+    return wizardMode;
+  }
+
   protected abstract List<P> resolvePepperModules(PepperModuleResolver pepperModuleResolver);
 
   public List<P> getPepperModules()
@@ -247,14 +260,24 @@ public abstract class AbstractPepperWizard
     this.formatDefinition = formatDefinition;
   }
   
-  public String getExchangeDirectory()
+  public String getExchangeTargetPath()
   {
-    return exchangeDirectory;
+    return exchangeTargetPath;
   }
   
-  public void setExchangeDirectory(String exchangeDirectory)
+  public void setExchangeTargetPath(String exchangeTargetPath)
   {
-    this.exchangeDirectory = exchangeDirectory;
+    this.exchangeTargetPath = exchangeTargetPath;
+  }
+
+  public ExchangeTargetType getExchangeTargetType()
+  {
+    return exchangeTargetType;
+  }
+
+  public void setExchangeTargetType(ExchangeTargetType exchangeTargetType)
+  {
+    this.exchangeTargetType = exchangeTargetType;
   }
 
   public PepperModuleProperties getPepperModuleProperties()
@@ -330,7 +353,8 @@ public abstract class AbstractPepperWizard
   {
     if (reference != null)
     {
-      exchangeDirectory = null;
+      exchangeTargetPath = null;
+      exchangeTargetType = ExchangeTargetType.DIRECTORY;
       formatDefinition = null;
       pepperModule = null;
       pepperModuleList = null;
@@ -348,7 +372,7 @@ public abstract class AbstractPepperWizard
     return 
         pepperModule != null 
      && formatDefinition != null 
-     && exchangeDirectory != null;
+     && exchangeTargetPath != null;
   }
 
   protected abstract IProject getProject() throws CoreException;
@@ -396,7 +420,17 @@ public abstract class AbstractPepperWizard
   protected void readDialogSettings()
   {
     IDialogSettings settings = getDialogSettings();
-    exchangeDirectory = settings.get(DIALOG_SETTINGS_EXCHANGE_DIRECTORY);
+    exchangeTargetPath = settings.get(DIALOG_SETTINGS_EXCHANGE_TARGET_PATH);
+    if (exchangeTargetPath == null)
+    {
+      exchangeTargetPath = settings.get(DIALOG_SETTINGS_EXCHANGE_DIRECTORY);
+    }
+
+    String exchangeTargetTypeName = settings.get(DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE);
+    exchangeTargetType =
+        exchangeTargetTypeName != null
+      ? ExchangeTargetType.valueOf(exchangeTargetTypeName)
+      : ExchangeTargetType.DIRECTORY;
 
     String[] modulePropertyKeys = settings.getArray(DIALOG_SETTINGS_MODULE_PROPERTY_KEYS);
     if (modulePropertyKeys != null && 0 < modulePropertyKeys.length)
@@ -418,7 +452,8 @@ public abstract class AbstractPepperWizard
   {
     IDialogSettings settings = getDialogSettings();
 
-    settings.put(DIALOG_SETTINGS_EXCHANGE_DIRECTORY, exchangeDirectory);
+    settings.put(DIALOG_SETTINGS_EXCHANGE_TARGET_PATH, exchangeTargetPath);
+    settings.put(DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE, exchangeTargetType.name());
 
     P module = getPepperModule();
     settings.put(DIALOG_SETTINGS_MODULE, module != null ? module.getName() : null);
@@ -458,5 +493,17 @@ public abstract class AbstractPepperWizard
       settings.put(DIALOG_SETTINGS_MODULE_PROPERTY_KEYS, (String[]) null);
       settings.put(DIALOG_SETTINGS_MODULE_PROPERTY_VALUES, (String[]) null);
     }
+  }
+
+  public static enum ExchangeTargetType
+  {
+    FILE,
+    DIRECTORY
+  }
+  
+  public static enum WizardMode
+  {
+    IMPORT
+  , EXPORT
   }
 }

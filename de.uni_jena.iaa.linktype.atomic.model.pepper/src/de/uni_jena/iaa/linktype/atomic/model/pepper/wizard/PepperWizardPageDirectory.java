@@ -29,13 +29,17 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
+import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.ExchangeTargetType;
+import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.WizardMode;
 
 /**
  * 
@@ -45,10 +49,10 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModul
 public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPage implements IWizardPage
 {
   protected final AbstractPepperWizard<P> pepperWizard;
-  protected final boolean directoryMightBeEmpty;
-  protected final String prompt;
 
   protected Text text;
+  protected Button btnFile;
+  protected Button btnDirectory;
 
   /**
    * Create the wizard.
@@ -59,8 +63,6 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     , String title
     , ImageDescriptor titleImage
     , String description
-    , boolean directoryMightBeEmpty
-    , String prompt
     )
   {
     super(pageName, title, titleImage);
@@ -68,8 +70,6 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     setDescription(description);
 
     this.pepperWizard = pepperWizard;
-    this.directoryMightBeEmpty = directoryMightBeEmpty;
-    this.prompt = prompt;
   }
 
   /**
@@ -87,9 +87,48 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     gl_container.marginBottom = 20;
     container.setLayout(gl_container);
 
-    Label lblNewLabel = new Label(container, SWT.NONE);
-    lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
-    lblNewLabel.setText(prompt);
+    Label label;
+    
+    Composite composite = new Composite(container, SWT.NONE);
+    composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+    composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+    
+    label = new Label(composite, SWT.NONE);
+    label.setText("Target path is a ");
+    
+    btnFile = new Button(composite, SWT.RADIO);
+    btnFile.setText("File");
+    btnFile.addSelectionListener(new SelectionAdapter()
+    {
+      @Override
+      public void widgetSelected(SelectionEvent e)
+      {
+        updatePageComplete();
+      }
+    });
+    
+    btnDirectory = new Button(composite, SWT.RADIO);
+    btnDirectory.setText("Directory");
+    btnDirectory.addSelectionListener(new SelectionAdapter()
+    {
+      @Override
+      public void widgetSelected(SelectionEvent e)
+      {
+        updatePageComplete();
+      }
+    });
+
+    label = new Label(container, SWT.NONE);
+    label.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
+    switch (pepperWizard.getWizardMode())
+    {
+      case IMPORT:
+        label.setText("Source path the data should be imported from");
+        break;
+      case EXPORT:
+        label.setText("Target path the data should be exported to");
+        break;
+    }
 
     text = new Text(container, SWT.BORDER);
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -108,19 +147,45 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
       @Override
       public void widgetSelected(SelectionEvent e)
       {
-        DirectoryDialog dialog = new DirectoryDialog(getShell());
-        dialog.setFilterPath(text.getText());
-        String directory = dialog.open();
-        if (directory != null)
+        if (btnFile.getSelection())
         {
-          text.setText(directory);
+          FileDialog dialog;
+          switch (pepperWizard.getWizardMode())
+          {
+            case IMPORT:
+              dialog = new FileDialog(getShell(), SWT.OPEN);
+              break;
+            case EXPORT:
+              dialog = new FileDialog(getShell(), SWT.SAVE);
+              dialog.setOverwrite(true);
+              break;
+            default:
+              throw new IllegalArgumentException("Unknown wizard mode: " + pepperWizard.getWizardMode());
+          }
+
+          dialog.setFileName(text.getText());
+          String fileName = dialog.open();
+          if (fileName != null)
+          {
+            text.setText(fileName);
+          }
+        }
+        else
+        {
+          DirectoryDialog dialog = new DirectoryDialog(getShell());
+          dialog.setFilterPath(text.getText());
+          String directory = dialog.open();
+          if (directory != null)
+          {
+            text.setText(directory);
+          }
         }
       }
     });
     button.setText("...");
   }
 
-  protected String getDirectoryPath()
+  protected String getTargetPath()
   {
     String path = text.getText().trim();
     return 0 < path.length() ? path : null;
@@ -128,45 +193,78 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
 
   /**
    *
-   * @param directory
+   * @param targetPath
    * @return
    */
-  protected String validateDirectory(File directory)
+  protected String validateTargetPath(File targetPath, boolean isFile)
   {
-    if (directoryMightBeEmpty)
+    if (pepperWizard.getWizardMode() == WizardMode.EXPORT)
     {
-      return null;
-    }
-    else
-    {
-      boolean available = directory.isDirectory();
-  
-      if (available)
+      if (targetPath.exists())
       {
-        File[] files = directory.listFiles();
-        
-        if (files != null && 0 < files.length)
-        {
-          return null;
-        }
-        else
-        {
-          return "Directory contains no files!";
-        }
+        return
+            isFile && targetPath.isFile()
+          ? null
+          : isFile
+          ? "Target path exists but is not a file!"
+          : targetPath.isDirectory()
+          ? null
+          : "Target path exists but is not a directory!";
       }
       else
       {
-        return "Directory does not exist!";
+        return null;
+      }
+    }
+    else
+    {
+      if (isFile)
+      {
+        return
+            ! targetPath.exists()
+          ? "Target file does not exists!"
+          : ! targetPath.isFile()
+          ? "Target path is not a file!"
+          : ! targetPath.canRead()
+          ? "Target file can not be read!"
+          : null;
+      }
+      else
+      {
+        if (targetPath.exists())
+        {
+          if (targetPath.isDirectory())
+          {
+            File[] files = targetPath.listFiles();
+            
+            if (files != null && 0 < files.length)
+            {
+              return null;
+            }
+            else
+            {
+              return "Target directory contains no files!";
+            }
+          }
+          else
+          {
+            return "Target path is not a directory!";
+          }
+        }
+        else
+        {
+          return "Target directory does not exists!";
+        }
       }
     }
   }
 
   protected void updatePageComplete()
   {
-    String directoryPath = getDirectoryPath();
-    if (directoryPath != null)
+    String targetPath = getTargetPath();
+    if (targetPath != null)
     {
-      String validationMessage = validateDirectory(new File(directoryPath));
+      String validationMessage = validateTargetPath(new File(targetPath), btnFile.getSelection());
 
       setMessage(null);
       setErrorMessage(validationMessage);
@@ -179,7 +277,8 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
       setPageComplete(false);
     }
 
-    pepperWizard.setExchangeDirectory(directoryPath);
+    pepperWizard.setExchangeTargetPath(targetPath);
+    pepperWizard.setExchangeTargetType(btnFile.getSelection() ? ExchangeTargetType.FILE : ExchangeTargetType.DIRECTORY);
   }
 
 
@@ -191,10 +290,20 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
   {
     if (visible)
     {
-      String directory = pepperWizard.getExchangeDirectory();
+      String directory = pepperWizard.getExchangeTargetPath();
       if (directory != null)
       {
         text.setText(directory);
+      }
+      
+      switch (pepperWizard.getExchangeTargetType())
+      {
+        case FILE:
+          btnFile.setSelection(true);
+          break;
+        case DIRECTORY:
+          btnDirectory.setSelection(true);
+          break;
       }
     }
 

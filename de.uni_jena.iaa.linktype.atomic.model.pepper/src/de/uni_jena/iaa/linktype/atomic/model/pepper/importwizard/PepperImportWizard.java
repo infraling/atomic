@@ -31,11 +31,11 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleReso
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageProperties;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageDirectory;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperModuleRunnable;
+import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageDirectory;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageFormat;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageModule;
+import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageProperties;
 import de.uni_jena.iaa.linktype.atomic.model.salt.project.AtomicProjectService;
 
 public class PepperImportWizard 
@@ -48,7 +48,7 @@ public class PepperImportWizard
 
   public PepperImportWizard()
   {
-    super("Import via Pepper");
+    super("Import via Pepper", WizardMode.IMPORT);
   }
 
   @Override
@@ -65,7 +65,7 @@ public class PepperImportWizard
   {
     addPage(new PepperWizardPageModule<PepperImporter>(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
     addPage(new PepperWizardPageFormat<PepperImporter>(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import format."));
-    addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectDirectory", "Select Import Directory", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import directory.", false, "Source directory the data should be imported from"));
+    addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
     addPage(new PepperWizardPageProperties<PepperImporter>(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
     addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
   }
