@@ -23,6 +23,7 @@ import java.io.File;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.gef.ui.properties.SetPropertyValueCommand;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -31,8 +32,11 @@ import org.eclipse.ui.IFileEditorInput;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.exceptions.SaltResourceException;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 /**
  * @author Stephan Druskat
@@ -47,21 +51,48 @@ public class ModelLoader {
 	 * that's been chosen for IEditorInput by the user.
 	 * @param input
 	 */
-	public static SDocumentGraph loadSDocumentGraph(IFile iFile2) {
+	public static SDocumentGraph loadSDocumentGraph(IFile iFile) {
 		SDocumentGraph graph = null;
+		SaltFactory factory = SaltFactory.eINSTANCE;
+		SaltProject project = factory.createSaltProject();
 		// Make sure that the file is not a SaltProject file
-		if (iFile2.getName().equalsIgnoreCase("saltProject.salt")) {
+		if (iFile.getName().equalsIgnoreCase("saltProject.salt")) {
 			return null;
 		}
 		else {
 			// Check if we're working on a .salt file at all
-			if (!iFile2.getName().split("\\.")[1].equals("salt")) {
+			if (!iFile.getName().split("\\.")[1].equals("salt")) {
 				return null;
 			}
-			File file = new File(iFile2.getLocation().toString());
+			File file = new File(iFile.getLocation().toString());
 			URI uri = URI.createFileURI(file.getAbsolutePath());
 			try {
-				graph = SaltFactory.eINSTANCE.loadSDocumentGraph(uri);
+				// Check if graph is an orphan, or if it has a project and load accordingly
+				if (iFile.getProject().getFile("saltProject.salt").exists()) {
+					URI projectURI = URI.createFileURI(new File(iFile.getProject().getFile("saltProject.salt").getLocation().toString()).getAbsolutePath());
+					project.loadSCorpusStructure(projectURI);
+					setSaltProject(project);
+					if (getSaltProject().getSDocumentGraphLocations().values().contains(uri)) {
+						for (SDocument document : project.getSCorpusGraphs().get(0).getSDocuments()){
+							if (document.getSDocumentGraphLocation().equals(uri)) {
+								document.loadSDocumentGraph();
+								graph = document.getSDocumentGraph();
+							}
+						}
+					}
+				}
+				else { // If the graph is orphaned
+					SCorpusGraph corpusGraph = factory.createSCorpusGraph();
+					project.getSCorpusGraphs().add(corpusGraph);
+					SCorpus corpus = factory.createSCorpus();
+					corpus.setSName("root corpus");
+					corpusGraph.addNode(corpus);
+					SDocument document = factory.createSDocument();
+					document.setSName("document");
+					corpusGraph.addSDocument(corpus, document);
+					document.loadSDocumentGraph(uri);
+					graph = document.getSDocumentGraph();
+				}
 			} catch (SaltResourceException e) {
 				e.printStackTrace();
 				return null;
@@ -81,6 +112,13 @@ public class ModelLoader {
 
 	public static SaltProject getSaltProject() {
 		return saltProject;
+	}
+
+	/**
+	 * @param saltProject the saltProject to set
+	 */
+	public static void setSaltProject(SaltProject saltProject) {
+		ModelLoader.saltProject = saltProject;
 	}
 
 }

@@ -98,6 +98,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		// Note: SaltProject.loadSaltProject may already implement resource-based loading...
 		setFile(ModelLoader.getIFileFromInput(input));
 		SDocumentGraph loadedGraph = ModelLoader.loadSDocumentGraph(getFile());
+		setProject(ModelLoader.getSaltProject());
 		if (loadedGraph != null)
 			setGraph(loadedGraph);
 		else {
@@ -187,6 +188,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 			@Override
 		    public void run() {
+				if (getProject() != null)
 				getProject().saveSaltProject(URI.createFileURI((getFile().getParent().getLocation().toFile()).getAbsolutePath()));
 				getCommandStack().markSaveLocation();
 		    }
