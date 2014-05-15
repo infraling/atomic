@@ -97,28 +97,34 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     
     label = new Label(composite, SWT.NONE);
     label.setText("Target path is a ");
-    
+
     btnFile = new Button(composite, SWT.RADIO);
     btnFile.setText("File");
-    btnFile.addSelectionListener(new SelectionAdapter()
-    {
-      @Override
-      public void widgetSelected(SelectionEvent e)
-      {
-        updatePageComplete();
-      }
-    });
     
     btnDirectory = new Button(composite, SWT.RADIO);
     btnDirectory.setText("Directory");
-    btnDirectory.addSelectionListener(new SelectionAdapter()
+
+    switch (pepperWizard.getExchangeTargetType())
+    {
+      case FILE:
+        btnFile.setSelection(true);
+        break;
+      case DIRECTORY:
+        btnDirectory.setSelection(true);
+        break;
+    }
+
+    SelectionAdapter btnSelectionListener = new SelectionAdapter()
     {
       @Override
       public void widgetSelected(SelectionEvent e)
       {
         updatePageComplete();
       }
-    });
+    };
+
+    btnFile.addSelectionListener(btnSelectionListener);
+    btnDirectory.addSelectionListener(btnSelectionListener);
 
     label = new Label(container, SWT.NONE);
     label.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
@@ -133,6 +139,11 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     }
 
     text = new Text(container, SWT.BORDER);
+    String directory = pepperWizard.getExchangeTargetPath();
+    if (directory != null)
+    {
+      text.setText(directory);
+    }
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     text.addModifyListener(new ModifyListener()
     {
@@ -176,10 +187,10 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
         {
           DirectoryDialog dialog = new DirectoryDialog(getShell());
           dialog.setFilterPath(text.getText());
-          String directory = dialog.open();
-          if (directory != null)
+          String directoryName = dialog.open();
+          if (directoryName != null)
           {
-            text.setText(directory);
+            text.setText(directoryName);
           }
         }
       }
@@ -292,21 +303,7 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
   {
     if (visible)
     {
-      String directory = pepperWizard.getExchangeTargetPath();
-      if (directory != null)
-      {
-        text.setText(directory);
-      }
-      
-      switch (pepperWizard.getExchangeTargetType())
-      {
-        case FILE:
-          btnFile.setSelection(true);
-          break;
-        case DIRECTORY:
-          btnDirectory.setSelection(true);
-          break;
-      }
+      updatePageComplete();
     }
 
     super.setVisible(visible);
