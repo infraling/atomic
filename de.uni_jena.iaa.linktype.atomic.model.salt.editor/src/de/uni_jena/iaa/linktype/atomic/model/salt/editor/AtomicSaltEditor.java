@@ -114,7 +114,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		setFile(modelLoader.getResolvedIFile());
 		if (getFile().getName().equalsIgnoreCase("saltproject.salt")) {
 			// TODO Display project info in MessageDialog & wait until editor is open, then close it
-			System.out.println("Do nothing, it's aproject");
+			MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Action not applicable", "Cannot open project file for editing.\nPlease open a document file.");
 			return;
 		}
 		Assert.isTrue(modelLoader.isProjectResolved);
@@ -339,6 +339,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 			SaltProject saltProject = SaltFactory.eINSTANCE.createSaltProject();
 			if (getResolvedIFile().getName().equalsIgnoreCase("saltproject.salt")) {
 				// Do nothing, this is being caught in the editor class already
+				return null;
 			}
 			else {
 				// Check if we have a project file at all, i.e., if graph is orphaned
