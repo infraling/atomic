@@ -52,6 +52,10 @@ public class SaltEditPartFactory implements EditPartFactory {
 	 */
 	@Override
 	public EditPart createEditPart(EditPart context, Object model) {
+		if (model == null)
+            throw new RuntimeException("Model element is null and cannot be processed in EditPartFactory.\n"
+            		+ "The offending context EditPart is " + context + ".");
+		
 		EditPart part = null;
 		
 		if (model instanceof SDocumentGraph) {
