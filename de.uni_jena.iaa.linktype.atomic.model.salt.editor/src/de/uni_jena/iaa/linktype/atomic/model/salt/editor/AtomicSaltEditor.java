@@ -52,6 +52,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
@@ -114,12 +115,11 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		setFile(modelLoader.getResolvedIFile());
 		if (getFile().getName().equalsIgnoreCase("saltproject.salt")) {
 			// TODO Display project info in MessageDialog & wait until editor is open, then close it
-			MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Action not applicable", "Cannot open project file for editing.\nPlease open a document file.");
 			return;
 		}
-		Assert.isTrue(modelLoader.isProjectResolved);
+		Assert.isTrue(modelLoader.isProjectResolved());
 		setProject(modelLoader.getResolvedProject());
-		Assert.isTrue(modelLoader.isGraphResolved);
+		Assert.isTrue(modelLoader.isGraphResolved());
 		setGraph(modelLoader.getResolvedGraph());
 		String oldPartName = getPartName();
 		String newPartName = oldPartName + " - " + getFile().getFullPath().toString();
@@ -287,30 +287,32 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	public class ModelLoader {
 
-		private SaltProject sProject;
 		private IFile resolvedIFile = null;
 		private SaltProject resolvedProject = null;
 		private SDocumentGraph resolvedGraph = null;
-		boolean isIFileResolved, isProjectResolved, isGraphResolved, isGraphOrphan = false;
+		private boolean isIFileResolved = false;
+		private boolean isProjectResolved = false;
+		private boolean isGraphResolved = false;
 		private URI projectURI = null;
 		
 		public ModelLoader(IEditorInput input) {
-			resolvedIFile = getIFileFromInput(input);
-			resolvedProject = resolveProject();
-			resolvedGraph = resolveGraph();
+			setResolvedIFile(getIFileFromInput(input));
+			setResolvedProject(resolveProject());
+			setResolvedGraph(resolveGraph());
 		}
 
 		private SDocumentGraph resolveGraph() {
 			SDocumentGraph graph = null;
-			if (projectURI != null)
-				getResolvedProject().loadSCorpusStructure(projectURI);
+			if (getProjectURI() != null) {
+				getResolvedProject().loadSCorpusStructure(getProjectURI());
+				System.out.println("PROJ " + getResolvedProject().getSCorpusGraphs().get(0).getSDocuments());
+			}
 			else {
-				// TODO MessageDialog.openError
-				System.err.println("Project doesn't have a URI!");
+				// This is being caught later and an error message displayed, so just return null here
 				return null;
 			}
 			URI graphURI = URI.createFileURI(new File(getResolvedIFile().getLocation().toString()).getAbsolutePath());
-			if (!isGraphOrphan) {
+//			if (!isGraphOrphan()) {
 				if (getResolvedProject().getSDocumentGraphLocations().containsValue(graphURI)) {
 					for (SDocument document : getResolvedProject().getSCorpusGraphs().get(0).getSDocuments()) {
 						if (document.getSDocumentGraphLocation().equals(graphURI)) {
@@ -318,7 +320,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 						}
 					}
 				}
-			}
+//			}
 			else {
 //				getResolvedProject().loadSCorpusStructure(projectURI);
 				if (getResolvedProject().getSDocumentGraphLocations().containsValue(graphURI)) {
@@ -331,28 +333,43 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 				}
 			}
 			if (graph != null && graph.getSDocument() != null && graph.getSDocument().getSCorpusGraph().getSaltProject() != null)
-				isGraphResolved = true;
+				setGraphResolved(true);
 			return graph;
 		}
 
 		private SaltProject resolveProject() {
 			SaltProject saltProject = SaltFactory.eINSTANCE.createSaltProject();
 			if (getResolvedIFile().getName().equalsIgnoreCase("saltproject.salt")) {
-				// Do nothing, this is being caught in the editor class already
+				saltProject.loadSaltProject(URI.createFileURI(new File(getResolvedIFile().getLocation().toString()).getAbsolutePath()));
+				String name = saltProject.getSName();
+				MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Action not applicable", "Cannot open project file for editing.\nPlease open a document file.\n\n"
+						+ "Project information\n"
+						+ "No. of contained documents: " + saltProject.getSCorpusGraphs().get(0).getSDocuments().size());
 				return null;
 			}
 			else {
 				// Check if we have a project file at all, i.e., if graph is orphaned
+				// Case: saltProject.salt exists in project
 				if (getResolvedIFile().getProject().getFile("saltProject.salt").exists()) {
-					projectURI  = URI.createFileURI(new File(getResolvedIFile().getProject().getFile("saltProject.salt").getLocation().toString()).getAbsolutePath());
-					saltProject.loadSaltProject(projectURI);
+					File projectFile = new File(getResolvedIFile().getProject().getFile("saltProject.salt").getLocation().toString());
+					setProjectURI(URI.createFileURI(projectFile.getAbsolutePath()));
 				}
+				// Case: saltProject.salt doesn't exist in project
 				else {
-					isGraphOrphan = true;
 					URI saveURI = URI.createFileURI(new File(getResolvedIFile().getProject().getLocation().toString()).getAbsolutePath());
-					createSimpleCorpusStructure(saltProject);
+					// documentName = name of document file sans ".salt"
+					String documentNameWithFileEnding = getResolvedIFile().getName();
+					// substring of above: 0 - length-5 (".salt")
+					String documentName = documentNameWithFileEnding.substring(0, documentNameWithFileEnding.length() - 5);
+					// corpusName = name of folder that contains document
+					String corpusName = getResolvedIFile().getParent().getName();
+					createSimpleCorpusStructure(saltProject, corpusName, documentName);
 					saltProject.saveSaltProject(saveURI);
-					projectURI = URI.createFileURI(new File(getResolvedIFile().getProject().getFile("saltProject.salt").getLocation().toString()).getAbsolutePath());
+					MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Salt project file created!", "The corpus document you are opening is an orphan, "
+							+ "i.e., is not associated with an existing Salt project.\n\n"
+							+ "Therefore, a new Salt project has been created,"
+							+ "and the document has been attached to it.");
+					setProjectURI(URI.createFileURI(new File(getResolvedIFile().getProject().getFile("saltProject.salt").getLocation().toString()).getAbsolutePath()));
 					try {
 						getResolvedIFile().getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
 					} catch (CoreException e) {
@@ -361,20 +378,25 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 					}
 				}
 			}
-			if (saltProject.getSCorpusGraphs().get(0).getSDocuments() != null)
-				isProjectResolved = true;
+			// Resolve corpus structure
+			saltProject.loadSCorpusStructure(getProjectURI());
+			if (saltProject.getSCorpusGraphs().get(0).getSDocuments() != null) {
+				setProjectResolved(true);
+				setResolvedProject(saltProject);
+			}
 			return saltProject;
 		}
 
-		private void createSimpleCorpusStructure(SaltProject saltProject) {
+		private void createSimpleCorpusStructure(SaltProject saltProject, String corpusName, String documentName) {
+			saltProject.setSName("Generic Salt project for " + documentName);
 			SaltFactory sf = SaltFactory.eINSTANCE;
 			SCorpusGraph corpusGraph = sf.createSCorpusGraph();
 			saltProject.getSCorpusGraphs().add(corpusGraph);
 			SCorpus corpus = sf.createSCorpus();
-			corpus.setSName("corpus");
+			corpus.setSName(corpusName);
 			corpusGraph.addSNode(corpus);
 			SDocument document = sf.createSDocument();
-			document.setSName("corpus_document");
+			document.setSName(documentName);
 			SDocumentGraph protograph = sf.loadSDocumentGraph(URI.createFileURI(new File(getResolvedIFile().getLocation().toString()).getAbsolutePath()));
 			document.setSDocumentGraph(protograph);
 			corpusGraph.addSDocument(corpus, document);
@@ -402,7 +424,7 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 				MessageDialog.openError(Display.getCurrent().getActiveShell(), "Wrong input!", "Input is not of type FileEditorInput.\nPlease report this on the Atomic User mailing list.");
 			}
 			if (iFile != null)
-				isIFileResolved = true;
+				setIFileResolved(true);
 			return iFile;
 		}
 		
@@ -416,6 +438,62 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 
 		public boolean isGraphResolved() {
 			return isGraphResolved;
+		}
+
+		/**
+		 * @param resolvedProject the resolvedProject to set
+		 */
+		public void setResolvedProject(SaltProject resolvedProject) {
+			this.resolvedProject = resolvedProject;
+		}
+
+		/**
+		 * @param resolvedGraph the resolvedGraph to set
+		 */
+		public void setResolvedGraph(SDocumentGraph resolvedGraph) {
+			this.resolvedGraph = resolvedGraph;
+		}
+
+		/**
+		 * @param resolvedIFile the resolvedIFile to set
+		 */
+		public void setResolvedIFile(IFile resolvedIFile) {
+			this.resolvedIFile = resolvedIFile;
+		}
+
+		/**
+		 * @param isIFileResolved the isIFileResolved to set
+		 */
+		public void setIFileResolved(boolean isIFileResolved) {
+			this.isIFileResolved = isIFileResolved;
+		}
+
+		/**
+		 * @param isProjectResolved the isProjectResolved to set
+		 */
+		public void setProjectResolved(boolean isProjectResolved) {
+			this.isProjectResolved = isProjectResolved;
+		}
+
+		/**
+		 * @param isGraphResolved the isGraphResolved to set
+		 */
+		public void setGraphResolved(boolean isGraphResolved) {
+			this.isGraphResolved = isGraphResolved;
+		}
+
+		/**
+		 * @return the projectURI
+		 */
+		public URI getProjectURI() {
+			return projectURI;
+		}
+
+		/**
+		 * @param projectURI the projectURI to set
+		 */
+		public void setProjectURI(URI projectURI) {
+			this.projectURI = projectURI;
 		}
 		
 	}
