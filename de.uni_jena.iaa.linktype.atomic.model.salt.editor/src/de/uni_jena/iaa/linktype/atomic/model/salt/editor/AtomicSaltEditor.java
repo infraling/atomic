@@ -117,9 +117,9 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 			// TODO Display project info in MessageDialog & wait until editor is open, then close it
 			return;
 		}
-		Assert.isTrue(modelLoader.isProjectResolved());
+		Assert.isNotNull(modelLoader.getResolvedProject());
 		setProject(modelLoader.getResolvedProject());
-		Assert.isTrue(modelLoader.isGraphResolved());
+		Assert.isNotNull(modelLoader.getResolvedGraph());
 		setGraph(modelLoader.getResolvedGraph());
 		String oldPartName = getPartName();
 		String newPartName = oldPartName + " - " + getFile().getFullPath().toString();
@@ -290,9 +290,6 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		private IFile resolvedIFile = null;
 		private SaltProject resolvedProject = null;
 		private SDocumentGraph resolvedGraph = null;
-		private boolean isIFileResolved = false;
-		private boolean isProjectResolved = false;
-		private boolean isGraphResolved = false;
 		private URI projectURI = null;
 		
 		public ModelLoader(IEditorInput input) {
@@ -305,36 +302,26 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 			SDocumentGraph graph = null;
 			if (getProjectURI() != null) {
 				getResolvedProject().loadSCorpusStructure(getProjectURI());
-				System.out.println("PROJ " + getResolvedProject().getSCorpusGraphs().get(0).getSDocuments());
 			}
 			else {
 				// This is being caught later and an error message displayed, so just return null here
 				return null;
 			}
 			URI graphURI = URI.createFileURI(new File(getResolvedIFile().getLocation().toString()).getAbsolutePath());
-//			if (!isGraphOrphan()) {
-				if (getResolvedProject().getSDocumentGraphLocations().containsValue(graphURI)) {
-					for (SDocument document : getResolvedProject().getSCorpusGraphs().get(0).getSDocuments()) {
-						if (document.getSDocumentGraphLocation().equals(graphURI)) {
-							graph = document.getSDocumentGraph();
-						}
-					}
-				}
-//			}
-			else {
-//				getResolvedProject().loadSCorpusStructure(projectURI);
-				if (getResolvedProject().getSDocumentGraphLocations().containsValue(graphURI)) {
-					for (SDocument document : getResolvedProject().getSCorpusGraphs().get(0).getSDocuments()) {
-						if (document.getSDocumentGraphLocation().equals(graphURI)) {
-							document.loadSDocumentGraph(graphURI);
-							graph = document.getSDocumentGraph();
-						}
+			if (getResolvedProject().getSDocumentGraphLocations().containsValue(graphURI)) {
+				for (SDocument document : getResolvedProject().getSCorpusGraphs().get(0).getSDocuments()) {
+					if (document.getSDocumentGraphLocation().equals(graphURI)) {
+						document.loadSDocumentGraph();
+						graph = document.getSDocumentGraph();
 					}
 				}
 			}
-			if (graph != null && graph.getSDocument() != null && graph.getSDocument().getSCorpusGraph().getSaltProject() != null)
-				setGraphResolved(true);
-			return graph;
+			if (graph != null && graph.getSDocument() != null && graph.getSDocument().getSCorpusGraph().getSaltProject() != null) {
+				return graph;
+			}
+			else {
+				return null;
+			}
 		}
 
 		private SaltProject resolveProject() {
@@ -381,7 +368,6 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 			// Resolve corpus structure
 			saltProject.loadSCorpusStructure(getProjectURI());
 			if (saltProject.getSCorpusGraphs().get(0).getSDocuments() != null) {
-				setProjectResolved(true);
 				setResolvedProject(saltProject);
 			}
 			return saltProject;
@@ -423,23 +409,9 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 			else {
 				MessageDialog.openError(Display.getCurrent().getActiveShell(), "Wrong input!", "Input is not of type FileEditorInput.\nPlease report this on the Atomic User mailing list.");
 			}
-			if (iFile != null)
-				setIFileResolved(true);
 			return iFile;
 		}
 		
-		public boolean isIFileResolved() {
-			return isIFileResolved;
-		}
-
-		public boolean isProjectResolved() {
-			return isProjectResolved;
-		}
-
-		public boolean isGraphResolved() {
-			return isGraphResolved;
-		}
-
 		/**
 		 * @param resolvedProject the resolvedProject to set
 		 */
@@ -459,27 +431,6 @@ public class AtomicSaltEditor extends GraphicalEditorWithFlyoutPalette {
 		 */
 		public void setResolvedIFile(IFile resolvedIFile) {
 			this.resolvedIFile = resolvedIFile;
-		}
-
-		/**
-		 * @param isIFileResolved the isIFileResolved to set
-		 */
-		public void setIFileResolved(boolean isIFileResolved) {
-			this.isIFileResolved = isIFileResolved;
-		}
-
-		/**
-		 * @param isProjectResolved the isProjectResolved to set
-		 */
-		public void setProjectResolved(boolean isProjectResolved) {
-			this.isProjectResolved = isProjectResolved;
-		}
-
-		/**
-		 * @param isGraphResolved the isGraphResolved to set
-		 */
-		public void setGraphResolved(boolean isGraphResolved) {
-			this.isGraphResolved = isGraphResolved;
 		}
 
 		/**
