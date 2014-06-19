@@ -38,7 +38,7 @@ public class SSpanChangeConstraintsCommand extends Command {
 	
 	@Override 
 	public void execute() {
-		if(oldConstraints == null) {
+		if (oldConstraints == null) {
 			oldConstraints = getConstraints();
 		}
 		setConstraints(newConstraints);
@@ -53,8 +53,8 @@ public class SSpanChangeConstraintsCommand extends Command {
 	}
 
 	private Rectangle getConstraints() {
-		int x = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X").getSValue();
-		int y = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y").getSValue();
+		int x = (Integer) model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_X").getSValue();
+		int y = (Integer) model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_Y").getSValue();
 //		int width = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__WIDTH").getSValue();
 //		int height = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__HEIGHT").getSValue();
 		return new Rectangle(x, y, newConstraints.width, newConstraints.height);

@@ -115,7 +115,7 @@ public class SStructureEditPart extends AbstractGraphicalEditPart implements Nod
 		
 		parent.setLayoutConstraint(this, figure, layout); // FIXME: Let this be calculated dynamically
 		parent.refresh();
-		
+
 	}
 	
 	private String extractDisplayID() {
@@ -140,19 +140,20 @@ public class SStructureEditPart extends AbstractGraphicalEditPart implements Nod
 		int height = figure.getPreferredSize().height;
 		SProcessingAnnotation xAnno = model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_X");
 		SProcessingAnnotation yAnno = model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_Y");
-		if (xAnno == null || yAnno == null) {
+		if (xAnno == null && yAnno == null) {
 			if (xAnno == null) {
 				x = calculateX(model, figure, width);
 			}
 			if (yAnno == null) {
 				y = calculateY(model, figure, height);
 			}
+			model.createSProcessingAnnotation("ATOMIC", "GEF_COORDS_X", Integer.toString(x));
+			model.createSProcessingAnnotation("ATOMIC", "GEF_COORDS_Y", Integer.toString(y));
 		}
 		else {
-			x = (Integer) xAnno.getValue();
-			y = (Integer) yAnno.getValue();
+			x = Integer.parseInt((String) xAnno.getValue());
+			y = Integer.parseInt((String) yAnno.getValue());
 		}
-		
 		return new Rectangle(x, y, width, height);
 	}
 
