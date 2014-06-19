@@ -116,15 +116,6 @@ public class SStructureEditPart extends AbstractGraphicalEditPart implements Nod
 		parent.setLayoutConstraint(this, figure, layout); // FIXME: Let this be calculated dynamically
 		parent.refresh();
 		
-//		System.err.println(figure.);
-		
-		System.err.println(figure.getBounds());
-		Rectangle c = (Rectangle) parent.getFigure().getLayoutManager().getConstraint(figure);
-		System.err.println(parent.getFigure().findFigureAt(c.getCenter()));
-		parent.getFigure().translateToAbsolute(c);
-		System.err.println(parent.getFigure().findFigureAt(c.getCenter()));
-		System.err.println("--------------\n");
-
 	}
 	
 	private String extractDisplayID() {
