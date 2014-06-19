@@ -22,6 +22,8 @@ package de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +38,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
@@ -45,6 +48,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SSpanComponentEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SSpanDirectEditPolicy;
@@ -52,6 +56,7 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SSpanGrap
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.AtomicMultiLineDirectEditManager;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SSpanFigure;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SStructureFigure;
 
 /**
  * @author Stephan Druskat
@@ -126,37 +131,94 @@ public class SSpanEditPart extends AbstractGraphicalEditPart implements NodeEdit
 		return "S" + displayID.getFirst(); 
 	}
 
+//	private Rectangle calculateLayout(SSpan model, SSpanFigure figure) {
+////		int x = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X").getSValue();
+////		int y = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y").getSValue();
+//		int x = 400;
+//		int y = 200;
+//		int width = figure.getPreferredSize().width;
+//		int height = figure.getPreferredSize().height;
+//		
+//		// Do hit testing - with findFigureAt
+//		if (getFigure().getParent().findFigureAt((x), (y + height)) != null || getFigure().getParent().findFigureAt((x + width), (y + height)) != null) { // I.e., when there's a figure at the bottom center coordinate of the this figure
+//			IFigure hit = null;
+//			if (getFigure().getParent().findFigureAt((x + width), (y + height)) != null)
+//				hit = getFigure().getParent().findFigureAt((x + width), (y + height));
+//			else hit = getFigure().getParent().findFigureAt((x), (y + height));
+////			int oldY = y;
+//			if (!(hit == getFigure()))
+//				y = hit.getBounds().y - height - 35; // FIXME: Hardcoded
+//			// Calculate difference between old y and new y and move all other structure figures up by this difference
+////			int yDifference = oldY - y;
+////			for (Object child : getParent().getChildren()) {
+////				if (child instanceof SSpanEditPart) {
+////					SProcessingAnnotation anno = ((SSpan)((SSpanEditPart) child).getModel()).getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y");
+////					int oldVal = (Integer) anno.getSValue();
+////					anno.setSValue(oldVal - yDifference);
+////					((SSpanEditPart) child).refresh();
+////				}
+////			}
+//			model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y").setSValue(y);
+//		}
+//		
+//		return new Rectangle(x, y, width, height);
+//	}
+
 	private Rectangle calculateLayout(SSpan model, SSpanFigure figure) {
-		int x = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X").getSValue();
-		int y = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y").getSValue();
+		int x = -1;
+		int y = -1;
 		int width = figure.getPreferredSize().width;
 		int height = figure.getPreferredSize().height;
-		
-		// Do hit testing - with findFigureAt
-		if (getFigure().getParent().findFigureAt((x), (y + height)) != null || getFigure().getParent().findFigureAt((x + width), (y + height)) != null) { // I.e., when there's a figure at the bottom center coordinate of the this figure
-			IFigure hit = null;
-			if (getFigure().getParent().findFigureAt((x + width), (y + height)) != null)
-				hit = getFigure().getParent().findFigureAt((x + width), (y + height));
-			else hit = getFigure().getParent().findFigureAt((x), (y + height));
-//			int oldY = y;
-			if (!(hit == getFigure()))
-				y = hit.getBounds().y - height - 35; // FIXME: Hardcoded
-			// Calculate difference between old y and new y and move all other structure figures up by this difference
-//			int yDifference = oldY - y;
-//			for (Object child : getParent().getChildren()) {
-//				if (child instanceof SSpanEditPart) {
-//					SProcessingAnnotation anno = ((SSpan)((SSpanEditPart) child).getModel()).getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y");
-//					int oldVal = (Integer) anno.getSValue();
-//					anno.setSValue(oldVal - yDifference);
-//					((SSpanEditPart) child).refresh();
-//				}
-//			}
-			model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y").setSValue(y);
+		SProcessingAnnotation xAnno = model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_X");
+		SProcessingAnnotation yAnno = model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_Y");
+		if (xAnno == null || yAnno == null) {
+			if (xAnno == null) {
+				x = calculateX(model, figure, width);
+			}
+			if (yAnno == null) {
+				y = calculateY(model, figure, height);
+			}
+		}
+		else {
+			x = (Integer) xAnno.getValue();
+			y = (Integer) yAnno.getValue();
 		}
 		
 		return new Rectangle(x, y, width, height);
 	}
 
+	
+	private int calculateY(SSpan model, SSpanFigure figure, int height) {
+		TreeSet<Integer> ySet = new TreeSet<Integer>();
+		for (Edge connection : getModelSourceConnections()) {
+			IFigure targetFigure = ((GraphicalEditPart) getViewer().getEditPartRegistry().get(connection.getTarget())).getFigure();
+			int targetY = ((Rectangle)((GraphicalEditPart) getParent()).getFigure().getLayoutManager().getConstraint(targetFigure)).y;
+			ySet.add(targetY);
+		}
+		return ySet.first() - 50 - height; // FIXME Hardcoded 50, 
+	}
+
+	private int calculateX(SSpan model, SSpanFigure figure, int width) {
+		TreeMap<Integer, Rectangle> constraintsMap = new TreeMap<Integer, Rectangle>();
+		TreeSet<Integer> xSet = new TreeSet<Integer>();
+		List<Edge> connections = getModelSourceConnections();
+		for (int i = 0; i < connections.size(); i++) {
+			IFigure targetFigure = ((GraphicalEditPart) getViewer().getEditPartRegistry().get(connections.get(i).getTarget())).getFigure();
+			Rectangle constraints = (Rectangle) ((GraphicalEditPart) getParent()).getFigure().getLayoutManager().getConstraint(targetFigure);
+			if (i == (connections.size() - 1))
+				xSet.add(constraints.x + constraints.width);
+			else
+				xSet.add(constraints.x);
+			
+//			constraintsMap.put(constraints.x, constraints);
+		}
+		int finalX = 0;
+		for (Integer x : xSet) { 
+			finalX = finalX + x;
+		}
+//		return (((constraintsMap.lastEntry().getKey() + constraintsMap.lastEntry().getValue().width) -  constraintsMap.firstEntry().getKey()) /*/ constraintsMap.size()*/) - (width / 2);
+		return (finalX / connections.size()) - (width / 2);
+	}
 	
 	@Override 
 	protected List<EObject> getModelChildren() {

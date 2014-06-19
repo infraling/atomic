@@ -57,6 +57,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.ISizeProvider;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -69,6 +70,7 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
+import org.eclipse.ui.part.IShowInSource;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;

@@ -22,12 +22,14 @@ package de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
@@ -95,5 +97,5 @@ public class SaltEditPartFactory implements EditPartFactory {
 		    
 		return part;
 	}
-
+	
 }

@@ -46,6 +46,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.STokenDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.STokenGraphicalNodeEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.AtomicCellEditorLocator;
@@ -127,13 +128,13 @@ public class STokenEditPart extends AbstractGraphicalEditPart implements NodeEdi
 				if (ep instanceof STokenEditPart && ((STokenEditPart) ep).getModel() == lastSToken) 
 					lastTokenFigureConstraints = (Rectangle) parentFigure.getLayoutManager().getConstraint(((STokenEditPart) ep).getFigure()); 
 			}
-			if (!(model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X") != null))
-					model.createSProcessingAnnotation(null, "ATOMIC_GEF_COORDINATES__X", (lastTokenFigureConstraints.x  + lastTokenFigureConstraints.width + 5), SDATATYPE.SNUMERIC);
+//			if (!(model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X") != null))
+//					model.createSProcessingAnnotation(null, "ATOMIC_GEF_COORDINATES__X", (lastTokenFigureConstraints.x  + lastTokenFigureConstraints.width + 5), SDATATYPE.SNUMERIC);
 			calculatedLayout = new Rectangle(lastTokenFigureConstraints.x + lastTokenFigureConstraints.width + 5, lastTokenFigureConstraints.y, figure.getPreferredSize().width, figure.getPreferredSize().height); // TODO Set display correctly
 		}
 		else { // TODO: Calculate correct position for token line! Viewport?
-			if (!(model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X") != null))
-				model.createSProcessingAnnotation(null, "ATOMIC_GEF_COORDINATES__X", 10, SDATATYPE.SNUMERIC);
+//			if (!(model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X") != null))
+//				model.createSProcessingAnnotation(null, "ATOMIC_GEF_COORDINATES__X", 10, SDATATYPE.SNUMERIC);
 			calculatedLayout = new Rectangle(10, 300, figure.getPreferredSize().width, figure.getPreferredSize().height);
 		}
 		return calculatedLayout;
@@ -143,7 +144,7 @@ public class STokenEditPart extends AbstractGraphicalEditPart implements NodeEdi
 	protected List<EObject> getModelChildren() {
 		List<EObject> childrenList = new ArrayList<EObject>();
 		SToken model = (SToken) getModel();
-		childrenList.add(model.getSProcessingAnnotation("ATOMIC::TOKEN_TEXT"));
+//		childrenList.add(model.getSProcessingAnnotation("ATOMIC::TOKEN_TEXT"));
 		childrenList.addAll(model.getSAnnotations());
 		return childrenList;
 	}
