@@ -28,8 +28,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 
+import de.uni_jena.iaa.linktype.atomic.core.Messages;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
-import de.uni_jena.iaa.linktype.atomic.core.utils.Messages;
 
 public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	
