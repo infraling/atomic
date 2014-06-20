@@ -172,15 +172,6 @@
          </view>
       </perspectiveExtension>
    </extension>
-   <extension
-         point="org.eclipse.core.resources.filterMatchers">
-      <filterMatcher
-            argumentType="string"
-            class="de.uni_jena.iaa.linktype.atomic.core.AbstractFileInfoMatcher:1"
-            id="de.uni_jena.iaa.linktype.atomic.core.filterMatcher1"
-            name="name">
-      </filterMatcher>
-   </extension>
    <!-- Navigator above -->
 
 </plugin>
