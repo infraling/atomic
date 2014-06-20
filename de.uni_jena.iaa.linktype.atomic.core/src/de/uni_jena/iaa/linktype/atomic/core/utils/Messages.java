@@ -1,4 +1,4 @@
-package de.uni_jena.iaa.linktype.atomic.core;
+package de.uni_jena.iaa.linktype.atomic.core.utils;
 
 import org.eclipse.osgi.util.NLS;
 

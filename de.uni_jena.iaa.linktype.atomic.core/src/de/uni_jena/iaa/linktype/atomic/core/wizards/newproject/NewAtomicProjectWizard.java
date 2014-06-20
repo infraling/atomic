@@ -26,6 +26,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
@@ -37,7 +38,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
-import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicTokenizerUtils;
+import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
  * @author stephan
@@ -222,9 +223,9 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		private Object[] getTokenizerInstance(String tokenizerName) {
 			Object[] typedTokenizer = new Object[2];
 			Object tokenizer = null;
-			for (int i = 0; i < AtomicTokenizerUtils.getTokenizerNames().length; i++) {
-				if (AtomicTokenizerUtils.getTokenizerNames()[i].equals(tokenizerName))
-					tokenizer = AtomicTokenizerUtils.getTokenizers()[i];
+			for (int i = 0; i < AtomicProjectUtils.getTokenizerNames().length; i++) {
+				if (AtomicProjectUtils.getTokenizerNames()[i].equals(tokenizerName))
+					tokenizer = AtomicProjectUtils.getTokenizers()[i];
 					typedTokenizer[0] = tokenizer;
 					typedTokenizer[1] = tokenizer.getClass();
 			}

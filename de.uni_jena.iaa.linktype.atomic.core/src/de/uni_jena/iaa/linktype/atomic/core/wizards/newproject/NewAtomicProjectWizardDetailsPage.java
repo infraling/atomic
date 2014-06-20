@@ -28,9 +28,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 
-import de.uni_jena.iaa.linktype.atomic.core.Messages;
-import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicCoreUtils;
-import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicTokenizerUtils;
+import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
+import de.uni_jena.iaa.linktype.atomic.core.utils.Messages;
 
 public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	
@@ -125,7 +124,7 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 		
 		setComboTokenizer(new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY));
 		getComboTokenizer().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		getComboTokenizer().setItems(AtomicTokenizerUtils.getTokenizerNames());
+		getComboTokenizer().setItems(AtomicProjectUtils.getTokenizerNames());
 		getComboTokenizer().select(0);
 	}
 
@@ -167,7 +166,7 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 				FileDialogWithConfirmation corpusTextFileDialog = new FileDialogWithConfirmation(Display.getCurrent().getActiveShell(), SWT.OPEN);
 				corpusTextFileDialog.setFilterExtensions(new String[] {"*.txt"}); //$NON-NLS-1$
 				corpusTextFileDialog.setText("Select .txt file containing the corpus text."); //$NON-NLS-1$
-				setCorpusText(AtomicCoreUtils.extractStringFromFile(corpusTextFileDialog.open()));
+				setCorpusText(AtomicProjectUtils.extractStringFromFile(corpusTextFileDialog.open()));
 				fireCorpusTextChanged();
 			}
 			
