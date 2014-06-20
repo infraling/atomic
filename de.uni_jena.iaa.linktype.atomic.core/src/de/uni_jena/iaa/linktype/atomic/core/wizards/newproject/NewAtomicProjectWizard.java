@@ -35,7 +35,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
- * @author stephan
+ * @author Stephan Druskat
  * 
  * TODO: Introduce OperationCanceledExceptions!
  *
@@ -58,13 +58,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		// Do nothing.
 	}
 	
-//	@Override
-//	public boolean canFinish(){
-//		System.err.println("NOT EMPTY: " + (!page.getCorpusText().isEmpty()));
-//		System.err.println("NOT DEFAULT: " + (!page.getCorpusText().equals(Messages.AtomicProjectBasicsWizardPage_CORPUS_TEXTFIELD_DEFAULT)));
-//		return ((!page.getCorpusText().isEmpty()) && (!page.getCorpusText().equals(Messages.AtomicProjectBasicsWizardPage_CORPUS_TEXTFIELD_DEFAULT)));
-//	}
-
 	@Override
 	public void addPages() {
 		setWindowTitle("New Atomic project");
@@ -93,7 +86,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			String projectName = page.getTxtProjectName().getText();
 			String corpusText = page.getCorpusText();
 			String tokenizerName = page.getComboTokenizer().getText();
-//			Tokenizer tokenizer = null;
 			
 			monitor.beginTask("Creating project from corpus", /*100*/IProgressMonitor.UNKNOWN);
 			
