@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditor"
+            contributorClass="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditorActionBarContributor"
+            default="true"
+            extensions="salt"
+            id="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.editor"
+            name="Annotation Graph Editor">
+      </editor>
+   </extension>
+
+</plugin>
