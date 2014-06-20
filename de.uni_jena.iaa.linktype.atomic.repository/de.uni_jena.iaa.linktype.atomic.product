@@ -69,6 +69,7 @@
       <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper.core"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper.modules"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.salt"/>
+      <feature id="de.uni_jena.iaa.linktype.atomic.editors.feature" version="0.1.4.qualifier"/>
    </features>
 
    <configurations>
