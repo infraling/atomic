@@ -140,15 +140,15 @@ public class SStructureEditPart extends AbstractGraphicalEditPart implements Nod
 		int height = figure.getPreferredSize().height;
 		SProcessingAnnotation xAnno = model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_X");
 		SProcessingAnnotation yAnno = model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_Y");
-		if (xAnno == null && yAnno == null) {
+		if (xAnno == null || yAnno == null) {
 			if (xAnno == null) {
 				x = calculateX(model, figure, width);
+				model.createSProcessingAnnotation("ATOMIC", "GEF_COORDS_X", Integer.toString(x));
 			}
 			if (yAnno == null) {
 				y = calculateY(model, figure, height);
+				model.createSProcessingAnnotation("ATOMIC", "GEF_COORDS_Y", Integer.toString(y));
 			}
-			model.createSProcessingAnnotation("ATOMIC", "GEF_COORDS_X", Integer.toString(x));
-			model.createSProcessingAnnotation("ATOMIC", "GEF_COORDS_Y", Integer.toString(y));
 		}
 		else {
 			x = Integer.parseInt((String) xAnno.getValue());
