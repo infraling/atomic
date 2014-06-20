@@ -11,6 +11,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore;bundle-version="2.7.0",
  de.hu_berlin.german.korpling.saltnpepper.salt-graph;bundle-version="1.1.6",
  de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon;bundle-version="1.1.6",
- de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.6"
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.6",
+ org.eclipse.ui.navigator;bundle-version="3.5.101",
+ org.eclipse.ui.navigator.resources;bundle-version="3.4.300"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
