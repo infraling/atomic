@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
@@ -40,9 +39,12 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	private Button btnBrowse, btnEnterText;
 	private SelectionAdapter buttonAdapter = createBrowseButtonListener();
 	private Combo comboTokenizer;
+	protected boolean isProjectNameComplete = false;
+	protected boolean isTextComplete = false;
 	
 	/**
 	 * Create the wizard.
+	 * @param newAtomicProjectWizard 
 	 */
 	public NewAtomicProjectWizardDetailsPage() {
 		super("wizardPage"); //$NON-NLS-1$
@@ -151,11 +153,11 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 				InputDialogWithConfirmation inputDialog = new InputDialogWithConfirmation(Display.getCurrent().getActiveShell(), "Title", "Message", "[Enter or paste the raw corpus text here. Default internal text encoding: UTF-16]", null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				if (inputDialog.open() == InputDialog.OK) {
 					setCorpusText(inputDialog.getValue());
+					fireCorpusTextChanged();
 				}
 				else {
 					return;
 				}
-				fireCorpusTextChanged();
 			}
 
 			/**
@@ -193,15 +195,20 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 				String newText = txtProjectName.getText();
 				if (newText.equals("") || newText.isEmpty()) { //$NON-NLS-1$
 					setErrorMessage("Project name must not be empty."); //$NON-NLS-1$
+					NewAtomicProjectWizardDetailsPage.this.isProjectNameComplete  = true;
 					setPageComplete(false);
 				}
 				else if (projectNames.contains(newText)) {
 					setErrorMessage("A project with the name " + newText + " already exists."); //$NON-NLS-1$ //$NON-NLS-2$
+					NewAtomicProjectWizardDetailsPage.this.isProjectNameComplete  = true;
 					setPageComplete(false);
 				}
 				else {
 					setErrorMessage(null);
-					setPageComplete(true);
+					NewAtomicProjectWizardDetailsPage.this.isProjectNameComplete  = true;
+					if (NewAtomicProjectWizardDetailsPage.this.isTextComplete) {
+						setPageComplete(true);
+					}
 				}
 			}
 			
@@ -288,13 +295,17 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 		    	}
 		    	// User clicks "OK" on FileDialog
 		    	else {
-		    		MessageBox confirmationBox = new MessageBox(dialog.getParent(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-		    		confirmationBox.setMessage("WARNING!\n" //$NON-NLS-1$
-		    				+ "This will overwrite the current corpus text with the contents of " + fileName + "!\n" //$NON-NLS-1$ //$NON-NLS-2$
-		    				+ "Are you sure?"); //$NON-NLS-1$
-		    		done = (confirmationBox.open() == SWT.YES);
+		    		done = true;
+		    		NewAtomicProjectWizardDetailsPage.this.isTextComplete = true;
+		    		if (NewAtomicProjectWizardDetailsPage.this.isProjectNameComplete)
+		    			setPageComplete(true);
 		    	} 
 		    }
+		    try {
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		    return fileName;
 		}
 
@@ -306,11 +317,8 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	 */
 	public class InputDialogWithConfirmation extends InputDialog {
 		
-		private Shell shell; 
-		
 		public InputDialogWithConfirmation(Shell activeShell, String title, String message, String initialContent, Object object) {
 			super(activeShell, title, message, initialContent, null);
-			this.shell = activeShell;
 		}
 
 		@Override
@@ -341,11 +349,10 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 		    	}
 		    	// User clicks "OK" on InputDialog
 		    	else {
-		    		MessageBox confirmationBox = new MessageBox(shell, SWT.ICON_WARNING | SWT.YES | SWT.NO);
-		    		confirmationBox.setMessage("WARNING!\n" //$NON-NLS-1$
-		    				+ "This will overwrite the current corpus text with the text you have entered!\n" //$NON-NLS-1$
-		    				+ "Are you sure?"); //$NON-NLS-1$
-		    		done = (confirmationBox.open() == SWT.YES);
+		    		done = true;
+		    		NewAtomicProjectWizardDetailsPage.this.isTextComplete = true;
+		    		if (NewAtomicProjectWizardDetailsPage.this.isProjectNameComplete)
+		    			setPageComplete(true);
 		    	} 
 		    }
 		    return returnInt;

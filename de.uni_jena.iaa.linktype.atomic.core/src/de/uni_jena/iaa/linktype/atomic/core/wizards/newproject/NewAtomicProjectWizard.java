@@ -19,14 +19,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
-
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
@@ -63,6 +57,13 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// Do nothing.
 	}
+	
+//	@Override
+//	public boolean canFinish(){
+//		System.err.println("NOT EMPTY: " + (!page.getCorpusText().isEmpty()));
+//		System.err.println("NOT DEFAULT: " + (!page.getCorpusText().equals(Messages.AtomicProjectBasicsWizardPage_CORPUS_TEXTFIELD_DEFAULT)));
+//		return ((!page.getCorpusText().isEmpty()) && (!page.getCorpusText().equals(Messages.AtomicProjectBasicsWizardPage_CORPUS_TEXTFIELD_DEFAULT)));
+//	}
 
 	@Override
 	public void addPages() {
@@ -82,15 +83,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		catch (Exception e) {
 			e.printStackTrace();
         }
-		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try {
-			IFileEditorInput input = new FileEditorInput(projectIFile);
-			activePage.openEditor(input, "de.uni_jena.iaa.linktype.atomic.model.salt.editor.editor");
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		return true;
 	}
 	
