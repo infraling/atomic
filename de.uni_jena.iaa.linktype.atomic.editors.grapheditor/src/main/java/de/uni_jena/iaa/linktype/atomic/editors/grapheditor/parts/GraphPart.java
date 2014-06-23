@@ -86,8 +86,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 */
 	public class GraphAdapter extends EContentAdapter {
 		
-		@Override public void notifyChanged(Notification notification) {
-	    	refreshChildren();
+		@Override public void notifyChanged(Notification n) {
+			refreshChildren();
 	    }
 	 
 		@Override public Notifier getTarget() {
