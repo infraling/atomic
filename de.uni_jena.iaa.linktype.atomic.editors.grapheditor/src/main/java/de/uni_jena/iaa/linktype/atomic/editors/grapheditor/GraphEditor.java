@@ -61,7 +61,6 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
 		if (isModelGraph) {
-			System.err.println(project);
 			getGraphicalViewer().setContents(graph);
 		}
 		else {
@@ -106,7 +105,6 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 					if (document.getSDocumentGraphLocation() == (graphURI)) {
 						document.loadSDocumentGraph();
 						graph = document.getSDocumentGraph();
-						System.err.println("GRAPH SET TO " + graph);
 					}
 				}
 				isModelGraph = true;
