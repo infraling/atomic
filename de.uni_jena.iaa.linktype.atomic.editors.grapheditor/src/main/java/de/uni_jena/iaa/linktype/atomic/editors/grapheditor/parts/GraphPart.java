@@ -32,6 +32,11 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		figure.setLayoutManager(new FreeformLayout());
 		return figure;
 	}
+	
+	@Override
+	protected void refreshVisuals() {
+		super.refreshVisuals();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
