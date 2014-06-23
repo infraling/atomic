@@ -85,6 +85,12 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		graph.getSDocument().saveSDocumentGraph(graphURI);
 		// TODO Check if project also needs to be saved
 //		project.saveSaltProject(projectURI);
+
+		// Update the editor state to indicate that the contents
+		// have been saved and notify all listeners about the
+		// change in state
+		getCommandStack().markSaveLocation();
+		firePropertyChange(PROP_DIRTY);
 	}
 	
 	@Override
@@ -113,6 +119,7 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		else /*if (input instanceof AtomicSubGraphInput) */{ // TODO to be defined in Overview Editor
 			
 		}
+		doSave(null);
 	}
 	/**
 	 * @author Stephan Druskat
