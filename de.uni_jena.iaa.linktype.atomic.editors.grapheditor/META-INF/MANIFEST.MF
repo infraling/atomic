@@ -6,6 +6,9 @@ Bundle-Version: 0.1.4.qualifier
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.editors.grapheditor.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.gef;bundle-version="3.7.2"
+ org.eclipse.gef;bundle-version="3.7.2",
+ de.hu_berlin.german.korpling.saltnpepper.salt-graph;bundle-version="1.1.8",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon;bundle-version="1.1.8",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.8"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
