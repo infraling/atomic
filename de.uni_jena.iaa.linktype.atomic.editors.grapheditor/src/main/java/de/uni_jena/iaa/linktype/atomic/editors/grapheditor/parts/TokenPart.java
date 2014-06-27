@@ -40,6 +40,11 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	
 	@Override
 	protected void refreshVisuals() {
+		// FIXME: Bug fix
+		// Sometimes, for n = getModelChildren().size(), n+1 children get added, which leads to a blank line
+		if (getFigure().getChildren().size() > getModelChildren().size())
+			getFigure().getChildren().remove(getFigure().getChildren().size() - 1);
+		
 		SToken model = getModel();
 		int x = PartUtils.getTokenX(getViewer(), model, getFigure());
 		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 10, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME: Fixed y coord (10). Make settable in Prefs?
