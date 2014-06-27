@@ -8,9 +8,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
-
+import org.eclipse.swt.graphics.RGB;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 /**
@@ -51,11 +51,20 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 	 *
 	 */
 	public class AnnotationFigure extends Label {
+		private static final String VERY_LIGHT_GREY = "veryLightGrey";
 		
 		public AnnotationFigure() {
-			setBorder(new LineBorder(new Color(Display.getCurrent(), 222, 222, 222), 1, Graphics.LINE_DOT));
+			Color color = null;
+			if (!JFaceResources.getColorRegistry().hasValueFor(VERY_LIGHT_GREY)) {
+			    JFaceResources.getColorRegistry().put(VERY_LIGHT_GREY, new RGB(222, 222, 222));
+			} else {
+			    color = JFaceResources.getColorRegistry().get(VERY_LIGHT_GREY);
+			}
+			setBorder(new LineBorder(JFaceResources.getColorRegistry().get(VERY_LIGHT_GREY), 1, Graphics.LINE_DOT));
 			setOpaque(true);
 		}
+		
+		
 	}
 
 }
