@@ -29,13 +29,19 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	@Override
 	protected void refreshVisuals() {
 		SToken model = getModel();
-		String tokenText = PartUtils.getTokenText(model);
-		// Create text label
-		Label label = new Label(tokenText);
-		getFigure().add(label);
+		addTokenTextLabel(model);
 		int x = PartUtils.getTokenX(getViewer(), model, getFigure());
 		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 10, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME: Fixed y coord (10). Make settable in Prefs?
 		super.refreshVisuals();
+	}
+
+	/**
+	 * @param model
+	 */
+	private void addTokenTextLabel(SToken model) {
+		String tokenText = PartUtils.getTokenText(model);
+		Label label = new Label(tokenText);
+		getFigure().add(label);
 	}
 
 	/* (non-Javadoc)
