@@ -54,6 +54,7 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 		private static final String VERY_LIGHT_GREY = "veryLightGrey";
 		
 		public AnnotationFigure() {
+			// FIXME
 			Color color = null;
 			if (!JFaceResources.getColorRegistry().hasValueFor(VERY_LIGHT_GREY)) {
 			    JFaceResources.getColorRegistry().put(VERY_LIGHT_GREY, new RGB(222, 222, 222));
