@@ -27,7 +27,8 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	
 	@Override
 	protected void refreshVisuals() {
-		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(getModel().getSDocumentGraph().getSTokens().indexOf(getModel()) * 100, 10, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height));
+		int x = PartUtils.getTokenX(getViewer(), getModel(), getFigure());
+		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 10, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height));
 		super.refreshVisuals();
 	}
 
