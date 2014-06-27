@@ -4,6 +4,7 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
@@ -27,8 +28,12 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	
 	@Override
 	protected void refreshVisuals() {
-		int x = PartUtils.getTokenX(getViewer(), getModel(), getFigure());
-		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 10, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height));
+		SToken model = getModel();
+		String tokenText = PartUtils.getTokenText(model);
+		// Create text label
+		Label label = new Label(tokenText);
+		int x = PartUtils.getTokenX(getViewer(), model, getFigure());
+		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 10, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME: Fixed y coord (10). Make settable in Prefs?
 		super.refreshVisuals();
 	}
 

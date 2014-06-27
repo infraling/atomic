@@ -59,4 +59,9 @@ public class PartUtils {
 		return tokenX;
 	}
 
+	public static String getTokenText(SToken model) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
