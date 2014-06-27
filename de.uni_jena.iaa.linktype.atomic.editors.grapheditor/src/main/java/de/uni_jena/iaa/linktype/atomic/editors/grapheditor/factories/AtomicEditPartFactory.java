@@ -26,7 +26,7 @@ public class AtomicEditPartFactory implements EditPartFactory {
 		EditPart part = null;
 		
 		if (model instanceof SDocumentGraph) {
-			part = new GraphPart();
+			part = new GraphPart((SDocumentGraph) model);
 		}
 		if (model instanceof SToken) {
 			part = new TokenPart();

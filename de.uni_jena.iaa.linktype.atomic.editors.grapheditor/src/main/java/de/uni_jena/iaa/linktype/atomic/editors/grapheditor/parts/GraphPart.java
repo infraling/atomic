@@ -4,7 +4,9 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
@@ -16,7 +18,10 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 
 /**
@@ -26,9 +31,25 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 public class GraphPart extends AbstractGraphicalEditPart {
 	
 	private GraphAdapter adapter;
+	private Map<SToken, String> tokenTextRegistry;
 
-	public GraphPart() {
+	public GraphPart(SDocumentGraph model) {
+		setModel(model);
 		setAdapter(new GraphAdapter());
+		setTokenTextRegistry(new HashMap<SToken, String>());
+		registerTokenTexts();
+	}
+
+	private void registerTokenTexts() {
+		String text = getModel().getSTextualDSs().get(0).getSText();
+		for (SToken token : getModel().getSTokens()) {
+			for (Edge edge: getModel().getOutEdges(token.getSId())) {
+				if (edge instanceof STextualRelation) {
+					STextualRelation textualRelation = (STextualRelation) edge;
+					getTokenTextRegistry().put(token, text.substring(textualRelation.getSStart(), textualRelation.getSEnd()));
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -114,6 +135,20 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			((SDocumentGraph) getModel()).eAdapters().remove(getAdapter());
 		}
 		super.deactivate();
+	}
+
+	/**
+	 * @return the tokenTextRegistry
+	 */
+	public Map<SToken, String> getTokenTextRegistry() {
+		return tokenTextRegistry;
+	}
+
+	/**
+	 * @param tokenTextRegistry the tokenTextRegistry to set
+	 */
+	public void setTokenTextRegistry(Map<SToken, String> tokenTextRegistry) {
+		this.tokenTextRegistry = tokenTextRegistry;
 	}
 
 }

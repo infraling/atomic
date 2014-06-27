@@ -14,9 +14,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPartViewer;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
@@ -62,19 +60,6 @@ public class PartUtils {
 			}
 		}
 		return tokenX;
-	}
-
-	public static String getTokenText(SToken model) {
-		SDocumentGraph graph = model.getSDocumentGraph();
-		String text = graph.getSTextualDSs().get(0).getSText();
-		String tokenText = null;
-		for (Edge edge: graph.getOutEdges(model.getSId())) {
-			if (edge instanceof STextualRelation) {
-				STextualRelation textualRelation = (STextualRelation) edge;
-				tokenText = text.substring(textualRelation.getSStart(), textualRelation.getSEnd());
-			}
-		}
-		return tokenText;
 	}
 
 }
