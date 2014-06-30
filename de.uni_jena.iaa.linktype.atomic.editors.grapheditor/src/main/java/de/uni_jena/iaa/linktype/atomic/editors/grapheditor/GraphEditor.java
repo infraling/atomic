@@ -40,7 +40,6 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	private boolean isModelGraph = false; // Used for instance-testing for setContents()
 	private HashSet<SToken> tokenMap; // For use as model for sub-graph editing
 	private SDocumentGraph graph; // For use as model for graph editing
-	private SaltProject project;
 	private URI projectURI;
 	private URI graphURI;
 
