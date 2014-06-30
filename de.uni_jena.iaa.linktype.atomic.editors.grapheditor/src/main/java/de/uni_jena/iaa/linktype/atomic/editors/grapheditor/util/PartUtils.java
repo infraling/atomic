@@ -4,15 +4,24 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.jface.resource.ColorRegistry;
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
@@ -25,6 +34,20 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
  *
  */
 public class PartUtils {
+
+	public static final String SANS10BOLD = "sansserif 10pt bold";
+	public static final String VERYLIGHTGREY = "very light grey colour";
+	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
+	private static HashMap<String, RGB> colorMap = new HashMap<String, RGB>();
+	
+	public PartUtils() {
+		constructColorMap();
+	}
+
+	private void constructColorMap() {
+		colorMap.put(MEDIUMLIGHTGREY, new RGB(222, 222, 222));
+		colorMap.put(VERYLIGHTGREY, new RGB(237, 237, 237));
+	}
 
 	public static String getVisualID(SNode model) {
 		LinkedList<String> visualID = new LinkedList<String>();
@@ -60,6 +83,43 @@ public class PartUtils {
 			}
 		}
 		return tokenX;
+	}
+
+	public static void setFont(IFigure figure, String fontStyle) {
+		FontRegistry fontRegistry = JFaceResources.getFontRegistry();
+		FontData[] fontDataArray = new FontData[1];
+		if (!fontRegistry.hasValueFor(fontStyle)) {
+			if (fontStyle.equals(SANS10BOLD))
+				fontDataArray[0] = new FontData("sansserif", 10, SWT.BOLD); // FIXME: Parameterize with Preferences
+			fontRegistry.put(fontStyle, fontDataArray);
+		}
+		figure.setFont(fontRegistry.get(fontStyle));
+	}
+	
+	public static void setColor(Graphics graphics, String color, boolean isBackgroundColor) {
+		ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
+		if (!colorRegistry.hasValueFor(color)) {
+			if (color.equals(VERYLIGHTGREY))
+				colorRegistry.put(VERYLIGHTGREY, colorMap.get(VERYLIGHTGREY));
+			else if (color.equals(MEDIUMLIGHTGREY))
+				colorRegistry.put(MEDIUMLIGHTGREY, colorMap.get(MEDIUMLIGHTGREY));
+		}
+		if (isBackgroundColor)
+			graphics.setBackgroundColor(colorRegistry.get(color));
+		else
+			graphics.setForegroundColor(colorRegistry.get(color));
+	}
+	
+	public static Color getColor(String color) {
+		// FIXME: Use a color map to reduce duplicates between here and other methods!
+		ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
+		if (!colorRegistry.hasValueFor(color)) {
+			if (color.equals(VERYLIGHTGREY))
+				colorRegistry.put(VERYLIGHTGREY, colorMap.get(VERYLIGHTGREY));
+			else if (color.equals(MEDIUMLIGHTGREY))
+				colorRegistry.put(MEDIUMLIGHTGREY, colorMap.get(MEDIUMLIGHTGREY));
+		}
+		return colorRegistry.get(color);
 	}
 
 }

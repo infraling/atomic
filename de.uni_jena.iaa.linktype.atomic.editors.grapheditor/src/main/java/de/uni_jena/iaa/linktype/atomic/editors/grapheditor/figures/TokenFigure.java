@@ -13,8 +13,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
@@ -54,10 +53,10 @@ public class TokenFigure extends Figure {
 	        Rectangle rect = figure.getBounds();
 	        graphics.clipRect(rect);
 	        Rectangle r = rect.getResized(-1, -9).translate(0, 8);
-	        graphics.setForegroundColor(new Color(Display.getCurrent(), 237, 237, 237));
+	        PartUtils.setColor(graphics, PartUtils.VERYLIGHTGREY, false);
 	        graphics.drawRoundRectangle(r, 10, 10);
 	        graphics.setForegroundColor(ColorConstants.red);
-	        graphics.setBackgroundColor(new Color(Display.getCurrent(), 222, 222, 222));
+	        PartUtils.setColor(graphics, PartUtils.MEDIUMLIGHTGREY, true);
 	        graphics.fillText(getLabel(), r.x + 8, r.y - 8);
 	        graphics.popState();
 		}
