@@ -4,7 +4,6 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -38,17 +37,7 @@ public class PartUtils {
 	public static final String SANS10BOLD = "sansserif 10pt bold";
 	public static final String VERYLIGHTGREY = "very light grey colour";
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
-	private static HashMap<String, RGB> colorMap = new HashMap<String, RGB>();
 	
-	public PartUtils() {
-		constructColorMap();
-	}
-
-	private void constructColorMap() {
-		colorMap.put(MEDIUMLIGHTGREY, new RGB(222, 222, 222));
-		colorMap.put(VERYLIGHTGREY, new RGB(237, 237, 237));
-	}
-
 	public static String getVisualID(SNode model) {
 		LinkedList<String> visualID = new LinkedList<String>();
 
@@ -87,22 +76,27 @@ public class PartUtils {
 
 	public static void setFont(IFigure figure, String fontStyle) {
 		FontRegistry fontRegistry = JFaceResources.getFontRegistry();
-		FontData[] fontDataArray = new FontData[1];
 		if (!fontRegistry.hasValueFor(fontStyle)) {
-			if (fontStyle.equals(SANS10BOLD))
-				fontDataArray[0] = new FontData("sansserif", 10, SWT.BOLD); // FIXME: Parameterize with Preferences
-			fontRegistry.put(fontStyle, fontDataArray);
+			addFontToFontRegistry(fontStyle, fontRegistry);
 		}
 		figure.setFont(fontRegistry.get(fontStyle));
+	}
+
+	/**
+	 * @param fontStyle
+	 * @param fontRegistry
+	 */
+	private static void addFontToFontRegistry(String fontStyle, FontRegistry fontRegistry) {
+		FontData[] fontDataArray = new FontData[1];
+		if (fontStyle.equals(SANS10BOLD))
+			fontDataArray[0] = new FontData("sansserif", 10, SWT.BOLD); // FIXME: Parameterize with Preferences
+		fontRegistry.put(fontStyle, fontDataArray);
 	}
 	
 	public static void setColor(Graphics graphics, String color, boolean isBackgroundColor) {
 		ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
 		if (!colorRegistry.hasValueFor(color)) {
-			if (color.equals(VERYLIGHTGREY))
-				colorRegistry.put(VERYLIGHTGREY, colorMap.get(VERYLIGHTGREY));
-			else if (color.equals(MEDIUMLIGHTGREY))
-				colorRegistry.put(MEDIUMLIGHTGREY, colorMap.get(MEDIUMLIGHTGREY));
+			addColorToColorRegistry(color, colorRegistry);
 		}
 		if (isBackgroundColor)
 			graphics.setBackgroundColor(colorRegistry.get(color));
@@ -111,15 +105,20 @@ public class PartUtils {
 	}
 	
 	public static Color getColor(String color) {
-		// FIXME: Use a color map to reduce duplicates between here and other methods!
 		ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
 		if (!colorRegistry.hasValueFor(color)) {
-			if (color.equals(VERYLIGHTGREY))
-				colorRegistry.put(VERYLIGHTGREY, colorMap.get(VERYLIGHTGREY));
-			else if (color.equals(MEDIUMLIGHTGREY))
-				colorRegistry.put(MEDIUMLIGHTGREY, colorMap.get(MEDIUMLIGHTGREY));
+			addColorToColorRegistry(color, colorRegistry);
 		}
 		return colorRegistry.get(color);
+	}
+
+	private static void addColorToColorRegistry(String color, ColorRegistry colorRegistry) {
+		if (color.equals(VERYLIGHTGREY))
+			colorRegistry.put(VERYLIGHTGREY, new RGB(237, 237, 237));
+		else if (color.equals(MEDIUMLIGHTGREY))
+			colorRegistry.put(MEDIUMLIGHTGREY, new RGB(222, 222, 222));
+
+		
 	}
 
 }
