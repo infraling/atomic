@@ -14,9 +14,11 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
@@ -119,6 +121,11 @@ public class PartUtils {
 			colorRegistry.put(MEDIUMLIGHTGREY, new RGB(222, 222, 222));
 
 		
+	}
+
+	public static void performDirectEditing(AbstractGraphicalEditPart editPart) {
+		SingleLineDirectEditManager manager = new SingleLineDirectEditManager(editPart, TextCellEditor.class, new AtomicCellEditorLocator(editPart.getFigure()), editPart.getFigure());
+		manager.show();
 	}
 
 }
