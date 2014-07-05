@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;

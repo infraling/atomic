@@ -4,6 +4,7 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor;
 
 import java.io.File;
+import java.util.EventObject;
 import java.util.HashSet;
 
 import org.eclipse.core.resources.IFile;
@@ -21,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
@@ -41,8 +43,8 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	private boolean isModelGraph = false; // Used for instance-testing for setContents()
 	private HashSet<SToken> tokenMap; // For use as model for sub-graph editing
 	private SDocumentGraph graph; // For use as model for graph editing
-	private URI projectURI;
-	private URI graphURI;
+	private URI projectURI, graphURI;
+	private SDocument document;
 
 	/**
 	 * 
@@ -83,13 +85,8 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		graph.getSDocument().saveSDocumentGraph(graphURI);
-		// TODO Check if project also needs to be saved
-//		project.saveSaltProject(projectURI);
-
-		// Update the editor state to indicate that the contents
-		// have been saved and notify all listeners about the
-		// change in state
+		document.setSDocumentGraph(graph);
+		document.saveSDocumentGraph(graphURI);
 		getCommandStack().markSaveLocation();
 		firePropertyChange(PROP_DIRTY);
 	}
@@ -108,10 +105,11 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 				graphURI = graphResolver.getGraphURI();
 				SaltProject saltProject = SaltFactory.eINSTANCE.createSaltProject();
 				saltProject.loadSCorpusStructure(projectURI);
-				for (SDocument document : saltProject.getSCorpusGraphs().get(0).getSDocuments()) {
-					if (document.getSDocumentGraphLocation() == (graphURI)) {
-						document.loadSDocumentGraph();
-						graph = document.getSDocumentGraph();
+				for (SDocument sDocument : saltProject.getSCorpusGraphs().get(0).getSDocuments()) {
+					if (sDocument.getSDocumentGraphLocation() == (graphURI)) {
+						sDocument.loadSDocumentGraph();
+						graph = sDocument.getSDocumentGraph();
+						document = sDocument;
 					}
 				}
 				isModelGraph = true;
@@ -120,8 +118,14 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		else /*if (input instanceof AtomicSubGraphInput) */{ // TODO to be defined in Overview Editor
 			
 		}
-		doSave(null);
 	}
+	
+	@Override
+	public void commandStackChanged(EventObject event) {
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+		super.commandStackChanged(event);
+	}
+	
 	/**
 	 * @author Stephan Druskat
 	 *

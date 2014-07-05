@@ -10,6 +10,7 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
@@ -101,6 +102,16 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 		@Override 
 		public void notifyChanged(Notification n) {
 			refreshVisuals();
+			if (n.getEventType() == Notification.SET) {
+				EditPart grandparent = getParent().getParent();
+				if (grandparent instanceof GraphPart) {
+					for (Object part : grandparent.getChildren()) {
+						if (part instanceof TokenPart) {
+							((TokenPart) part).refresh();
+						}
+					}
+				}
+			}
 	    }
 	 
 		@Override 
