@@ -12,11 +12,17 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
+import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.TokenFigure;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.TokenDirectEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.MultiLineDirectEditManager;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
@@ -58,6 +64,7 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected void createEditPolicies() {
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TokenDirectEditPolicy());
 		NonResizableEditPolicy selectionPolicy = new NonResizableEditPolicy();
 		selectionPolicy.setDragAllowed(false);
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, selectionPolicy);
@@ -71,6 +78,21 @@ public class TokenPart extends AbstractGraphicalEditPart {
 		return childrenList;
 	}
 	
+	@Override 
+	public void performRequest(Request req) {
+		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) { // TODO Parametrize for preferences sheet
+			performDirectEditing();
+		}
+		if(req.getType() == RequestConstants.REQ_OPEN) { // TODO Parametrize for preferences sheet
+			System.out.println("requested double-click."); 
+	    }
+	}
+	
+	private void performDirectEditing() {
+		MultiLineDirectEditManager manager = new MultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
+		manager.show();
+	}
+
 	public SToken getModel() {
 		return (SToken) super.getModel();
 	}
