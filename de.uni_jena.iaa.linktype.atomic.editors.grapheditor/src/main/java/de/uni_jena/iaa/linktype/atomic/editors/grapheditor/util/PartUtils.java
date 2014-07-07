@@ -3,9 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +11,6 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
@@ -39,6 +36,7 @@ public class PartUtils {
 	public static final String SANS10BOLD = "sansserif 10pt bold";
 	public static final String VERYLIGHTGREY = "very light grey colour";
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
+	private static final int margin = 5;  // FIXME Hard-coded margin (5), make settable in Prefs
 	
 	public static String getVisualID(SNode model) {
 		LinkedList<String> visualID = new LinkedList<String>();
@@ -53,28 +51,23 @@ public class PartUtils {
 		return null;
 	}
 
-	public static int getTokenX(EditPartViewer editPartViewer, SToken model, IFigure iFigure) {
+	public static int getTokenX(GraphPart graphPart, SToken model, IFigure iFigure) {
 		int tokenX = -1;
-		SDocumentGraph graph = model.getSDocumentGraph();
-		Map<?,?> registry = editPartViewer.getEditPartRegistry();
-		GraphPart graphPart = (GraphPart) registry.get(graph);
+		SDocumentGraph graph = graphPart.getModel();
 		int currentTokenIndex = graph.getSTokens().indexOf(model);
 		if (currentTokenIndex == 0) {
-			return 5; // FIXME: Hard-coded margin to left border
+			return margin;
 		}
 		EList<SToken> tokenList = graph.getSTokens();
-		Collection<?> registryValues = registry.values();
-		for (Object part : registryValues) {
-			if (part instanceof TokenPart) {
-				if (tokenList.indexOf(((TokenPart) part).getModel()) == (currentTokenIndex - 1)) {
+		SToken lastToken = tokenList.get(currentTokenIndex - 1);
+		for (Object part : graphPart.getChildren()) {
+			if (part instanceof TokenPart && ((TokenPart) part).getModel() == lastToken) {
 					IFigure lastFigure = ((TokenPart) part).getFigure();
 					int lastX = ((Rectangle) graphPart.getFigure().getLayoutManager().getConstraint(lastFigure)).x;
-					tokenX = lastX + lastFigure.getPreferredSize().width + 10; // FIXME Hard-coded margin (10), make settable in Prefs
-				}
+					tokenX = lastX + lastFigure.getPreferredSize().width + margin;
 			}
 		}
-		return tokenX;
-	}
+		return tokenX;	}
 
 	public static void setFont(IFigure figure, String fontStyle) {
 		FontRegistry fontRegistry = JFaceResources.getFontRegistry();

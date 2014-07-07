@@ -15,6 +15,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AnnotationDirectEditPolicy;
@@ -53,6 +54,9 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 	@Override
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new AnnotationDirectEditPolicy());
+		NonResizableEditPolicy selectionPolicy = new NonResizableEditPolicy();
+		selectionPolicy.setDragAllowed(false);
+		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, selectionPolicy);
 	}
 
 	@Override 
