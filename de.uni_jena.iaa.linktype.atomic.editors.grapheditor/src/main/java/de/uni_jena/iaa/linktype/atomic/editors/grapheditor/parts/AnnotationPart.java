@@ -18,6 +18,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AnnotationDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
@@ -45,7 +46,9 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 	@Override
 	protected void refreshVisuals() {
 		((Label) getFigure()).setText(getModel().getSName() + ":" + getModel().getValueString());
-		getParent().refresh();
+		if (getParent() != null) {
+			getParent().refresh();
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -105,13 +108,18 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 	public class AnnotationAdapter extends EContentAdapter {
 		@Override 
 		public void notifyChanged(Notification n) {
-			refreshVisuals();
 			if (n.getEventType() == Notification.SET) {
-				EditPart grandparent = getParent().getParent();
-				if (grandparent instanceof GraphPart) {
-					for (Object part : grandparent.getChildren()) {
-						if (part instanceof TokenPart) {
-							((TokenPart) part).refresh();
+				if (n.getOldValue() instanceof String && n.getNewValue() instanceof String) { // i.e., when the (key or?) value has changed
+					refreshVisuals();
+				}
+				// FIXME: implement below for SRelations or check against higher supertype
+				if (!(n.getOldValue() instanceof SNode) && !(n.getNewValue() == null)) { // i.e., if the annotation's parent has not been set to null
+					EditPart grandparent = getParent().getParent();
+					if (grandparent instanceof GraphPart) {
+						for (Object part : grandparent.getChildren()) {
+							if (part instanceof TokenPart) {
+								((TokenPart) part).refresh();
+							}
 						}
 					}
 				}

@@ -118,7 +118,7 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	public class TokenAdapter extends EContentAdapter {
 
 		@Override public void notifyChanged(Notification n) {
-			refreshChildren();
+			refresh();
 	    }
 	 
 		@Override public Notifier getTarget() {
