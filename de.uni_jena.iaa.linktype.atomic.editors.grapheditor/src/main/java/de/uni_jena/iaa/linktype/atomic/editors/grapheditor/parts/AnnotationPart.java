@@ -108,11 +108,7 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 	public class AnnotationAdapter extends EContentAdapter {
 		@Override 
 		public void notifyChanged(Notification n) {
-			if (n.getEventType() == Notification.ADD) {
-				System.out.println("ANNOTATION ADD");
-			}
 			if (n.getEventType() == Notification.SET) {
-				System.out.println("ANNOTATION SET");
 				if (n.getOldValue() instanceof String && n.getNewValue() instanceof String) { // i.e., when the (key or?) value has changed
 					refreshVisuals();
 				}

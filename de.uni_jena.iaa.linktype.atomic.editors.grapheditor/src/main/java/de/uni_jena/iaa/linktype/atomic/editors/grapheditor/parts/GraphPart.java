@@ -22,6 +22,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 
 /**
@@ -108,6 +109,13 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	public class GraphAdapter extends EContentAdapter {
 		
 		@Override public void notifyChanged(Notification n) {
+			if (n.getOldValue() == null && n.getNewValue() instanceof SAnnotation) {
+				for (Object part : getChildren()) {
+					if (part instanceof TokenPart) {
+						((TokenPart) part).refresh();
+					}
+				}
+			}
 			refreshChildren();
 	    }
 	 

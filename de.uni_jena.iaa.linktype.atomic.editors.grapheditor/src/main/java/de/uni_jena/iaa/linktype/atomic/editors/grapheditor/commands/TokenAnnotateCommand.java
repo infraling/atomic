@@ -23,7 +23,7 @@ public class TokenAnnotateCommand extends Command {
 	
 	private String annotationInput;
 	private SToken model;
-	private TreeMap<Pair<String, String>, String> annotations = new TreeMap<String, String>();
+	private TreeMap<String, String> annotations = new TreeMap<String, String>();
 	
 	@Override 
 	public void execute() {
@@ -34,7 +34,6 @@ public class TokenAnnotateCommand extends Command {
 			model.removeLabel(key);
 			Assert.isTrue(!(model.getSAnnotations().contains(key))); // FIXME: Refactor to unit test method
 		}
-		System.err.println(model.getSAnnotations());
 		String lineSeparator = System.getProperty("line.separator");
 		String[] keyValuePairs = annotationInput.split(lineSeparator);
 		for (int i = 0; i < keyValuePairs.length; i++) {
