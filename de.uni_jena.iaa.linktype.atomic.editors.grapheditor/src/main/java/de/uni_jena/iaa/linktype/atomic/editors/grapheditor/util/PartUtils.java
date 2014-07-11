@@ -20,7 +20,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
@@ -112,8 +111,6 @@ public class PartUtils {
 			colorRegistry.put(VERYLIGHTGREY, new RGB(237, 237, 237));
 		else if (color.equals(MEDIUMLIGHTGREY))
 			colorRegistry.put(MEDIUMLIGHTGREY, new RGB(222, 222, 222));
-
-		
 	}
 
 	public static void performDirectEditing(AbstractGraphicalEditPart editPart) {
