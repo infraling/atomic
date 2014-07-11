@@ -23,16 +23,18 @@ public class TokenAnnotateCommand extends Command {
 	
 	private String annotationInput;
 	private SToken model;
-	private TreeMap<String, String> annotations = new TreeMap<String, String>();
+	private TreeMap<Pair<String, String>, String> annotations = new TreeMap<String, String>();
 	
 	@Override 
 	public void execute() {
 		for (Iterator<SAnnotation> iterator = model.getSAnnotations().iterator(); iterator.hasNext();) {
 			SAnnotation anno = (SAnnotation) iterator.next();
+			String namespace = anno.getNamespace();
 			String key = anno.getName();
 			model.removeLabel(key);
 			Assert.isTrue(!(model.getSAnnotations().contains(key))); // FIXME: Refactor to unit test method
 		}
+		System.err.println(model.getSAnnotations());
 		String lineSeparator = System.getProperty("line.separator");
 		String[] keyValuePairs = annotationInput.split(lineSeparator);
 		for (int i = 0; i < keyValuePairs.length; i++) {
