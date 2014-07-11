@@ -3,16 +3,15 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.exceptions.GraphInsertException;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
@@ -24,47 +23,38 @@ public class TokenAnnotateCommand extends Command {
 	
 	private String annotationInput;
 	private SToken model;
-	private ArrayList<SAnnotation> oldAnnotations = new ArrayList<SAnnotation>();
+	private TreeMap<String, String> annotations = new TreeMap<String, String>();
 	
 	@Override 
 	public void execute() {
-		oldAnnotations.addAll(model.getSAnnotations());
-		for (Iterator<SAnnotation> iterator = oldAnnotations.iterator(); iterator.hasNext();) {
-			SAnnotation a = iterator.next();
-			model.removeLabel(a.getSName());
+		for (Iterator<SAnnotation> iterator = model.getSAnnotations().iterator(); iterator.hasNext();) {
+			SAnnotation anno = (SAnnotation) iterator.next();
+			String key = anno.getName();
+			model.removeLabel(key);
+			Assert.isTrue(!(model.getSAnnotations().contains(key))); // FIXME: Refactor to unit test method
 		}
-		
-		// Parse String input, 
-		// separate into single key-value pairs (split at line break),
-		// delete all SAnnotations,
-		// create new SAnnotation for each key-value pair
 		String lineSeparator = System.getProperty("line.separator");
 		String[] keyValuePairs = annotationInput.split(lineSeparator);
-		
 		for (int i = 0; i < keyValuePairs.length; i++) {
-			String[] singleKeyValuePair = keyValuePairs[i].split(":"); // TEST
-			SAnnotation newSAnnotation = SaltFactory.eINSTANCE.createSAnnotation();
-			newSAnnotation.setSName(singleKeyValuePair[0]);
-			newSAnnotation.setSValue(singleKeyValuePair[1]);
-			for (SAnnotation anno : oldAnnotations) {
-				if (anno.getSName().equals(newSAnnotation.getSName())) {
-					System.err.println("EXISTS!");
+			String[] keyValuePair = keyValuePairs[i].split(":");
+			String annoKey = keyValuePair[0];
+			String annoValue = keyValuePair[1];
+			String previousValue = annotations.put(annoKey, annoValue);
+			if (previousValue != null) {
+				boolean shouldAnnoChange = MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Duplicate annotation found!", "Duplicate annotation!\n"
+						+ "Should the previous value of " + annoKey + " (" + previousValue + ") be overwritten with "
+						+ "the value " + annoValue + "?");
+				if (shouldAnnoChange) {
+					// Do nothing, key-value pair is already in TreeMap
+				}
+				else {
+					annotations.put(annoKey, previousValue);
 				}
 			}
-			try {
-				model.addSAnnotation(newSAnnotation);
-			} catch (GraphInsertException e) {
-				e.printStackTrace();
-				MessageDialog.open(MessageDialog.ERROR, Display.getCurrent().getActiveShell(), 
-						"Duplicate annotation!", 
-						"The annotation " + 
-						singleKeyValuePair[0] + ":" + singleKeyValuePair[1] + 
-						" cannot be added.\n" +
-						"An annotation with this key already exists.", 
-						SWT.NONE);
-			}
 		}
-			
+		for (Map.Entry<String, String> anno : annotations.entrySet()) {
+			model.createSAnnotation(null, anno.getKey(), anno.getValue());
+		}
 	}
 			 
 	//@Override 

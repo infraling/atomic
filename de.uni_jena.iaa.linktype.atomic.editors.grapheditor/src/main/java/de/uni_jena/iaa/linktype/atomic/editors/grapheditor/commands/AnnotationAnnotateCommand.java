@@ -32,8 +32,8 @@ public class AnnotationAnnotateCommand extends Command {
 		this.model = model;
 	}
 
-	public void setNewAnnotation(String value) {
-		this.annotationInput = value;
+	public void setAnnotationInput(String input) {
+		this.annotationInput = input;
 	}
 	
 	@Override 

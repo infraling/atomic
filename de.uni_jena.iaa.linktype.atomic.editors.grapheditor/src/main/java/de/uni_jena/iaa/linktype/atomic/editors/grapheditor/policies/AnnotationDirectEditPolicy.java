@@ -25,7 +25,7 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 		AnnotationAnnotateCommand command = new AnnotationAnnotateCommand();
 	    command.setModel((SAnnotation) getHost().getModel());
 	    command.setModelParent(((SAnnotation) getHost().getModel()).getLabelableElement());
-	    command.setNewAnnotation((String) request.getCellEditor().getValue());
+	    command.setAnnotationInput((String) request.getCellEditor().getValue());
 	    return command;
 	}
 

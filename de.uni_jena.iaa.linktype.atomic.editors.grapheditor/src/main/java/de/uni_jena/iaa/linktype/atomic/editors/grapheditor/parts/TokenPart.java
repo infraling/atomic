@@ -82,6 +82,7 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	public void performRequest(Request req) {
 		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) { // TODO Parametrize for preferences sheet
 			performDirectEditing();
+			getParent().setFocus(true); // So that graph can be saved directly with CTRL + S
 		}
 		if(req.getType() == RequestConstants.REQ_OPEN) { // TODO Parametrize for preferences sheet
 			System.out.println("requested double-click."); 
