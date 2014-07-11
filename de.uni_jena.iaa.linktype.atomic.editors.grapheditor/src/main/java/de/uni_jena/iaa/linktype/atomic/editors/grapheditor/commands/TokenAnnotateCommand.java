@@ -30,7 +30,14 @@ public class TokenAnnotateCommand extends Command {
 		for (Iterator<SAnnotation> iterator = model.getSAnnotations().iterator(); iterator.hasNext();) {
 			SAnnotation anno = (SAnnotation) iterator.next();
 			String namespace = anno.getNamespace();
-			String key = anno.getName();
+			String name = anno.getName();
+			String key = null;
+			if (namespace != null) {
+				key = namespace + "::" + name;
+			}
+			else {
+				key = name;
+			}
 			model.removeLabel(key);
 			Assert.isTrue(!(model.getSAnnotations().contains(key))); // FIXME: Refactor to unit test method
 		}
