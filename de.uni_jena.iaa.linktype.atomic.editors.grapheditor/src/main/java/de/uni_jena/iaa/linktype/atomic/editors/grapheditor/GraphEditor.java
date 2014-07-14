@@ -17,7 +17,6 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
-import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -33,6 +32,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
 
 /**
  * @author Stephan Druskat
@@ -58,7 +58,7 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setEditPartFactory(new AtomicEditPartFactory());
 		viewer.setRootEditPart(new ScalableFreeformRootEditPart());
-		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
+		viewer.setKeyHandler(new AtomicGraphicalViewerKeyHandler(viewer));
 	}
 	
 	protected void initializeGraphicalViewer() {
