@@ -16,7 +16,7 @@
   <module>../de.uni_jena.iaa.linktype.atomic.model.salt.editor</module>
   <module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
-  <module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module>
+  <!-- <module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module> -->
   <!-- <module>../de.uni_jena.iaa.linktype.atomic.ui.navigation</module> -->
   <!-- <module>../de.uni_jena.iaa.linktype.atomic.workspace</module> -->
   <module>../de.uni_jena.iaa.linktype.atomic.editors.grapheditor</module>
@@ -38,13 +38,13 @@
     <repository>
       <id>pepper4eclipse</id>
       <layout>p2</layout>
-      <url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/</url>
+      <url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/1.1.8-SNAPSHOT</url>
     </repository>
     
     <repository>
       <id>eclipse-orbit</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository/</url>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
     </repository>
     
   </repositories>

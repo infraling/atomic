@@ -3,8 +3,9 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
@@ -31,15 +32,8 @@ public class TokenAnnotateCommand extends Command {
 			SAnnotation anno = (SAnnotation) iterator.next();
 			String namespace = anno.getNamespace();
 			String name = anno.getName();
-			String key = null;
-			if (namespace != null) {
-				key = namespace + "::" + name;
-			}
-			else {
-				key = name;
-			}
-			model.removeLabel(key);
-			Assert.isTrue(!(model.getSAnnotations().contains(key))); // FIXME: Refactor to unit test method
+			model.removeLabel(name);
+			Assert.isTrue(!(model.getSAnnotations().contains(name))); // FIXME: Refactor to unit test method
 		}
 		String lineSeparator = System.getProperty("line.separator");
 		String[] keyValuePairs = annotationInput.split(lineSeparator);
@@ -60,7 +54,7 @@ public class TokenAnnotateCommand extends Command {
 				}
 			}
 		}
-		for (Map.Entry<String, String> anno : annotations.entrySet()) {
+		for (Entry<String, String> anno : annotations.entrySet()) {
 			model.createSAnnotation(null, anno.getKey(), anno.getValue());
 		}
 	}
