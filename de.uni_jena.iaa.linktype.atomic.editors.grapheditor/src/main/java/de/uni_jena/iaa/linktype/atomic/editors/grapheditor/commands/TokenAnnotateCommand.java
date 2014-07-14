@@ -33,6 +33,8 @@ public class TokenAnnotateCommand extends Command {
 			model.removeLabel(name);
 			Assert.isTrue(!(model.getSAnnotations().contains(name))); // FIXME: Refactor to unit test method
 		}
+		
+		// TODO Refactor to consider optional namespace
 		String lineSeparator = System.getProperty("line.separator");
 		String[] keyValuePairs = annotationInput.split(lineSeparator);
 		for (int i = 0; i < keyValuePairs.length; i++) {
