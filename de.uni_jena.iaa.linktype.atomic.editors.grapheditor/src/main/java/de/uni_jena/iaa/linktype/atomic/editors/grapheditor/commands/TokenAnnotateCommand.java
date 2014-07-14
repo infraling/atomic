@@ -3,7 +3,6 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -30,7 +29,6 @@ public class TokenAnnotateCommand extends Command {
 	public void execute() {
 		for (Iterator<SAnnotation> iterator = model.getSAnnotations().iterator(); iterator.hasNext();) {
 			SAnnotation anno = (SAnnotation) iterator.next();
-			String namespace = anno.getNamespace();
 			String name = anno.getName();
 			model.removeLabel(name);
 			Assert.isTrue(!(model.getSAnnotations().contains(name))); // FIXME: Refactor to unit test method
