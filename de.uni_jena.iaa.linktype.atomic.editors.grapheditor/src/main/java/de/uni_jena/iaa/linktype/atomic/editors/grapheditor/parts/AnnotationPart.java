@@ -46,14 +46,9 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 	@Override
 	protected void refreshVisuals() {
 		SAnnotation anno = getModel();
-		Label label = (Label) getFigure();
-		if (anno.getNamespace() == null) {
-			label.setText(anno.getSName() + ":" + anno.getValueString());
-		}
-		else {
-			label.setText(anno.getSName() + ":" + anno.getValueString());
-			label.setToolTip(new Label("Namespace: " + anno.getNamespace()));
-			
+		((Label) getFigure()).setText(anno.getSName() + ":" + anno.getValueString());
+		if (anno.getNamespace() != null) {
+			getFigure().setToolTip(new Label("Namespace: " + anno.getNamespace()));
 		}
 		if (getParent() != null) {
 			getParent().refresh();
