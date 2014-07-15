@@ -3,6 +3,8 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
+import java.util.Arrays;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.emf.common.util.EList;
@@ -38,16 +40,51 @@ public class AnnotationAnnotateCommand extends Command {
 	
 	@Override 
 	public void execute() {
+		// FIXME: Take into account optional namespace!
+		/* FIXME: Write Unit tests for different input possibilities:
+		 * a:
+		 * :a
+		 * a::a::a
+		 * a::a::a:a
+		 * a::a
+		 * a
+		 * :
+		 * ::
+		 * :::
+		 * etc.
+		 */
 		// Parse annotation String
-		String[] annotationKeyValue = annotationInput.split(":");
+		String[] annotationKeyValue = new String[3];
 		String key = null;
 		String value = null;
+		String namespace = null;
 		try {
+			if (annotationInput.contains("::")) { // I.e., has namespace part
+				String[] nsKV = annotationInput.split(":{2}");
+				System.err.println(Arrays.toString(nsKV));
+				annotationKeyValue[2] = nsKV[0];
+				String[] kV = nsKV[1].split(":");
+				System.err.println(Arrays.toString(kV));
+				annotationKeyValue[0] = kV[0];
+				annotationKeyValue[1] = kV[1];
+				System.err.println(Arrays.toString(annotationKeyValue) + "\n");
+			}
+			else {
+				String[] kV = annotationInput.split(":");
+				annotationKeyValue[0] = kV[0];
+				annotationKeyValue[1] = kV[1];
+				if (model.getNamespace() != null) {
+					annotationKeyValue[2] = model.getNamespace();
+				}
+			}
 			key = annotationKeyValue[0];
 			value = annotationKeyValue[1];
 		} catch (ArrayIndexOutOfBoundsException e) {
-			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Annotation error", "The annotation format is not correct.\nPlease use [key]:[value], where neither\nvalue may be empty.");
+			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Annotation error", "The annotation format is not correct.\nPlease use [namespace]::[key]:[value], where neither key nor value may be empty, and namespace is optional.");
 			return;
+		}
+		if (annotationKeyValue[2] != null) {
+			namespace = annotationKeyValue[2];
 		}
 		// Determine type of model parent & get its List of annotations
 		EList<SAnnotation> existingAnnotations = getExistingAnnotationsFromModelParent(modelParent);
@@ -94,13 +131,19 @@ public class AnnotationAnnotateCommand extends Command {
 					keyExistsInPreexistingAnnotations = false;
 			}
 			if (!keyExistsInPreexistingAnnotations) { // Key doesn't exist in preexisting annotations.
-				model.setSName(annotationKeyValue[0]);
-				model.setSValue(annotationKeyValue[1]);
+				model.setSName(key);
+				model.setSValue(value);
+				if (namespace != null) {
+					model.setNamespace(namespace);
+				}
 			}
 		}
 		else { // existingAnnotations == null -> model parent has no annotations. Should never be called...
-			model.setSName(annotationKeyValue[0]);
-			model.setSValue(annotationKeyValue[1]);
+			model.setSName(key);
+			model.setSValue(value);
+			if (namespace != null) {
+				model.setNamespace(namespace);
+			}
 		}
 	}
 
