@@ -1,4 +1,4 @@
-/**
+	/**
  * 
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
@@ -52,7 +52,7 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 		}
 		else {
 			label.setText(anno.getSName() + ":" + anno.getValueString());
-			label.setToolTip(new Label(anno.getNamespace()));
+			label.setToolTip(new Label("Namespace: " + anno.getNamespace()));
 			
 		}
 		if (getParent() != null) {
