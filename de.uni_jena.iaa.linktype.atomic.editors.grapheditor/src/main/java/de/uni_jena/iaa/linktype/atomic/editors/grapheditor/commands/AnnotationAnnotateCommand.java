@@ -29,6 +29,7 @@ public class AnnotationAnnotateCommand extends Command {
 	private String annotationInput;
 	private SAnnotation model;
 	private LabelableElement modelParent;
+	private String[] annotationKeyValue;
 	
 	public void setModel(SAnnotation model) {
 		this.model = model;
@@ -36,6 +37,10 @@ public class AnnotationAnnotateCommand extends Command {
 
 	public void setAnnotationInput(String input) {
 		this.annotationInput = input;
+	}
+	
+	public String getAnnotationInput() {
+		return this.annotationInput;
 	}
 	
 	@Override 
@@ -54,38 +59,22 @@ public class AnnotationAnnotateCommand extends Command {
 		 * etc.
 		 */
 		// Parse annotation String
-		String[] annotationKeyValue = new String[3];
 		String key = null;
 		String value = null;
 		String namespace = null;
-		try {
-			if (annotationInput.contains("::")) { // I.e., has namespace part
-				String[] nsKV = annotationInput.split(":{2}");
-				System.err.println(Arrays.toString(nsKV));
-				annotationKeyValue[2] = nsKV[0];
-				String[] kV = nsKV[1].split(":");
-				System.err.println(Arrays.toString(kV));
-				annotationKeyValue[0] = kV[0];
-				annotationKeyValue[1] = kV[1];
-				System.err.println(Arrays.toString(annotationKeyValue) + "\n");
-			}
-			else {
-				String[] kV = annotationInput.split(":");
-				annotationKeyValue[0] = kV[0];
-				annotationKeyValue[1] = kV[1];
-				if (model.getNamespace() != null) {
-					annotationKeyValue[2] = model.getNamespace();
-				}
-			}
-			key = annotationKeyValue[0];
-			value = annotationKeyValue[1];
-		} catch (ArrayIndexOutOfBoundsException e) {
+		setAnnotationKeyValue(constructAnnotationKeyValue(getAnnotationInput()));
+
+		key = getAnnotationKeyValue()[0];
+		value = getAnnotationKeyValue()[1];
+		if (getAnnotationKeyValue()[2] != null) {
+			namespace = getAnnotationKeyValue()[2];
+		}
+		boolean isAnnotationArrayValid = checkAnnotationArray(getAnnotationKeyValue());
+		if (!isAnnotationArrayValid) {
 			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Annotation error", "The annotation format is not correct.\nPlease use [namespace]::[key]:[value], where neither key nor value may be empty, and namespace is optional.");
 			return;
 		}
-		if (annotationKeyValue[2] != null) {
-			namespace = annotationKeyValue[2];
-		}
+		
 		// Determine type of model parent & get its List of annotations
 		EList<SAnnotation> existingAnnotations = getExistingAnnotationsFromModelParent(modelParent);
 		if (existingAnnotations != null) {
@@ -147,6 +136,34 @@ public class AnnotationAnnotateCommand extends Command {
 		}
 	}
 
+	private boolean checkAnnotationArray(String[] annotationKeyValue2) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private String[] constructAnnotationKeyValue(String input) {
+		String[] annotationArray = new String[3];
+		if (input.contains("::")) { // I.e., has namespace part
+			String[] nsKV = input.split(":{2}");
+			System.err.println(Arrays.toString(nsKV));
+			annotationArray[2] = nsKV[0];
+			String[] kV = nsKV[1].split(":");
+			System.err.println(Arrays.toString(kV));
+			annotationArray[0] = kV[0];
+			annotationArray[1] = kV[1];
+			System.err.println(Arrays.toString(annotationArray) + "\n");
+		}
+		else {
+			String[] kV = input.split(":");
+			annotationArray[0] = kV[0];
+			annotationArray[1] = kV[1];
+			if (model.getNamespace() != null) {
+				annotationArray[2] = model.getNamespace();
+			}
+		}
+		return annotationArray;
+	}
+
 	private EList<SAnnotation> getExistingAnnotationsFromModelParent(LabelableElement modelParent) {
 		EList<SAnnotation> existingAnnotationsFromModelParent = null;
 		if (modelParent instanceof SStructure) {
@@ -174,6 +191,20 @@ public class AnnotationAnnotateCommand extends Command {
 
 	public void setModelParent(LabelableElement labelableElement) {
 		this.modelParent = labelableElement;
+	}
+
+	/**
+	 * @return the annotationKeyValue
+	 */
+	public String[] getAnnotationKeyValue() {
+		return annotationKeyValue;
+	}
+
+	/**
+	 * @param annotationKeyValue the annotationKeyValue to set
+	 */
+	public void setAnnotationKeyValue(String[] annotationKeyValue) {
+		this.annotationKeyValue = annotationKeyValue;
 	}
 
 }
