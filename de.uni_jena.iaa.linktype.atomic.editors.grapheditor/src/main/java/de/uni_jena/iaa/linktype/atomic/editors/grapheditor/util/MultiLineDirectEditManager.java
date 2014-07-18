@@ -32,11 +32,14 @@ public class MultiLineDirectEditManager extends DirectEditManager {
 	protected void initCellEditor() {
 		String initialLabelText = "";
 		for (SAnnotation annotation : ((SAnnotatableElement) getEditPart().getModel()).getSAnnotations()) {
+			String escapedKey = annotation.getSName().replaceAll(":", "\\\\:");
+			String escapedValue = annotation.getValueString().replaceAll(":", "\\\\:");
 			if (annotation.getNamespace() != null) {
-				initialLabelText = initialLabelText + annotation.getNamespace() + "::" + annotation.getSName() + ":" + annotation.getValueString() + "\n";
+				String escapedNamespace = annotation.getNamespace().replaceAll(":", "\\\\:");
+				initialLabelText = initialLabelText + escapedNamespace + "::" + escapedKey + ":" + escapedValue + "\n";
 			}
 			else {
-				initialLabelText = initialLabelText + annotation.getSName() + ":" + annotation.getValueString() + "\n";
+				initialLabelText = initialLabelText + escapedKey + ":" + escapedValue + "\n";
 			}
 		}
 		getCellEditor().setValue(initialLabelText);

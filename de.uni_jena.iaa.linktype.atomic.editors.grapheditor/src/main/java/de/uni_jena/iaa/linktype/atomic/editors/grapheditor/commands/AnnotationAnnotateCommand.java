@@ -149,10 +149,13 @@ public class AnnotationAnnotateCommand extends Command {
 	 * @param namespace
 	 */
 	private void setAnnotationValues(String key, String value, String namespace) {
-		model.setSName(key);
-		model.setSValue(value);
+		String unescapedKey = key.replaceAll("(?:\\\\:)", ":");
+		model.setSName(unescapedKey);
+		String unescapedValue = value.replaceAll("(?:\\\\:)", ":");
+		model.setSValue(unescapedValue);
 		if (namespace != null) {
-			model.setNamespace(namespace);
+			String unescapedNamespace = namespace.replaceAll("(?:\\\\:)", ":");
+			model.setNamespace(unescapedNamespace);
 		}
 	}
 

@@ -20,11 +20,14 @@ public class SingleLineDirectEditManager extends DirectEditManager {
 		String initialLabelText = "";
 		if (getEditPart() instanceof AnnotationPart) {
 			SAnnotation anno = (SAnnotation) getEditPart().getModel();
+			String escapedKey = anno.getSName().replaceAll(":", "\\\\:");
+			String escapedValue = anno.getValueString().replaceAll(":", "\\\\:");
 			if (anno.getNamespace() != null) {
-				initialLabelText = anno.getNamespace() + "::" + anno.getSName() + ":" + anno.getSValue();
+				String escapedNamespace = anno.getNamespace().replaceAll(":", "\\\\:");
+				initialLabelText = escapedNamespace + "::" + escapedKey + ":" + escapedValue;
 			}
 			else {
-				initialLabelText = anno.getSName() + ":" + anno.getSValue();
+				initialLabelText = escapedKey + ":" + escapedValue;
 			}
 		}
 		getCellEditor().setValue(initialLabelText);
