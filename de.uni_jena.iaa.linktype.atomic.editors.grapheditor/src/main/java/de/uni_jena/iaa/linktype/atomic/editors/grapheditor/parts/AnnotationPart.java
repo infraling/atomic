@@ -117,9 +117,14 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 	public class AnnotationAdapter extends EContentAdapter {
 		@Override 
 		public void notifyChanged(Notification n) {
-			refreshVisuals();
 			if (n.getEventType() == Notification.SET) {
-				if (n.getOldValue() instanceof String && n.getNewValue() instanceof String) { // i.e., when the (key or?) value has changed
+				if (n.getOldValue() == null && n.getNewValue().equals(getModel().getNamespace())) {
+					refreshVisuals();
+				}
+				else if (n.getOldValue() instanceof String && n.getNewValue() == null) {
+					refreshVisuals();
+				}
+				else if (n.getOldValue() instanceof String && n.getNewValue() instanceof String) { // i.e., when the (key or?) value has changed
 					refreshVisuals();
 				}
 				// FIXME: implement below for SRelations or check against higher supertype
