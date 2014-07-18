@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart;
 
 /**
  * @author Stephan Druskat
@@ -32,12 +31,11 @@ public class MultiLineDirectEditManager extends DirectEditManager {
 	@Override 
 	protected void initCellEditor() {
 		String initialLabelText = "";
-		if (getEditPart() instanceof AnnotationPart) {
-			SAnnotation annotation = (SAnnotation) getEditPart().getModel();
-			initialLabelText = annotation.getSName() + ":" + annotation.getValueString();
-		}
-		else {
-			for (SAnnotation annotation : ((SAnnotatableElement) getEditPart().getModel()).getSAnnotations()) {
+		for (SAnnotation annotation : ((SAnnotatableElement) getEditPart().getModel()).getSAnnotations()) {
+			if (annotation.getNamespace() != null) {
+				initialLabelText = initialLabelText + annotation.getNamespace() + "::" + annotation.getSName() + ":" + annotation.getValueString() + "\n";
+			}
+			else {
 				initialLabelText = initialLabelText + annotation.getSName() + ":" + annotation.getValueString() + "\n";
 			}
 		}

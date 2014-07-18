@@ -135,19 +135,24 @@ public class AnnotationAnnotateCommand extends Command {
 					keyExistsInPreexistingAnnotations = false;
 			}
 			if (!keyExistsInPreexistingAnnotations) { // Key doesn't exist in preexisting annotations.
-				model.setSName(key);
-				model.setSValue(value);
-				if (namespace != null) {
-					model.setNamespace(namespace);
-				}
+				setAnnotationValues(key, value, namespace);
 			}
 		}
 		else { // existingAnnotations == null -> model parent has no annotations. Should never be called...
-			model.setSName(key);
-			model.setSValue(value);
-			if (namespace != null) {
-				model.setNamespace(namespace);
-			}
+			setAnnotationValues(key, value, namespace);
+		}
+	}
+
+	/**
+	 * @param key
+	 * @param value
+	 * @param namespace
+	 */
+	private void setAnnotationValues(String key, String value, String namespace) {
+		model.setSName(key);
+		model.setSValue(value);
+		if (namespace != null) {
+			model.setNamespace(namespace);
 		}
 	}
 
