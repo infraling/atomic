@@ -106,7 +106,6 @@ public class AnnotationAnnotateCommand extends Command {
 						return;
 					}
 					else if (preValue.equalsIgnoreCase(value) && (preNamespace == null || !(preNamespace.equalsIgnoreCase(namespace)))) { // Exact duplicate annotation exists, incl. namespace
-						String namespaceString = (namespace != null ? namespace : "namespace not set");
 						MessageDialog addAnnotationInDifferentNamespace = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation!", null, "This annotation exists already for this annotatable element, albeit in a different namespace (" + preNamespace + ").\nDo you want to add the duplicate annotation nevertheless?", MessageDialog.QUESTION, new String[]{"Yes", "No"}, 0);
 						int result = addAnnotationInDifferentNamespace.open();
 						if (result == 0) { // Yes
