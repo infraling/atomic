@@ -68,13 +68,13 @@ public class AnnotationAnnotateCommand extends Command {
 		boolean isInputValid = checkInputValidity(getAnnotationInput());
 		if (isInputValid) {
 			String[] annotationFields = segmentInput(getAnnotationInput());
-			int l = annotationFields.length;
-			Assert.isLegal(l == 2 || l == 3, "The length of the annotation fields array should be 2 or 3 to hold key, value, and optionally namespace, but it is not.");
-			if (l == 2) {
+			int numberOfAnnotationFields = annotationFields.length;
+			Assert.isLegal(numberOfAnnotationFields == 2 || numberOfAnnotationFields == 3, "The length of the annotation fields array should be 2 or 3 to hold key, value, and optionally namespace, but it is not.");
+			if (numberOfAnnotationFields == 2) {
 				key = annotationFields[0];
 				value = annotationFields[1];
 			}
-			else if (l == 3) {
+			else if (numberOfAnnotationFields == 3) {
 				namespace = annotationFields[0];
 				key = annotationFields[1];
 				value = annotationFields[2];
