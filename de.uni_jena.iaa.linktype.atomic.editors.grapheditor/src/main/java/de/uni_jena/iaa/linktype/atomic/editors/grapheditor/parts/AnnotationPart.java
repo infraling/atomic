@@ -118,7 +118,7 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 		@Override 
 		public void notifyChanged(Notification n) {
 			if (n.getEventType() == Notification.SET) {
-				if (n.getOldValue() == null && n.getNewValue().equals(getModel().getNamespace())) {
+				if (n.getOldValue() == null && getModel().getNamespace() != null && n.getNewValue().equals(getModel().getNamespace())) {
 					refreshVisuals();
 				}
 				else if (n.getOldValue() instanceof String && n.getNewValue() == null) {

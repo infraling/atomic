@@ -96,37 +96,35 @@ public class AnnotationAnnotateCommand extends Command {
 			boolean keyExistsInPreexistingAnnotations = false;
 			for (SAnnotation preExistingAnnotation : existingAnnotations) {
 				if (preExistingAnnotation.getName().equalsIgnoreCase(key) && preExistingAnnotation != model) {
-					if (preExistingAnnotation.getValueString().equalsIgnoreCase(value)) { // Exact duplicate annotation exists
-						MessageDialog.openError(Display.getCurrent().getActiveShell(), "Duplicate annotation!", "This exact annotation exists already for this annotatable element.\nThe process will be aborted.");
+					String preValue = preExistingAnnotation.getValueString();
+					String preNamespace = null;
+					if (preExistingAnnotation.getNamespace() != null) {
+						preNamespace = preExistingAnnotation.getNamespace();
+					}
+					if (preValue.equalsIgnoreCase(value) && (preNamespace != null && preNamespace.equalsIgnoreCase(namespace)) || (namespace == null && preNamespace == null)) {
+						MessageDialog.openError(Display.getCurrent().getActiveShell(), "Duplicate annotation!", "This annotation exists already for this annotatable element, and in the namespace " + namespace + ".\nThe process will be aborted.");
 						return;
 					}
+					else if (preValue.equalsIgnoreCase(value) && (preNamespace == null || !(preNamespace.equalsIgnoreCase(namespace)))) { // Exact duplicate annotation exists, incl. namespace
+						String namespaceString = (namespace != null ? namespace : "namespace not set");
+						MessageDialog addAnnotationInDifferentNamespace = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation!", null, "This annotation exists already for this annotatable element, albeit in a different namespace (" + preNamespace + ").\nDo you want to add the duplicate annotation nevertheless?", MessageDialog.QUESTION, new String[]{"Yes", "No"}, 0);
+						int result = addAnnotationInDifferentNamespace.open();
+						if (result == 0) { // Yes
+							setAnnotationValues(key, value, namespace);
+							return;
+						}
+						else {
+							return;
+						}
+					}
 					else {
-						MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), 
-								"Duplicate annotation key!", 
-								null, 
-								"An annotation with the key " + 
-									key + 
-									" already exists!\n" +
-									"Its current value is " +
-									preExistingAnnotation.getValueString() + ".\n" +
-									"Do you want to overwrite the value of the existing annotation,\n" +
-									"and delete the annotation you are currently editing?", 
-								MessageDialog.QUESTION, 
-								new String[] {"Yes", "No"}, 
-								0);
+						MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation key!", null, "An annotation with the key " + key + " already exists!\n" + "Its current value is " + preExistingAnnotation.getValueString() + ".\n" + "Do you want to overwrite the value of the existing annotation,\n" + "and delete the annotation you are currently editing?", MessageDialog.QUESTION, new String[] {"Yes", "No"}, 0);
 								int result = dialog.open();
-								switch (result) {
-								case 0: // "Yes"
+								if (result == 0) { // Yes
 									preExistingAnnotation.setSValue(value);
 									LabelableElement parent = model.getLabelableElement();
 									parent.removeLabel(model.getSName());
 									parent.eNotify(new NotificationImpl(Notification.REMOVE, model, null));
-									break;
-								case 1: // "No"
-									// Do nothing
-									break;
-								default:
-									break;
 								}
 					}
 					keyExistsInPreexistingAnnotations = true;
