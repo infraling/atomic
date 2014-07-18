@@ -157,6 +157,9 @@ public class AnnotationAnnotateCommand extends Command {
 			String unescapedNamespace = namespace.replaceAll("(?:\\\\:)", ":");
 			model.setNamespace(unescapedNamespace);
 		}
+		else {
+			model.setNamespace(null);
+		}
 	}
 
 	private String[] segmentInput(String annotationInput) {
