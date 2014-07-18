@@ -79,7 +79,7 @@ public class AnnotationAnnotateCommand extends Command {
 				key = annotationFields[1];
 				value = annotationFields[2];
 			}
-			else {
+			else { // Theoretically, this should never be the case, cf. Assert above
 				MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "The length of the annotation fields array should be 2 or 3 to hold key, value, and optionally namespace, but it is not. Please report this error!");
 				return;
 			}
