@@ -3,11 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
-import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -20,6 +16,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AnnotationUtils;
 
 /**
  * @author Stephan Druskat
@@ -28,9 +25,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 public class AnnotationAnnotateCommand extends Command {
 	
 	private String annotationInput;
-	private static final String ANNOTATION_WITH_NAMESPACE_REGEX = "(?:\\\\:|[^:])+:{2}(?:\\\\:|[^:])+:(?:\\\\:|[^:])+";
-	private static final String ANNOTATION_WITHOUT_NAMESPACE_REGEX = "(?:\\\\:|[^:])+:(?:\\\\:|[^:])+";
-	private static final String ONE_OR_TWO_COLONS = "(?<!\\\\):{1,2}";
 	private SAnnotation model;
 	private LabelableElement modelParent;
 	private String[] annotationKeyValue;
@@ -49,25 +43,12 @@ public class AnnotationAnnotateCommand extends Command {
 	
 	@Override 
 	public void execute() {
-		/* FIXME: Write Unit tests for different input possibilities:
-		 * a:
-		 * :a
-		 * a::a::a
-		 * a::a::a:a
-		 * a::a
-		 * a
-		 * :
-		 * ::
-		 * :::
-		 * etc.
-		 */
-		// Parse annotation String
 		String key = null;
 		String value = null;
 		String namespace = null;
-		boolean isInputValid = checkInputValidity(getAnnotationInput());
+		boolean isInputValid = AnnotationUtils.checkInputValidity(getAnnotationInput());
 		if (isInputValid) {
-			String[] annotationFields = segmentInput(getAnnotationInput());
+			String[] annotationFields = AnnotationUtils.segmentInput(getAnnotationInput());
 			int numberOfAnnotationFields = annotationFields.length;
 			Assert.isLegal(numberOfAnnotationFields == 2 || numberOfAnnotationFields == 3, "The length of the annotation fields array should be 2 or 3 to hold key, value, and optionally namespace, but it is not.");
 			if (numberOfAnnotationFields == 2) {
@@ -93,51 +74,54 @@ public class AnnotationAnnotateCommand extends Command {
 		// Determine type of model parent & get its List of annotations
 		EList<SAnnotation> existingAnnotations = getExistingAnnotationsFromModelParent(modelParent);
 		if (existingAnnotations != null) {
-			boolean keyExistsInPreexistingAnnotations = false;
-			for (SAnnotation preExistingAnnotation : existingAnnotations) {
-				if (preExistingAnnotation.getName().equalsIgnoreCase(key) && preExistingAnnotation != model) {
-					String preValue = preExistingAnnotation.getValueString();
-					String preNamespace = null;
-					if (preExistingAnnotation.getNamespace() != null) {
-						preNamespace = preExistingAnnotation.getNamespace();
-					}
-					if (preValue.equalsIgnoreCase(value) && (preNamespace != null && preNamespace.equalsIgnoreCase(namespace)) || (namespace == null && preNamespace == null)) {
-						MessageDialog.openError(Display.getCurrent().getActiveShell(), "Duplicate annotation!", "This annotation exists already for this annotatable element, and in the namespace " + namespace + ".\nThe process will be aborted.");
-						return;
-					}
-					else if (preValue.equalsIgnoreCase(value) && (preNamespace == null || !(preNamespace.equalsIgnoreCase(namespace)))) { // Exact duplicate annotation exists, incl. namespace
-						MessageDialog addAnnotationInDifferentNamespace = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation!", null, "This annotation exists already for this annotatable element, albeit in a different namespace (" + preNamespace + ").\nDo you want to add the duplicate annotation nevertheless?", MessageDialog.QUESTION, new String[]{"Yes", "No"}, 0);
-						int result = addAnnotationInDifferentNamespace.open();
-						if (result == 0) { // Yes
-							setAnnotationValues(key, value, namespace);
-							return;
-						}
-						else {
-							return;
-						}
-					}
-					else {
-						MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation key!", null, "An annotation with the key " + key + " already exists!\n" + "Its current value is " + preExistingAnnotation.getValueString() + ".\n" + "Do you want to overwrite the value of the existing annotation,\n" + "and delete the annotation you are currently editing?", MessageDialog.QUESTION, new String[] {"Yes", "No"}, 0);
-								int result = dialog.open();
-								if (result == 0) { // Yes
-									preExistingAnnotation.setSValue(value);
-									LabelableElement parent = model.getLabelableElement();
-									parent.removeLabel(model.getSName());
-									parent.eNotify(new NotificationImpl(Notification.REMOVE, model, null));
-								}
-					}
-					keyExistsInPreexistingAnnotations = true;
-				}
-				else
-					keyExistsInPreexistingAnnotations = false;
-			}
-			if (!keyExistsInPreexistingAnnotations) { // Key doesn't exist in preexisting annotations.
-				setAnnotationValues(key, value, namespace);
-			}
+			boolean shouldAnnotationValuesBeSet = AnnotationUtils.checkAnnotationValuesAgainstExisting(model, existingAnnotations, namespace, key, value);
+			System.err.println(shouldAnnotationValuesBeSet + "\n");
 		}
-		else { // existingAnnotations == null -> model parent has no annotations. Should never be called...
-			setAnnotationValues(key, value, namespace);
-		}
+//			boolean keyExistsInPreexistingAnnotations = false;
+//			for (SAnnotation preExistingAnnotation : existingAnnotations) {
+//				if (preExistingAnnotation.getName().equalsIgnoreCase(key) && preExistingAnnotation != model) {
+//					String preValue = preExistingAnnotation.getValueString();
+//					String preNamespace = null;
+//					if (preExistingAnnotation.getNamespace() != null) {
+//						preNamespace = preExistingAnnotation.getNamespace();
+//					}
+//					if (preValue.equalsIgnoreCase(value) && (preNamespace != null && preNamespace.equalsIgnoreCase(namespace)) || (namespace == null && preNamespace == null)) {
+//						MessageDialog.openError(Display.getCurrent().getActiveShell(), "Duplicate annotation!", "This annotation exists already for this annotatable element, and in the namespace " + namespace + ".\nThe process will be aborted.");
+//						return;
+//					}
+//					else if (preValue.equalsIgnoreCase(value) && (preNamespace == null || !(preNamespace.equalsIgnoreCase(namespace)))) { // Exact duplicate annotation exists, incl. namespace
+//						MessageDialog addAnnotationInDifferentNamespace = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation!", null, "This annotation exists already for this annotatable element, albeit in a different namespace (" + preNamespace + ").\nDo you want to add the duplicate annotation nevertheless?", MessageDialog.QUESTION, new String[]{"Yes", "No"}, 0);
+//						int result = addAnnotationInDifferentNamespace.open();
+//						if (result == 0) { // Yes
+//							setAnnotationValues(key, value, namespace);
+//							return;
+//						}
+//						else {
+//							return;
+//						}
+//					}
+//					else {
+//						MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation key!", null, "An annotation with the key " + key + " already exists!\n" + "Its current value is " + preExistingAnnotation.getValueString() + ".\n" + "Do you want to overwrite the value of the existing annotation,\n" + "and delete the annotation you are currently editing?", MessageDialog.QUESTION, new String[] {"Yes", "No"}, 0);
+//								int result = dialog.open();
+//								if (result == 0) { // Yes
+//									preExistingAnnotation.setSValue(value);
+//									LabelableElement parent = model.getLabelableElement();
+//									parent.removeLabel(model.getSName());
+//									parent.eNotify(new NotificationImpl(Notification.REMOVE, model, null));
+//								}
+//					}
+//					keyExistsInPreexistingAnnotations = true;
+//				}
+//				else
+//					keyExistsInPreexistingAnnotations = false;
+//			}
+//			if (!keyExistsInPreexistingAnnotations) { // Key doesn't exist in preexisting annotations.
+//				setAnnotationValues(key, value, namespace);
+//			}
+//		}
+//		else { // existingAnnotations == null -> model parent has no annotations. Should never be called...
+//			setAnnotationValues(key, value, namespace);
+//		}
 	}
 
 	/**
@@ -157,18 +141,6 @@ public class AnnotationAnnotateCommand extends Command {
 		else {
 			model.setNamespace(null);
 		}
-	}
-
-	private String[] segmentInput(String annotationInput) {
-		Pattern oneOrTwoColons = Pattern.compile(ONE_OR_TWO_COLONS);
-		return oneOrTwoColons.split(annotationInput);
-	}
-
-	private boolean checkInputValidity(String input) {
-		if (input.matches(ANNOTATION_WITHOUT_NAMESPACE_REGEX) || input.matches(ANNOTATION_WITH_NAMESPACE_REGEX)) {
-			return true;
-		}
-		return false;
 	}
 
 	private EList<SAnnotation> getExistingAnnotationsFromModelParent(LabelableElement modelParent) {
