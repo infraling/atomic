@@ -10,11 +10,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AnnotationUtils;
 
@@ -24,10 +20,18 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AnnotationUtils;
  */
 public class AnnotationAnnotateCommand extends Command {
 	
+	private static final int ABORT = -1;
+	private static final int SET_ALL = 0;
+	private static final int SET_NAMESPACE_AND_VALUE = 1;
+	private static final int SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION = 2;
+	private static final int ADD_ANNOTATION_IN_NEW_NAMESPACE = 3;
+	private static final int CHANGE_OLD_ANNOTATION_VALUE = 4;
+	private static final int ADD_ANNOTATION_IN_NEW_NAMESPACE_WITH_NEW_VALUE = 5;
 	private String annotationInput;
 	private SAnnotation model;
 	private LabelableElement modelParent;
 	private String[] annotationKeyValue;
+	
 	
 	public void setModel(SAnnotation model) {
 		this.model = model;
@@ -70,60 +74,139 @@ public class AnnotationAnnotateCommand extends Command {
 			return;
 		}
 
-		// FIXME: Clean this up!
 		// Determine type of model parent & get its List of annotations
-		EList<SAnnotation> existingAnnotations = getExistingAnnotationsFromModelParent(modelParent);
+		EList<SAnnotation> existingAnnotations = ((SAnnotatableElement) modelParent).getSAnnotations();
 		if (existingAnnotations != null) {
-			boolean shouldAnnotationValuesBeSet = AnnotationUtils.checkAnnotationValuesAgainstExisting(model, existingAnnotations, namespace, key, value);
-			System.err.println(shouldAnnotationValuesBeSet + "\n");
+			for (SAnnotation preExistingAnnotation : existingAnnotations) {
+				if (preExistingAnnotation.getName().equalsIgnoreCase(key) && preExistingAnnotation != model) {
+					int executionType = getExecutionTypeAndObject(preExistingAnnotation, namespace, value, key);
+					switch (executionType) {
+					case AnnotationAnnotateCommand.ABORT:
+						return;
+					case AnnotationAnnotateCommand.SET_ALL:
+						setAnnotationValues(key, value, namespace);
+						return;
+					case AnnotationAnnotateCommand.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION:
+						preExistingAnnotation.setNamespace(namespace);
+						return;
+					case AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE:
+						setAnnotationValues(key, value, namespace);
+						return;
+					case AnnotationAnnotateCommand.CHANGE_OLD_ANNOTATION_VALUE:
+						preExistingAnnotation.setValue(value);
+						modelParent.getLabels().remove(model);
+						return;
+					case AnnotationAnnotateCommand.SET_NAMESPACE_AND_VALUE:
+						preExistingAnnotation.setNamespace(namespace);
+						preExistingAnnotation.setValue(value);
+						return;
+					case AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE_WITH_NEW_VALUE:
+						setAnnotationValues(key, value, namespace);
+						return;
+					default:
+						// FIXME: Log an error here!
+						break;
+					}
+				}
+				else { // Key doesn't exist
+					setAnnotationValues(key, value, namespace);
+				}
+			}
 		}
-//			boolean keyExistsInPreexistingAnnotations = false;
-//			for (SAnnotation preExistingAnnotation : existingAnnotations) {
-//				if (preExistingAnnotation.getName().equalsIgnoreCase(key) && preExistingAnnotation != model) {
-//					String preValue = preExistingAnnotation.getValueString();
-//					String preNamespace = null;
-//					if (preExistingAnnotation.getNamespace() != null) {
-//						preNamespace = preExistingAnnotation.getNamespace();
-//					}
-//					if (preValue.equalsIgnoreCase(value) && (preNamespace != null && preNamespace.equalsIgnoreCase(namespace)) || (namespace == null && preNamespace == null)) {
-//						MessageDialog.openError(Display.getCurrent().getActiveShell(), "Duplicate annotation!", "This annotation exists already for this annotatable element, and in the namespace " + namespace + ".\nThe process will be aborted.");
-//						return;
-//					}
-//					else if (preValue.equalsIgnoreCase(value) && (preNamespace == null || !(preNamespace.equalsIgnoreCase(namespace)))) { // Exact duplicate annotation exists, incl. namespace
-//						MessageDialog addAnnotationInDifferentNamespace = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation!", null, "This annotation exists already for this annotatable element, albeit in a different namespace (" + preNamespace + ").\nDo you want to add the duplicate annotation nevertheless?", MessageDialog.QUESTION, new String[]{"Yes", "No"}, 0);
-//						int result = addAnnotationInDifferentNamespace.open();
-//						if (result == 0) { // Yes
-//							setAnnotationValues(key, value, namespace);
-//							return;
-//						}
-//						else {
-//							return;
-//						}
-//					}
-//					else {
-//						MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation key!", null, "An annotation with the key " + key + " already exists!\n" + "Its current value is " + preExistingAnnotation.getValueString() + ".\n" + "Do you want to overwrite the value of the existing annotation,\n" + "and delete the annotation you are currently editing?", MessageDialog.QUESTION, new String[] {"Yes", "No"}, 0);
-//								int result = dialog.open();
-//								if (result == 0) { // Yes
-//									preExistingAnnotation.setSValue(value);
-//									LabelableElement parent = model.getLabelableElement();
-//									parent.removeLabel(model.getSName());
-//									parent.eNotify(new NotificationImpl(Notification.REMOVE, model, null));
-//								}
-//					}
-//					keyExistsInPreexistingAnnotations = true;
-//				}
-//				else
-//					keyExistsInPreexistingAnnotations = false;
-//			}
-//			if (!keyExistsInPreexistingAnnotations) { // Key doesn't exist in preexisting annotations.
-//				setAnnotationValues(key, value, namespace);
-//			}
-//		}
-//		else { // existingAnnotations == null -> model parent has no annotations. Should never be called...
-//			setAnnotationValues(key, value, namespace);
-//		}
+		else { // existingAnnotations == null
+			setAnnotationValues(key, value, namespace);
+		}
 	}
 
+	private int getExecutionTypeAndObject(SAnnotation preExistingAnnotation, String namespace, String value, String key) {
+		if (preExistingAnnotation != model) {
+			if (!preExistingAnnotation.getName().equalsIgnoreCase(key)) {
+				return AnnotationAnnotateCommand.SET_ALL;
+			}
+			else { // KEY exists
+				// Values first cos namespaces may be null
+				String oldNamespace = preExistingAnnotation.getNamespace();
+				if (preExistingAnnotation.getValue().toString().equalsIgnoreCase(value)) { // VALUE exists
+					if (namespace != null && oldNamespace != null) { // Both NS NOT null
+						if (!(namespace.equalsIgnoreCase(oldNamespace))) { // NSs differ
+							MessageDialog namespacesDifferDialog = createFeedbackDialog("There is already an annotation with the key " + key + " and the value " + value + " for this element, albeit in a different namespace (" + oldNamespace + ")!\nWould you like to\n- Set the existing annotation's namespace to " + namespace + "\nAdd a duplicate of the existing annotation in the namespace " + namespace, new String[]{"Set namespace", "Create duplicate", "Abort"});
+							int result = namespacesDifferDialog.open();
+							switch (result) {
+								case 0: return AnnotationAnnotateCommand.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION;
+								case 1: return AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE;
+								case 2: return AnnotationAnnotateCommand.ABORT;
+								default: break;
+							}
+						}
+						else { // NSs are the same
+							MessageDialog abortDialog = createFeedbackDialog("An exact same annotation with the values\n\nNamespace: " + namespace + "\nKey: " + key + "\nValue: " + value + "\n\nalready exists. The operation will be aborted.", new String[]{"OK"});
+							int result = abortDialog.open();
+							if (result == 0) { // "OK
+								return AnnotationAnnotateCommand.ABORT;								
+							}	
+						}
+					}
+					else if (namespace == null ^ oldNamespace == null) { // Either NS null
+						MessageDialog namespacesDifferDialogWithNull = createFeedbackDialog("There is already an annotation with the key " + key + " and the value " + value + " for this element, albeit in a different namespace (" + oldNamespace + ")!\nWould you like to\n- Set the existing annotation's namespace to " + namespace + "\nAdd a duplicate of the existing annotation in the namespace " + namespace, new String[]{"Set namespace", "Create duplicate", "Abort"});
+						int result = namespacesDifferDialogWithNull.open();
+						switch (result) {
+							case 0: return AnnotationAnnotateCommand.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION;
+							case 1: return AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE;
+							case 2: return AnnotationAnnotateCommand.ABORT;
+						default: break;
+						}
+					}
+					else { // Both NS null
+						MessageDialog abortDialog = createFeedbackDialog("An exact same annotation with the values\n\nNamespace: " + namespace + "\nKey: " + key + "\nValue: " + value + "\n\nalready exists. The operation will be aborted.", new String[]{"OK"});
+						int result = abortDialog.open();
+						if (result == 0) { // "OK
+							return AnnotationAnnotateCommand.ABORT;								
+						}
+					}
+				}
+				else  { // VALUE is NEW
+					if (namespace != null && oldNamespace != null) { // Both NS NOT null
+						if (!(namespace.equalsIgnoreCase(oldNamespace))) { // NSs differ
+							MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or create a new annotation with the same key in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Create new annotation", "Abort"});
+							int result = newNamespaceNewValueDialog.open();
+							switch (result) {
+							case 0: return AnnotationAnnotateCommand.SET_NAMESPACE_AND_VALUE;
+							case 1: return AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE_WITH_NEW_VALUE;
+							case 2: return 0;
+							default: break;
+							}
+						}
+						else { // NSs are the same
+							MessageDialog changingOldValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists in the namespace " + namespace + "!\nDo you want to change the existing annotation's value (currently " + preExistingAnnotation.getValue().toString() + ") to " + value + " and delete the currently edited anotation (" + model.getName() + ":" + model.getValue().toString() + ")?", new String[]{"Yes", "No"});
+							int result = changingOldValueDialog.open();
+							if (result == 0) {
+								return AnnotationAnnotateCommand.CHANGE_OLD_ANNOTATION_VALUE;
+							}
+						}
+					}
+					else if (namespace == null ^ oldNamespace == null) { // Either NS null = NSs differ
+						MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or create a new annotation with the same key in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Create new annotation", "Abort"});
+						int result = newNamespaceNewValueDialog.open();
+						switch (result) {
+						case 0: return AnnotationAnnotateCommand.SET_NAMESPACE_AND_VALUE;
+						case 1: return AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE_WITH_NEW_VALUE;
+						case 2: return 0;
+						default: break;
+						}
+					}
+					else { // Both NS null
+						MessageDialog changingOldValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists in the namespace " + namespace + "!\nDo you want to change the existing annotation's value (currently " + preExistingAnnotation.getValue().toString() + ") to " + value + " and delete the currently edited anotation (" + model.getName() + ":" + model.getValue().toString() + ")?", new String[]{"Yes", "No"});
+						int result = changingOldValueDialog.open();
+						if (result == 0) {
+							return AnnotationAnnotateCommand.CHANGE_OLD_ANNOTATION_VALUE;
+						}
+					}
+				}
+			}
+		}
+		return 666;
+	}
+	
 	/**
 	 * @param key
 	 * @param value
@@ -143,29 +226,8 @@ public class AnnotationAnnotateCommand extends Command {
 		}
 	}
 
-	private EList<SAnnotation> getExistingAnnotationsFromModelParent(LabelableElement modelParent) {
-		EList<SAnnotation> existingAnnotationsFromModelParent = null;
-		if (modelParent instanceof SStructure) {
-			SStructure parent = (SStructure) modelParent;
-			existingAnnotationsFromModelParent = parent.getSAnnotations();
-		}
-		else if (modelParent instanceof SToken) {
-			SToken parent = (SToken) modelParent;
-			existingAnnotationsFromModelParent = parent.getSAnnotations();
-		}
-		else if (modelParent instanceof SSpan) {
-			SSpan parent = (SSpan) modelParent;
-			existingAnnotationsFromModelParent = parent.getSAnnotations();
-		}
-		else if (modelParent instanceof SDominanceRelation) {
-			SDominanceRelation parent = (SDominanceRelation) modelParent;
-			existingAnnotationsFromModelParent = parent.getSAnnotations();
-		}
-		else if (modelParent instanceof SPointingRelation) {
-			SPointingRelation parent = (SPointingRelation) modelParent;
-			existingAnnotationsFromModelParent = parent.getSAnnotations();
-		}
-		return existingAnnotationsFromModelParent;
+	private static MessageDialog createFeedbackDialog(String dialogMessage, String[] dialogButtonLabels) {
+		return new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation!", null, dialogMessage, MessageDialog.QUESTION, dialogButtonLabels, 0);
 	}
 
 	public void setModelParent(LabelableElement labelableElement) {

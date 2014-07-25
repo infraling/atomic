@@ -35,10 +35,6 @@ public class AnnotationUtils {
 		return oneOrTwoColons.split(annotationInput);
 	}
 
-	private static MessageDialog createFeedbackDialog(String dialogMessage, String[] dialogButtonLabels) {
-		return new MessageDialog(Display.getCurrent().getActiveShell(), "Duplicate annotation!", null, dialogMessage, MessageDialog.QUESTION, dialogButtonLabels, 0);
-	}
-
 	public static  boolean checkAnnotationValuesAgainstExisting(SAnnotation model, EList<SAnnotation> existingAnnotations, String namespace, String key, String value) {
 		// TODO Auto-generated method stub
 		return false;
