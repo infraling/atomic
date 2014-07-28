@@ -78,7 +78,7 @@ public class AnnotationAnnotateCommand extends Command {
 		EList<SAnnotation> existingAnnotations = ((SAnnotatableElement) modelParent).getSAnnotations();
 		if (existingAnnotations != null) {
 			for (SAnnotation preExistingAnnotation : existingAnnotations) {
-				if (preExistingAnnotation.getName().equalsIgnoreCase(key) && preExistingAnnotation != model) {
+				if (preExistingAnnotation.getName().equalsIgnoreCase(key) && preExistingAnnotation != model) { // KEY exists
 					int executionType = getExecutionTypeAndObject(preExistingAnnotation, namespace, value, key);
 					switch (executionType) {
 					case AnnotationAnnotateCommand.ABORT:
@@ -106,12 +106,12 @@ public class AnnotationAnnotateCommand extends Command {
 					default:
 						// FIXME: Log an error here!
 						break;
-					}
-				}
-				else { // Key doesn't exist
-					setAnnotationValues(key, value, namespace);
-				}
-			}
+					} 
+				} 
+			} 
+			// When having gone through all pre-existing annotations but haven't found `key` in getName() for any of them
+			// (i.e., key doesn't exists yet in pre-existing annotations):
+			setAnnotationValues(key, value, namespace);
 		}
 		else { // existingAnnotations == null
 			setAnnotationValues(key, value, namespace);
@@ -129,7 +129,7 @@ public class AnnotationAnnotateCommand extends Command {
 				if (preExistingAnnotation.getValue().toString().equalsIgnoreCase(value)) { // VALUE exists
 					if (namespace != null && oldNamespace != null) { // Both NS NOT null
 						if (!(namespace.equalsIgnoreCase(oldNamespace))) { // NSs differ
-							MessageDialog namespacesDifferDialog = createFeedbackDialog("There is already an annotation with the key " + key + " and the value " + value + " for this element, albeit in a different namespace (" + oldNamespace + ")!\nWould you like to\n- Set the existing annotation's namespace to " + namespace + "\nAdd a duplicate of the existing annotation in the namespace " + namespace, new String[]{"Set namespace", "Create duplicate", "Abort"});
+							MessageDialog namespacesDifferDialog = createFeedbackDialog("There is already an annotation with the key " + key + " and the value " + value + " for this element, albeit in a different namespace (" + oldNamespace + ")!\nWould you like to\n- Set the existing annotation's namespace to " + namespace + "\n- Add a duplicate of the existing annotation in the namespace " + namespace, new String[]{"Set namespace", "Create duplicate", "Abort"});
 							int result = namespacesDifferDialog.open();
 							switch (result) {
 								case 0: return AnnotationAnnotateCommand.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION;
@@ -147,7 +147,20 @@ public class AnnotationAnnotateCommand extends Command {
 						}
 					}
 					else if (namespace == null ^ oldNamespace == null) { // Either NS null
-						MessageDialog namespacesDifferDialogWithNull = createFeedbackDialog("There is already an annotation with the key " + key + " and the value " + value + " for this element, albeit in a different namespace (" + oldNamespace + ")!\nWould you like to\n- Set the existing annotation's namespace to " + namespace + "\nAdd a duplicate of the existing annotation in the namespace " + namespace, new String[]{"Set namespace", "Create duplicate", "Abort"});
+						String setNamespaceText = null;
+						String addDuplicateText = null;
+						String setButtonText = null;
+						if (namespace == null) {
+							setNamespaceText = "- Remove the existing annotation's namespace tag";
+							addDuplicateText = "- Add a duplicate of the existing annotation without a namespace tag";
+							setButtonText = "Remove namespace tag";
+						}
+						else {
+							setNamespaceText = "- Set the existing annotation's namespace to " + namespace;
+							addDuplicateText = "- Add a duplicate of the existing annotation in the namespace " + namespace;
+							setButtonText = "Set namespace";
+						}
+						MessageDialog namespacesDifferDialogWithNull = createFeedbackDialog("There is already an annotation with the key " + key + " and the value " + value + " for this element, albeit in a different namespace (" + oldNamespace + ")!\nWould you like to\n" + setNamespaceText + "\n" + addDuplicateText, new String[]{setButtonText, "Add duplicate", "Abort"});
 						int result = namespacesDifferDialogWithNull.open();
 						switch (result) {
 							case 0: return AnnotationAnnotateCommand.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION;
@@ -167,12 +180,12 @@ public class AnnotationAnnotateCommand extends Command {
 				else  { // VALUE is NEW
 					if (namespace != null && oldNamespace != null) { // Both NS NOT null
 						if (!(namespace.equalsIgnoreCase(oldNamespace))) { // NSs differ
-							MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or create a new annotation with the same key in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Create new annotation", "Abort"});
+							MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or overwrite the currently edited annotation with a new annotation with the key " + key + " in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Overwrite annotation", "Abort"});
 							int result = newNamespaceNewValueDialog.open();
 							switch (result) {
 							case 0: return AnnotationAnnotateCommand.SET_NAMESPACE_AND_VALUE;
 							case 1: return AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE_WITH_NEW_VALUE;
-							case 2: return 0;
+							case 2: return AnnotationAnnotateCommand.ABORT;
 							default: break;
 							}
 						}
@@ -182,15 +195,18 @@ public class AnnotationAnnotateCommand extends Command {
 							if (result == 0) {
 								return AnnotationAnnotateCommand.CHANGE_OLD_ANNOTATION_VALUE;
 							}
+							else {
+								return AnnotationAnnotateCommand.ABORT;
+							}
 						}
 					}
 					else if (namespace == null ^ oldNamespace == null) { // Either NS null = NSs differ
-						MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or create a new annotation with the same key in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Create new annotation", "Abort"});
+						MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or overwrite the currently edited annotation with a new annotation with the key " + key + " in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Overwrite annotation", "Abort"});
 						int result = newNamespaceNewValueDialog.open();
 						switch (result) {
 						case 0: return AnnotationAnnotateCommand.SET_NAMESPACE_AND_VALUE;
 						case 1: return AnnotationAnnotateCommand.ADD_ANNOTATION_IN_NEW_NAMESPACE_WITH_NEW_VALUE;
-						case 2: return 0;
+						case 2: return AnnotationAnnotateCommand.ABORT; //
 						default: break;
 						}
 					}
@@ -199,6 +215,9 @@ public class AnnotationAnnotateCommand extends Command {
 						int result = changingOldValueDialog.open();
 						if (result == 0) {
 							return AnnotationAnnotateCommand.CHANGE_OLD_ANNOTATION_VALUE;
+						}
+						else {
+							return AnnotationAnnotateCommand.ABORT;
 						}
 					}
 				}
