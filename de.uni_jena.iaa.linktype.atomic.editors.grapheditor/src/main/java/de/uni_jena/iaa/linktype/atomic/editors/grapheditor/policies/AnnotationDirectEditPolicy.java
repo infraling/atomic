@@ -157,7 +157,7 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 		else  { // VALUE is NEW
 			if (namespace != null && oldNamespace != null) { // Both NS NOT null
 				if (!(namespace.equalsIgnoreCase(oldNamespace))) { // NSs differ
-					MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or overwrite the currently edited annotation with a new annotation with the key " + key + " in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Overwrite annotation", "Abort"});
+					MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to\n- change the fields (namespace, value) for the existing annotation, or\n- overwrite the currently edited annotation with the key " + key + " in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Overwrite annotation", "Abort"});
 					int result = newNamespaceNewValueDialog.open();
 					switch (result) {
 						case 0: return AnnotationDirectEditPolicy.SET_NAMESPACE_AND_VALUE;
@@ -178,7 +178,7 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 				}
 			}
 			else if (namespace == null ^ oldNamespace == null) { // Either NS null = NSs differ
-				MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to change the fields (namespace, value) for the existing annotation, or overwrite the currently edited annotation with a new annotation with the key " + key + " in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Overwrite annotation", "Abort"});
+				MessageDialog newNamespaceNewValueDialog = createFeedbackDialog("An annotation with the key " + key + " already exists, albeit in a different namespace (" + oldNamespace + ") and with a different value (" + preExistingAnnotation.getValue().toString() + ").\nDo you want to\n- change the fields (namespace, value) for the existing annotation, or\n- overwrite the currently edited annotation with with the key " + key + " in the namespace " + namespace + ", and assign it the value " + value + "?", new String[]{"Change fields", "Overwrite annotation", "Abort"});
 				int result = newNamespaceNewValueDialog.open();
 				switch (result) {
 					case 0: return AnnotationDirectEditPolicy.SET_NAMESPACE_AND_VALUE;
