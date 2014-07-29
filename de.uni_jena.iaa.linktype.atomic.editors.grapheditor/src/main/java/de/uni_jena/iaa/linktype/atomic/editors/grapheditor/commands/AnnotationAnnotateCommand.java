@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import org.eclipse.gef.commands.Command;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 /**
@@ -37,7 +36,6 @@ public class AnnotationAnnotateCommand extends Command {
 		}
 		else {
 			for (Entry<SAnnotation, Integer> entry : getDuplicateAnnotationsToModify().entrySet()) {
-				System.err.println(entry);
 				SAnnotation annotation = entry.getKey();
 				Integer executionType = entry.getValue();
 				switch (executionType) {
@@ -52,11 +50,8 @@ public class AnnotationAnnotateCommand extends Command {
 					annotation.setNamespace(namespace);
 					break;
 				case AnnotationAnnotateCommand.CHANGE_OLD_ANNOTATION_VALUE:
-					System.err.println("CAHNGE OLD VALUE!");
 					annotation.setValue(value);
-					System.err.println(((SAnnotatableElement) modelParent).getSAnnotations().contains(model));
-					((SAnnotatableElement) modelParent).getSAnnotations().remove(model);
-					System.err.println(((SAnnotatableElement) modelParent).getSAnnotations().contains(model));
+					((LabelableElement) modelParent).removeLabel(model.getNamespace(), model.getName());
 					break;
 				default:
 					break;
@@ -85,8 +80,8 @@ public class AnnotationAnnotateCommand extends Command {
 		this.model = model;
 	}
 
-	public void setModelParent(SAnnotatableElement sAnnotatableElement) {
-		this.modelParent = sAnnotatableElement;
+	public void setModelParent(LabelableElement labelableElement) {
+		this.modelParent = labelableElement;
 	}
 
 	/**

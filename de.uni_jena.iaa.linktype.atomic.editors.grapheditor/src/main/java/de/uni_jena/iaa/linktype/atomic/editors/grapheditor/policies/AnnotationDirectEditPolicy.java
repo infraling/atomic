@@ -51,19 +51,14 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 			}
 			else {
 				if (numberOfAnnotationFields == 2) {
-					key = annotationFields[0];
-					value = annotationFields[1];
+					key = annotationFields[0].replaceAll("(?:\\\\:)", ":");
+					value = annotationFields[1].replaceAll("(?:\\\\:)", ":");
 				}
 				else {
-					namespace = annotationFields[0];
-					key = annotationFields[1];
-					value = annotationFields[2];
+					namespace = annotationFields[0].replaceAll("(?:\\\\:)", ":");
+					key = annotationFields[1].replaceAll("(?:\\\\:)", ":");
+					value = annotationFields[2].replaceAll("(?:\\\\:)", ":");
 				}
-			}
-			key = key.replaceAll("(?:\\\\:)", ":");
-			value = value.replaceAll("(?:\\\\:)", ":");
-			if (namespace != null) {
-				namespace = namespace.replaceAll("(?:\\\\:)", ":");
 			}
 			command.setInputValues(key, value, namespace);
 			EList<SAnnotation> existingAnnotations = (((SAnnotation) getHost().getModel()).getSAnnotatableElement()).getSAnnotations();
@@ -77,12 +72,16 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 							return null;
 						case AnnotationDirectEditPolicy.SET_ALL:
 							duplicateAnnotationsToModify.put(model, AnnotationAnnotateCommand.SET_ALL);
+							break;
 						case AnnotationDirectEditPolicy.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION:
 							duplicateAnnotationsToModify.put(preExistingAnnotation, AnnotationAnnotateCommand.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION);
+							break;
 						case AnnotationDirectEditPolicy.CHANGE_OLD_ANNOTATION_VALUE:
 							duplicateAnnotationsToModify.put(preExistingAnnotation, AnnotationAnnotateCommand.CHANGE_OLD_ANNOTATION_VALUE);
+							break;
 						case AnnotationDirectEditPolicy.SET_NAMESPACE_AND_VALUE:
 							duplicateAnnotationsToModify.put(preExistingAnnotation, AnnotationAnnotateCommand.SET_NAMESPACE_AND_VALUE);
+							break;
 						default:
 							// FIXME: Log an error here!
 							break;
@@ -110,7 +109,7 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 					MessageDialog namespacesDifferDialog = createFeedbackDialog("There is already an annotation with the key " + key + " and the value " + value + " for this element, albeit in a different namespace (" + oldNamespace + ")!\nWould you like to\n- Set the existing annotation's namespace to " + namespace + "\n- Add a duplicate of the existing annotation in the namespace " + namespace, new String[]{"Set namespace", "Create duplicate", "Abort"});
 					int result = namespacesDifferDialog.open();
 					switch (result) {
-						case 0: return AnnotationDirectEditPolicy.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION;
+						case 0: return AnnotationDirectEditPolicy.SET_NEW_NAMESPACE_FOR_OLD_ANNOTATION; 
 						case 1: return AnnotationDirectEditPolicy.SET_ALL;
 						case 2: return AnnotationDirectEditPolicy.ABORT;
 					default: break;
