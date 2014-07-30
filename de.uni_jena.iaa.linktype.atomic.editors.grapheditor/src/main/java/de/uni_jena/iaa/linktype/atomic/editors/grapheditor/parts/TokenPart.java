@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.TokenFigure;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.TokenDirectEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.StructuredNodeDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.MultiLineDirectEditManager;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
@@ -64,7 +64,7 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TokenDirectEditPolicy());
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new StructuredNodeDirectEditPolicy());
 		NonResizableEditPolicy selectionPolicy = new NonResizableEditPolicy();
 		selectionPolicy.setDragAllowed(false);
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, selectionPolicy);

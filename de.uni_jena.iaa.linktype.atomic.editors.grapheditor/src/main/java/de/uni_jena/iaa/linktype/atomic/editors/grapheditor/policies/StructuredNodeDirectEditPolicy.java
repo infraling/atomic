@@ -7,22 +7,22 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.TokenAnnotateCommand;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.StructuredNodeAnnotateCommand;
 
 /**
  * @author Stephan Druskat
  *
  */
-public class TokenDirectEditPolicy extends DirectEditPolicy {
+public class StructuredNodeDirectEditPolicy extends DirectEditPolicy {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.DirectEditPolicy#getDirectEditCommand(org.eclipse.gef.requests.DirectEditRequest)
 	 */
 	@Override
 	protected Command getDirectEditCommand(DirectEditRequest request) {
-		TokenAnnotateCommand command = new TokenAnnotateCommand();
-	    command.setModel((SToken) getHost().getModel());
+		StructuredNodeAnnotateCommand command = new StructuredNodeAnnotateCommand();
+	    command.setModel((SStructuredNode) getHost().getModel());
 	    command.setNewAnnotation((String) request.getCellEditor().getValue());
 	    return command;
 	}

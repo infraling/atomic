@@ -12,17 +12,17 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 /**
  * @author Stephan Druskat
  *
  */
-public class TokenAnnotateCommand extends Command {
+public class StructuredNodeAnnotateCommand extends Command {
 	
 	private String annotationInput;
-	private SToken model;
+	private SStructuredNode model;
 	private TreeMap<String, String> annotations = new TreeMap<String, String>();
 	
 	@Override 
@@ -70,7 +70,7 @@ public class TokenAnnotateCommand extends Command {
 		this.annotationInput = newAnnotation;
 	}
 			   
-	public void setModel(SToken model) {
+	public void setModel(SStructuredNode model) {
 		this.model = model;
 	}
 
