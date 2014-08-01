@@ -20,6 +20,7 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AnnotationDirectEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
@@ -69,6 +70,7 @@ public class AnnotationPart extends AbstractGraphicalEditPart {
 		NonResizableEditPolicy selectionPolicy = new NonResizableEditPolicy();
 		selectionPolicy.setDragAllowed(false);
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, selectionPolicy);
+		installEditPolicy(EditPolicy.COMPONENT_ROLE, new AtomicComponentEditPolicy()); // Delete
 	}
 
 	@Override 
