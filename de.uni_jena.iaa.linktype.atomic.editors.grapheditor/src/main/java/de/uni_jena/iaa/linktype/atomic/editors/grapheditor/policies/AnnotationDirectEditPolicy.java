@@ -47,6 +47,7 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 			int numberOfAnnotationFields = annotationFields.length;
 			if (!(numberOfAnnotationFields == 2 || numberOfAnnotationFields == 3)) {
 				MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "The length of the annotation fields array should be 2 or 3 to hold key, value, and optionally namespace, but it is not. Please report this error!");
+				AnnotationUtils.setFocusOnEditor();
 				return null;
 			}
 			else {
@@ -69,6 +70,7 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 						int executionType = getExecutionTypeAndObject(preExistingAnnotation, namespace, value, key);
 						switch (executionType) {
 						case AnnotationDirectEditPolicy.ABORT:
+							AnnotationUtils.setFocusOnEditor();
 							return null;
 						case AnnotationDirectEditPolicy.SET_ALL:
 							duplicateAnnotationsToModify.put(model, AnnotationAnnotateCommand.SET_ALL);
@@ -92,9 +94,11 @@ public class AnnotationDirectEditPolicy extends DirectEditPolicy {
 		}
 		else {
 			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Annotation error", "The annotation format is not correct.\nPlease use the following format\n\n[namespace]::[key]:[value]\n\nwhere neither key nor value may be empty, and namespace is optional.\n[namespace], [key] and [value] may contain any characters except the newline character. Additionally, colons used within either field must be escaped with a backslash: \"\\:\".");
+			AnnotationUtils.setFocusOnEditor();
 			return null;
 		}
 		command.setDuplicateAnnotationsToModify(duplicateAnnotationsToModify);
+		AnnotationUtils.setFocusOnEditor();
 	    return command;
 	}
 

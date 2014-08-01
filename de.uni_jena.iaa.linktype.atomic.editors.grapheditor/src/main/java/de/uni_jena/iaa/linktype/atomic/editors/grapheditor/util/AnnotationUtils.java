@@ -5,6 +5,8 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.ui.PlatformUI;
+
 /**
  * @author Stephan Druskat
  *
@@ -25,6 +27,10 @@ public class AnnotationUtils {
 	public static String[] segmentInput(String annotationInput) {
 		Pattern oneOrTwoColons = Pattern.compile(ONE_OR_TWO_COLONS);
 		return oneOrTwoColons.split(annotationInput);
+	}
+
+	public static void setFocusOnEditor() {
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().getActivePart().setFocus();
 	}
 
 }
