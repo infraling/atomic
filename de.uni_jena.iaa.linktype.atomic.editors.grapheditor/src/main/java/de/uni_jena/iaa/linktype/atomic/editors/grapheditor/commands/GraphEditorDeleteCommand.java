@@ -6,6 +6,7 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 import org.eclipse.gef.commands.Command;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 /**
@@ -14,23 +15,61 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
  */
 public class GraphEditorDeleteCommand extends Command {
 
-	private LabelableElement model;
+	private LabelableElement model, oldModel, modelParent;;
 	
 	@Override
 	public void execute(){
 		if (model instanceof SAnnotation) {
-			SAnnotation annotation = (SAnnotation) model;
+			setOldModel((SAnnotation) model);
+			setModelParent(((SAnnotation) getOldModel()).getSAnnotatableElement());
+			SAnnotation annotation = (SAnnotation) getOldModel();
 			if (annotation.getNamespace() != null) {
-				annotation.getSAnnotatableElement().removeLabel(annotation.getNamespace(), annotation.getName());
+				getModelParent().removeLabel(annotation.getNamespace(), annotation.getName());
 			}
 			else {
-				annotation.getSAnnotatableElement().removeLabel(annotation.getSName());	
+				getModelParent().removeLabel(annotation.getSName());	
 			}
+		}
+	}
+	
+	@Override
+	public void undo() {
+		if (getOldModel() instanceof SAnnotation) {
+			SAnnotation annotation = (SAnnotation) getOldModel();
+			((SAnnotatableElement) getModelParent()).createSAnnotation(annotation.getNamespace(), annotation.getName(), annotation.getValue().toString());
 		}
 	}
 
 	public void setModel(LabelableElement model) {
 		this.model = model;
+	}
+
+	/**
+	 * @return the oldModel
+	 */
+	public LabelableElement getOldModel() {
+		return oldModel;
+	}
+
+	/**
+	 * @param oldModel the oldModel to set
+	 */
+	public void setOldModel(LabelableElement oldModel) {
+		this.oldModel = oldModel;
+	}
+
+	/**
+	 * @return the modelParent
+	 */
+	public LabelableElement getModelParent() {
+		return modelParent;
+	}
+
+	/**
+	 * @param modelParent the modelParent to set
+	 */
+	public void setModelParent(LabelableElement modelParent) {
+		this.modelParent = modelParent;
 	}
 
 }
