@@ -29,6 +29,7 @@ public class StructuredNodeDirectEditPolicy extends DirectEditPolicy {
 	 */
 	@Override
 	protected Command getDirectEditCommand(DirectEditRequest request) {
+		annotations.clear();
 		SStructuredNode model = (SStructuredNode) getHost().getModel();
 		StructuredNodeAnnotateCommand command = new StructuredNodeAnnotateCommand();
 	    command.setModel(model);

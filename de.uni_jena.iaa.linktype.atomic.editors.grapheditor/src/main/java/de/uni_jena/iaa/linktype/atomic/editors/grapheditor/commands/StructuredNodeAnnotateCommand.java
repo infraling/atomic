@@ -36,8 +36,6 @@ public class StructuredNodeAnnotateCommand extends Command {
 		for (Entry<String, Pair<String, String>> anno : getAnnotations().entrySet()) {
 			model.createSAnnotation(anno.getValue().getLeft(), anno.getKey(), anno.getValue().getRight());
 		}
-		// Empty TreeMap for next use!
-		getAnnotations().clear();
 	}
 			 
 	public void setModel(SStructuredNode model) {
