@@ -22,14 +22,12 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AnnotationUtils;
  */
 public class StructuredNodeDirectEditPolicy extends DirectEditPolicy {
 
-	private TreeMap<String, Pair<String, String>> annotations = new TreeMap<String, Pair<String,String>>();
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.DirectEditPolicy#getDirectEditCommand(org.eclipse.gef.requests.DirectEditRequest)
 	 */
 	@Override
 	protected Command getDirectEditCommand(DirectEditRequest request) {
-		annotations.clear();
+		TreeMap<String, Pair<String, String>> annotations = new TreeMap<String, Pair<String,String>>();
 		SStructuredNode model = (SStructuredNode) getHost().getModel();
 		StructuredNodeAnnotateCommand command = new StructuredNodeAnnotateCommand();
 	    command.setModel(model);
@@ -88,7 +86,6 @@ public class StructuredNodeDirectEditPolicy extends DirectEditPolicy {
 	@Override
 	protected void showCurrentEditValue(DirectEditRequest request) {
 		// TODO Auto-generated method stub
-
 	}
 
 }
