@@ -20,7 +20,12 @@ public class GraphEditorDeleteCommand extends Command {
 	public void execute(){
 		if (model instanceof SAnnotation) {
 			SAnnotation annotation = (SAnnotation) model;
-			annotation.getSAnnotatableElement().removeLabel(annotation.getSName());
+			if (annotation.getNamespace() != null) {
+				annotation.getSAnnotatableElement().removeLabel(annotation.getNamespace(), annotation.getName());
+			}
+			else {
+				annotation.getSAnnotatableElement().removeLabel(annotation.getSName());	
+			}
 		}
 	}
 
