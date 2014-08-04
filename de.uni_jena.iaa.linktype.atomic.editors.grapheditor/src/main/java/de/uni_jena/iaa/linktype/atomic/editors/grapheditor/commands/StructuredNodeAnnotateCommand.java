@@ -37,6 +37,11 @@ public class StructuredNodeAnnotateCommand extends Command {
 			model.createSAnnotation(anno.getValue().getLeft(), anno.getKey(), anno.getValue().getRight());
 		}
 	}
+	
+	@Override // FIXME: Remove once undo is implemented
+	public boolean canUndo() {
+		return false;
+	}
 			 
 	public void setModel(SStructuredNode model) {
 		this.model = model;
