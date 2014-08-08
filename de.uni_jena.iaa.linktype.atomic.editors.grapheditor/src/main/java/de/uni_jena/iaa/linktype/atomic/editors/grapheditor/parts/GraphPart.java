@@ -33,6 +33,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	
 	private GraphAdapter adapter;
 	private Map<SToken, String> tokenTextRegistry;
+	public Object removingObject;
 
 	public GraphPart(SDocumentGraph model) {
 		setModel(model);
@@ -78,9 +79,15 @@ public class GraphPart extends AbstractGraphicalEditPart {
 
 	}
 	
+	@Override
 	protected List<SNode> getModelChildren() {
 		List<SNode> modelChildren = new ArrayList<SNode>();
 		modelChildren.addAll(getModel().getSTokens());
+		modelChildren.addAll(getModel().getSStructures());
+		if (removingObject != null && modelChildren.contains(removingObject)) {
+			// FIX for cases when the model call chain is slower to remove an object from the respective lists than the GEF call chain
+			modelChildren.remove(removingObject);
+		}
 		return modelChildren;
 	}
 	
@@ -115,6 +122,9 @@ public class GraphPart extends AbstractGraphicalEditPart {
 						((TokenPart) part).refresh();
 					}
 				}
+			}
+			if (n.getEventType() == Notification.REMOVE) {
+				GraphPart.this.removingObject = n.getOldValue();
 			}
 			refreshChildren();
 	    }

@@ -20,7 +20,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
@@ -45,8 +47,12 @@ public class PartUtils {
 		while (m.find()) {
 		   visualID.add(m.group());
 		}
-		if (model instanceof SToken)
+		if (model instanceof SToken) {
 			return "T" + visualID.getFirst();
+		}
+		else if (model instanceof SStructure) {
+			return "S" + visualID.getFirst();
+		}
 		return null;
 	}
 

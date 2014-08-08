@@ -12,11 +12,11 @@ import org.eclipse.draw2d.ToolbarLayout;
  * @author Stephan Druskat
  *
  */
-public class TokenFigure extends Figure {
+public class StructureFigure extends Figure {
 
 	private ConnectionAnchor connectionAnchor;
 
-	public TokenFigure(String visualID) {
+	public StructureFigure(String visualID) {
 		setOpaque(false);
 		final ToolbarLayout annotationLayout = new ToolbarLayout();
 		annotationLayout.setSpacing(1);

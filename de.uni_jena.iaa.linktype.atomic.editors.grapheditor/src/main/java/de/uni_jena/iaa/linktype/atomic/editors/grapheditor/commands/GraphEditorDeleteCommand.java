@@ -6,6 +6,8 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 import org.eclipse.gef.commands.Command;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
@@ -30,6 +32,12 @@ public class GraphEditorDeleteCommand extends Command {
 				getModelParent().removeLabel(annotation.getSName());	
 			}
 		}
+		else if (model instanceof SStructure) {
+			setOldModel((SStructure) model);
+			setModelParent(((SStructure) getOldModel()).getSDocumentGraph());
+			SStructure structure = (SStructure) getOldModel();
+			structure.setSDocumentGraph(null);
+		}
 	}
 	
 	@Override
@@ -37,6 +45,10 @@ public class GraphEditorDeleteCommand extends Command {
 		if (getOldModel() instanceof SAnnotation) {
 			SAnnotation annotation = (SAnnotation) getOldModel();
 			((SAnnotatableElement) getModelParent()).createSAnnotation(annotation.getNamespace(), annotation.getName(), annotation.getValue().toString());
+		}
+		else if (getOldModel() instanceof SStructure) {
+			SStructure structure = (SStructure) getOldModel();
+			structure.setSDocumentGraph((SDocumentGraph) getModelParent());
 		}
 	}
 

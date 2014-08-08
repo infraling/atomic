@@ -7,11 +7,13 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GenericStringPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 
 /**
@@ -30,13 +32,16 @@ public class AtomicEditPartFactory implements EditPartFactory {
 		if (model instanceof SDocumentGraph) {
 			part = new GraphPart((SDocumentGraph) model);
 		}
-		if (model instanceof SToken) {
+		else if (model instanceof SToken) {
 			part = new TokenPart();
 		}
-		if (model instanceof String) {
+		else  if (model instanceof SStructure) {
+			part = new StructurePart();
+		}
+		else if (model instanceof String) {
 			part = new GenericStringPart();
 		}
-		if (model instanceof SAnnotation) {
+		else if (model instanceof SAnnotation) {
 			part = new AnnotationPart();
 		}
 		
