@@ -6,6 +6,7 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
@@ -82,9 +83,8 @@ public class StructurePart extends AbstractGraphicalEditPart {
 		if (getFigure().getChildren().size() > getModelChildren().size())
 			getFigure().getChildren().remove(getFigure().getChildren().size() - 1);
 		
-		SStructure model = getModel();
-		int x = 0;
-		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, -100, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME: Fixed y coord (10). Make settable in Prefs?
+		Rectangle layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
+		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?
 		super.refreshVisuals();
 	}
 	

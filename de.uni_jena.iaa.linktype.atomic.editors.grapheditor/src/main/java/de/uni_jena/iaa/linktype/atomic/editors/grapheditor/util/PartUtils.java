@@ -3,10 +3,15 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -21,8 +26,12 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
@@ -122,6 +131,54 @@ public class PartUtils {
 	public static void performDirectEditing(AbstractGraphicalEditPart editPart) {
 		SingleLineDirectEditManager manager = new SingleLineDirectEditManager(editPart, TextCellEditor.class, new AtomicCellEditorLocator(editPart.getFigure()), editPart.getFigure());
 		manager.show();
+	}
+	
+	public static Rectangle calculateStructuredNodeLayout(AbstractGraphicalEditPart part, SStructuredNode model, Figure figure) {
+		int[] xY = calculateXY(model, part);
+		int width = figure.getPreferredSize().width;
+		int height = figure.getPreferredSize().height;
+		int x = xY[0] - (width / 2);
+		int y = xY[1] - height;
+		// Do hit testing - with findFigureAt
+		return new Rectangle(x, y, width, height);
+	}
+
+	private static int[] calculateXY(SStructuredNode model, AbstractGraphicalEditPart part) {
+		int[] xY = new int[2];
+		SDocumentGraph graph;
+		if (model instanceof SSpan) {
+			graph = ((SSpan) model).getSDocumentGraph();
+		}
+		else if (model instanceof SStructure) {
+			graph = ((SStructure) model).getSDocumentGraph();
+		}
+		else {
+			throw new UnsupportedOperationException("An error has occurred. Model is neither SStructure nor SSpan! Please report this error!");
+		}
+		Node target = null;
+		List<Integer> xList = new ArrayList<Integer>();
+		List<Integer> yList = new ArrayList<Integer>();
+		for(Edge edge : graph.getOutEdges(model.getSId())) {
+			target = edge.getTarget();
+			AbstractGraphicalEditPart targetEP = (AbstractGraphicalEditPart) part.getViewer().getEditPartRegistry().get(target);
+			Rectangle targetConstraints = (Rectangle) part.getFigure().getParent().getLayoutManager().getConstraint(targetEP.getFigure());
+			xList.add(targetConstraints.x + (targetConstraints.width / 2));
+			yList.add(targetConstraints.y);
+		}
+		Collections.sort(xList);
+		Collections.sort(yList);
+		// Calculate x
+		int x = 0;
+		for (Iterator<Integer> iterator = xList.iterator(); iterator.hasNext();) {
+			Integer integer = (Integer) iterator.next();
+			x = x + integer.intValue();
+		}
+		x = x / xList.size();
+		xY[0] = x;
+		// Calculate y
+		int y = yList.get(0) - 100; // FIXME -100 is hardcoded
+		xY[1] = y;
+		return xY;
 	}
 
 }
