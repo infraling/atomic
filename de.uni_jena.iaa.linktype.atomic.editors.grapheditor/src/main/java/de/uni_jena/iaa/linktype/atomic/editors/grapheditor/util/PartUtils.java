@@ -60,6 +60,9 @@ public class PartUtils {
 			return "T" + visualID.getFirst();
 		}
 		else if (model instanceof SStructure) {
+			return "N" + visualID.getFirst();
+		}
+		else if (model instanceof SSpan) {
 			return "S" + visualID.getFirst();
 		}
 		return null;

@@ -84,6 +84,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		List<SNode> modelChildren = new ArrayList<SNode>();
 		modelChildren.addAll(getModel().getSTokens());
 		modelChildren.addAll(getModel().getSStructures());
+		modelChildren.addAll(getModel().getSSpans());
 		if (removingObject != null && modelChildren.contains(removingObject)) {
 			// FIX for cases when the model call chain is slower to remove an object from the respective lists than the GEF call chain
 			modelChildren.remove(removingObject);
