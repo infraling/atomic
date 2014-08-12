@@ -49,27 +49,6 @@ public class SpanPart extends AbstractGraphicalEditPart {
 		return new NodeFigure(PartUtils.getVisualID((SNode) getModel()), NodeFigure.SPAN_MODEL);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
-	 */
-	@Override
-	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new StructuredNodeDirectEditPolicy());
-		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
-		installEditPolicy(EditPolicy.COMPONENT_ROLE, new AtomicComponentEditPolicy());
-	}
-	
-	@Override 
-	public void performRequest(Request req) {
-		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) { // TODO Parametrize for preferences sheet
-			performDirectEditing();
-			getParent().setFocus(true); // So that graph can be saved directly with CTRL + S
-		}
-		if(req.getType() == RequestConstants.REQ_OPEN) { // TODO Parametrize for preferences sheet
-			System.out.println("requested double-click."); 
-	    }
-	}
-	
 	@Override
 	protected void refreshVisuals() {
 		// FIXME: Bug fix
@@ -81,10 +60,15 @@ public class SpanPart extends AbstractGraphicalEditPart {
 		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?
 		super.refreshVisuals();
 	}
-	
-	private void performDirectEditing() {
-		MultiLineDirectEditManager manager = new MultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
-		manager.show();
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
+	 */
+	@Override
+	protected void createEditPolicies() {
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new StructuredNodeDirectEditPolicy());
+		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+		installEditPolicy(EditPolicy.COMPONENT_ROLE, new AtomicComponentEditPolicy());
 	}
 	
 	@Override 
@@ -94,6 +78,22 @@ public class SpanPart extends AbstractGraphicalEditPart {
 		return childrenList;
 	}
 
+	@Override 
+	public void performRequest(Request req) {
+		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) { // TODO Parametrize for preferences sheet
+			performDirectEditing();
+			getParent().setFocus(true); // So that graph can be saved directly with CTRL + S
+		}
+		if(req.getType() == RequestConstants.REQ_OPEN) { // TODO Parametrize for preferences sheet
+			System.out.println("requested double-click."); 
+	    }
+	}
+	
+	private void performDirectEditing() {
+		MultiLineDirectEditManager manager = new MultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
+		manager.show();
+	}
+	
 	/**
 	 * @return the adapter
 	 */
