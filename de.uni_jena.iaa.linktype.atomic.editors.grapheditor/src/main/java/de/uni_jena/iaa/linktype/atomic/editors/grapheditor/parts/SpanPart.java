@@ -120,7 +120,14 @@ public class SpanPart extends AbstractGraphicalEditPart {
 		
 		@Override 
 		public void notifyChanged(Notification n) {
-			
+			refresh();
+			switch (n.getEventType()) {
+			case Notification.REMOVE:
+				refreshChildren();
+				break;
+			default:
+				break;
+			}
 		}
 		
 		@Override public Notifier getTarget() {

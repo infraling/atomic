@@ -121,22 +121,14 @@ public class StructurePart extends AbstractGraphicalEditPart {
 	public class StructureAdapter extends EContentAdapter {
 		
 		@Override public void notifyChanged(Notification n) {
-//			switch (n.getEventType()) {
-//			case Notification.SET:
-//				if (n.getNotifier() == getModel() && n.getOldValue() instanceof SDocumentGraph && n.getNewValue() == null) {
-//				if (isActive()) {
-//					getFigure().setVisible(false); // Hack, in case the figure doesn't get removed.
-//					deactivate();
-//				}
-//			}
-//			else {
-//				refresh();
-//			}
-//				break;
-//
-//			default:
-//				break;
-//			}
+			refresh();
+			switch (n.getEventType()) {
+			case Notification.REMOVE:
+				refreshChildren();
+				break;
+			default:
+				break;
+			}
 	    }
 	 
 		@Override public Notifier getTarget() {
