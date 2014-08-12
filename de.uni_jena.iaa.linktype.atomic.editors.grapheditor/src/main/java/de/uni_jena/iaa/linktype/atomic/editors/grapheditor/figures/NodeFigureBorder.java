@@ -11,7 +11,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 public class NodeFigureBorder extends GroupBoxBorder {
 	
-	public NodeFigureBorder(String visualID) {
+	public NodeFigureBorder(String visualID, int modelType) {
 		super(visualID);
 	}
 

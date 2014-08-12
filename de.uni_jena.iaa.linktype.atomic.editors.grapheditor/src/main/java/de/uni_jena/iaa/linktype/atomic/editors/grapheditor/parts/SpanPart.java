@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.StructureFigure;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.StructuredNodeDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
@@ -46,7 +46,7 @@ public class SpanPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new StructureFigure(PartUtils.getVisualID((SNode) getModel()));
+		return new NodeFigure(PartUtils.getVisualID((SNode) getModel()), NodeFigure.SPAN_MODEL);
 	}
 
 	/* (non-Javadoc)

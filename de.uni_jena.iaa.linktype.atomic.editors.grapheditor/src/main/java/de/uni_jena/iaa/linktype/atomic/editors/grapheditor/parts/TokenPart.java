@@ -19,7 +19,7 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.TokenFigure;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.StructuredNodeDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.MultiLineDirectEditManager;
@@ -43,7 +43,7 @@ public class TokenPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new TokenFigure(PartUtils.getVisualID(getModel()));
+		return new NodeFigure(PartUtils.getVisualID(getModel()), NodeFigure.TOKEN_MODEL);
 	}
 	
 	@Override

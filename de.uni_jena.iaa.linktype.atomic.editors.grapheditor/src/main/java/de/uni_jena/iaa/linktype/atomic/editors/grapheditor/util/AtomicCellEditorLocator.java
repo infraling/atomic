@@ -11,7 +11,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Text;
 
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.TokenFigure;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart.AnnotationFigure;
 
 /**
@@ -50,7 +50,7 @@ public class AtomicCellEditorLocator implements CellEditorLocator {
 //			y = rect.y + 17;  // FIXME Calculate dynamically
 //			x = rect.x + 3;
 //		}
-		else if (getFigure() instanceof TokenFigure) {
+		else if (getFigure() instanceof NodeFigure) {
 			rect = getFigure().getBounds().getCopy();
 			getFigure().translateToAbsolute(rect);
 			y = rect.y + 34; // FIXME Calculate dynamically
