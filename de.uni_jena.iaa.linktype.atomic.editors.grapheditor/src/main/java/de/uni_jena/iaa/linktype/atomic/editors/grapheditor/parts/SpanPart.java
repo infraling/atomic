@@ -94,6 +94,10 @@ public class SpanPart extends AbstractGraphicalEditPart {
 		manager.show();
 	}
 	
+	public SSpan getModel() {
+		return (SSpan) super.getModel();
+	}
+
 	/**
 	 * @return the adapter
 	 */
@@ -108,10 +112,6 @@ public class SpanPart extends AbstractGraphicalEditPart {
 		this.adapter = adapter;
 	}
 	
-	public SSpan getModel() {
-		return (SSpan) super.getModel();
-	}
-
 	/**
 	 * @author Stephan Druskat
 	 *

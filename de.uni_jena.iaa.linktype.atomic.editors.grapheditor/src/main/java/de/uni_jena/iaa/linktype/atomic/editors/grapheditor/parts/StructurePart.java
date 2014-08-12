@@ -36,7 +36,6 @@ public class StructurePart extends AbstractGraphicalEditPart {
 	
 	private StructureAdapter adapter;
 
-
 	public StructurePart() {
 		super();
 		setAdapter(new StructureAdapter());
