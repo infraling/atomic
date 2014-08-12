@@ -50,6 +50,18 @@ public class StructurePart extends AbstractGraphicalEditPart {
 		return new NodeFigure(PartUtils.getVisualID((SNode) getModel()), NodeFigure.STRUCTURE_MODEL);
 	}
 
+	@Override
+	protected void refreshVisuals() {
+		// FIXME: Bug fix
+		// Sometimes, for n = getModelChildren().size(), n+1 children get added, which leads to a blank line
+		if (getFigure().getChildren().size() > getModelChildren().size())
+			getFigure().getChildren().remove(getFigure().getChildren().size() - 1);
+		
+		Rectangle layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
+		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?
+		super.refreshVisuals();
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
@@ -60,6 +72,13 @@ public class StructurePart extends AbstractGraphicalEditPart {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new AtomicComponentEditPolicy());
 	}
 	
+	@Override 
+	protected List<Object> getModelChildren() {
+		List<Object> childrenList = new ArrayList<Object>();
+		childrenList.addAll(getModel().getSAnnotations());
+		return childrenList;
+	}
+
 	@Override 
 	public void performRequest(Request req) {
 		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) { // TODO Parametrize for preferences sheet
@@ -75,26 +94,6 @@ public class StructurePart extends AbstractGraphicalEditPart {
 		MultiLineDirectEditManager manager = new MultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
 		manager.show();
 	}
-
-	@Override
-	protected void refreshVisuals() {
-		// FIXME: Bug fix
-		// Sometimes, for n = getModelChildren().size(), n+1 children get added, which leads to a blank line
-		if (getFigure().getChildren().size() > getModelChildren().size())
-			getFigure().getChildren().remove(getFigure().getChildren().size() - 1);
-		
-		Rectangle layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
-		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?
-		super.refreshVisuals();
-	}
-	
-	@Override 
-	protected List<Object> getModelChildren() {
-		List<Object> childrenList = new ArrayList<Object>();
-		childrenList.addAll(getModel().getSAnnotations());
-		return childrenList;
-	}
-
 
 	public SStructure getModel() {
 		return (SStructure) super.getModel();
