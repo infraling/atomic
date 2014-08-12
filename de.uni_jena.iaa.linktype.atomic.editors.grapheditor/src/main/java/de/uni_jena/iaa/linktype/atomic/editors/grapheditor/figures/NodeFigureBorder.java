@@ -11,8 +11,11 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 public class NodeFigureBorder extends GroupBoxBorder {
 	
+	private int modelType;
+
 	public NodeFigureBorder(String visualID, int modelType) {
 		super(visualID);
+		this.modelType = modelType;
 	}
 
 	/* (non-Javadoc)
@@ -26,7 +29,20 @@ public class NodeFigureBorder extends GroupBoxBorder {
         Rectangle r = rect.getResized(-1, -9).translate(0, 8);
         PartUtils.setColor(graphics, PartUtils.VERYLIGHTGREY, false);
         graphics.drawRoundRectangle(r, 10, 10);
-        graphics.setForegroundColor(ColorConstants.red);
+        switch (modelType) {
+		case NodeFigure.TOKEN_MODEL:
+			graphics.setForegroundColor(ColorConstants.red);
+	        break;
+		case NodeFigure.STRUCTURE_MODEL:
+			graphics.setForegroundColor(ColorConstants.green);
+	        break;
+		case NodeFigure.SPAN_MODEL:
+			graphics.setForegroundColor(ColorConstants.yellow);
+	        break;
+
+		default:
+			break;
+		}
         PartUtils.setColor(graphics, PartUtils.MEDIUMLIGHTGREY, true);
         graphics.fillText(getLabel(), r.x + 8, r.y - 8);
         graphics.popState();
