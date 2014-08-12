@@ -27,23 +27,28 @@ public class NodeFigureBorder extends GroupBoxBorder {
         Rectangle rect = figure.getBounds();
         graphics.clipRect(rect);
         Rectangle r = rect.getResized(-1, -9).translate(0, 8);
-        PartUtils.setColor(graphics, PartUtils.VERYLIGHTGREY, false);
-        graphics.drawRoundRectangle(r, 10, 10);
         switch (modelType) {
 		case NodeFigure.TOKEN_MODEL:
+			PartUtils.setColor(graphics, PartUtils.VERYLIGHTGREY, false);
+	        graphics.drawRoundRectangle(r, 10, 10);
 			graphics.setForegroundColor(ColorConstants.red);
+			PartUtils.setColor(graphics, PartUtils.MEDIUMLIGHTGREY, true);
 	        break;
 		case NodeFigure.STRUCTURE_MODEL:
-			graphics.setForegroundColor(ColorConstants.green);
+			graphics.setForegroundColor(ColorConstants.lightGray);
+	        graphics.drawRoundRectangle(r, 10, 10);
+			graphics.setForegroundColor(ColorConstants.darkGreen);
+			PartUtils.setColor(graphics, PartUtils.MEDIUMLIGHTGREY, true);
 	        break;
 		case NodeFigure.SPAN_MODEL:
-			graphics.setForegroundColor(ColorConstants.yellow);
+			graphics.setForegroundColor(ColorConstants.orange);
+	        graphics.drawRoundRectangle(r, 10, 10);
+			graphics.setForegroundColor(ColorConstants.black);
+			graphics.setBackgroundColor(ColorConstants.orange);
 	        break;
-
 		default:
 			break;
 		}
-        PartUtils.setColor(graphics, PartUtils.MEDIUMLIGHTGREY, true);
         graphics.fillText(getLabel(), r.x + 8, r.y - 8);
         graphics.popState();
 	}
