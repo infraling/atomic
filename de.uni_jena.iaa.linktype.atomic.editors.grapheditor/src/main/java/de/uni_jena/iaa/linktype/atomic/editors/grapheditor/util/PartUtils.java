@@ -5,17 +5,13 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.draw2d.AbstractLabeledBorder;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -43,7 +39,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigureBorder;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 
 /**

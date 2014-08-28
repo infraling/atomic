@@ -5,8 +5,6 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -22,7 +20,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
