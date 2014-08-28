@@ -5,12 +5,17 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.draw2d.AbstractLabeledBorder;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -33,8 +38,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigureBorder;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 
 /**
@@ -182,6 +191,98 @@ public class PartUtils {
 		int y = yList.get(0) - 100; // FIXME -100 is hardcoded
 		xY[1] = y;
 		return xY;
+	}
+
+	public static void doOneTimeReLayout(Map<?, ?> editPartRegistry, SDocumentGraph graph, SStructuredNode sStructuredNode) {
+		ArrayList<SStructuredNode> nodes = new ArrayList<SStructuredNode>();
+		nodes.addAll(graph.getSStructures());
+		nodes.addAll(graph.getSSpans());
+		nodes.remove(sStructuredNode);
+		ArrayList<AbstractGraphicalEditPart> editPartsDefiniteList = new ArrayList<AbstractGraphicalEditPart>(); // FIXME: After refactoring, set arg to other type
+		for (SStructuredNode model : nodes) {
+			editPartsDefiniteList.add((AbstractGraphicalEditPart) editPartRegistry.get(model));
+		}
+		boolean mustRepeat;
+		int i = 0;
+		do {
+			mustRepeat = false;
+			for (Iterator<SStructuredNode> iterator = nodes.iterator(); iterator.hasNext();) {
+				AbstractGraphicalEditPart activePart = (AbstractGraphicalEditPart) editPartRegistry.get(iterator.next());
+				IFigure figure = activePart.getFigure();
+				for (Object part : editPartRegistry.values()) {
+					IFigure partFigure = ((AbstractGraphicalEditPart) part).getFigure();
+					IFigure hit = hitTest(figure, partFigure);
+					if (hit != null && hit instanceof NodeFigure && hit != figure) {
+						moveFigure(activePart, figure, hit, i);
+						mustRepeat = true;
+					}
+				}
+			}
+			i++;
+		} while (mustRepeat);
+	}
+
+	private static void moveFigure(AbstractGraphicalEditPart editPart, IFigure figure, IFigure hit, int i) {
+		Rectangle layout = figure.getBounds();
+		Rectangle bounds = hit.getBounds();
+		System.err.println("________ " + ((NodeFigureBorder) figure.getBorder()).getLabel() + " > " + ((NodeFigureBorder) hit.getBorder()).getLabel());
+		int x1 = layout.x;
+		int x2 = x1 + layout.width;
+		int y1 = layout.y;
+		int y2 = y1 + layout.height;
+		int hx1 = bounds.x;
+		int hx2 = hx1 + bounds.width;
+		int hy1 = bounds.y;
+		int hy2 = hy1 + bounds.height;
+		boolean move = true;
+		boolean moveLeft = (x1 < hx1 && x2 > hx1 && x2 < hx2);
+		boolean moveRight = (x1 > hx1 && x1 < hx2 && x2 > hx2);
+		boolean moveUp = (y1 < hy1 && y2 > hy1 && y2 < hy2);
+		boolean moveDown = (y1 > hy1 && y1 < hy2 && y2 > hy2);
+		boolean xContained = (x1 > hx1 && x2 < hx2);
+		boolean yContained = (y1 > hy1 && y2 < hy2);
+		boolean completeContained = (xContained && yContained);
+		if (move) {
+			layout.x = (hx1 - layout.width - 5); // FIXME: Hardcoded 5
+			System.err.println((i+1) + " move! " + ((NodeFigureBorder) editPart.getFigure().getBorder()).getLabel());
+		}
+		if (moveLeft) System.err.println("LEFT");
+		if (moveRight) System.err.println("RIGHT");
+		if (moveUp) System.err.println("UP");
+		if (moveDown) System.err.println("DOWN");
+		if (xContained) System.err.println("XCONTAINED");
+		if (yContained) System.err.println("YCONTAINED");
+		if (completeContained) System.err.println("CONTAINED");
+		((GraphPart) editPart.getParent()).setLayoutConstraint(editPart, editPart.getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
+		editPart.getFigure().setBounds(layout);
+		SStructuredNode model = (SStructuredNode) editPart.getModel();
+		if (model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS") != null) {
+			int versionInt = ((int[]) model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").getValue())[2];
+			model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").setValue(new int[]{layout.x, layout.y, versionInt++});
+		}
+		else {
+			model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{layout.x, layout.y, 1}, SDATATYPE.SOBJECT);
+		}
+		
+	}
+
+	private static IFigure hitTest(IFigure activeFigure, IFigure figureAgainstWhichToHitTest) {
+		Rectangle partFigureBounds = figureAgainstWhichToHitTest.getBounds();
+		int partFigureX1 = partFigureBounds.x;
+		int partFigureY1 = partFigureBounds.y;
+		int partFigureX2 = partFigureX1 + partFigureBounds.width;
+		int partFigureY2 = partFigureY1 + partFigureBounds.height;
+		Rectangle bounds = activeFigure.getBounds();
+		int figureX1 = bounds.x;
+		int figureY1 = bounds.y;
+		int figureX2 = figureX1 + bounds.width;
+		int figureY2 = figureY1 + bounds.height;
+				
+		// The actual hit test
+		if (figureX1 < partFigureX2 && figureX2 > partFigureX1 && figureY1 < partFigureY2 && figureY2 > partFigureY1) {
+			return figureAgainstWhichToHitTest;
+		}
+		return null;
 	}
 
 }

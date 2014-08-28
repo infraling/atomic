@@ -4,7 +4,10 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
@@ -19,7 +22,10 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.viewers.TextCellEditor;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
@@ -51,6 +57,8 @@ public class StructurePart extends AbstractGraphicalEditPart {
 
 	@Override
 	protected void refreshVisuals() {
+		// Check if the graph has been auto-layouted
+		boolean isGraphLayouted = (getModel().getSDocumentGraph().getSProcessingAnnotation("ATOMIC::IS_LAYOUTED") != null);
 		// FIXME: Bug fix
 		// Sometimes, for n = getModelChildren().size(), n+1 children get added, which leads to a blank line
 		if (getFigure().getChildren().size() > getModelChildren().size())
@@ -65,7 +73,28 @@ public class StructurePart extends AbstractGraphicalEditPart {
 			layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
 		}
 		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
+		getFigure().setBounds(layout);
+		if (!isGraphLayouted) {
+			hitTest(getFigure());
+		}
 		super.refreshVisuals();
+	}
+
+	private void hitTest(IFigure figure) {
+		int nodes = 0;
+		SDocumentGraph graph = getModel().getSDocumentGraph();
+		nodes = nodes + graph.getSSpans().size();
+		nodes = nodes + graph.getSStructures().size();
+		int partCounter = 0;
+		for (Object entry : getViewer().getEditPartRegistry().values()) {
+			if (entry instanceof StructurePart || entry instanceof SpanPart) {
+				partCounter++;
+			}
+		}
+		if (nodes == partCounter) {
+			System.err.println("HIT!");
+			PartUtils.doOneTimeReLayout(getViewer().getEditPartRegistry(), graph, getModel());
+		}
 	}
 
 	/* (non-Javadoc)
