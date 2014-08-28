@@ -39,6 +39,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigureBorder;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 
 /**
@@ -205,11 +207,16 @@ public class PartUtils {
 				AbstractGraphicalEditPart activePart = (AbstractGraphicalEditPart) editPartRegistry.get(iterator.next());
 				IFigure figure = activePart.getFigure();
 				for (Object part : editPartRegistry.values()) {
-					IFigure partFigure = ((AbstractGraphicalEditPart) part).getFigure();
-					IFigure hit = hitTest(figure, partFigure);
-					if (hit != null && hit instanceof NodeFigure && hit != figure) {
-						moveFigure(activePart, figure, hit, i);
-						mustRepeat = true;
+					if (part instanceof StructurePart || part instanceof SpanPart) {
+						IFigure partFigure = ((AbstractGraphicalEditPart) part).getFigure();
+						IFigure hit = null;
+						if (figure.getBounds().intersects(partFigure.getBounds())) {
+							hit = partFigure;
+						}
+						if (hit != null && hit instanceof NodeFigure && hit != figure) {
+							moveFigure(activePart, figure, hit, i);
+							mustRepeat = true;
+						}
 					}
 				}
 			}
@@ -218,6 +225,7 @@ public class PartUtils {
 	}
 
 	private static void moveFigure(AbstractGraphicalEditPart editPart, IFigure figure, IFigure hit, int i) {
+		//
 		Rectangle layout = figure.getBounds();
 		Rectangle bounds = hit.getBounds();
 		System.err.println("________ " + ((NodeFigureBorder) figure.getBorder()).getLabel() + " > " + ((NodeFigureBorder) hit.getBorder()).getLabel());
@@ -258,26 +266,6 @@ public class PartUtils {
 		else {
 			model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{layout.x, layout.y, 1}, SDATATYPE.SOBJECT);
 		}
-		
-	}
-
-	private static IFigure hitTest(IFigure activeFigure, IFigure figureAgainstWhichToHitTest) {
-		Rectangle partFigureBounds = figureAgainstWhichToHitTest.getBounds();
-		int partFigureX1 = partFigureBounds.x;
-		int partFigureY1 = partFigureBounds.y;
-		int partFigureX2 = partFigureX1 + partFigureBounds.width;
-		int partFigureY2 = partFigureY1 + partFigureBounds.height;
-		Rectangle bounds = activeFigure.getBounds();
-		int figureX1 = bounds.x;
-		int figureY1 = bounds.y;
-		int figureX2 = figureX1 + bounds.width;
-		int figureY2 = figureY1 + bounds.height;
-				
-		// The actual hit test
-		if (figureX1 < partFigureX2 && figureX2 > partFigureX1 && figureY1 < partFigureY2 && figureY2 > partFigureY1) {
-			return figureAgainstWhichToHitTest;
-		}
-		return null;
 	}
 
 }

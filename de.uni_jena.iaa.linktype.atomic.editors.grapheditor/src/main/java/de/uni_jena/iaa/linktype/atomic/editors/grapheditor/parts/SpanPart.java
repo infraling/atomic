@@ -81,8 +81,8 @@ public class SpanPart extends AbstractGraphicalEditPart {
 		nodes = nodes + graph.getSSpans().size();
 		nodes = nodes + graph.getSStructures().size();
 		int partCounter = 0;
-		for (Object entry : getViewer().getEditPartRegistry().values()) {
-			if (entry instanceof StructurePart || entry instanceof SpanPart) {
+		for (Object value : getViewer().getEditPartRegistry().values()) {
+			if (value instanceof StructurePart || value instanceof SpanPart) {
 				partCounter++;
 			}
 		}

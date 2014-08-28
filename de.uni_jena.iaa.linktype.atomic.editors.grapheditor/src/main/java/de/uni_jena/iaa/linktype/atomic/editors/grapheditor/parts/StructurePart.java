@@ -4,11 +4,7 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -23,9 +19,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
@@ -86,8 +80,8 @@ public class StructurePart extends AbstractGraphicalEditPart {
 		nodes = nodes + graph.getSSpans().size();
 		nodes = nodes + graph.getSStructures().size();
 		int partCounter = 0;
-		for (Object entry : getViewer().getEditPartRegistry().values()) {
-			if (entry instanceof StructurePart || entry instanceof SpanPart) {
+		for (Object value : getViewer().getEditPartRegistry().values()) {
+			if (value instanceof StructurePart || value instanceof SpanPart) {
 				partCounter++;
 			}
 		}
