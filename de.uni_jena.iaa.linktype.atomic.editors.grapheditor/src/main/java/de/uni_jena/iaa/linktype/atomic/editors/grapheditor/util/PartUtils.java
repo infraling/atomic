@@ -37,7 +37,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
@@ -55,11 +55,11 @@ public class PartUtils {
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
 	private static final int margin = 50;  // FIXME Hard-coded margin (5), make settable in Prefs
 	
-	public static String getVisualID(SNode model) {
+	public static String getVisualID(SNamedElement model) {
 		LinkedList<String> visualID = new LinkedList<String>();
-
+		
 		Pattern p = Pattern.compile("\\d+");
-		Matcher m = p.matcher(model.getSName()); 
+		Matcher m = p.matcher(((SNamedElement) model).getSName()); 
 		while (m.find()) {
 		   visualID.add(m.group());
 		}
@@ -262,7 +262,7 @@ public class PartUtils {
 
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		map.put(areaTopIntersectionWithIntersection, "top");
-		map.put(areaBottomIntersectionWithIntersection, "top"); // was "bottom"
+		map.put(areaBottomIntersectionWithIntersection, "top"); // was "bottom", but some nodes will overlap tokens if moved down
 		map.put(areaLeftIntersectionWithIntersection, "left");
 		map.put(areaRightIntersectionWithIntersection, "right");
 		int[] areas = { areaTopIntersectionWithIntersection, areaBottomIntersectionWithIntersection, areaLeftIntersectionWithIntersection, areaRightIntersectionWithIntersection };

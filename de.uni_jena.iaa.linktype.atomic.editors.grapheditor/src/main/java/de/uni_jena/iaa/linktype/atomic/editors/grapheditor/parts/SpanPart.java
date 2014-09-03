@@ -4,7 +4,10 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -12,15 +15,19 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.viewers.TextCellEditor;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.StructuredNodeDirectEditPolicy;
@@ -32,7 +39,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
  * @author Stephan Druskat
  *
  */
-public class SpanPart extends AbstractGraphicalEditPart {
+public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart {
 
 	private SpanAdapter adapter;
 	
@@ -46,7 +53,7 @@ public class SpanPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new NodeFigure(PartUtils.getVisualID((SNode) getModel()), NodeFigure.SPAN_MODEL);
+		return new NodeFigure(PartUtils.getVisualID(getModel()), NodeFigure.SPAN_MODEL);
 	}
 
 	@Override
@@ -183,6 +190,64 @@ public class SpanPart extends AbstractGraphicalEditPart {
 			getModel().eAdapters().remove(getAdapter());
 		}
 		super.deactivate();
+	}
+
+	@Override 
+	protected List<Edge> getModelSourceConnections() {
+		SSpan model = getModel();
+		SDocumentGraph graph = model.getSDocumentGraph();
+		String sId = model.getSId();
+		List<Edge> sourceList = new ArrayList<Edge>();
+		if (graph != null) 
+			sourceList.addAll(graph.getOutEdges(sId));
+		ArrayList<Edge> removalList = new ArrayList<Edge>();
+		for (Iterator iterator = sourceList.iterator(); iterator.hasNext();) {
+			Edge edge = (Edge) iterator.next();
+			if (!(edge instanceof SDominanceRelation)) {
+				removalList.add(edge);
+			}
+		}
+		sourceList.removeAll(removalList);
+		return sourceList;
+	}
+	 
+	@Override 
+	protected List<Edge> getModelTargetConnections() {
+		SSpan model = getModel();
+		SDocumentGraph graph = model.getSDocumentGraph();
+		String sId = model.getSId();
+		List<Edge> targetList = new ArrayList<Edge>();
+		if (graph != null)
+			targetList.addAll(graph.getInEdges(sId));
+		ArrayList<Edge> removalList = new ArrayList<Edge>();
+		for (Iterator iterator = targetList.iterator(); iterator.hasNext();) {
+			Edge edge = (Edge) iterator.next();
+			if (!(edge instanceof SDominanceRelation)) {
+				removalList.add(edge);
+			}
+		}
+		targetList.removeAll(removalList);
+		return targetList;
+	}
+	
+	@Override
+	public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
+		return ((NodeFigure) getFigure()).getConnectionAnchor();
+	}
+
+	@Override
+	public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
+		return ((NodeFigure) getFigure()).getConnectionAnchor();
+	}
+
+	@Override
+	public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+		return ((NodeFigure) getFigure()).getConnectionAnchor();
+	}
+
+	@Override
+	public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+		return ((NodeFigure) getFigure()).getConnectionAnchor();
 	}
 
 }
