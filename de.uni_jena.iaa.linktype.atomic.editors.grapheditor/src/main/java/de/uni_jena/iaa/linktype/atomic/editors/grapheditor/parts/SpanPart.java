@@ -87,7 +87,6 @@ public class SpanPart extends AbstractGraphicalEditPart {
 			}
 		}
 		if (nodes == partCounter) {
-			System.err.println("HIT!");
 			PartUtils.doOneTimeReLayout(getViewer().getEditPartRegistry(), graph, getModel());
 		}
 	}

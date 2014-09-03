@@ -4,7 +4,9 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +39,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigureBorder;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
@@ -52,7 +53,7 @@ public class PartUtils {
 	public static final String SANS10BOLD = "sansserif 10pt bold";
 	public static final String VERYLIGHTGREY = "very light grey colour";
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
-	private static final int margin = 5;  // FIXME Hard-coded margin (5), make settable in Prefs
+	private static final int margin = 50;  // FIXME Hard-coded margin (5), make settable in Prefs
 	
 	public static String getVisualID(SNode model) {
 		LinkedList<String> visualID = new LinkedList<String>();
@@ -148,7 +149,6 @@ public class PartUtils {
 		int height = figure.getPreferredSize().height;
 		int x = xY[0] - (width / 2);
 		int y = xY[1] - height;
-		// Do hit testing - with findFigureAt
 		return new Rectangle(x, y, width, height);
 	}
 
@@ -222,40 +222,19 @@ public class PartUtils {
 			}
 			i++;
 		} while (mustRepeat);
+		if (graph.getSProcessingAnnotation("ATOMIC::IS_LAYOUTED") != null) {
+			System.err.println("Graph has already been layouted.");
+			// Should never be called!
+		}
+		else {
+			graph.createSProcessingAnnotation("ATOMIC", "IS_LAYOUTED", true, SDATATYPE.SBOOLEAN);
+		}
 	}
 
 	private static void moveFigure(AbstractGraphicalEditPart editPart, IFigure figure, IFigure hit, int i) {
-		//
 		Rectangle layout = figure.getBounds();
 		Rectangle bounds = hit.getBounds();
-		System.err.println("________ " + ((NodeFigureBorder) figure.getBorder()).getLabel() + " > " + ((NodeFigureBorder) hit.getBorder()).getLabel());
-		int x1 = layout.x;
-		int x2 = x1 + layout.width;
-		int y1 = layout.y;
-		int y2 = y1 + layout.height;
-		int hx1 = bounds.x;
-		int hx2 = hx1 + bounds.width;
-		int hy1 = bounds.y;
-		int hy2 = hy1 + bounds.height;
-		boolean move = true;
-		boolean moveLeft = (x1 < hx1 && x2 > hx1 && x2 < hx2);
-		boolean moveRight = (x1 > hx1 && x1 < hx2 && x2 > hx2);
-		boolean moveUp = (y1 < hy1 && y2 > hy1 && y2 < hy2);
-		boolean moveDown = (y1 > hy1 && y1 < hy2 && y2 > hy2);
-		boolean xContained = (x1 > hx1 && x2 < hx2);
-		boolean yContained = (y1 > hy1 && y2 < hy2);
-		boolean completeContained = (xContained && yContained);
-		if (move) {
-			layout.x = (hx1 - layout.width - 5); // FIXME: Hardcoded 5
-			System.err.println((i+1) + " move! " + ((NodeFigureBorder) editPart.getFigure().getBorder()).getLabel());
-		}
-		if (moveLeft) System.err.println("LEFT");
-		if (moveRight) System.err.println("RIGHT");
-		if (moveUp) System.err.println("UP");
-		if (moveDown) System.err.println("DOWN");
-		if (xContained) System.err.println("XCONTAINED");
-		if (yContained) System.err.println("YCONTAINED");
-		if (completeContained) System.err.println("CONTAINED");
+		layout = calculateNewLayout(layout, bounds);
 		((GraphPart) editPart.getParent()).setLayoutConstraint(editPart, editPart.getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
 		editPart.getFigure().setBounds(layout);
 		SStructuredNode model = (SStructuredNode) editPart.getModel();
@@ -266,6 +245,44 @@ public class PartUtils {
 		else {
 			model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{layout.x, layout.y, 1}, SDATATYPE.SOBJECT);
 		}
+	}
+
+	private static Rectangle calculateNewLayout(Rectangle oldLayout, Rectangle hitBounds) {
+		Rectangle newLayout = null;
+		Rectangle intersection = oldLayout.getIntersection(hitBounds);
+		Rectangle top = new Rectangle(hitBounds.x, hitBounds.y, hitBounds.width, hitBounds.height / 3);
+		Rectangle bottom = new Rectangle(hitBounds.x, hitBounds.y + ((hitBounds.height / 3) * 2), hitBounds.width, hitBounds.height / 3 + 1);
+		Rectangle left = new Rectangle(hitBounds.x, hitBounds.y, hitBounds.width / 3, hitBounds.height);
+		Rectangle right = new Rectangle(hitBounds.x + ((hitBounds.width / 3) * 2), hitBounds.y, hitBounds.width / 3 + 1, hitBounds.height);
+
+		int areaTopIntersectionWithIntersection = intersection.getIntersection(top).getSize().getArea();
+		int areaBottomIntersectionWithIntersection = intersection.getIntersection(bottom).getSize().getArea();
+		int areaLeftIntersectionWithIntersection = intersection.getIntersection(left).getSize().getArea();
+		int areaRightIntersectionWithIntersection = intersection.getIntersection(right).getSize().getArea();
+
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		map.put(areaTopIntersectionWithIntersection, "top");
+		map.put(areaBottomIntersectionWithIntersection, "top"); // was "bottom"
+		map.put(areaLeftIntersectionWithIntersection, "left");
+		map.put(areaRightIntersectionWithIntersection, "right");
+		int[] areas = { areaTopIntersectionWithIntersection, areaBottomIntersectionWithIntersection, areaLeftIntersectionWithIntersection, areaRightIntersectionWithIntersection };
+		Arrays.sort(areas);
+		String largestIntersectionAreaRectangleName = map.get(areas[3]);
+		if (areaTopIntersectionWithIntersection == 0 && areaBottomIntersectionWithIntersection == 0 && areaLeftIntersectionWithIntersection == 0 && areaRightIntersectionWithIntersection == 0) {
+			// Intersection is completely in uncovered center section -> move right
+			largestIntersectionAreaRectangleName = "right";
+		}
+
+		if (largestIntersectionAreaRectangleName.equals("top")) {
+			newLayout = new Rectangle(oldLayout.x, hitBounds.y 	- oldLayout.height - margin, oldLayout.width, oldLayout.height);
+		} else if (largestIntersectionAreaRectangleName.equals("bottom")) {
+			newLayout = new Rectangle(oldLayout.x, hitBounds.y + hitBounds.height + margin, oldLayout.width, oldLayout.height);
+		} else if (largestIntersectionAreaRectangleName.equals("left")) {
+			newLayout = new Rectangle(hitBounds.x - oldLayout.width - margin, oldLayout.y, oldLayout.width, oldLayout.height);
+		} else { // MOVE RIGHT
+			newLayout = new Rectangle(hitBounds.x + hitBounds.width + margin, oldLayout.y, oldLayout.width, oldLayout.height);
+		}
+		return newLayout;
 	}
 
 }

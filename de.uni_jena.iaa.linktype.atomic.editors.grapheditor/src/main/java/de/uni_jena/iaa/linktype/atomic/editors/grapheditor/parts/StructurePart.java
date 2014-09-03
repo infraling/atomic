@@ -5,6 +5,7 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -86,7 +87,6 @@ public class StructurePart extends AbstractGraphicalEditPart {
 			}
 		}
 		if (nodes == partCounter) {
-			System.err.println("HIT!");
 			PartUtils.doOneTimeReLayout(getViewer().getEditPartRegistry(), graph, getModel());
 		}
 	}
