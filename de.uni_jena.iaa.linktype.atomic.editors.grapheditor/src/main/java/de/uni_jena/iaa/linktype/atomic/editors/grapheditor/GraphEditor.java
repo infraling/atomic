@@ -11,9 +11,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.ConnectionLayer;
+import org.eclipse.draw2d.ShortestPathConnectionRouter;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
@@ -69,6 +73,12 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		else {
 			getGraphicalViewer().setContents(tokenMap);
 		}
+		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart();
+		ConnectionLayer connLayer = (ConnectionLayer) root.getLayer(LayerConstants.CONNECTION_LAYER);
+		GraphicalEditPart contentEditPart = (GraphicalEditPart) root.getContents();
+		ShortestPathConnectionRouter shortestPathConnectionRouter = new ShortestPathConnectionRouter(contentEditPart.getFigure());
+		connLayer.setConnectionRouter(shortestPathConnectionRouter);
+
 	}
 
 	/* (non-Javadoc)
