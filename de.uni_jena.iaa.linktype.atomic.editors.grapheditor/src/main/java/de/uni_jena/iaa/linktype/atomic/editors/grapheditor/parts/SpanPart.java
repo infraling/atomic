@@ -4,7 +4,6 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -26,7 +25,10 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.StructuredNodeDirectEditPolicy;
@@ -197,16 +199,13 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 		SDocumentGraph graph = model.getSDocumentGraph();
 		String sId = model.getSId();
 		List<Edge> sourceList = new ArrayList<Edge>();
-		if (graph != null) 
-			sourceList.addAll(graph.getOutEdges(sId));
-		ArrayList<Edge> removalList = new ArrayList<Edge>();
-		for (Iterator iterator = sourceList.iterator(); iterator.hasNext();) {
-			Edge edge = (Edge) iterator.next();
-			if (!(edge instanceof SDominanceRelation)) {
-				removalList.add(edge);
+		if (graph != null) {
+			for (Edge edge : graph.getOutEdges(sId)) {
+				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
+					sourceList.add(edge);
+				}
 			}
 		}
-		sourceList.removeAll(removalList);
 		return sourceList;
 	}
 	 
@@ -216,16 +215,13 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 		SDocumentGraph graph = model.getSDocumentGraph();
 		String sId = model.getSId();
 		List<Edge> targetList = new ArrayList<Edge>();
-		if (graph != null)
-			targetList.addAll(graph.getInEdges(sId));
-		ArrayList<Edge> removalList = new ArrayList<Edge>();
-		for (Iterator iterator = targetList.iterator(); iterator.hasNext();) {
-			Edge edge = (Edge) iterator.next();
-			if (!(edge instanceof SDominanceRelation)) {
-				removalList.add(edge);
+		if (graph != null) {
+			for (Edge edge : graph.getInEdges(sId)) {
+				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
+					targetList.add(edge);
+				}
 			}
 		}
-		targetList.removeAll(removalList);
 		return targetList;
 	}
 	

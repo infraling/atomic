@@ -29,7 +29,7 @@ public class RelationFigure extends PolylineConnection {
 			setForegroundColor(ColorConstants.blue);
 			break;
 		case SPANNINGRELATION_MODEL:
-			setForegroundColor(ColorConstants.yellow);
+			setForegroundColor(ColorConstants.orange);
 			break;
 		case POINTINGRELATION_MODEL:
 			setForegroundColor(ColorConstants.red);

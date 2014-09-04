@@ -8,7 +8,10 @@ import org.eclipse.gef.EditPartFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
@@ -16,7 +19,10 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.DominanceRelationPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GenericStringPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.OrderRelationPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.PointingRelationPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanningRelationPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 
@@ -47,6 +53,15 @@ public class AtomicEditPartFactory implements EditPartFactory {
 		}
 		else if (model instanceof SDominanceRelation) {
 			part = new DominanceRelationPart();
+		}
+		else if (model instanceof SSpanningRelation) {
+			part = new SpanningRelationPart();
+		}
+		else if (model instanceof SPointingRelation) {
+			part = new PointingRelationPart();
+		}
+		else if (model instanceof SOrderRelation) {
+			part = new OrderRelationPart();
 		}
 		else if (model instanceof String) {
 			part = new GenericStringPart();

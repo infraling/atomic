@@ -32,7 +32,11 @@ import org.eclipse.swt.graphics.RGB;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
@@ -71,6 +75,18 @@ public class PartUtils {
 		}
 		else if (model instanceof SSpan) {
 			return "S" + visualID.getFirst();
+		}
+		else if (model instanceof SDominanceRelation) {
+			return "D" + visualID.getFirst();
+		}
+		else if (model instanceof SSpanningRelation) {
+			return "R" + visualID.getFirst();
+		}
+		else if (model instanceof SPointingRelation) {
+			return "P" + visualID.getFirst();
+		}
+		else if (model instanceof SOrderRelation) {
+			return "O" + visualID.getFirst();
 		}
 		return null;
 	}
