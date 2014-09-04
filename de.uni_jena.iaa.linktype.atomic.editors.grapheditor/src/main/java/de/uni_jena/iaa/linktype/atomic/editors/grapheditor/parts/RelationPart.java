@@ -19,7 +19,12 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.IDLabel;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.RelationFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart.AnnotationFigure;
@@ -31,21 +36,42 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
  * @author Stephan Druskat
  *
  */
-public class DominanceRelationPart extends AbstractConnectionEditPart {
+public class RelationPart extends AbstractConnectionEditPart {
 	
-	private DominanceRelationAdapter adapter;
-
-	public DominanceRelationPart() {
-		super();
-		setAdapter(new DominanceRelationAdapter());
+	public enum RelationType {
+		DOMINANCE, SPANNING, POINTING, ORDER
 	}
+
+	private RelationType type;
+	private RelationAdapter adapter;
+
+	public RelationPart(RelationType type) {
+		super();
+		this.type = type;
+		setAdapter(new RelationAdapter());
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new RelationFigure(PartUtils.getVisualID(getModel()), RelationFigure.DOMINANCERELATION_MODEL);
+		switch (type) {
+		case DOMINANCE:
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.DOMINANCERELATION_MODEL);
+		case SPANNING:
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.SPANNINGRELATION_MODEL);
+		case POINTING:
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.POINTINGRELATION_MODEL);
+		case ORDER:
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.ORDERRELATION_MODEL);
+
+		default:
+			break;
+		}
+		return null;
+		
 	}
 	
 	@Override
@@ -109,26 +135,22 @@ public class DominanceRelationPart extends AbstractConnectionEditPart {
 	@Override 
 	protected List<EObject> getModelChildren() {
 		List<EObject> childrenList = new ArrayList<EObject>();
-		SDominanceRelation model = (SDominanceRelation) getModel();
+		SAnnotatableElement model = (SAnnotatableElement) getModel();
 		childrenList.addAll(model.getSAnnotations());
 		return childrenList;
 	}
 	
-	public SDominanceRelation getModel() {
-		return (SDominanceRelation) super.getModel();
-	}
-
 	/**
 	 * @return the adapter
 	 */
-	public DominanceRelationAdapter getAdapter() {
+	public RelationAdapter getAdapter() {
 		return adapter;
 	}
 
 	/**
 	 * @param adapter the adapter to set
 	 */
-	public void setAdapter(DominanceRelationAdapter adapter) {
+	public void setAdapter(RelationAdapter adapter) {
 		this.adapter = adapter;
 	}
 	
@@ -136,7 +158,7 @@ public class DominanceRelationPart extends AbstractConnectionEditPart {
 	 * @author Stephan Druskat
 	 *
 	 */
-	public class DominanceRelationAdapter extends EContentAdapter {
+	public class RelationAdapter extends EContentAdapter {
 		
 		@Override 
 		public void notifyChanged(Notification n) {
@@ -144,12 +166,24 @@ public class DominanceRelationPart extends AbstractConnectionEditPart {
 	 
 		@Override 
 		public Notifier getTarget() {
-	    	return getModel();
+	    	return (Notifier) getModel();
 	    }
 	 
 	    @Override 
 	    public boolean isAdapterForType(Object type) {
-	    	return type.equals(SDominanceRelation.class);
+	    	switch (RelationPart.this.type) {
+			case DOMINANCE:
+				return type.equals(SDominanceRelation.class);
+			case SPANNING:
+				return type.equals(SSpanningRelation.class);
+			case POINTING:
+				return type.equals(SPointingRelation.class);
+			case ORDER:
+				return type.equals(SOrderRelation.class);
+			default:
+				break;
+			}
+			return false;
 	    }
 
 	}
@@ -157,7 +191,7 @@ public class DominanceRelationPart extends AbstractConnectionEditPart {
 	@Override 
 	public void activate() {
 		if(!isActive()) {
-			getModel().eAdapters().add(getAdapter());
+			((Notifier) getModel()).eAdapters().add(getAdapter());
 	    }
 		super.activate();
 	}
@@ -165,7 +199,7 @@ public class DominanceRelationPart extends AbstractConnectionEditPart {
 	@Override 
 	public void deactivate() {
 		if(isActive()) {
-			getModel().eAdapters().remove(getAdapter());
+			((Notifier) getModel()).eAdapters().remove(getAdapter());
 		}
 		super.deactivate();
 	}
