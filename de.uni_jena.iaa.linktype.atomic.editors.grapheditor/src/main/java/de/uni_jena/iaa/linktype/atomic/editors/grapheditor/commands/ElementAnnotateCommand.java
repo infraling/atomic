@@ -11,16 +11,16 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.commands.Command;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 /**
  * @author Stephan Druskat
  *
  */
-public class StructuredNodeAnnotateCommand extends Command {
+public class ElementAnnotateCommand extends Command {
 	
-	private SStructuredNode model;
+	private SAnnotatableElement model;
 	private TreeMap<String, Pair<String, String>> annotations = new TreeMap<String, Pair<String, String>>();
 	
 	@Override 
@@ -50,7 +50,7 @@ public class StructuredNodeAnnotateCommand extends Command {
 		return false;
 	}
 			 
-	public void setModel(SStructuredNode model) {
+	public void setModel(SAnnotatableElement model) {
 		this.model = model;
 	}
 

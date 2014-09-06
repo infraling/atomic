@@ -12,15 +12,15 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.StructuredNodeAnnotateCommand;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.ElementAnnotateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AnnotationUtils;
 
 /**
  * @author Stephan Druskat
  *
  */
-public class StructuredNodeDirectEditPolicy extends DirectEditPolicy {
+public class ElementDirectEditPolicy extends DirectEditPolicy {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.DirectEditPolicy#getDirectEditCommand(org.eclipse.gef.requests.DirectEditRequest)
@@ -28,8 +28,8 @@ public class StructuredNodeDirectEditPolicy extends DirectEditPolicy {
 	@Override
 	protected Command getDirectEditCommand(DirectEditRequest request) {
 		TreeMap<String, Pair<String, String>> annotations = new TreeMap<String, Pair<String,String>>();
-		SStructuredNode model = (SStructuredNode) getHost().getModel();
-		StructuredNodeAnnotateCommand command = new StructuredNodeAnnotateCommand();
+		SAnnotatableElement model = (SAnnotatableElement) getHost().getModel();
+		ElementAnnotateCommand command = new ElementAnnotateCommand();
 	    command.setModel(model);
 		String annotationString = (String) request.getCellEditor().getValue();
 		

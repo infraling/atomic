@@ -13,9 +13,11 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
@@ -28,6 +30,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.IDLabel;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.RelationFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart.AnnotationFigure;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.RelationConnectionEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.MultiLineDirectEditManager;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
@@ -75,7 +79,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 	}
 	
 	@Override
-	protected void refreshVisuals() { // TODO Refactor
+	protected void refreshVisuals() { // FIXME TODO Refactor
 		RelationFigure figure = (RelationFigure) getFigure();
 
 		// Reorder figure.getChildren() to avoid IndexOutOfBoundsException
@@ -97,7 +101,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 			String comparableSName = ((SAnnotation) iterator.next()).getSName();
 			for (Object figureChild : figure.getChildren()) {
 				if (figureChild instanceof AnnotationFigure) {
-					if (((AnnotationFigure) figureChild).getText().split(":")[0].equalsIgnoreCase(comparableSName)) {
+					if (((AnnotationFigure) figureChild).getText().split(" : ")[0].equalsIgnoreCase(comparableSName)) {
 						customFigureChildren.add((AnnotationFigure) figureChild);
 					}
 				}
@@ -117,10 +121,10 @@ public class RelationPart extends AbstractConnectionEditPart {
 	 */
 	@Override
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
-
-	}
-	
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ElementDirectEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_ROLE, new RelationConnectionEditPolicy());
+	}	
 	@Override public void performRequest(Request req) {
 		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
 			performDirectEditing();
