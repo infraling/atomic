@@ -60,7 +60,7 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 	@Override
 	protected void refreshVisuals() {
 		// Check if the graph has been auto-layouted
-		boolean isGraphLayouted = (getModel().getSDocumentGraph().getSProcessingAnnotation("ATOMIC::IS_LAYOUTED") != null);
+		boolean isGraphLayouted = (((SDocumentGraph) getParent().getModel()).getSProcessingAnnotation("ATOMIC::IS_LAYOUTED") != null);
 		// FIXME: Bug fix
 		// Sometimes, for n = getModelChildren().size(), n+1 children get added, which leads to a blank line
 		if (getFigure().getChildren().size() > getModelChildren().size())
