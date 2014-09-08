@@ -160,6 +160,9 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 			case Notification.REMOVE:
 				refreshChildren();
 				break;
+			case Notification.ADD:
+				refreshChildren();
+				break;
 			default:
 				break;
 			}

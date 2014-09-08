@@ -162,6 +162,9 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 			case Notification.REMOVE:
 				refreshChildren();
 				break;
+			case Notification.ADD:
+				refreshChildren();
+				break;
 			default:
 				break;
 			}
