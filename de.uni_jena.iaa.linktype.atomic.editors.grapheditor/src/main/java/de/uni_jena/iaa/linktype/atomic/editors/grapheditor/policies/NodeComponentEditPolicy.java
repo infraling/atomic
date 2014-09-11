@@ -7,20 +7,19 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.GraphEditorDeleteCommand;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeDeleteCommand;
 
 /**
  * @author Stephan Druskat
  *
  */
-public class AtomicComponentEditPolicy extends ComponentEditPolicy {
+public class NodeComponentEditPolicy extends ComponentEditPolicy {
 	
 	@Override 
 	protected Command createDeleteCommand(GroupRequest deleteRequest) {
-		GraphEditorDeleteCommand command = new GraphEditorDeleteCommand();
-		command.setModel((LabelableElement) getHost().getModel());
+		System.err.println("REQ " + deleteRequest.getEditParts());
+		Command command = new NodeDeleteCommand();
 		return command;
 	}
-
+	
 }

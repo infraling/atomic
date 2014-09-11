@@ -30,8 +30,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AtomicComponentEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.NodeComponentEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.MultiLineDirectEditManager;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
@@ -66,13 +66,14 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 		if (getFigure().getChildren().size() > getModelChildren().size())
 			getFigure().getChildren().remove(getFigure().getChildren().size() - 1);
 		
-		Rectangle layout;
+		Rectangle layout = getFigure().getBounds();
+		SDocumentGraph graph = getModel().getSDocumentGraph();
 		if (getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS") != null) {
 			Dimension prefSize = getFigure().getPreferredSize();
 			int[] xy = (int[]) getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").getValue();
 			layout = new Rectangle(xy[0], xy[1], prefSize.width, prefSize.height);
 		}
-		else {
+		else if (!graph.getInEdges(getModel().getSId()).isEmpty() || !graph.getOutEdges(getModel().getSId()).isEmpty()) {
 			layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
 		}
 		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
@@ -105,7 +106,7 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 	@Override
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ElementDirectEditPolicy());
-		installEditPolicy(EditPolicy.COMPONENT_ROLE, new AtomicComponentEditPolicy());
+		installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeComponentEditPolicy());
 	}
 	
 	@Override 

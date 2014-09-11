@@ -28,7 +28,6 @@ public class RelationDeleteCommand extends Command {
 	
 	@Override
 	public void execute() {
-
 		graph = (SDocumentGraph) getModel().getSGraph();
 		source = getModel().getSSource();
 		target = getModel().getSTarget();
