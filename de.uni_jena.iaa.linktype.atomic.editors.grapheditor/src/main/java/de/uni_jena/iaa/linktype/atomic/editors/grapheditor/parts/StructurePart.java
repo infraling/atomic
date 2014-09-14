@@ -59,8 +59,11 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 
 	@Override
 	protected void refreshVisuals() {
+		boolean isGraphLayouted = false;
 		// Check if the graph has been auto-layouted
-		boolean isGraphLayouted = (((SDocumentGraph) getParent().getModel()).getSProcessingAnnotation("ATOMIC::IS_LAYOUTED") != null);
+		if (getParent() != null) {
+			isGraphLayouted = (((SDocumentGraph) getParent().getModel()).getSProcessingAnnotation("ATOMIC::IS_LAYOUTED") != null);
+		}
 		// FIXME: Bug fix
 		// Sometimes, for n = getModelChildren().size(), n+1 children get added, which leads to a blank line
 		if (getFigure().getChildren().size() > getModelChildren().size())
@@ -77,10 +80,12 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 				layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
 			}
 		}
-		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
-		getFigure().setBounds(layout);
-		if (!isGraphLayouted) {
-			hitTest(getFigure());
+		if (getParent() != null) {
+			((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
+			getFigure().setBounds(layout);
+			if (!isGraphLayouted) {
+				hitTest(getFigure());
+			}
 		}
 		super.refreshVisuals();
 	}
