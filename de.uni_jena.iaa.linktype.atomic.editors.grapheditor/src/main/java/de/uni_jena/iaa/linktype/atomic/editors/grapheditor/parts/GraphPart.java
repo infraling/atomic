@@ -21,9 +21,10 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
@@ -83,12 +84,20 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	@Override
 	protected List<SNode> getModelChildren() {
 		List<SNode> modelChildren = new ArrayList<SNode>();
-		modelChildren.addAll(getModel().getSTokens());
-		modelChildren.addAll(getModel().getSStructures());
-		modelChildren.addAll(getModel().getSSpans());
-		if (removingObject != null && modelChildren.contains(removingObject)) {
-			// FIX for cases when the model call chain is slower to remove an object from the respective lists than the GEF call chain
-			modelChildren.remove(removingObject);
+		for (SToken token : getModel().getSTokens()) {
+			if (token.getSDocumentGraph() == getModel()) {
+				modelChildren.add(token);
+			}
+		}
+		for (SStructure structure : getModel().getSStructures()) {
+			if (structure.getSDocumentGraph() == getModel()) {
+				modelChildren.add(structure);
+			}
+		}
+		for (SSpan span : getModel().getSSpans()) {
+			if (span.getSDocumentGraph() == getModel()) {
+				modelChildren.add(span);
+			}
 		}
 		return modelChildren;
 	}
@@ -118,17 +127,17 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	public class GraphAdapter extends EContentAdapter {
 		
 		@Override public void notifyChanged(Notification n) {
-			if (n.getOldValue() == null && n.getNewValue() instanceof SAnnotation) {
-				for (Object part : getChildren()) {
-					if (part instanceof TokenPart) {
-						((TokenPart) part).refresh();
-					}
-				}
+			switch (n.getEventType()) {
+			case Notification.REMOVE:
+				refreshChildren();
+				break;
+			case Notification.ADD:
+				refreshChildren();
+				break;
+
+			default:
+				break;
 			}
-			if (n.getEventType() == Notification.REMOVE) {
-				GraphPart.this.removingObject = n.getOldValue();
-			}
-			refreshChildren();
 	    }
 	 
 		@Override public Notifier getTarget() {

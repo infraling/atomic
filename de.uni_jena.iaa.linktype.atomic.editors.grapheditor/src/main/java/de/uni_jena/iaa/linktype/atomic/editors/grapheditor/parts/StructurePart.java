@@ -72,8 +72,10 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 			int[] xy = (int[]) getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").getValue();
 			layout = new Rectangle(xy[0], xy[1], prefSize.width, prefSize.height);
 		}
-		else if (!graph.getInEdges(getModel().getSId()).isEmpty() || !graph.getOutEdges(getModel().getSId()).isEmpty()) {
-			layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
+		else if (graph != null) { 
+			if (!graph.getInEdges(getModel().getSId()).isEmpty() || !graph.getOutEdges(getModel().getSId()).isEmpty()) {
+				layout = PartUtils.calculateStructuredNodeLayout(this, getModel(), (Figure) getFigure());
+			}
 		}
 		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
 		getFigure().setBounds(layout);
