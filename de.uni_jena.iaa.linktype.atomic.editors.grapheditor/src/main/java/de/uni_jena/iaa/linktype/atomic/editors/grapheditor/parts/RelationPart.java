@@ -166,6 +166,16 @@ public class RelationPart extends AbstractConnectionEditPart {
 		
 		@Override 
 		public void notifyChanged(Notification n) {
+			switch (n.getEventType()) {
+			case Notification.REMOVE:
+				refreshChildren();
+				break;
+			case Notification.ADD:
+				refreshChildren();
+				break;
+			default:
+				break;
+			}
 	    }
 	 
 		@Override 
