@@ -78,7 +78,6 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		GraphicalEditPart contentEditPart = (GraphicalEditPart) root.getContents();
 		ShortestPathConnectionRouter shortestPathConnectionRouter = new ShortestPathConnectionRouter(contentEditPart.getFigure());
 		connLayer.setConnectionRouter(shortestPathConnectionRouter);
-
 	}
 
 	/* (non-Javadoc)

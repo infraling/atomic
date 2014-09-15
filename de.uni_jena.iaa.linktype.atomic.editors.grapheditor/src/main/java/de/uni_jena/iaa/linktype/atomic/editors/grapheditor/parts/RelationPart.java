@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.draw2d.ConnectionLayer;
+import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RelativeLocator;
 import org.eclipse.emf.common.notify.Notification;
@@ -14,9 +16,11 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.jface.viewers.TextCellEditor;
 
@@ -113,6 +117,10 @@ public class RelationPart extends AbstractConnectionEditPart {
 				figure.add((AnnotationFigure) child, new RelativeLocator((IFigure) customFigureChildren.get(figureIndex - 1), 0.5, 1.7));
 			}
 		}
+		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getViewer().getRootEditPart();
+		ConnectionLayer layer = (ConnectionLayer) root.getLayer(LayerConstants.CONNECTION_LAYER);
+		ConnectionRouter router = layer.getConnectionRouter();
+		((RelationFigure) getFigure()).setConnectionRouter(router);
 	}
 
 
