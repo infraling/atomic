@@ -38,7 +38,6 @@ public class ElementAnnotateCommand extends Command {
 			Assert.isTrue(!(model.getSAnnotations().contains(name))); // FIXME: Refactor to unit test method
 			Assert.isTrue(!(model.getSAnnotations().contains(anno))); // FIXME: Refactor to unit test method
 		}
-		System.err.println(model.getLabels());
 		// Create annotations from input
 		for (Entry<String, Pair<String, String>> anno : getAnnotations().entrySet()) {
 			model.createSAnnotation(anno.getValue().getLeft(), anno.getKey(), anno.getValue().getRight());

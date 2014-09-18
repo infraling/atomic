@@ -3,6 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
@@ -10,7 +11,10 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.StructuredNodeChangeConstraintsCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
@@ -26,7 +30,15 @@ public class GraphXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 */
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
-		// TODO Auto-generated method stub
+		if (request.getNewObjectType() == SStructure.class) {
+			NodeCreateCommand command = new NodeCreateCommand();
+			Rectangle rect = (Rectangle) getConstraintFor(request);
+	    	Point constraint = new Point(rect.x, rect.y);
+			command.setLocation(constraint);
+	    	command.setGraph((SDocumentGraph) (getHost().getModel()));
+	    	command.setModel((SStructure) (request.getNewObject()));
+	    	return command;
+		}
 		return null;
 	}
 	

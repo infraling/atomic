@@ -18,6 +18,8 @@ import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
+import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
@@ -36,6 +38,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.GraphEditorPaletteFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
 
 /**
@@ -63,6 +66,8 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		viewer.setEditPartFactory(new AtomicEditPartFactory());
 		viewer.setRootEditPart(new ScalableFreeformRootEditPart());
 		viewer.setKeyHandler(new AtomicGraphicalViewerKeyHandler(viewer));
+		getGraphicalViewer().addDropTargetListener(new TemplateTransferDropTargetListener(getGraphicalViewer()));
+		getEditDomain().getPaletteViewer().addDragSourceListener(new TemplateTransferDragSourceListener(getEditDomain().getPaletteViewer()));
 	}
 	
 	protected void initializeGraphicalViewer() {
@@ -85,10 +90,10 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	protected PaletteRoot getPaletteRoot() {
-		// TODO Auto-generated method stub
-		return null;
+		GraphEditorPaletteFactory factory = new GraphEditorPaletteFactory();
+		return factory.createPalette();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
