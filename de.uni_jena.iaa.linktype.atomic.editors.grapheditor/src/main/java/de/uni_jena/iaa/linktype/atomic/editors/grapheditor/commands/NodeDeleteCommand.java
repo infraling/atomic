@@ -29,6 +29,23 @@ public class NodeDeleteCommand extends Command {
 	private HashSet<Edge> relations;
 	private HashMap<Edge, Node> sources;
 	private HashMap<Edge, Node> targets;
+	
+	// FIXME: Remove this once the following bug is fixed:
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.gef.commands.Command#canUndo()
+	 * When deleting an SStructure S, undoing the delete,
+	 * then deleting an SSpan P, undoing the delete,
+	 * then deleting the SStructure S again, the figure for
+	 * S remains visible, and the connections for P are
+	 * severed (they reconnect once the SSpanFigure is moved).
+	 * Undoing of the last delete of S results in an IndexException
+	 * (i.e., index: 306, size: 305, or similar) 
+	 */
+	@Override
+	public boolean canUndo() {
+		return false;
+	}
 
 	@Override
 	public void execute() {
