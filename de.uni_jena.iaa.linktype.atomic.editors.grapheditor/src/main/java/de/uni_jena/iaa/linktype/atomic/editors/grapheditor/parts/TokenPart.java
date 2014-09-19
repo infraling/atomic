@@ -30,6 +30,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.NodeGraphicalNodeEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.MultiLineDirectEditManager;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
@@ -76,6 +77,7 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 		NonResizableEditPolicy selectionPolicy = new NonResizableEditPolicy();
 		selectionPolicy.setDragAllowed(false);
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, selectionPolicy);
+		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeGraphicalNodeEditPolicy());
 	}
 	
 	@Override 

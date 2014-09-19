@@ -35,6 +35,9 @@ public class SaltElementsFactory implements CreationFactory {
 		else if (type == ElementType.SPAN) {
 			return sf.createSSpan();
 		}
+		else if(type == ElementType.DOMINANCE_RELATION) {
+			return sf.createSDominanceRelation();
+		}
 		return null;
 	}
 

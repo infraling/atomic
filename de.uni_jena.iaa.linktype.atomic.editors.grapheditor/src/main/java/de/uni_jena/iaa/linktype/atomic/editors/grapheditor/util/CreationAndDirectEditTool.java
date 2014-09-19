@@ -19,7 +19,6 @@ public class CreationAndDirectEditTool extends CreationTool {
 	@Override 
 	protected void performCreation(int button) {
 		super.performCreation(button);
-		System.err.println("YEA!");
 		EditPartViewer viewer = getCurrentViewer();
 		final Object model = getCreateRequest().getNewObject();
 		if (model == null || viewer == null) {
@@ -32,7 +31,6 @@ public class CreationAndDirectEditTool extends CreationTool {
 			         
 				@Override 
 				public void run() {
-					System.err.println("YAH!");
 					EditPart part = (EditPart) o;
 			        Request request = new DirectEditRequest();
 			        part.performRequest(request);
