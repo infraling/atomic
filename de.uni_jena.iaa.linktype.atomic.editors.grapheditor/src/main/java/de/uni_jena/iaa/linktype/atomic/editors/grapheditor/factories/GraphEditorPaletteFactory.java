@@ -36,7 +36,14 @@ public class GraphEditorPaletteFactory {
 	private static PaletteEntry createEdgesDrawer() {
 		PaletteDrawer edgesDrawer = new PaletteDrawer("Edges");
 		edgesDrawer.add(createDominanceRelationTool());
+		edgesDrawer.add(createSpanningRelationTool());
 		return edgesDrawer;
+	}
+
+	private static PaletteEntry createSpanningRelationTool() {
+		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Spanning relation", "Create a new spanning relation", new SaltElementsFactory(ElementType.SPANNING_RELATION), null, null);
+		entry.setToolClass(ConnectionCreationTool.class);
+		return entry;
 	}
 
 	private static PaletteEntry createDominanceRelationTool() {

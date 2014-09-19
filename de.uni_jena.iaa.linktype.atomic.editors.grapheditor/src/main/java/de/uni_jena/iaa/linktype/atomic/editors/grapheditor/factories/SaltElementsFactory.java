@@ -38,6 +38,15 @@ public class SaltElementsFactory implements CreationFactory {
 		else if(type == ElementType.DOMINANCE_RELATION) {
 			return sf.createSDominanceRelation();
 		}
+		else if(type == ElementType.POINTING_RELATION) {
+			return sf.createSPointingRelation();
+		}
+		else if(type == ElementType.SPANNING_RELATION) {
+			return sf.createSSpanningRelation();
+		}
+		else if(type == ElementType.ORDER_RELATION) {
+			return sf.createSOrderRelation();
+		}
 		return null;
 	}
 

@@ -10,6 +10,8 @@ import org.eclipse.gef.commands.Command;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Graph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
@@ -27,6 +29,9 @@ public class RelationCreateCommand extends Command {
 	public boolean canExecute() {
 		if (getRelation() instanceof SDominanceRelation) {
 			return source != null && source instanceof SStructure && target != null && getRelation() != null;
+		}
+		else if (getRelation() instanceof SSpanningRelation) {
+			return source != null && /*source instanceof SSpan && */target != null && getRelation() != null;
 		}
 		return false;
 	}
