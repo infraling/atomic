@@ -33,9 +33,14 @@ public class GraphEditorPaletteFactory {
 	private static PaletteEntry createNodesDrawer() {
 		PaletteDrawer nodesDrawer = new PaletteDrawer("Nodes");
 		nodesDrawer.add(createStructureTool());
-//		nodesDrawer.add(createSpanTool());
+		nodesDrawer.add(createSpanTool());
 		return nodesDrawer;
 	}
+
+	private static PaletteEntry createSpanTool() {
+		CreationToolEntry entry = new CombinedTemplateCreationEntry("Span", "Create a new Span", new SaltElementsFactory(ElementType.SPAN), null, null);//NODE_ICON, NODE_ICON);
+		entry.setToolClass(CreationAndDirectEditTool.class);
+		return entry;	}
 
 	private static PaletteEntry createStructureTool() {
 		CreationToolEntry entry = new CombinedTemplateCreationEntry("Structure", "Create a new Structure", new SaltElementsFactory(ElementType.STRUCTURE), null, null);//NODE_ICON, NODE_ICON);

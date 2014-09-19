@@ -32,6 +32,9 @@ public class SaltElementsFactory implements CreationFactory {
 		if (type == ElementType.STRUCTURE) {
 			return sf.createSStructure();
 		}
+		else if (type == ElementType.SPAN) {
+			return sf.createSSpan();
+		}
 		return null;
 	}
 
