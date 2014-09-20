@@ -42,6 +42,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
@@ -186,9 +188,19 @@ public class PartUtils {
 		for(Edge edge : graph.getOutEdges(model.getSId())) {
 			target = edge.getTarget();
 			AbstractGraphicalEditPart targetEP = (AbstractGraphicalEditPart) part.getViewer().getEditPartRegistry().get(target);
-			Rectangle targetConstraints = (Rectangle) part.getFigure().getParent().getLayoutManager().getConstraint(targetEP.getFigure());
-			xList.add(targetConstraints.x + (targetConstraints.width / 2));
-			yList.add(targetConstraints.y);
+			SProcessingAnnotation coordsAnno = ((SNode) target).getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS");
+			if (targetEP == null && coordsAnno != null) {
+				int[] annoXY = (int[]) coordsAnno.getValue();
+				return new int[]{annoXY[0], annoXY[1]};
+			}
+			else if (targetEP != null) {
+				Rectangle targetConstraints = (Rectangle) part.getFigure().getParent().getLayoutManager().getConstraint(targetEP.getFigure());
+				xList.add(targetConstraints.x + (targetConstraints.width / 2));
+				yList.add(targetConstraints.y);
+			}
+			else {
+				// Do nothing
+			}
 		}
 		Collections.sort(xList);
 		Collections.sort(yList);
