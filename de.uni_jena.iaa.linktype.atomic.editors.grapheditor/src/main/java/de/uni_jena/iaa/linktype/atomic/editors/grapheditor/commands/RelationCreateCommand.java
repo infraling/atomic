@@ -13,6 +13,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 /**
@@ -26,12 +27,13 @@ public class RelationCreateCommand extends Command {
 	private SRelation relation;
 	private Graph graph;
 	
+	@Override
 	public boolean canExecute() {
 		if (getRelation() instanceof SDominanceRelation) {
 			return source != null && source instanceof SStructure && target != null && getRelation() != null;
 		}
 		else if (getRelation() instanceof SSpanningRelation) {
-			return source != null && /*source instanceof SSpan && */target != null && getRelation() != null;
+			return source != null && source instanceof SSpan && (target instanceof SToken || target instanceof SSpan) && target != null && getRelation() != null;
 		}
 		return false;
 	}
