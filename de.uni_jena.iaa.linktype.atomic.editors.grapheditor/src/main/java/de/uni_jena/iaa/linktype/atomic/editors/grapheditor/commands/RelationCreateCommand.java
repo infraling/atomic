@@ -21,6 +21,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
  *
  */
 public class RelationCreateCommand extends Command {
+	
+	// FIXME TODO Do check on whether executable in Policy and return null for command when check fails 
 
 	private Node target;
 	private Node source;
@@ -85,7 +87,7 @@ public class RelationCreateCommand extends Command {
 	/**
 	 * @return the relation
 	 */
-	private SRelation getRelation() {
+	public SRelation getRelation() {
 		return relation;
 	}
 
