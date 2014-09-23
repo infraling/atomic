@@ -35,9 +35,9 @@ public class RelationCreateCommand extends Command {
 			 
 	@Override 
 	public void undo() {
-		graph.getOutEdges(getRelation().getSTarget().getSId()).remove(getRelation());
-		graph.getInEdges(getRelation().getSTarget().getSId()).remove(getRelation());
 		getRelation().setSGraph(null);
+		source.eNotify(new NotificationImpl(Notification.REMOVE, null, getRelation()));
+		target.eNotify(new NotificationImpl(Notification.REMOVE, null, getRelation()));
 	}
 
 
