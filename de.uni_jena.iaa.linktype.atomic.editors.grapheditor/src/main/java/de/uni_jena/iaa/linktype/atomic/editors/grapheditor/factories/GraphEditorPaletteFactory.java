@@ -37,7 +37,21 @@ public class GraphEditorPaletteFactory {
 		PaletteDrawer edgesDrawer = new PaletteDrawer("Edges");
 		edgesDrawer.add(createDominanceRelationTool());
 		edgesDrawer.add(createSpanningRelationTool());
+		edgesDrawer.add(createPointingRelationTool());
+		edgesDrawer.add(createOrderRelationTool());
 		return edgesDrawer;
+	}
+
+	private static PaletteEntry createOrderRelationTool() {
+		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Order relation", "Create a new order relation", new SaltElementsFactory(ElementType.ORDER_RELATION), null, null);
+		entry.setToolClass(ConnectionCreationTool.class);
+		return entry;
+	}
+
+	private static PaletteEntry createPointingRelationTool() {
+		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry("Pointing relation", "Create a new pointing relation", new SaltElementsFactory(ElementType.POINTING_RELATION), null, null);
+		entry.setToolClass(ConnectionCreationTool.class);
+		return entry;
 	}
 
 	private static PaletteEntry createSpanningRelationTool() {
