@@ -27,6 +27,7 @@ public class GraphXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getCreateCommand(org.eclipse.gef.requests.CreateRequest)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
 		if (request.getNewObject() instanceof SStructuredNode) {
@@ -36,6 +37,7 @@ public class GraphXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			command.setLocation(constraint);
 	    	command.setGraph((SDocumentGraph) (getHost().getModel()));
 	    	command.setModel((SStructuredNode) request.getNewObject());
+	    	command.setSelectedEditParts(getHost().getViewer().getSelectedEditParts());
 	    	return command;
 		}
 		return null;

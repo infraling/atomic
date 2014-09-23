@@ -41,6 +41,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SIdentifiableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
@@ -64,8 +65,9 @@ public class PartUtils {
 	public static String getVisualID(SNamedElement model) {
 		LinkedList<String> visualID = new LinkedList<String>();
 		
-		Pattern p = Pattern.compile("\\d+");
-		Matcher m = p.matcher(((SNamedElement) model).getSName()); 
+		Pattern p = Pattern.compile("\\d+_\\d+|\\d+");
+//		Matcher m = p.matcher(((SNamedElement) model).getSName()); 
+		Matcher m = p.matcher(((SIdentifiableElement) model).getSId());
 		while (m.find()) {
 		   visualID.add(m.group());
 		}
