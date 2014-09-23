@@ -67,6 +67,7 @@ public class NodeDeleteCommand extends Command {
 			getSources().put(edge, edge.getSource());
 			getTargets().put(edge, edge.getTarget());
 			edge.setGraph(null);
+			edge.eNotify(new NotificationImpl(Notification.REMOVE, edge, null));
 			edge.getSource().eNotify(new NotificationImpl(Notification.REMOVE, getModel(), null));
 			edge.getTarget().eNotify(new NotificationImpl(Notification.REMOVE, getModel(), null));
 		}

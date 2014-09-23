@@ -47,6 +47,11 @@ public class RelationDeleteCommand extends Command {
 
 	}
 	
+	@Override
+	public boolean canUndo() {
+		return false;
+	}
+	
 	public void setRelation(SRelation model) {
 		this.setModel(model);
 	}

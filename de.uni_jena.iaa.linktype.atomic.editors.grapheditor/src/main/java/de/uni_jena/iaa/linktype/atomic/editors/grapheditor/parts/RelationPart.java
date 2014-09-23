@@ -20,10 +20,13 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.eclipse.gef.editparts.AbstractEditPart;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.jface.viewers.TextCellEditor;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
@@ -174,12 +177,30 @@ public class RelationPart extends AbstractConnectionEditPart {
 		
 		@Override 
 		public void notifyChanged(Notification n) {
+			refresh();
 			switch (n.getEventType()) {
 			case Notification.REMOVE:
 				refreshChildren();
 				break;
 			case Notification.ADD:
 				refreshChildren();
+				break;
+			case Notification.REMOVING_ADAPTER:
+				getParent().refresh();
+				if (getFigure().isVisible()) {
+					getFigure().setVisible(false);
+					deactivate();
+				}
+				break;
+			case Notification.SET:
+				if (n.getNotifier() == getModel()) {
+					if (n.getOldValue() instanceof SDocumentGraph && n.getNewValue() == null) {
+						if (getFigure().isVisible()) {
+							getFigure().setVisible(false);
+							deactivate();
+						}
+					}
+				}
 				break;
 			default:
 				break;
