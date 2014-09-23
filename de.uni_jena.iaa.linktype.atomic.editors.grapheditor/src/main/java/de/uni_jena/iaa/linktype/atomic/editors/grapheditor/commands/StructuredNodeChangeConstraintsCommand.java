@@ -3,7 +3,6 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.NotificationImpl;
@@ -13,7 +12,6 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
@@ -40,20 +38,25 @@ public class StructuredNodeChangeConstraintsCommand extends Command {
 		}
 	}
 	
+//	@Override
+//	public void undo() {
+//		SProcessingAnnotation anno = getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS");
+//		if (anno != null) {
+//			int versionInt = ((int[]) anno.getValue())[2];
+//			if (versionInt == 1) {
+//				Rectangle calculatedConstraint = PartUtils.calculateStructuredNodeLayout(getEditPart(), getModel(), (Figure) getEditPart().getFigure());
+//				anno.setValue(new int[]{calculatedConstraint.x, calculatedConstraint.y, 0});
+//			}
+//			else {
+//				anno.setValue(new int[]{getOldConstraint().x, getOldConstraint().y, versionInt--});
+//			}
+//			getModel().eNotify(new NotificationImpl(Notification.SET, anno, anno));
+//		}
+//	}
+	
 	@Override
-	public void undo() {
-		SProcessingAnnotation anno = getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS");
-		if (anno != null) {
-			int versionInt = ((int[]) anno.getValue())[2];
-			if (versionInt == 1) {
-				Rectangle calculatedConstraint = PartUtils.calculateStructuredNodeLayout(getEditPart(), getModel(), (Figure) getEditPart().getFigure());
-				anno.setValue(new int[]{calculatedConstraint.x, calculatedConstraint.y, 0});
-			}
-			else {
-				anno.setValue(new int[]{getOldConstraint().x, getOldConstraint().y, versionInt--});
-			}
-			getModel().eNotify(new NotificationImpl(Notification.SET, anno, anno));
-		}
+	public boolean canUndo() {
+		return false;
 	}
 
 	public void setNewConstraint(Rectangle constraint) {

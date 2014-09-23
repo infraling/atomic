@@ -3,24 +3,45 @@
 <plugin>
    <extension
          point="org.eclipse.ui.importWizards">
-      <wizard
+      <!--<wizard
             class="de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard.PepperImportWizard"
             icon="saltnpepper_logo-16x16.png"
             id="de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard.PepperImportWizard"
-            name="Pepper Module Import">
+            name="Pepper Module Import">-->
+      <wizard
+            category="de.uni_jena.iaa.linktype.atomic.model.pepper.categoryAtomicImport"
+            class="de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard.PepperImportWizard"
+            icon="saltnpepper_logo-16x16.png"
+            id="de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard.PepperImportWizard"
+            name="Corpus Import">
       </wizard>
+      <category
+            id="de.uni_jena.iaa.linktype.atomic.model.pepper.categoryAtomicImport"
+            name="Atomic">
+      </category>
+            <primaryWizard
+            id="de.uni_jena.iaa.linktype.atomic.model.pepper.exportwizard.PepperImportWizard">
+      </primaryWizard>
    </extension>
    <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
+            category="de.uni_jena.iaa.linktype.atomic.model.pepper.categoryAtomicExport"
             class="de.uni_jena.iaa.linktype.atomic.model.pepper.exportwizard.PepperExportWizard"
             icon="saltnpepper_logo-16x16.png"
             id="de.uni_jena.iaa.linktype.atomic.model.pepper.exportwizard.PepperExportWizard"
-            name="Pepper Module Export">
+            name="Corpus Export">
          <selection
                class="org.eclipse.core.resources.IProject">
          </selection>
       </wizard>
+      <category
+            id="de.uni_jena.iaa.linktype.atomic.model.pepper.categoryAtomicExport"
+            name="Atomic">
+      </category>
+      <primaryWizard
+            id="de.uni_jena.iaa.linktype.atomic.model.pepper.exportwizard.PepperExportWizard">
+      </primaryWizard>
    </extension>
 
 </plugin>
