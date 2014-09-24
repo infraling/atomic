@@ -7,6 +7,9 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.ShortestPathConnectionRouter;
+import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.RootEditPart;
 
 /**
  * @author Stephan Druskat

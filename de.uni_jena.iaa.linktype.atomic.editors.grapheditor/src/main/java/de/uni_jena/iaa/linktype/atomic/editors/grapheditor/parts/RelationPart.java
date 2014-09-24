@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RelativeLocator;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
@@ -30,11 +28,9 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.IDLabel;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.RelationFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart.AnnotationFigure;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.RelationBendpointEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.RelationConnectionEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
@@ -43,10 +39,10 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
- * 
+ *
  */
 public class RelationPart extends AbstractConnectionEditPart {
-
+	
 	public enum RelationType {
 		DOMINANCE, SPANNING, POINTING, ORDER
 	}
@@ -60,35 +56,29 @@ public class RelationPart extends AbstractConnectionEditPart {
 		setAdapter(new RelationAdapter());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	
+	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
 	protected IFigure createFigure() {
 		switch (type) {
 		case DOMINANCE:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()),
-					RelationFigure.DOMINANCERELATION_MODEL);
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.DOMINANCERELATION_MODEL);
 		case SPANNING:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()),
-					RelationFigure.SPANNINGRELATION_MODEL);
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.SPANNINGRELATION_MODEL);
 		case POINTING:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()),
-					RelationFigure.POINTINGRELATION_MODEL);
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.POINTINGRELATION_MODEL);
 		case ORDER:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()),
-					RelationFigure.ORDERRELATION_MODEL);
+			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.ORDERRELATION_MODEL);
 
 		default:
 			break;
 		}
 		return null;
-
+		
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	protected void refreshVisuals() { // FIXME TODO Refactor
 		RelationFigure figure = (RelationFigure) getFigure();
@@ -102,22 +92,18 @@ public class RelationPart extends AbstractConnectionEditPart {
 		}
 		// Get SAnnotations in correct order
 		List<EObject> modelChildren = getModelChildren();
-		for (Iterator<EObject> iterator = modelChildren.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<EObject> iterator = modelChildren.iterator(); iterator.hasNext();) {
 			EObject eObject = (EObject) iterator.next();
 			if (!(eObject instanceof SAnnotation))
 				modelChildren.remove(eObject);
 		}
 		// Compare List of SANnotations and List of SAnnotationFigures by SName
-		for (Iterator<EObject> iterator = modelChildren.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<EObject> iterator = modelChildren.iterator(); iterator.hasNext();) {
 			String comparableSName = ((SAnnotation) iterator.next()).getSName();
 			for (Object figureChild : figure.getChildren()) {
 				if (figureChild instanceof AnnotationFigure) {
-					if (((AnnotationFigure) figureChild).getText().split(" : ")[0]
-							.equalsIgnoreCase(comparableSName)) {
-						customFigureChildren
-								.add((AnnotationFigure) figureChild);
+					if (((AnnotationFigure) figureChild).getText().split(" : ")[0].equalsIgnoreCase(comparableSName)) {
+						customFigureChildren.add((AnnotationFigure) figureChild);
 					}
 				}
 			}
@@ -125,60 +111,40 @@ public class RelationPart extends AbstractConnectionEditPart {
 		for (Object child : customFigureChildren) {
 			if (child instanceof AnnotationFigure) {
 				int figureIndex = customFigureChildren.indexOf(child);
-				figure.add((AnnotationFigure) child, new RelativeLocator(
-						(IFigure) customFigureChildren.get(figureIndex - 1),
-						0.5, 1.7));
+				figure.add((AnnotationFigure) child, new RelativeLocator((IFigure) customFigureChildren.get(figureIndex - 1), 0.5, 1.7));
 			}
-		}
-		if (((SRelation) getModel()).getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS") != null) {
-			List<Point> modelConstraint = (List<Point>) ((SRelation) getModel()).getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS").getValue();
-			List<AbsoluteBendpoint> figureConstraint = new ArrayList<AbsoluteBendpoint>();
-			for (Point p : modelConstraint) {
-				figureConstraint.add(new AbsoluteBendpoint(p));
-			}
-			figure.setRoutingConstraint(figureConstraint);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+
+	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-				new ElementDirectEditPolicy());
-		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
-				new ConnectionEndpointEditPolicy());
-		installEditPolicy(EditPolicy.CONNECTION_ROLE,
-				new RelationConnectionEditPolicy());
-		installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
-				new RelationBendpointEditPolicy());
-	}
-
-	@Override
-	public void performRequest(Request req) {
-		if (req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ElementDirectEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_ROLE, new RelationConnectionEditPolicy());
+	}	
+	@Override public void performRequest(Request req) {
+		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
 			performDirectEditing();
 		}
 	}
-
+	
 	private void performDirectEditing() {
-		MultiLineDirectEditManager manager = new MultiLineDirectEditManager(
-				this, TextCellEditor.class, new AtomicCellEditorLocator(
-						getFigure()));
+		MultiLineDirectEditManager manager = new MultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
 		manager.show();
 	}
-
-	@Override
+	
+	@Override 
 	protected List<EObject> getModelChildren() {
 		List<EObject> childrenList = new ArrayList<EObject>();
 		SAnnotatableElement model = (SAnnotatableElement) getModel();
 		childrenList.addAll(model.getSAnnotations());
 		return childrenList;
 	}
-
+	
 	/**
 	 * @return the adapter
 	 */
@@ -187,20 +153,19 @@ public class RelationPart extends AbstractConnectionEditPart {
 	}
 
 	/**
-	 * @param adapter
-	 *            the adapter to set
+	 * @param adapter the adapter to set
 	 */
 	public void setAdapter(RelationAdapter adapter) {
 		this.adapter = adapter;
 	}
-
+	
 	/**
 	 * @author Stephan Druskat
-	 * 
+	 *
 	 */
 	public class RelationAdapter extends EContentAdapter {
-
-		@Override
+		
+		@Override 
 		public void notifyChanged(Notification n) {
 			refresh();
 			switch (n.getEventType()) {
@@ -219,31 +184,27 @@ public class RelationPart extends AbstractConnectionEditPart {
 				break;
 			case Notification.SET:
 				if (n.getNotifier() == getModel()) {
-					if (n.getOldValue() instanceof SDocumentGraph
-							&& n.getNewValue() == null) {
+					if (n.getOldValue() instanceof SDocumentGraph && n.getNewValue() == null) {
 						if (getFigure().isVisible()) {
 							getFigure().setVisible(false);
 							deactivate();
 						}
 					}
 				}
-				else {
-					refresh();
-				}
 				break;
 			default:
 				break;
 			}
-		}
-
-		@Override
+	    }
+	 
+		@Override 
 		public Notifier getTarget() {
-			return (Notifier) getModel();
-		}
-
-		@Override
-		public boolean isAdapterForType(Object type) {
-			switch (RelationPart.this.type) {
+	    	return (Notifier) getModel();
+	    }
+	 
+	    @Override 
+	    public boolean isAdapterForType(Object type) {
+	    	switch (RelationPart.this.type) {
 			case DOMINANCE:
 				return type.equals(SDominanceRelation.class);
 			case SPANNING:
@@ -256,21 +217,21 @@ public class RelationPart extends AbstractConnectionEditPart {
 				break;
 			}
 			return false;
-		}
+	    }
 
 	}
-
-	@Override
+	
+	@Override 
 	public void activate() {
-		if (!isActive()) {
+		if(!isActive()) {
 			((Notifier) getModel()).eAdapters().add(getAdapter());
-		}
+	    }
 		super.activate();
 	}
-
-	@Override
+	 
+	@Override 
 	public void deactivate() {
-		if (isActive()) {
+		if(isActive()) {
 			((Notifier) getModel()).eAdapters().remove(getAdapter());
 		}
 		super.deactivate();

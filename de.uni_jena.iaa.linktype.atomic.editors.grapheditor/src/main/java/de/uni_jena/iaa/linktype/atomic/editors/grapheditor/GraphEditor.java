@@ -11,9 +11,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.draw2d.AutomaticRouter;
 import org.eclipse.draw2d.ConnectionLayer;
-import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.gef.DefaultEditDomain;
@@ -83,13 +81,8 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart();
 		ConnectionLayer connLayer = (ConnectionLayer) root.getLayer(LayerConstants.CONNECTION_LAYER);
 		GraphicalEditPart contentEditPart = (GraphicalEditPart) root.getContents();
-		FanRouter fr = new FanRouter();
-		fr.setSeparation(30);
-		AutomaticRouter router = fr;
-		ShortestPathConnectionRouter cr = new ShortestPathConnectionRouter(contentEditPart.getFigure());
-		cr.setSpacing(10);
-		router.setNextRouter(cr);
-		connLayer.setConnectionRouter(router);
+		ShortestPathConnectionRouter shortestPathConnectionRouter = new ShortestPathConnectionRouter(contentEditPart.getFigure());
+		connLayer.setConnectionRouter(shortestPathConnectionRouter);
 	}
 
 	/* (non-Javadoc)
@@ -97,7 +90,8 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	protected PaletteRoot getPaletteRoot() {
-		return GraphEditorPaletteFactory.createPalette();
+		GraphEditorPaletteFactory factory = new GraphEditorPaletteFactory();
+		return factory.createPalette();
 	}
 	
 	/* (non-Javadoc)
