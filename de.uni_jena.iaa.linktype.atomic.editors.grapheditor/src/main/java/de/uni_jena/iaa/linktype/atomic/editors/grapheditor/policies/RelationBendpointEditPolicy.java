@@ -51,6 +51,9 @@ public class RelationBendpointEditPolicy extends BendpointEditPolicy {
 
 		Point p = request.getLocation();
 		command.setRelation((SRelation) request.getSource().getModel());
+		RootEditPart root = getHost().getRoot();
+		ConnectionLayer layer = (ConnectionLayer) ((ScalableFreeformRootEditPart) root).getLayer(LayerConstants.CONNECTION_LAYER);
+		layer.translateToRelative(p);
 		command.setLocation(p);
 		command.setIndex(request.getIndex());
 

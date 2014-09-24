@@ -4,6 +4,8 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.gef.commands.Command;
 
 import java.util.List;
@@ -27,12 +29,14 @@ public class RelationMoveBendpointCommand extends Command {
 			oldLocation = ((List<Point>) relation.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS").getValue()).get(index);
 		}
 		((List<Point>) relation.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS").getValue()).set(index, newLocation);
+		relation.eNotify(new NotificationImpl(Notification.SET, oldLocation, oldLocation));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void undo() {
 		((List<Point>) relation.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS").getValue()).set(index, oldLocation);
+		relation.eNotify(new NotificationImpl(Notification.SET, oldLocation, oldLocation));
 	}
 
 	public void setIndex(final int index) {

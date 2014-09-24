@@ -6,6 +6,8 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.gef.commands.Command;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
@@ -31,12 +33,14 @@ public class RelationDeleteBendpointCommand extends Command {
 	public void execute() {
 		location = ((List<Point>) relation.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS").getValue()).get(index);
 		((List<Point>) relation.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS").getValue()).remove(index);
+		relation.eNotify(new NotificationImpl(Notification.REMOVE, location, null));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void undo() {
 		((List<Point>) relation.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_BENDPOINTS").getValue()).add(index, location);
+		relation.eNotify(new NotificationImpl(Notification.ADD, null, location));
 	}
 
 	public void setIndex(final int index) {
