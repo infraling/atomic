@@ -8,12 +8,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -41,7 +37,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SIdentifiableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
@@ -63,34 +58,33 @@ public class PartUtils {
 	private static final int margin = 50;  // FIXME Hard-coded margin (5), make settable in Prefs
 	
 	public static String getVisualID(SNamedElement model) {
-		LinkedList<String> visualID = new LinkedList<String>();
-		
-		Pattern p = Pattern.compile("\\d+_\\d+|\\d+");
-//		Matcher m = p.matcher(((SNamedElement) model).getSName()); 
-		Matcher m = p.matcher(((SIdentifiableElement) model).getSId());
-		while (m.find()) {
-		   visualID.add(m.group());
-		}
 		if (model instanceof SToken) {
-			return "T" + visualID.getFirst();
+			int index = ((SToken) model).getSDocumentGraph().getSTokens().indexOf(model);
+			return "T" + (index + 1);
 		}
 		else if (model instanceof SStructure) {
-			return "N" + visualID.getFirst();
+			int index = ((SStructure) model).getSDocumentGraph().getSStructures().indexOf(model);
+			return "N" + (index + 1);
 		}
 		else if (model instanceof SSpan) {
-			return "S" + visualID.getFirst();
+			int index = ((SSpan) model).getSDocumentGraph().getSSpans().indexOf(model);
+			return "S" + (index + 1);
 		}
 		else if (model instanceof SDominanceRelation) {
-			return "D" + visualID.getFirst();
+			int index = ((SDominanceRelation) model).getSDocumentGraph().getSDominanceRelations().indexOf(model);
+			return "D" + (index + 1);
 		}
 		else if (model instanceof SSpanningRelation) {
-			return "R" + visualID.getFirst();
+			int index = ((SSpanningRelation) model).getSDocumentGraph().getSSpanningRelations().indexOf(model);
+			return "R" + (index + 1);
 		}
 		else if (model instanceof SPointingRelation) {
-			return "P" + visualID.getFirst();
+			int index = ((SPointingRelation) model).getSDocumentGraph().getSPointingRelations().indexOf(model);
+			return "P" + (index + 1);
 		}
 		else if (model instanceof SOrderRelation) {
-			return "O" + visualID.getFirst();
+			int index = ((SOrderRelation) model).getSDocumentGraph().getSOrderRelations().indexOf(model);
+			return "O" + (index + 1);
 		}
 		return null;
 	}
