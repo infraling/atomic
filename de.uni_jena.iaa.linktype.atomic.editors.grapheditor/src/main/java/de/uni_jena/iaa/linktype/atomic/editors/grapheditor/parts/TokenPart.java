@@ -64,7 +64,7 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 			getFigure().getChildren().remove(getFigure().getChildren().size() - 1);
 		
 		int x = PartUtils.getTokenX((GraphPart) getParent(), getModel(), getFigure());
-		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 10, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME: Fixed y coord (10). Make settable in Prefs?
+		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 600, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME: Fixed y coord (10). Make settable in Prefs?
 		super.refreshVisuals();
 	}
 
