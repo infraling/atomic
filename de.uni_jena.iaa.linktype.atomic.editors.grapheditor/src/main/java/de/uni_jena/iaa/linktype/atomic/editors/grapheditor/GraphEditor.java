@@ -4,8 +4,10 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.EventObject;
 import java.util.HashSet;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -23,8 +25,12 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.ui.actions.ZoomInAction;
+import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -70,7 +76,24 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		viewer.setKeyHandler(new AtomicGraphicalViewerKeyHandler(viewer));
 		getGraphicalViewer().addDropTargetListener(new TemplateTransferDropTargetListener(getGraphicalViewer()));
 		getEditDomain().getPaletteViewer().addDragSourceListener(new TemplateTransferDragSourceListener(getEditDomain().getPaletteViewer()));
+		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) viewer.getRootEditPart();
+		ZoomManager zoomManager = root.getZoomManager();
+		root.getZoomManager().setZoomLevels(new double[] { 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0 , 3.0, 4.0});
+		List<String> zoomContributions = Arrays.asList(new String[] {ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH });
+		zoomManager.setZoomLevelContributions(zoomContributions);
+		zoomManager.setZoomAnimationStyle(ZoomManager.ANIMATE_ZOOM_IN_OUT);
+		IAction zoomIn = new ZoomInAction(zoomManager);
+		IAction zoomOut = new ZoomOutAction(zoomManager);
+		getActionRegistry().registerAction(zoomIn);
+		getActionRegistry().registerAction(zoomOut);
 	}
+	
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
+		if (type == ZoomManager.class)
+			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
+		return super.getAdapter(type);
+	}
+	
 	
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
