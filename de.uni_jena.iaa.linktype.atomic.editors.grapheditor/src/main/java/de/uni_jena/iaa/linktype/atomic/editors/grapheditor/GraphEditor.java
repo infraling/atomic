@@ -74,6 +74,17 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
+		IEditorInput input = getEditorInput();
+		IFile file = ((FileEditorInput) input ).getFile();
+		if (file.getName().equals(SaltFactory.FILE_SALT_PROJECT)) {
+			SaltProject saltProject = SaltFactory.eINSTANCE.createSaltProject();
+			saltProject.loadSaltProject(URI.createFileURI(new File(file.getLocation().toString()).getAbsolutePath()));
+			String name = saltProject.getSName();
+			MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Action not applicable", "Cannot open project file for editing.\nPlease open a document file.\n\n"
+					+ "Project information for \"" + name + "\"\n"
+					+ "No. of contained documents: " + saltProject.getSCorpusGraphs().get(0).getSDocuments().size());
+			return;
+		}
 		if (isModelGraph) {
 			getGraphicalViewer().setContents(graph);
 		}
@@ -116,10 +127,7 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		super.setInput(input);
 		if (input instanceof FileEditorInput) {
 			IFile file = ((FileEditorInput) input).getFile();
-			if (file.getName().equals(SaltFactory.FILE_SALT_PROJECT)) {
-				// TODO Handle this
-			}
-			else if (file.getName().endsWith(SaltFactory.FILE_ENDING_SALT) && !(file.getName().equals(SaltFactory.FILE_SALT_PROJECT))) {
+			if (file.getName().endsWith(SaltFactory.FILE_ENDING_SALT) && !(file.getName().equals(SaltFactory.FILE_SALT_PROJECT))) {
 				GraphResolver graphResolver = new GraphResolver(file);
 				projectURI = graphResolver.getProjectURI();
 				graphURI = graphResolver.getGraphURI();
