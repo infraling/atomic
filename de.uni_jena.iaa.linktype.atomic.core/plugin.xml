@@ -77,6 +77,11 @@
                   style="push">
             </command>
          </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.viewMenu"
+               label="View"
+               mnemonic="V">
+         </menu>
       </menuContribution>
       <menuContribution
             allPopups="false"
