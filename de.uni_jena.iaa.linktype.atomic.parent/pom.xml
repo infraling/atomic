@@ -33,19 +33,22 @@
     <repository>
       <id>indigo</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/indigo/</url>
+      <!-- <url>http://download.eclipse.org/releases/indigo/</url> -->
+      <url>file:${user.home}/Dokumente/p2/indigo/</url>
     </repository>
     
     <repository>
       <id>pepper4eclipse</id>
       <layout>p2</layout>
-      <url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/1.1.8-SNAPSHOT</url>
+      <!-- <url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/1.1.8-SNAPSHOT</url> -->
+      <url>file:${user.home}/Dokumente/p2/pepper4eclipse/</url>
     </repository>
     
     <repository>
       <id>eclipse-orbit</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
+      <!-- <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url> -->
+      <url>file:${user.home}/Dokumente/p2/orbit/</url>
     </repository>
     
   </repositories>
