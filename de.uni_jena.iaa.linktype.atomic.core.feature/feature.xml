@@ -28,10 +28,6 @@
       <import plugin="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore" version="1.1.6" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator" version="3.5.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator.resources" version="3.4.300" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.p2.ui.sdk" version="1.0.200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ecf.provider.filetransfer"/>
-      <import plugin="org.eclipse.equinox.p2.touchpoint.eclipse"/>
-      <import plugin="org.eclipse.equinox.p2.touchpoint.natives"/>
    </requires>
 
    <plugin

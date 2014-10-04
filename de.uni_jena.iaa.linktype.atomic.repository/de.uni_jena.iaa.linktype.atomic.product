@@ -71,10 +71,6 @@
       <feature id="de.uni_jena.iaa.linktype.atomic.editors.feature" version="0.1.4.qualifier"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
-      <feature id="org.eclipse.equinox.p2.core.feature"/>
-      <feature id="org.eclipse.equinox.p2.user.ui"/>
-      <feature id="org.eclipse.equinox.p2.discovery.feature"/>
-      <feature id="org.eclipse.equinox.p2.extras.feature"/>
    </features>
 
    <configurations>
