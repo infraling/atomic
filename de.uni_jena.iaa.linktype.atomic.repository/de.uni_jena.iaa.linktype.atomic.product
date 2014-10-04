@@ -70,6 +70,11 @@
       <feature id="de.hu_berlin.german.korpling.saltnpepper.salt"/>
       <feature id="de.uni_jena.iaa.linktype.atomic.editors.feature" version="0.1.4.qualifier"/>
       <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.equinox.p2.discovery.feature"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
    </features>
 
    <configurations>
@@ -94,6 +99,9 @@
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator" autoStart="false" startLevel="1" />
+      <property name="eclipse.p2.data.area" value="@config.dir/../p2" />
+      <property name="eclipse.p2.profile" value="profile" />
    </configurations>
 
 </product>

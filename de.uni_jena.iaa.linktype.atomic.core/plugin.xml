@@ -67,8 +67,15 @@
             </command>
          </menu>
          <menu
-               id="menu:new?after=additions"
-               label="label">
+               id="de.uni_jena.iaa.linktype.atomic.menus.preferencesMenu"
+               label="Preferences"
+               mnemonic="P">
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.install"
+                  label="III"
+                  mnemonic="I"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution

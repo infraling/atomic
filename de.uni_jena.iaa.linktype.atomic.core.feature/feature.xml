@@ -17,17 +17,27 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.7.0" match="greaterOrEqual"/>
+      <import plugin="de.hu_berlin.german.korpling.saltnpepper.salt-graph" version="1.1.6" match="greaterOrEqual"/>
+      <import plugin="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon" version="1.1.6" match="greaterOrEqual"/>
+      <import plugin="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore" version="1.1.6" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator" version="3.5.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator.resources" version="3.4.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.ui.sdk" version="1.0.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ecf.provider.filetransfer"/>
+      <import plugin="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+      <import plugin="org.eclipse.equinox.p2.touchpoint.natives"/>
+   </requires>
+
    <plugin
          id="de.uni_jena.iaa.linktype.atomic.core"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
-<!--   <plugin
-         id="de.uni_jena.iaa.linktype.atomic.workspace"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
--->
 </feature>
