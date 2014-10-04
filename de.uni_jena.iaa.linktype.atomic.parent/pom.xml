@@ -22,6 +22,7 @@
   <module>../de.uni_jena.iaa.linktype.atomic.editors.grapheditor</module>
   <module>../de.uni_jena.iaa.linktype.atomic.editors.feature</module>
   <!-- <module>../de.uni_jena.iaa.linktype.atomic.editors.grapheditor.test</module> -->
+  <module>../de.uni_jena.iaa.linktype.atomic.atomical</module>
   </modules>
   
   <properties>
