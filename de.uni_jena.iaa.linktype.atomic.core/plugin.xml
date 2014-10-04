@@ -72,7 +72,7 @@
                mnemonic="P">
             <command
                   commandId="org.eclipse.equinox.p2.ui.sdk.install"
-                  label="III"
+                  label="Install new plugins"
                   mnemonic="I"
                   style="push">
             </command>
