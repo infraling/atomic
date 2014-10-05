@@ -18,5 +18,25 @@
          </command>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.uni_jena.iaa.linktype.atomic.core.perspective">
+         <view
+               id="org.eclipse.ui.console.ConsoleView"
+               ratio="0.8f"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               visible="false">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.console.consoleFactories">
+      <consoleFactory
+            class="de.uni_jena.iaa.linktype.atomic.atomical.console.AtomicalConsoleFactory"
+            label="AtomicAL Console Factory">
+      </consoleFactory>
+   </extension>
 
 </plugin>
