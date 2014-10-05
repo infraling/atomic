@@ -19,6 +19,7 @@ import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
@@ -259,6 +260,10 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		public URI getProjectURI() {
 			return saltProjectURI;
 		}
+	}
+
+	public EditPartViewer getEditPartViewer() {
+		return getGraphicalViewer();
 	}
 
 }
