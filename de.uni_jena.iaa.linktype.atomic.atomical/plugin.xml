@@ -7,14 +7,10 @@
             allPopups="false"
             locationURI="menu:de.uni_jena.iaa.linktype.atomic.menus.viewMenu">
          <command
-               commandId="org.eclipse.ui.views.showView"
+               commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
                label="AtomicAL Console"
                mnemonic="A"
                style="push">
-                <parameter
-				name="org.eclipse.ui.views.showView.viewId"
-				value="org.eclipse.ui.console.ConsoleView">
-</parameter>
          </command>
       </menuContribution>
    </extension>
@@ -37,6 +33,14 @@
             class="de.uni_jena.iaa.linktype.atomic.atomical.console.AtomicalConsoleFactory"
             label="AtomicAL Console Factory">
       </consoleFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler"
+            id="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
+            name="Open XXX">
+      </command>
    </extension>
 
 </plugin>
