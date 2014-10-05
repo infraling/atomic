@@ -266,4 +266,8 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 		return getGraphicalViewer();
 	}
 
+	public DefaultEditDomain getDomain() {
+		return getEditDomain();
+	}
+
 }
