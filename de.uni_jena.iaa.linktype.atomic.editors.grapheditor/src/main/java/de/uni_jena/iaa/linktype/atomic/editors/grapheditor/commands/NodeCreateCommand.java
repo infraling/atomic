@@ -36,7 +36,7 @@ public class NodeCreateCommand extends Command {
 	public void execute() {
 		getModel().setGraph(getGraph());
 		getModel().createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{getLocation().x, getLocation().y, 1}, SDATATYPE.SOBJECT);
-		if (!getSelectedEditParts().isEmpty()) {
+		if (getSelectedEditParts() != null && !getSelectedEditParts().isEmpty()) {
 			createRelations();
 		}
 	}

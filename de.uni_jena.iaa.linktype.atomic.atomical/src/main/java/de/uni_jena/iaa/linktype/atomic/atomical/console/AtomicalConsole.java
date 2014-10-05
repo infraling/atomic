@@ -116,7 +116,6 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 						final NodeCreateCommand createNodeCommand = new NodeCreateCommand();
 						createNodeCommand.setGraph(graph);
 						createNodeCommand.setLocation(new Point(100, 100)); // FIXME: Or at other position
-						createNodeCommand.setSelectedEditParts(new ArrayList<EditPart>());
 						SStructure sStructure = SaltFactory.eINSTANCE.createSStructure();
 						// FIXME: Do the following properly
 							if (atomicALParameters.get("attributes") != null) {
