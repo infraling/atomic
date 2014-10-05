@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.atomical.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.ui.console;bundle-version="3.5.100",
- de.uni_jena.iaa.linktype.atomic.editors.grapheditor;bundle-version="0.1.4"
+ org.eclipse.ui.console;bundle-version="3.5.100"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
