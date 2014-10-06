@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.uni_jena.iaa.linktype.atomic</groupId>
   <artifactId>de.uni_jena.iaa.linktype.atomic.parent</artifactId>
-  <version>0.1.5</version>
+  <version>0.1.6-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Atomic Parent Project</name>
   <modules>
