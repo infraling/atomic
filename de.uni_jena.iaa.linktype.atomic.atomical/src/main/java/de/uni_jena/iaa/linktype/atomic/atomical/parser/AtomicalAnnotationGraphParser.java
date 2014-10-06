@@ -6,6 +6,7 @@ package de.uni_jena.iaa.linktype.atomic.atomical.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,8 +127,63 @@ public class AtomicalAnnotationGraphParser {
 						break;
 					}
 				}
-				else if (word.matches("-[drop]")) // edge switch
+				else if (word.matches("-[drop]")) {// edge switch
 					((ArrayList<String>) hash.get("switch")).add(word.substring(1));
+				}
+				else if (word.matches("^([DNPTRSOdnptrso]\\d+)\\.\\.([DNPTRSOdnptrso]\\d+)")) {
+					char typeDefiningFirstChar = word.charAt(0);
+					Pattern integers = Pattern.compile("(\\d+)");
+					Matcher integerMatcher = integers.matcher(word);
+					List<Integer> finds = new ArrayList<Integer>();
+					while (integerMatcher.find()) {
+						finds.add(Integer.parseInt(integerMatcher.group()));
+					}
+					ArrayList<Integer> intList = new ArrayList<Integer>();
+					if (finds.size() == 2) {
+						for (int j = finds.get(0); j < (finds.get(1) + 1); j++) {
+							intList.add(j);
+						}
+						for (Integer intID : intList) {
+							String element = (typeDefiningFirstChar + intID.toString()).toUpperCase();
+							((ArrayList<String>) hash.get("elements")).add(element);
+							switch (typeDefiningFirstChar) {
+							case 'N':
+							case 'n':
+								((ArrayList<String>) hash.get("nodes")).add(element);
+								((ArrayList<String>) hash.get("all_nodes")).add(element);
+								break;
+							case 'S':
+							case 's':
+								((ArrayList<String>) hash.get("spans")).add(element);
+								((ArrayList<String>) hash.get("all_nodes")).add(element);
+								break;
+							case 'D':
+							case 'd':
+								((ArrayList<String>) hash.get("edges")).add(element);
+								break;
+							case 'P':
+							case 'p':
+								((ArrayList<String>) hash.get("edges")).add(element);
+								break;
+							case 'O':
+							case 'o':
+								((ArrayList<String>) hash.get("edges")).add(element);
+								break;
+							case 'R':
+							case 'r':
+								((ArrayList<String>) hash.get("edges")).add(element);
+								break;
+							case 'T':
+							case 't':
+								((ArrayList<String>) hash.get("tokens")).add(element);
+								((ArrayList<String>) hash.get("all_nodes")).add(element);
+								break;
+							default:
+								break;
+							}
+						}
+					}
+				}
 			}
 			else 
 				if ((m = ((Pattern) r.get("ctrl")).matcher(rawParameters)).find());
