@@ -16,6 +16,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -45,6 +46,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.AnnotationDe
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.ElementAnnotateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeDeleteCommand;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 
 /**
  * @author Stephan Druskat
@@ -55,6 +57,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	private IOConsoleOutputStream out;
 	private SDocumentGraph graph;
 	private IEditorPart editor;
+	private GraphPart graphPart;
 
 	public AtomicalConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
@@ -296,12 +299,12 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 							switch (elementIDs.get(i).charAt(0)) {
 							case 'n':
 							case 'N': // SStructure
-								SStructure structure = getGraph().getSStructures().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+								SStructure structure = (SStructure) getGraphPart().getVisualIDMap().get("N" + iD);
 								final NodeDeleteCommand nodeDeleteCommand = new NodeDeleteCommand();
 								nodeDeleteCommand.setModel(structure);
 								nodeDeleteCommand.setGraph(structure.getSGraph());
+								nodeDeleteCommand.setCoordinates(((AbstractGraphicalEditPart) getGraphPart().getViewer().getEditPartRegistry().get(structure)).getFigure().getBounds());
 								Display.getDefault().syncExec(new Runnable() {
-									
 									@Override
 									public void run() {
 										commandStack.execute(nodeDeleteCommand);
@@ -499,8 +502,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				if (part instanceof GraphEditor) {
 					IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 					EditPartViewer editPartViewer = ((GraphEditor) editor).getEditPartViewer();
-					EditPart contentEditPart = editPartViewer.getContents();
-					console.setGraph((SDocumentGraph) contentEditPart.getModel());
+					console.setGraphPart((GraphPart) editPartViewer.getContents());
+					console.setGraph(console.getGraphPart().getModel());
 					console.setEditor(editor);
 					try {
 						console.out.write("Working on " + editor.getEditorInput().getName() + ".\n");
@@ -553,6 +556,20 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	 */
 	public void setEditor(IEditorPart editor) {
 		this.editor = editor;
+	}
+
+	/**
+	 * @return the graphPart
+	 */
+	public GraphPart getGraphPart() {
+		return graphPart;
+	}
+
+	/**
+	 * @param graphPart the graphPart to set
+	 */
+	public void setGraphPart(GraphPart graphPart) {
+		this.graphPart = graphPart;
 	}
 
 }
