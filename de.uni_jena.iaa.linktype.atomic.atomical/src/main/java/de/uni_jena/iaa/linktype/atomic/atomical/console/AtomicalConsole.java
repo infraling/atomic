@@ -469,7 +469,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	private Node getRelationTarget(HashMap<Object, Object> atomicALParameters) {
 		SNode target = null;
 		if (atomicALParameters.get("all_nodes") != null) {
-			String key = ((ArrayList<String>) atomicALParameters.get("all_nodes")).get(1);
+			String key = ((ArrayList<String>) atomicALParameters.get("all_nodes")).get(1); // FIXME: Add check
 			key = key.toUpperCase();
 			target = (SNode) getGraphPart().getVisualIDMap().get(key);
 			return target;
