@@ -69,9 +69,9 @@
       <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper.modules"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.salt"/>
       <feature id="de.uni_jena.iaa.linktype.atomic.editors.feature" version="0.1.4"/>
+      <feature id="de.uni_jena.iaa.linktype.atomic.atomical.feature" version="0.1.4"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
-      <feature id="de.uni_jena.iaa.linktype.atomic.atomical.feature" version="0.1.4"/>
    </features>
 
    <configurations>

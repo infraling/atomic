@@ -2,6 +2,9 @@
 <site>
    <feature url="features/de.uni_jena.iaa.linktype.atomic.core.feature_0.1.4.jar" id="de.uni_jena.iaa.linktype.atomic.core.feature" version="0.1.4"/>
    <feature url="features/de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature_0.1.4.jar" id="de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature" version="0.1.4"/>
+   <feature url="features/de.uni_jena.iaa.linktype.atomic.atomical.feature_0.1.4.jar" id="de.uni_jena.iaa.linktype.atomic.atomical.feature" version="0.1.4"/>
+   <feature url="features/de.uni_jena.iaa.linktype.atomic.editors.feature_0.1.4.jar" id="de.uni_jena.iaa.linktype.atomic.editors.feature" version="0.1.4"/>
+   <feature url="features/de.uni_jena.iaa.linktype.atomic.model.feature_0.1.4.jar" id="de.uni_jena.iaa.linktype.atomic.model.feature" version="0.1.4"/>
    <category-def name="atomic.category" label="Atomic Category">
       <description>
          Atomic Category
