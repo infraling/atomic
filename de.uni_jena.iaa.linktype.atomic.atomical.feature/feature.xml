@@ -16,4 +16,11 @@
       [Enter License Description here.]
    </license>
 
+   <plugin
+         id="de.uni_jena.iaa.linktype.atomic.atomical"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

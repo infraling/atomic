@@ -30,6 +30,7 @@ import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -67,6 +68,7 @@ public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	public GraphEditor() {
 		setEditDomain(new DefaultEditDomain(this));
+		getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
 	}
 	
 	protected void configureGraphicalViewer() {
