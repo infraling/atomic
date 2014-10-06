@@ -38,6 +38,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
@@ -131,8 +132,10 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				char commandChar = 0;
 				try {
 					commandChar = atomicALCommand.charAt(0);
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (StringIndexOutOfBoundsException e) { // Thrown when only return is pressed in the console
+					return;
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
 				switch (commandChar) {
 					case 'n': // Create SStructure with or without annotations
@@ -383,12 +386,20 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 								break;
 							}
 						}
+						break;
 				
 						
 					case 'p': // Create parent node
+					case 's':
+						SStructuredNode parent;
 						final NodeCreateCommand createParentNodeCommand = new NodeCreateCommand();
 						createParentNodeCommand.setGraph(getGraph());
-						SStructure parent = SaltFactory.eINSTANCE.createSStructure();
+						if (commandChar == 'p') {
+							parent = SaltFactory.eINSTANCE.createSStructure();
+						}
+						else {
+							parent = SaltFactory.eINSTANCE.createSSpan();
+						}
 						// FIXME: Do the following properly
 							if (atomicALParameters.get("attributes") != null) {
 								LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
@@ -409,6 +420,9 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 							switch (childElementIDs.get(i).charAt(0)) {
 							case 'N':
 							case 'n': // SStructure
+								if (commandChar == 's') { // SSpans can not be parents of SStructures
+									break;
+								}
 								SStructure structure = getGraph().getSStructures().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 								children.add(structure);
 								break;
@@ -421,6 +435,9 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 								
 							case 'S':
 							case 's': // SSpan
+								if (commandChar == 's') { // SSpans cannot be parents of SSpans
+									break;
+								}
 								SSpan span = getGraph().getSSpans().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 								children.add(span);
 								break;

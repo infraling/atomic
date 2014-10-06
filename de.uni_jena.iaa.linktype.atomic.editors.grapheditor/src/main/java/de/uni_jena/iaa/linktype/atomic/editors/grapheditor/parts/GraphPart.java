@@ -95,19 +95,22 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		for (SToken token : getModel().getSTokens()) {
 			if (token.getSDocumentGraph() == getModel()) {
 				modelChildren.add(token);
-				getVisualIDMap().put("T" + (getModel().getSTokens().indexOf(token) + 1), token);
+				if (!getVisualIDMap().containsValue(token))
+					getVisualIDMap().put("T" + (getModel().getSTokens().indexOf(token) + 1), token);
 			}
 		}
 		for (SStructure structure : getModel().getSStructures()) {
 			if (structure.getSDocumentGraph() == getModel()) {
 				modelChildren.add(structure);
-				getVisualIDMap().put("N" + (getModel().getSStructures().indexOf(structure) + 1), structure);
+				if (!getVisualIDMap().containsValue(structure))
+					getVisualIDMap().put("N" + (getModel().getSStructures().indexOf(structure) + 1), structure);
 			}
 		}
 		for (SSpan span : getModel().getSSpans()) {
 			if (span.getSDocumentGraph() == getModel()) {
 				modelChildren.add(span);
-				getVisualIDMap().put("S" + (getModel().getSSpans().indexOf(span) + 1), span);
+				if (!getVisualIDMap().containsValue(span))
+					getVisualIDMap().put("S" + (getModel().getSSpans().indexOf(span) + 1), span);
 			}
 		}
 		addRelationIDsToVisualIDMap();
@@ -117,22 +120,26 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	private void addRelationIDsToVisualIDMap() {
 		for (SDominanceRelation dominanceRel : getModel().getSDominanceRelations()) {
 			if (dominanceRel.getSDocumentGraph() == getModel()) {
-				getVisualIDMap().put("D" + (getModel().getSDominanceRelations().indexOf(dominanceRel) + 1), dominanceRel);
+				if (!getVisualIDMap().containsValue(dominanceRel))
+					getVisualIDMap().put("D" + (getModel().getSDominanceRelations().indexOf(dominanceRel) + 1), dominanceRel);
 			}
 		}
 		for (SSpanningRelation spanningRel : getModel().getSSpanningRelations()) {
 			if (spanningRel.getSDocumentGraph() == getModel()) {
-				getVisualIDMap().put("R" + (getModel().getSSpanningRelations().indexOf(spanningRel) + 1), spanningRel);
+				if (!getVisualIDMap().containsValue(spanningRel))
+					getVisualIDMap().put("R" + (getModel().getSSpanningRelations().indexOf(spanningRel) + 1), spanningRel);
 			}
 		}
 		for (SOrderRelation orderRel : getModel().getSOrderRelations()) {
 			if (orderRel.getSDocumentGraph() == getModel()) {
-				getVisualIDMap().put("O" + (getModel().getSOrderRelations().indexOf(orderRel) + 1), orderRel);
+				if (!getVisualIDMap().containsValue(orderRel))
+					getVisualIDMap().put("O" + (getModel().getSOrderRelations().indexOf(orderRel) + 1), orderRel);
 			}
 		}
 		for (SPointingRelation pointingRel : getModel().getSPointingRelations()) {
 			if (pointingRel.getSDocumentGraph() == getModel()) {
-				getVisualIDMap().put("P" + (getModel().getSPointingRelations().indexOf(pointingRel) + 1), pointingRel);
+				if (!getVisualIDMap().containsValue(pointingRel))
+					getVisualIDMap().put("P" + (getModel().getSPointingRelations().indexOf(pointingRel) + 1), pointingRel);
 			}
 		}
 
