@@ -19,4 +19,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: de.uni_jena.iaa.linktype.atomic.editors.grapheditor,
  de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands,
- de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts
+ de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts,
+ de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util

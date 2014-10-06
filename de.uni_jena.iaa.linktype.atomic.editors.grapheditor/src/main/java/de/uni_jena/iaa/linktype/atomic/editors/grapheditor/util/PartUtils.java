@@ -166,7 +166,7 @@ public class PartUtils {
 		return new Rectangle(x, y, width, height);
 	}
 
-	private static int[] calculateXY(SStructuredNode model, AbstractGraphicalEditPart part) {
+	public static int[] calculateXY(SStructuredNode model, AbstractGraphicalEditPart part) {
 		int[] xY = new int[2];
 		SDocumentGraph graph;
 		if (model instanceof SSpan) {
@@ -190,7 +190,13 @@ public class PartUtils {
 				return new int[]{annoXY[0], annoXY[1]};
 			}
 			else if (targetEP != null) {
-				Rectangle targetConstraints = (Rectangle) part.getFigure().getParent().getLayoutManager().getConstraint(targetEP.getFigure());
+				Rectangle targetConstraints;
+				if (!(part instanceof GraphPart)) {
+					targetConstraints = (Rectangle) part.getFigure().getParent().getLayoutManager().getConstraint(targetEP.getFigure());
+				}
+				else {
+					targetConstraints = (Rectangle) part.getFigure().getLayoutManager().getConstraint(targetEP.getFigure());
+				}
 				xList.add(targetConstraints.x + (targetConstraints.width / 2));
 				yList.add(targetConstraints.y);
 			}

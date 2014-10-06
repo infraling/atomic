@@ -9,10 +9,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -381,101 +384,66 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 							}
 						}
 				
-//						
-//					case 'p': // Create parent node
-//					case 'c': // Create child node
-//						// Check for layer switch
-//						if (((ArrayList<String>) atomicALParameters.get("layer_switch")).size() > 0)
-//							setLayerSwitch(((ArrayList<String>) atomicALParameters.get("layer_switch")).get(0));
-//						// Construct command for new parent node
-//						final SStructureCreateCommand createSStructureCompoundCommand = new SStructureCreateCommand();
-//						createSStructureCompoundCommand.setGraph(graph);
-//						boolean newNodeIsParent = true;
-//						if (commandChar == 'c')
-//							newNodeIsParent = false;
-//						Point location = SimpleLayoutAlgorithm.calculateLocation((ArrayList<String>) atomicALParameters.get("elements"), graph, (SDocumentGraphEditPart) topLevelEditPart, newNodeIsParent);
-//						createSStructureCompoundCommand.setLocation(location); // FIXME: Or at other position
-//						SStructure parent = SaltFactory.eINSTANCE.createSStructure();
-//						// FIXME: Do the following properly
-//							if (atomicALParameters.get("attributes") != null) {
-//								LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
-//								for (Object key : attributes.keySet()) {
-//									SAnnotation anno = SaltFactory.eINSTANCE.createSAnnotation();
-//									String val = (String) attributes.get(key);
-//						            anno.setSName((String) key);
-//						            anno.setSValue(val);
-//						            parent.addSAnnotation(anno);
-//								}
-//							}
-//					    createSStructureCompoundCommand.setSStructure(parent);
-//					    // Construct commands for new edges to children
-//					    ArrayList<String> childElementIDs = (ArrayList<String>) atomicALParameters.get("elements");
-//					    ArrayList<SNode> children = new ArrayList<SNode>();
-//						for (int i = 0; i < childElementIDs.size(); i++) {
-//							String iD = childElementIDs.get(i).substring(1);
-//							switch (childElementIDs.get(i).charAt(0)) {
-//							case 'N': // SStructure
-//								for (SStructure structure : graph.getSStructures()) {
-//									String valueString = structure.getSName().substring(9);
-//									if (iD.equals(valueString))
-//										children.add(structure);
-//								}
-//								break;
-//							
-//							case 'T': // SToken
-//								for (SToken token : graph.getSTokens()) {
-//									String valueString = token.getSName().substring(4);
-//									if (iD.equals(valueString))
-//										children.add(token);
-//								}
-//								break;
-//							
-//							default:
-//								break;
-//							}
+						
+					case 'p': // Create parent node
+						final NodeCreateCommand createParentNodeCommand = new NodeCreateCommand();
+						createParentNodeCommand.setGraph(getGraph());
+						SStructure parent = SaltFactory.eINSTANCE.createSStructure();
+						// FIXME: Do the following properly
+							if (atomicALParameters.get("attributes") != null) {
+								LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
+								for (Object key : attributes.keySet()) {
+									SAnnotation anno = SaltFactory.eINSTANCE.createSAnnotation();
+									String val = (String) attributes.get(key);
+						            anno.setSName((String) key);
+						            anno.setSValue(val);
+						            parent.addSAnnotation(anno);
+								}
+							}
+					    createParentNodeCommand.setModel(parent);
+					    // Construct commands for new edges to children
+					    ArrayList<String> childElementIDs = (ArrayList<String>) atomicALParameters.get("elements");
+					    ArrayList<SNode> children = new ArrayList<SNode>();
+						for (int i = 0; i < childElementIDs.size(); i++) {
+							String iD = childElementIDs.get(i).substring(1);
+							switch (childElementIDs.get(i).charAt(0)) {
+							case 'N':
+							case 'n': // SStructure
+								SStructure structure = getGraph().getSStructures().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+								children.add(structure);
+								break;
+							
+							case 'T':	
+							case 't': // SToken
+								SToken token = getGraph().getSTokens().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+								children.add(token);
+								break;
+								
+							case 'S':
+							case 's': // SSpan
+								SSpan span = getGraph().getSSpans().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+								children.add(span);
+								break;
+							default:
+								break;
+							}
+						}
+						Map registry = getGraphPart().getViewer().getEditPartRegistry();
+						List<EditPart> childrenEPs = new ArrayList<EditPart>();
+						for (SNode child : children) {
+							EditPart childEP = (EditPart) registry.get(child);
+							childrenEPs.add(childEP);
+						}
+						createParentNodeCommand.setSelectedEditParts(childrenEPs);
+							Display.getDefault().asyncExec(new Runnable() {
+								@Override
+								public void run() {
+									commandStack.execute(createParentNodeCommand);
+								}
+							});
 //						}
-//						Command chainCommand = createSStructureCompoundCommand;
-//						for (SNode child : children) {
-//							if (getLayerSwitch().equals("f")) { // Use SPointingRel
-//								final SPointingRelationCreateCommand createCompoundSPointingRelationCommand = new SPointingRelationCreateCommand();
-//								createCompoundSPointingRelationCommand.setGraph(graph);
-//								if (newNodeIsParent) {
-//									createCompoundSPointingRelationCommand.setSource(parent);
-//									createCompoundSPointingRelationCommand.setTarget(child);
-//								}
-//								else {
-//									createCompoundSPointingRelationCommand.setSource(child);
-//									createCompoundSPointingRelationCommand.setTarget(parent);
-//								}
-//								SPointingRelation childSPointingRelation = SaltFactory.eINSTANCE.createSPointingRelation();
-//								createCompoundSPointingRelationCommand.setSPointingRelation(childSPointingRelation);
-//						    	chainCommand = chainCommand.chain(createCompoundSPointingRelationCommand);
-//							}
-//							else { // Use SDomRel
-//								final SDominanceRelationCreateCommand createCompoundDominanceSRelationCommand = new SDominanceRelationCreateCommand();
-//								createCompoundDominanceSRelationCommand.setGraph(graph);
-//								if (newNodeIsParent) {
-//									createCompoundDominanceSRelationCommand.setSource(parent);
-//									createCompoundDominanceSRelationCommand.setTarget(child);
-//								}
-//								else {
-//									createCompoundDominanceSRelationCommand.setSource(child);
-//									createCompoundDominanceSRelationCommand.setTarget(parent);
-//								}
-//								SDominanceRelation childSDomainanceRelation = SaltFactory.eINSTANCE.createSDominanceRelation();
-//								createCompoundDominanceSRelationCommand.setSDominanceRelation(childSDomainanceRelation);
-//							    chainCommand = chainCommand.chain(createCompoundDominanceSRelationCommand);
-//							} 
-//							final Command executableChainCommand = chainCommand;
-//							Display.getDefault().asyncExec(new Runnable() {
-//								@Override
-//								public void run() {
-//									commandStack.execute(executableChainCommand);
-//								}
-//							});
-//						}
-//						// Get elements and create compound command
-//						break;
+						// Get elements and create compound command
+						break;
 				    	
 					default:
 						break;
