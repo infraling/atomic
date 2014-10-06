@@ -24,7 +24,11 @@ import com.google.common.collect.HashBiMap;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
@@ -106,9 +110,36 @@ public class GraphPart extends AbstractGraphicalEditPart {
 				getVisualIDMap().put("S" + (getModel().getSSpans().indexOf(span) + 1), span);
 			}
 		}
+		addRelationIDsToVisualIDMap();
 		return modelChildren;
 	}
 	
+	private void addRelationIDsToVisualIDMap() {
+		for (SDominanceRelation dominanceRel : getModel().getSDominanceRelations()) {
+			if (dominanceRel.getSDocumentGraph() == getModel()) {
+				getVisualIDMap().put("D" + (getModel().getSDominanceRelations().indexOf(dominanceRel) + 1), dominanceRel);
+			}
+		}
+		for (SSpanningRelation spanningRel : getModel().getSSpanningRelations()) {
+			if (spanningRel.getSDocumentGraph() == getModel()) {
+				getVisualIDMap().put("R" + (getModel().getSSpanningRelations().indexOf(spanningRel) + 1), spanningRel);
+			}
+		}
+		for (SOrderRelation orderRel : getModel().getSOrderRelations()) {
+			if (orderRel.getSDocumentGraph() == getModel()) {
+				getVisualIDMap().put("O" + (getModel().getSOrderRelations().indexOf(orderRel) + 1), orderRel);
+			}
+		}
+		for (SPointingRelation pointingRel : getModel().getSPointingRelations()) {
+			if (pointingRel.getSDocumentGraph() == getModel()) {
+				getVisualIDMap().put("P" + (getModel().getSPointingRelations().indexOf(pointingRel) + 1), pointingRel);
+			}
+		}
+
+
+
+	}
+
 	public SDocumentGraph getModel() {
 		return (SDocumentGraph) super.getModel();
 	}

@@ -62,15 +62,16 @@ public class RelationPart extends AbstractConnectionEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
+		String visualID = ((GraphPart) getRoot().getContents()).getVisualIDMap().inverse().get(getModel());
 		switch (type) {
 		case DOMINANCE:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.DOMINANCERELATION_MODEL);
+			return new RelationFigure(visualID, RelationFigure.DOMINANCERELATION_MODEL);
 		case SPANNING:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.SPANNINGRELATION_MODEL);
+			return new RelationFigure(visualID, RelationFigure.SPANNINGRELATION_MODEL);
 		case POINTING:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.POINTINGRELATION_MODEL);
+			return new RelationFigure(visualID, RelationFigure.POINTINGRELATION_MODEL);
 		case ORDER:
-			return new RelationFigure(PartUtils.getVisualID((SNamedElement) getModel()), RelationFigure.ORDERRELATION_MODEL);
+			return new RelationFigure(visualID, RelationFigure.ORDERRELATION_MODEL);
 
 		default:
 			break;

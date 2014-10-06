@@ -57,37 +57,37 @@ public class PartUtils {
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
 	private static final int margin = 50;  // FIXME Hard-coded margin (5), make settable in Prefs
 	
-	public static String getVisualID(SNamedElement model) {
-		if (model instanceof SToken) {
-			int index = ((SToken) model).getSDocumentGraph().getSTokens().indexOf(model);
-			return "T" + (index + 1);
-		}
-		else if (model instanceof SStructure) {
-			int index = ((SStructure) model).getSDocumentGraph().getSStructures().indexOf(model);
-			return "N" + (index + 1);
-		}
-		else if (model instanceof SSpan) {
-			int index = ((SSpan) model).getSDocumentGraph().getSSpans().indexOf(model);
-			return "S" + (index + 1);
-		}
-		else if (model instanceof SDominanceRelation) {
-			int index = ((SDominanceRelation) model).getSDocumentGraph().getSDominanceRelations().indexOf(model);
-			return "D" + (index + 1);
-		}
-		else if (model instanceof SSpanningRelation) {
-			int index = ((SSpanningRelation) model).getSDocumentGraph().getSSpanningRelations().indexOf(model);
-			return "R" + (index + 1);
-		}
-		else if (model instanceof SPointingRelation) {
-			int index = ((SPointingRelation) model).getSDocumentGraph().getSPointingRelations().indexOf(model);
-			return "P" + (index + 1);
-		}
-		else if (model instanceof SOrderRelation) {
-			int index = ((SOrderRelation) model).getSDocumentGraph().getSOrderRelations().indexOf(model);
-			return "O" + (index + 1);
-		}
-		return null;
-	}
+//	public static String getVisualID(SNamedElement model) {
+//		if (model instanceof SToken) {
+//			int index = ((SToken) model).getSDocumentGraph().getSTokens().indexOf(model);
+//			return "T" + (index + 1);
+//		}
+//		else if (model instanceof SStructure) {
+//			int index = ((SStructure) model).getSDocumentGraph().getSStructures().indexOf(model);
+//			return "N" + (index + 1);
+//		}
+//		else if (model instanceof SSpan) {
+//			int index = ((SSpan) model).getSDocumentGraph().getSSpans().indexOf(model);
+//			return "S" + (index + 1);
+//		}
+//		else if (model instanceof SDominanceRelation) {
+//			int index = ((SDominanceRelation) model).getSDocumentGraph().getSDominanceRelations().indexOf(model);
+//			return "D" + (index + 1);
+//		}
+//		else if (model instanceof SSpanningRelation) {
+//			int index = ((SSpanningRelation) model).getSDocumentGraph().getSSpanningRelations().indexOf(model);
+//			return "R" + (index + 1);
+//		}
+//		else if (model instanceof SPointingRelation) {
+//			int index = ((SPointingRelation) model).getSDocumentGraph().getSPointingRelations().indexOf(model);
+//			return "P" + (index + 1);
+//		}
+//		else if (model instanceof SOrderRelation) {
+//			int index = ((SOrderRelation) model).getSDocumentGraph().getSOrderRelations().indexOf(model);
+//			return "O" + (index + 1);
+//		}
+//		return null;
+//	}
 
 	public static int getTokenX(GraphPart graphPart, SToken model, IFigure iFigure) {
 		int tokenX = -1;

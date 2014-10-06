@@ -13,7 +13,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -26,10 +25,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
-import org.eclipse.ui.internal.IWorkbenchConstants;
-
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.exceptions.GraphInsertException;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
