@@ -2,7 +2,7 @@
 <feature
       id="de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature"
       label="Atomic Platform Dependencies Feature"
-      version="0.1.4">
+      version="0.1.5.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
