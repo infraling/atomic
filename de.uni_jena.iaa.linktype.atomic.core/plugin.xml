@@ -45,11 +45,11 @@
                label="File"
                mnemonic="F">
             <command
-                  commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
-                  label="Exit"
-                  mnemonic="x"
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New Project"
+                  mnemonic="N"
                   style="push"
-                  tooltip="Exit Atomic">
+                  tooltip="Opens a wizard dialog to help with the creation of new projects">
             </command>
             <command
                   commandId="org.eclipse.ui.file.save"
@@ -58,6 +58,29 @@
                   style="push"
                   tooltip="Save project">
             </command>
+            <command
+                  commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+                  label="Exit"
+                  mnemonic="x"
+                  style="push"
+                  tooltip="Exit Atomic">
+            </command>
+         </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.preferencesMenu"
+               label="Preferences"
+               mnemonic="P">
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.install"
+                  label="Install new plugins"
+                  mnemonic="I"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.viewMenu"
+               label="View"
+               mnemonic="V">
          </menu>
       </menuContribution>
       <menuContribution
@@ -66,6 +89,13 @@
          <toolbar
                id="de.uni_jena.iaa.linktype.atomic.core.toolbar"
                label="Atomic Toolbar">
+			<command
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New Project"
+                  mnemonic="N"
+                  style="push"
+                  tooltip="Opens a wizard dialog to help with the creation of new projects.">
+            </command>
             <command
                   commandId="org.eclipse.ui.file.save"
                   label="Save"
@@ -104,5 +134,56 @@
             project="true">
       </wizard>
    </extension>
+   
+   <!-- Navigator below -->
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            id="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view"
+            name="Navigation">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerActionBinding
+            viewerId="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view">
+         <includes>
+            <actionExtension
+                  pattern="org.eclipse.ui.navigator.resources.*">
+            </actionExtension>
+         </includes>
+      </viewerActionBinding>
+      <viewerContentBinding
+            viewerId="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view">
+         <includes>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resourceContent">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.linkHelper">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.workingSets">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.uni_jena.iaa.linktype.atomic.core.perspective">
+         <view
+               id="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view"
+               ratio="0.2f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <!-- Navigator above -->
 
 </plugin>

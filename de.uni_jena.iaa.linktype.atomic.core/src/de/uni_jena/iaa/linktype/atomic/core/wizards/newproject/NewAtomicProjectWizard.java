@@ -19,13 +19,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
@@ -37,17 +32,17 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
-import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicTokenizerUtils;
+import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
- * @author stephan
+ * @author Stephan Druskat
  * 
  * TODO: Introduce OperationCanceledExceptions!
  *
  */
 public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	
-	private AtomicProjectBasicsWizardPage page;
+	private NewAtomicProjectWizardDetailsPage page;
 	private Object[] typedTokenizerToUse;
 	public IFile projectIFile;
 	
@@ -62,11 +57,11 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// Do nothing.
 	}
-
+	
 	@Override
 	public void addPages() {
 		setWindowTitle("New Atomic project");
-		page = new AtomicProjectBasicsWizardPage();
+		page = new NewAtomicProjectWizardDetailsPage();
 		addPage(page);
 	}
 
@@ -81,15 +76,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		catch (Exception e) {
 			e.printStackTrace();
         }
-		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try {
-			IFileEditorInput input = new FileEditorInput(projectIFile);
-			activePage.openEditor(input, "de.uni_jena.iaa.linktype.atomic.model.salt.editor.editor");
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		return true;
 	}
 	
@@ -100,7 +86,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			String projectName = page.getTxtProjectName().getText();
 			String corpusText = page.getCorpusText();
 			String tokenizerName = page.getComboTokenizer().getText();
-//			Tokenizer tokenizer = null;
 			
 			monitor.beginTask("Creating project from corpus", /*100*/IProgressMonitor.UNKNOWN);
 			
@@ -222,9 +207,9 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		private Object[] getTokenizerInstance(String tokenizerName) {
 			Object[] typedTokenizer = new Object[2];
 			Object tokenizer = null;
-			for (int i = 0; i < AtomicTokenizerUtils.getTokenizerNames().length; i++) {
-				if (AtomicTokenizerUtils.getTokenizerNames()[i].equals(tokenizerName))
-					tokenizer = AtomicTokenizerUtils.getTokenizers()[i];
+			for (int i = 0; i < AtomicProjectUtils.getTokenizerNames().length; i++) {
+				if (AtomicProjectUtils.getTokenizerNames()[i].equals(tokenizerName))
+					tokenizer = AtomicProjectUtils.getTokenizers()[i];
 					typedTokenizer[0] = tokenizer;
 					typedTokenizer[1] = tokenizer.getClass();
 			}

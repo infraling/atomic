@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Graph Editor
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.editors.grapheditor;singleton:=true
+Bundle-Version: 0.1.4
+Bundle-Activator: de.uni_jena.iaa.linktype.atomic.editors.grapheditor.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.gef;bundle-version="3.7.2",
+ de.hu_berlin.german.korpling.saltnpepper.salt-graph;bundle-version="1.1.8",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon;bundle-version="1.1.8",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.8",
+ org.eclipse.ui.ide;bundle-version="3.7.0",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.emf.ecore;bundle-version="2.7.0",
+ org.apache.commons.lang3;bundle-version="3.1.0",
+ com.google.guava;bundle-version="14.0.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: de.uni_jena.iaa.linktype.atomic.editors.grapheditor,
+ de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands,
+ de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts,
+ de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util

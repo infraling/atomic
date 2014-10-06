@@ -2,28 +2,26 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.uni_jena.iaa.linktype.atomic</groupId>
   <artifactId>de.uni_jena.iaa.linktype.atomic.parent</artifactId>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>0.1.4</version>
   <packaging>pom</packaging>
   <name>Atomic Parent Project</name>
   <modules>
 
   <module>../de.uni_jena.iaa.linktype.atomic.core</module>
   <module>../de.uni_jena.iaa.linktype.atomic.core.feature</module>
-  <module>../de.uni_jena.iaa.linktype.atomic.core.tests</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.pepper</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.salt</module>
-  <module>../de.uni_jena.iaa.linktype.atomic.model.salt.editor</module>
-  <module>
-  	../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature
-  </module>
+  <module>../de.uni_jena.iaa.linktype.atomic.editors.grapheditor</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.editors.feature</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.atomical</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.atomical.feature</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
-  <module>../de.uni_jena.iaa.linktype.atomic.ui.feature</module>
-  <module>../de.uni_jena.iaa.linktype.atomic.ui.navigation</module>
   </modules>
   
   <properties>
-    <tycho-version>0.18.1</tycho-version>
+    <tycho-version>0.21.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
@@ -35,14 +33,27 @@
     </repository>
     
     <repository>
-      <id>salt4eclipse</id>
+      <id>pepper4eclipse</id>
       <layout>p2</layout>
-      <url>http://linktype.iaa.uni-jena.de/salt4eclipse/updates/</url>
+      <url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/1.1.8-SNAPSHOT</url>
     </repository>
+    
+    <repository>
+      <id>eclipse-orbit</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
+    </repository>
+    
   </repositories>
   
    <build>
     <plugins>
+    	<plugin>
+    	<!-- enable tycho version -->
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-versions-plugin</artifactId>
+        <version>${tycho-version}</version>
+    	</plugin>
       <plugin>
         <!-- enable tycho build extension -->
         <groupId>org.eclipse.tycho</groupId>
@@ -56,15 +67,7 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
         <configuration>
-           <!-- <target>
-              <artifact>
-                 <groupId>de.uni_jena.iaa.linktype.atomic</groupId>
-                 <artifactId>de.uni_jena.iaa.linktype.atomic.target_platform</artifactId>
-                 <version>0.1.4-SNAPSHOT</version>
-              </artifact>
-           </target> -->
            <resolver>p2</resolver>
-            <!--<pomDependencies>consider</pomDependencies>-->
             <!-- configure the p2 target environments for multi-platform build -->
             <environments>
               <environment>

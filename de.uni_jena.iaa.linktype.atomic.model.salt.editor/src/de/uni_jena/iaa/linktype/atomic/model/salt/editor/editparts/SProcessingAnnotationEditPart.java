@@ -50,7 +50,9 @@ public class SProcessingAnnotationEditPart extends AbstractGraphicalEditPart {
 		Label figure = (Label) getFigure();
 		EditPart parent = getParent();
 		
-		figure.setFont(new Font(Display.getCurrent(), "sansserif", 11, SWT.BOLD)); // FIXME: Parameterize with Preferences
+		Font font = new Font(Display.getCurrent(), "sansserif", 11, SWT.BOLD);  // FIXME: Parameterize with Preferences
+		figure.setFont(font);
+		font.dispose(); // TODO: Is this correct here?
 		figure.setForegroundColor(ColorConstants.darkGray); // FIXME: Parameterize with Preferences
 		figure.setText(model.getValueString());
 		parent.refresh();

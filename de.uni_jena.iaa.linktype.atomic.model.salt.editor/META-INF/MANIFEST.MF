@@ -24,5 +24,4 @@ Export-Package: de.uni_jena.iaa.linktype.atomic.model.salt.editor,
  de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.elements,
  de.uni_jena.iaa.linktype.atomic.model.salt.editor.handlers,
  de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette,
- de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools,
- de.uni_jena.iaa.linktype.atomic.model.salt.editor.util
+ de.uni_jena.iaa.linktype.atomic.model.salt.editor.palette.tools

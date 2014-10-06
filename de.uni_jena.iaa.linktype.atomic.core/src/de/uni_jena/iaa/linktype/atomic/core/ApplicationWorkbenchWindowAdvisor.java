@@ -16,11 +16,20 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
+import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
+import org.eclipse.ui.wizards.IWizardCategory;
+import org.eclipse.ui.wizards.IWizardDescriptor;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
@@ -32,6 +41,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         return new ApplicationActionBarAdvisor(configurer);
     }
     
+    @Override
     public void preWindowOpen() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
         configurer.setInitialSize(new Point(1000, 800));
@@ -40,4 +50,26 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setShowStatusLine(true);
         configurer.setShowProgressIndicator(true);
     }
+    
+    @Override
+    public void postWindowOpen() {
+    	AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)PlatformUI.getWorkbench().getNewWizardRegistry();
+    	IWizardCategory[] categories = PlatformUI.getWorkbench().getNewWizardRegistry().getRootCategory().getCategories();
+    	for(IWizardDescriptor wizard : getAllWizards(categories)){
+    	    if(wizard.getCategory().getId().matches("org.eclipse.ui.Basic")){
+    	        WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+    	        wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
+    	    }
+    	}
+    }
+    
+    private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
+    	List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
+    	for(IWizardCategory wizardCategory : categories){
+    		results.addAll(Arrays.asList(wizardCategory.getWizards()));
+    		results.addAll(Arrays.asList(getAllWizards(wizardCategory.getCategories())));
+    	}
+    	return results.toArray(new IWizardDescriptor[0]);
+	}
+    
 }

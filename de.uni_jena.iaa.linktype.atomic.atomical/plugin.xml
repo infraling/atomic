@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:de.uni_jena.iaa.linktype.atomic.menus.viewMenu">
+         <command
+               commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
+               label="AtomicAL Console"
+               mnemonic="A"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.uni_jena.iaa.linktype.atomic.core.perspective">
+         <view
+               id="org.eclipse.ui.console.ConsoleView"
+               ratio="0.8f"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               visible="false">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.console.consoleFactories">
+      <consoleFactory
+            class="de.uni_jena.iaa.linktype.atomic.atomical.console.AtomicalConsoleFactory"
+            label="AtomicAL Console Factory">
+      </consoleFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler"
+            id="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
+            name="Open ConsoleView">
+      </command>
+   </extension>
+
+</plugin>

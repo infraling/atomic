@@ -46,17 +46,13 @@ public class SStructureChangeConstraintsCommand extends Command {
 	}
 			 
 	private void setConstraints(Rectangle newConstraints) {
-		model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X").setSValue(newConstraints.x);
-		model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y").setSValue(newConstraints.y);
-//		model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__WIDTH").setSValue(constraints.width);
-//		model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__HEIGHT").setSValue(constraints.height);
+		model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_X").setSValue(Integer.toString(newConstraints.x));
+		model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_Y").setSValue(Integer.toString(newConstraints.y));
 	}
 
 	private Rectangle getConstraints() {
-		int x = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__X").getSValue();
-		int y = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__Y").getSValue();
-//		int width = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__WIDTH").getSValue();
-//		int height = (Integer) model.getSProcessingAnnotation("ATOMIC_GEF_COORDINATES__HEIGHT").getSValue();
+		int x = Integer.parseInt((String) model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_X").getSValue());
+		int y = Integer.parseInt((String) model.getSProcessingAnnotation("ATOMIC::GEF_COORDS_Y").getSValue());
 		return new Rectangle(x, y, newConstraints.width, newConstraints.height);
 	}
 

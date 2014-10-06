@@ -27,9 +27,13 @@ import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SSpanChangeConstraintsCommand;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SSpanCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SStructureChangeConstraintsCommand;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands.SStructureCreateCommand;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SSpanEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SStructureEditPart;
 
 /**
@@ -54,6 +58,15 @@ public class SDocumentGraphXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	    	command.setSStructure((SStructure) (request.getNewObject()));
 	    	returnCommand = command;
 	    }
+		else if (request.getNewObject() instanceof SSpan) {
+	    	SSpanCreateCommand command = new SSpanCreateCommand();
+	    	Rectangle rect = (Rectangle) getConstraintFor(request);
+	    	Point constraint = new Point(rect.x, rect.y);
+			command.setLocation(constraint);
+	    	command.setGraph((SDocumentGraph) (getHost().getModel()));
+	    	command.setSSpan((SSpan) (request.getNewObject()));
+	    	returnCommand = command;
+	    }
 		return returnCommand;
 	}
 	
@@ -62,6 +75,12 @@ public class SDocumentGraphXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		if (child instanceof SStructureEditPart) {
 			SStructureChangeConstraintsCommand command = new SStructureChangeConstraintsCommand();
 			command.setModel((SStructure) child.getModel());
+			command.setNewConstraints((Rectangle) constraint);
+			return command;
+		}
+		if (child instanceof SSpanEditPart) {
+			SSpanChangeConstraintsCommand command = new SSpanChangeConstraintsCommand();
+			command.setModel((SSpan) child.getModel());
 			command.setNewConstraints((Rectangle) constraint);
 			return command;
 		}

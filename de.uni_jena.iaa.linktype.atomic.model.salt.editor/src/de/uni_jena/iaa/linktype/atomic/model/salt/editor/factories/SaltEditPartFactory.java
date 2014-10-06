@@ -22,10 +22,14 @@ package de.uni_jena.iaa.linktype.atomic.model.salt.editor.factories;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
@@ -34,6 +38,8 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SDocumentGrap
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SDominanceRelationEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SPointingRelationEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SProcessingAnnotationEditPart;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SSpanEditPart;
+import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SSpanningRelationEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.SStructureEditPart;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.STokenEditPart;
 
@@ -48,6 +54,10 @@ public class SaltEditPartFactory implements EditPartFactory {
 	 */
 	@Override
 	public EditPart createEditPart(EditPart context, Object model) {
+		if (model == null)
+            throw new RuntimeException("Model element is null and cannot be processed in EditPartFactory.\n"
+            		+ "The offending context EditPart is " + context + ".");
+		
 		EditPart part = null;
 		
 		if (model instanceof SDocumentGraph) {
@@ -62,6 +72,12 @@ public class SaltEditPartFactory implements EditPartFactory {
 		else if (model instanceof SPointingRelation) {
 			part = new SPointingRelationEditPart();
 		}
+		else if (model instanceof SSpanningRelation) {
+			part = new SSpanningRelationEditPart();
+		}
+		else if (model instanceof SDominanceRelation) {
+			part = new SDominanceRelationEditPart();
+		}
 		else if (model instanceof SDominanceRelation) {
 			part = new SDominanceRelationEditPart();
 		}
@@ -71,6 +87,9 @@ public class SaltEditPartFactory implements EditPartFactory {
 		else if (model instanceof SProcessingAnnotation) {
 			part = new SProcessingAnnotationEditPart();
 		}
+		else if (model instanceof SSpan) {
+			part = new SSpanEditPart();
+		}
 		
 		if (part != null) {
 			part.setModel(model);
@@ -78,5 +97,5 @@ public class SaltEditPartFactory implements EditPartFactory {
 		    
 		return part;
 	}
-
+	
 }

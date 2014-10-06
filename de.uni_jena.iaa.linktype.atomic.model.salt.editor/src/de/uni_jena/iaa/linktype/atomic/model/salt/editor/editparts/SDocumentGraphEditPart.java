@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
@@ -85,6 +87,7 @@ public class SDocumentGraphEditPart extends AbstractGraphicalEditPart {
 		SDocumentGraph graph = (SDocumentGraph) getModel();
 		childrenList.addAll(graph.getSTokens());
 		childrenList.addAll(graph.getSStructures());
+		childrenList.addAll(graph.getSSpans());
 		return childrenList;
 	}
 	
@@ -107,22 +110,7 @@ public class SDocumentGraphEditPart extends AbstractGraphicalEditPart {
 	public class SDocumentGraphAdapter extends EContentAdapter {
 		 
 	    @Override public void notifyChanged(Notification notification) {
-			switch (notification.getEventType()) {
-				case Notification.ADD:
-					refreshChildren();
-					break;
-	
-				case Notification.REMOVE:
-					if (!(getChildren().contains(notification.getOldValue())))
-						break;
-					else
-						refreshChildren();
-					break;
-	
-				default:
-					break;
-			}
-	    	
+	    	refreshChildren();
 	    }
 	 
 		@Override public Notifier getTarget() {

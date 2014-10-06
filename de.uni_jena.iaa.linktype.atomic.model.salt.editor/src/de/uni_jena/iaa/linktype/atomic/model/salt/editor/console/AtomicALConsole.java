@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
@@ -45,6 +46,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.graph.exceptions.GraphInser
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
@@ -75,6 +78,7 @@ private SDocumentGraph graph;
 private String layerSwitch = "s"; // Default layer, when no layer is set during the command
 private IEditorPart editor;
 private EditPart topLevelEditPart;
+private IOConsoleOutputStream out;
 
 	//	private IOConsoleInputStream inputStream;
 //	private IOConsoleOutputStream outputStream;
@@ -136,7 +140,7 @@ private EditPart topLevelEditPart;
 	public void run() {
 		try {
 			final IOConsoleOutputStream err = newOutputStream();
-			final IOConsoleOutputStream out = newOutputStream();
+			out = newOutputStream();
 			final IOConsoleOutputStream prompt = newOutputStream();
 
 			Display.getDefault().syncExec(new Runnable() {
@@ -161,11 +165,6 @@ private EditPart topLevelEditPart;
 						String atomicALCommand = AtomicALParser.parseCommand(input);
 						String rawParameters = AtomicALParser.parseRawParameters(input);
 						HashMap<Object, Object> atomicALParameters = AtomicALParser.parseParameters(rawParameters);
-//						for (Object key : atomicALParameters.keySet()) // FIXME: Delete test output
-//				        {
-//				            Object val = atomicALParameters.get(key);
-//				            System.err.println(key + " : " + val);// DELETE: Delete me
-//				        }
 						editor = page.getActiveEditor();
 						if (editor instanceof AtomicSaltEditor) {
 							EditPartViewer editPartViewer = ((AtomicSaltEditor) editor).getEditPartViewer();
@@ -189,6 +188,10 @@ private EditPart topLevelEditPart;
 	@SuppressWarnings("unchecked")
 	private void executeCommand(final CommandStack commandStack, String atomicALCommand, HashMap<Object, Object> atomicALParameters) {
 		// FIXME TODO Refactor for readability/re-usability + check for uncaught exceptions
+		if (atomicALCommand.equalsIgnoreCase("--help")) {
+			displayHelp();
+			return;
+		}
 		char commandChar = 0;
 		try {
 			commandChar = atomicALCommand.charAt(0);
@@ -288,6 +291,14 @@ private EditPart topLevelEditPart;
 							}
 							break;
 							
+						case 'S': // SSpan
+							for (SSpan span : graph.getSSpans()) {
+								String valueString = span.getSName().substring(5); // 5 -> "sSpan"
+								if (iD.equals(valueString)) 
+									elementsToAnnotate.add(span);
+							}
+							break;
+							
 						case 'P': // SPointingRelation
 							for (SPointingRelation pointingRelation : graph.getSPointingRelations()) {
 								String valueString = pointingRelation.getSName().substring(12); // 12 -> "sPointingRel"
@@ -301,6 +312,14 @@ private EditPart topLevelEditPart;
 								String valueString = dominanceRelation.getSName().substring(7); // 7 -> "sDomRel"
 								if (iD.equals(valueString)) 
 									elementsToAnnotate.add(dominanceRelation);
+							}
+							break;
+						
+						case 'R': // SSpanningRelation
+							for (final SSpanningRelation spanningRelation : graph.getSSpanningRelations()) {
+								String valueString = spanningRelation.getSName().substring(8); // 7 -> "sSpanRel"
+								if (iD.equals(valueString)) 
+									elementsToAnnotate.add(spanningRelation);
 							}
 							break;
 							
@@ -497,6 +516,28 @@ private EditPart topLevelEditPart;
 			default:
 				break;
 			}
+	}
+
+	private void displayHelp() {
+		try {
+			out.write("Command                           Arguments                       Syntax example\n"+
+					"n (New node)*                     [key]:[value]                   n pos:np\n"+
+					"e (New edge)                      [source] [target] [key]:[value] e n1 n2 r:coref\n"+
+					"a (Annotate)*                     [element] [key]:[val] / [key]:  a n1 pos:np\n"+
+					"d (Delete element) [element]                                      d t1\n"+
+					"p (Group under new parent)*       [element] [element] [key]:[val] p t1 t2 pos:np\n"+
+					"c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"+
+					"t (Append new token)              [string]                        t Foobar\n"+
+					"l (Switch annotation level)*      [level]                         l -s\n"+
+					"j (Jump to sentence)              [0-9]*                          j 1234\n"+
+					"x (Set corpus excerpt to display) [[0-9]*]|[[0-9]*]               x 2|1\n"+
+					"\n"+
+					"*Level switches can be used with this command.");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@SuppressWarnings("unchecked")

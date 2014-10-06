@@ -22,7 +22,11 @@ package de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -60,8 +64,14 @@ public class SStructureAnnotateCommand extends Command {
 		for (int i = 0; i < keyValuePairs.length; i++) {
 			String[] singleKeyValuePair = keyValuePairs[i].split(":"); // TEST
 			SAnnotation newSAnnotation = SaltFactory.eINSTANCE.createSAnnotation();
-			newSAnnotation.setSName(singleKeyValuePair[0]);
-			newSAnnotation.setSValue(singleKeyValuePair[1]);
+			try {
+				newSAnnotation.setSName(singleKeyValuePair[0]); // FIXME: Catch ArrayIndexOutOfBoundsException
+				newSAnnotation.setSValue(singleKeyValuePair[1]); // FIXME: Catch ArrayIndexOutOfBoundsException
+			} catch (ArrayIndexOutOfBoundsException e) {
+				MessageDialog.openError(Display.getCurrent().getActiveShell(), "Annotation error", "The annotation format is not correct.\nPlease use [key]:[value], where neither\nvalue may be empty.");
+				e.printStackTrace();
+				return;
+			}
 			try {
 				model.addSAnnotation(newSAnnotation);
 			} catch (GraphInsertException e) {

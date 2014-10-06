@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>atomic-run-configuration</name>
+	<comment></comment>
+	<projects>
+		<project>de.uni_jena.iaa.linktype.atomic.core</project>
+		<project>de.uni_jena.iaa.linktype.atomic.core.feature</project>
+		<project>de.uni_jena.iaa.linktype.atomic.core.tests</project>
+		<project>de.uni_jena.iaa.linktype.atomic.model.feature</project>
+		<project>de.uni_jena.iaa.linktype.atomic.model.pepper</project>
+		<project>de.uni_jena.iaa.linktype.atomic.model.salt</project>
+		<project>de.uni_jena.iaa.linktype.atomic.model.salt.editor</project>
+		<project>de.uni_jena.iaa.linktype.atomic.parent</project>
+		<project>de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</project>
+		<project>de.uni_jena.iaa.linktype.atomic.repository</project>
+		<project>de.uni_jena.iaa.linktype.atomic.target_platform</project>
+		<project>de.uni_jena.iaa.linktype.atomic.ui.feature</project>
+		<project>de.uni_jena.iaa.linktype.atomic.ui.navigation</project>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
+</projectDescription>

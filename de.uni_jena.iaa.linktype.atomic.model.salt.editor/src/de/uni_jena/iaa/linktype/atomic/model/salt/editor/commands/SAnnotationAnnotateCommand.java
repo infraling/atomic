@@ -19,16 +19,19 @@
  */
 package de.uni_jena.iaa.linktype.atomic.model.salt.editor.commands;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
@@ -55,8 +58,15 @@ public class SAnnotationAnnotateCommand extends Command {
 	public void execute() {
 		// Parse annotation String
 		String[] annotationKeyValue = annotationInput.split(":");
-		String key = annotationKeyValue[0];
-		String value = annotationKeyValue[1];
+		String key = null;
+		String value = null;
+		try {
+			key = annotationKeyValue[0];
+			value = annotationKeyValue[1];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Annotation error", "The annotation format is not correct.\nPlease use [key]:[value], where neither\nvalue may be empty.");
+			return;
+		}
 		// Determine type of model parent & get its List of annotations
 		EList<SAnnotation> existingAnnotations = getExistingAnnotationsFromModelParent(modelParent);
 		if (existingAnnotations != null) {
@@ -120,6 +130,10 @@ public class SAnnotationAnnotateCommand extends Command {
 		}
 		else if (modelParent2 instanceof SToken) {
 			SToken parent = (SToken) modelParent2;
+			existingAnnotationsFromModelParent = parent.getSAnnotations();
+		}
+		else if (modelParent2 instanceof SSpan) {
+			SSpan parent = (SSpan) modelParent2;
 			existingAnnotationsFromModelParent = parent.getSAnnotations();
 		}
 		else if (modelParent2 instanceof SDominanceRelation) {

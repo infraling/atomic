@@ -37,6 +37,7 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
+import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
@@ -45,7 +46,6 @@ import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SDominanc
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.edit_policies.SDominanceRelationDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.AtomicMultiLineDirectEditManager;
-import de.uni_jena.iaa.linktype.atomic.model.salt.editor.editparts.direct_editing.TooltipAndTextCellEditor;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SAnnotationFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.SDominanceRelationFigure;
 import de.uni_jena.iaa.linktype.atomic.model.salt.editor.figures.elements.IDLabel;
@@ -81,7 +81,7 @@ public class SDominanceRelationEditPart extends AbstractConnectionEditPart {
 	}
 	
 	private void performDirectEditing() {
-		AtomicMultiLineDirectEditManager manager = new AtomicMultiLineDirectEditManager(this, TooltipAndTextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
+		AtomicMultiLineDirectEditManager manager = new AtomicMultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
 		manager.show();
 	}
 	

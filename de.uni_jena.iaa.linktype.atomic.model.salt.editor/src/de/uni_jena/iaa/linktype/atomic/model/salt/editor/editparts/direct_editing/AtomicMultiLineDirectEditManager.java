@@ -23,6 +23,7 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -61,7 +62,7 @@ public class AtomicMultiLineDirectEditManager extends DirectEditManager {
 	
 	@Override
 	protected CellEditor createCellEditorOn(Composite composite) {
-		return new TooltipAndTextCellEditor(composite, SWT.MULTI); 
+		return new TextCellEditor(composite, SWT.MULTI); 
 		// Was SWT.MULTI | SWT.WRAP, but SWT.WRAP results in last line disappearing "over the horizon"... 
 	}
 	

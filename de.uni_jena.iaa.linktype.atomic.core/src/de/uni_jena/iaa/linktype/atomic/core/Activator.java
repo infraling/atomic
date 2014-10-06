@@ -17,8 +17,12 @@
 package de.uni_jena.iaa.linktype.atomic.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import de.uni_jena.iaa.linktype.atomic.core.workspace.AtomicWorkspacePicker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -44,6 +48,16 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		
+	    Display display = null;
+	    if (Display.getCurrent() != null) {
+	    	display = Display.getCurrent();
+	    }
+	    else {
+	    	display = PlatformUI.createDisplay();
+	    }
+
+	    AtomicWorkspacePicker.pickWorkspace(display);
 	}
 
 	/*

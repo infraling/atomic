@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Graph editor tests
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.editors.grapheditor.test
+Bundle-Version: 0.1.4.qualifier
+Fragment-Host: de.uni_jena.iaa.linktype.atomic.editors.grapheditor;bundle-version="0.1.4"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
