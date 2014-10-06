@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="de.uni_jena.iaa.linktype.atomic.editors.feature"
-      label="Editors Feature"
+      label="Atomic Editors Feature"
       version="0.1.4.qualifier">
 
    <description url="http://www.example.com/description">
