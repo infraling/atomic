@@ -488,13 +488,13 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 
 	private void displayHelp() {
 		try {
-			out.write("Command                           Arguments                       Syntax example\n"+
-					"n (New structure node)"+/***/"            [key]:[value]                   n pos:np\n"+
-					"s (New span node)"+/***/"                 [element] [element] [key]:[val] s t1 t2 type:np\n"+
-					"e (New edge)                      [source] [target] [key]:[value] e n1 n2 r:coref\n"+
-					"a (Annotate)"+/***/"                      [element] [key]:[val] / [key]:  a n1 pos:np\n"+
-					"d (Delete element)                [element]                       d t1\n"+
-					"p (Group under new parent)"+/***/"        [element] [element] [key]:[val] p t1 t2 pos:np\n"/*+
+			out.write("Command                           Arguments                               Syntax example\n"+
+					"n (New structure node)"+/***/"            [key]:[value]                           n pos:np\n"+
+					"s (New span node)"+/***/"                 [element] [element] [key]:[val]         s t1 t2 type:np\n"+
+					"e (New edge)                      -[type] [source] [target] [key]:[value] e -d n1 n2 r:coref\n"+
+					"a (Annotate)"+/***/"                      [element] [key]:[val] / [key]:          a n1 pos:np\n"+
+					"d (Delete element)                [element] [element]                     d t1 n2\n"+
+					"p (Group under new parent)"+/***/"        [element] [element] [key]:[val]         p t1 t2 pos:np\n"/*+
 					"c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"+
 					"t (Append new token)              [string]                        t Foobar\n"+
 					"l (Switch annotation level)*      [level]                         l -s\n"+
