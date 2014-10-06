@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
+import org.eclipse.ui.internal.IWorkbenchConstants;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.exceptions.GraphInsertException;
@@ -43,6 +44,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.AnnotationDeleteCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.ElementAnnotateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeCreateCommand;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeDeleteCommand;
 
 /**
  * @author Stephan Druskat
@@ -203,43 +205,43 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 								switch (elementIDs.get(i).charAt(0)) {
 								case 'N':
 								case 'n': // SStructure
-									SStructure structure = graph.getSStructures().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									SStructure structure = getGraph().getSStructures().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 									elementsToAnnotate.add(structure);
 									break;
 								
 								case 'T':	
 								case 't': // SToken
-									SToken token = graph.getSTokens().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									SToken token = getGraph().getSTokens().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 									elementsToAnnotate.add(token);
 									break;
 									
 								case 'S':
 								case 's': // SSpan
-									SSpan span = graph.getSSpans().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									SSpan span = getGraph().getSSpans().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 									elementsToAnnotate.add(span);
 									break;
 								
 								case 'P':	
 								case 'p': // SPointingRelation
-									SPointingRelation pointingRelation = graph.getSPointingRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									SPointingRelation pointingRelation = getGraph().getSPointingRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 									elementsToAnnotate.add(pointingRelation);
 									break;
 									
 								case 'D':
 								case 'd': // SDominanceRelation
-									SDominanceRelation dominanceRelation = graph.getSDominanceRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									SDominanceRelation dominanceRelation = getGraph().getSDominanceRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 									elementsToAnnotate.add(dominanceRelation);
 									break;
 								
 								case 'R':	
 								case 'r': // SSpanningRelation
-									SSpanningRelation spanningRelation = graph.getSSpanningRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									SSpanningRelation spanningRelation = getGraph().getSSpanningRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 									elementsToAnnotate.add(spanningRelation);
 									break;
 									
 								case 'O':
 								case 'o': // SOrderRelation
-									SOrderRelation orderRelation = graph.getSOrderRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									SOrderRelation orderRelation = getGraph().getSOrderRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
 									elementsToAnnotate.add(orderRelation);
 									break;
 
@@ -285,14 +287,31 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 						}
 						break;
 //						
-//					case 'd': // Delete element
-//						// Determine type of element & create respective command
-//						ArrayList<String> elementIDs = (ArrayList<String>) atomicALParameters.get("elements");
-//						for (int i = 0; i < elementIDs.size(); i++) {
-//							String iD = elementIDs.get(i).substring(1);
-//							// Get respective EObject from elementID
-//							switch (elementIDs.get(i).charAt(0)) {
-//							case 'N': // SStructure
+					case 'd': // Delete element
+						// Determine type of element & create respective command
+						ArrayList<String> elementIDs = (ArrayList<String>) atomicALParameters.get("elements");
+						for (int i = 0; i < elementIDs.size(); i++) {
+							String iD = elementIDs.get(i).substring(1);
+							// Get respective EObject from elementID
+							switch (elementIDs.get(i).charAt(0)) {
+							case 'n':
+							case 'N': // SStructure
+								SStructure structure = getGraph().getSStructures().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+								final NodeDeleteCommand nodeDeleteCommand = new NodeDeleteCommand();
+								nodeDeleteCommand.setModel(structure);
+								nodeDeleteCommand.setGraph(structure.getSGraph());
+								Display.getDefault().syncExec(new Runnable() {
+									
+									@Override
+									public void run() {
+										commandStack.execute(nodeDeleteCommand);
+									}
+								});
+								break;
+							case 's':
+							case 'S': // SSpan
+//							SSpanningRelation spanningRelation = graph.getSSpanningRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+								
 //								for (SStructure structure : graph.getSStructures()) {
 //									String valueString = structure.getSName().substring(9);
 //									if (iD.equals(valueString)) {
@@ -305,13 +324,13 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 //								    	});
 //									}
 //								}
-//								break;
-//								
-//							case 'T': // SToken
-//								// TODO: Implement
-//								break;
-//							
-//							case 'P': // SPointingRelation
+								break;
+								
+							case 'T': // SToken
+								// TODO: Implement
+								break;
+							
+							case 'P': // SPointingRelation
 //								for (SPointingRelation pointingRelation : graph.getSPointingRelations()) {
 //									String valueString = pointingRelation.getSName().substring(12);
 //									if (iD.equals(valueString)) {
@@ -324,9 +343,9 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 //								    	});
 //									}
 //								}
-//								break;
-//								
-//							case 'D': // SDominanceRelation
+								break;
+								
+							case 'D': // SDominanceRelation
 //								for (SDominanceRelation dominanceRelation : graph.getSDominanceRelations()) {
 //									String valueString = dominanceRelation.getSName().substring(7);
 //									if (iD.equals(valueString)) {
@@ -339,9 +358,9 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 //								    	});
 //									}
 //								}
-//								break;
-//							}
-//						}
+								break;
+							}
+						}
 //						
 //					case 'p': // Create parent node
 //					case 'c': // Create child node
@@ -470,6 +489,13 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			
 			@Override
 			public void partActivated(IWorkbenchPart part) {
+				activateAtomicalForEditorInput(part);
+			}
+
+			/**
+			 * @param part
+			 */
+			private void activateAtomicalForEditorInput(IWorkbenchPart part) {
 				if (part instanceof GraphEditor) {
 					IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 					EditPartViewer editPartViewer = ((GraphEditor) editor).getEditPartViewer();
@@ -483,12 +509,21 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 						e.printStackTrace();
 					}
 				}
+				else if (part instanceof IEditorPart) {
+					try {
+						console.out.write("AtomicAL is not (yet) available for this editor type");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+				}
 			}
 
 			@Override public void partBroughtToTop(IWorkbenchPart part) {}
 			@Override public void partClosed(IWorkbenchPart part) {}
 			@Override public void partDeactivated(IWorkbenchPart part) {}
 			@Override public void partOpened(IWorkbenchPart part) {}
+			
 		});
 	}
 
