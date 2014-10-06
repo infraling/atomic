@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            default="false"
+            id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor"
+            name="Atomic Coreference Editor">
+      </editor>
+   </extension>
+
+</plugin>
