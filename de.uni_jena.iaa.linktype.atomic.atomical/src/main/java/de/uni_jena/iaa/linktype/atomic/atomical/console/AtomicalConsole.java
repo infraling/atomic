@@ -27,6 +27,7 @@ import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
@@ -37,12 +38,15 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 import de.uni_jena.iaa.linktype.atomic.atomical.parser.AtomicalAnnotationGraphParser;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.AnnotationDeleteCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.ElementAnnotateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeDeleteCommand;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.RelationCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.RelationDeleteCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 
@@ -56,6 +60,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	private SDocumentGraph graph;
 	private IEditorPart editor;
 	private GraphPart graphPart;
+	private String edgeSwitch;
 
 	public AtomicalConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
@@ -152,48 +157,47 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				    	});
 				    	break;
 					
-//					case 'e': // Create a new edge
-//						// Check for layer switch
-//						if (((ArrayList<String>) atomicALParameters.get("layer_switch")).size() > 0)
-//							setLayerSwitch(((ArrayList<String>) atomicALParameters.get("layer_switch")).get(0));
-//						final Command command;
-//						SRelation relation;
-//						if (getLayerSwitch().equals("f")) {
-//							command = new SPointingRelationCreateCommand();
-//							((SPointingRelationCreateCommand) command).setGraph(graph);
-//							((SPointingRelationCreateCommand) command).setSource(getRelationSource(atomicALParameters));
-//							((SPointingRelationCreateCommand) command).setTarget(getRelationTarget(atomicALParameters));
-//							relation = SaltFactory.eINSTANCE.createSPointingRelation();
-//						}
-//						else {
-//							command = new SDominanceRelationCreateCommand();
-//							((SDominanceRelationCreateCommand) command).setGraph(graph);
-//							((SDominanceRelationCreateCommand) command).setSource(getRelationSource(atomicALParameters));
-//							((SDominanceRelationCreateCommand) command).setTarget(getRelationTarget(atomicALParameters));
-//							relation = SaltFactory.eINSTANCE.createSDominanceRelation();
-//						}
-//						// FIXME: Do the following properly
-//						if (atomicALParameters.get("attributes") != null) {
-//							LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
-//							for (Object key : attributes.keySet()) {
-//								SAnnotation anno = SaltFactory.eINSTANCE.createSAnnotation();
-//								String val = (String) attributes.get(key);
-//						        anno.setSName((String) key);
-//						        anno.setSValue(val);
-//						        relation.addSAnnotation(anno);
-//							}
-//						}
-//						if (getLayerSwitch().equals("f"))
-//							((SPointingRelationCreateCommand) command).setSPointingRelation((SPointingRelation) relation);
-//						else
-//							((SDominanceRelationCreateCommand) command).setSDominanceRelation((SDominanceRelation) relation);
-//				    	Display.getDefault().asyncExec(new Runnable() {
-//				    		public void run() {
-//				    	    	commandStack.execute(command);
-//				    		}
-//				    	});
-//				    	break;
-//				    	
+					case 'e': // Create a new edge
+						// Check for edge switch
+						SaltFactory sf = SaltFactory.eINSTANCE;
+						if (((ArrayList<String>) atomicALParameters.get("switch")).size() > 0)
+							setEdgeSwitch(((ArrayList<String>) atomicALParameters.get("switch")).get(0));
+						final RelationCreateCommand command = new RelationCreateCommand();
+						SRelation relation = null;
+						command.setGraph(getGraph());
+						command.setSource(getRelationSource(atomicALParameters));
+						command.setTarget(getRelationTarget(atomicALParameters));
+						if (getEdgeSwitch().equals("d")) {
+							relation = sf.createSDominanceRelation();
+						}
+						else if (getEdgeSwitch().equals("r")) {
+							relation = sf.createSSpanningRelation();
+						}
+						else if (getEdgeSwitch().equals("p")) {
+							relation = sf.createSPointingRelation();
+						}
+						else if (getEdgeSwitch().equals("o")) {
+							relation = sf.createSOrderRelation();
+						}
+						command.setRelation(relation);
+						// FIXME: Do the following properly
+						if (atomicALParameters.get("attributes") != null) {
+							LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
+							for (Object key : attributes.keySet()) {
+								SAnnotation anno = SaltFactory.eINSTANCE.createSAnnotation();
+								String val = (String) attributes.get(key);
+						        anno.setSName((String) key);
+						        anno.setSValue(val);
+						        relation.addSAnnotation(anno);
+							}
+						}
+				    	Display.getDefault().asyncExec(new Runnable() {
+				    		public void run() {
+				    	    	commandStack.execute(command);
+				    		}
+				    	});
+				    	break;
+				    	
 					case 'a': // Annotate
 						if (atomicALParameters.get("attributes") != null) {
 							final LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
@@ -477,6 +481,26 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 						break;
 					}
 			}		
+	private Node getRelationTarget(HashMap<Object, Object> atomicALParameters) {
+		SNode target = null;
+		if (atomicALParameters.get("all_nodes") != null) {
+			String key = ((ArrayList<String>) atomicALParameters.get("all_nodes")).get(1);
+			key = key.toUpperCase();
+			target = (SNode) getGraphPart().getVisualIDMap().get(key);
+			return target;
+		}
+		return target;
+	}
+
+	private Node getRelationSource(HashMap<Object, Object> atomicALParameters) {
+		SNode source = null;
+		if (atomicALParameters.get("all_nodes") != null) {
+			String key = ((ArrayList<String>) atomicALParameters.get("all_nodes")).get(0);
+			key = key.toUpperCase();
+			source = (SNode) getGraphPart().getVisualIDMap().get(key);
+		}
+		return source;	}
+
 	private void displayHelp() {
 		try {
 			out.write("Command                           Arguments                       Syntax example\n"+
@@ -583,6 +607,20 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	 */
 	public void setGraphPart(GraphPart graphPart) {
 		this.graphPart = graphPart;
+	}
+
+	/**
+	 * @return the edgeSwitch
+	 */
+	public String getEdgeSwitch() {
+		return edgeSwitch;
+	}
+
+	/**
+	 * @param edgeSwitch the edgeSwitch to set
+	 */
+	public void setEdgeSwitch(String edgeSwitch) {
+		this.edgeSwitch = edgeSwitch;
 	}
 
 }

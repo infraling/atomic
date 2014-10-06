@@ -126,7 +126,7 @@ public class AtomicalAnnotationGraphParser {
 						break;
 					}
 				}
-				else if (word.matches("-dsop")) // edge switch
+				else if (word.matches("-[drop]")) // edge switch
 					((ArrayList<String>) hash.get("switch")).add(word.substring(1));
 			}
 			else 
