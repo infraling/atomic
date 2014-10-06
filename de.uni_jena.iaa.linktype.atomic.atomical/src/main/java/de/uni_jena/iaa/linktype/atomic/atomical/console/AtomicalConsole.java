@@ -333,8 +333,9 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 									}
 								});
 								break;
+							case 't':
 							case 'T': // SToken
-								// TODO: Implement
+								out.write("This operation is currently unsupported.\n");
 								break;
 							case 'p':
 							case 'P': // SPointingRelation
