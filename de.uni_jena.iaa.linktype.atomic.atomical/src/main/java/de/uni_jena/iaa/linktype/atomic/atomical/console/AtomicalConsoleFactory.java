@@ -37,6 +37,7 @@ public class AtomicalConsoleFactory implements IConsoleFactory {
 			if (!exists)
 				manager.addConsoles(new IConsole[] { console });
 			manager.showConsoleView(console);
+			console.activate();
 		}
 	}
 

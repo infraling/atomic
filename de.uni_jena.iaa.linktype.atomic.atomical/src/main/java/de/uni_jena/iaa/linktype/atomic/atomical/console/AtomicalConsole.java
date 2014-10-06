@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
@@ -42,6 +43,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.AnnotationDe
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.ElementAnnotateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeDeleteCommand;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.RelationDeleteCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 
 /**
@@ -74,7 +76,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		Display.getDefault().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				out.setColor(new Color(null, 234, 123, 195));
+				out.setColor(new Color(null, 0, 153, 51));
 			}
 		});
 		BufferedReader br = new BufferedReader(new InputStreamReader(getInputStream()));
@@ -309,57 +311,72 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 								break;
 							case 's':
 							case 'S': // SSpan
-//							SSpanningRelation spanningRelation = graph.getSSpanningRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
-								
-//								for (SStructure structure : graph.getSStructures()) {
-//									String valueString = structure.getSName().substring(9);
-//									if (iD.equals(valueString)) {
-//										final SStructureDeleteCommand sStructureDeleteCommand = new SStructureDeleteCommand();
-//										sStructureDeleteCommand.setSStructure(structure);
-//										Display.getDefault().asyncExec(new Runnable() {
-//								    		public void run() {
-//								    	    	commandStack.execute(sStructureDeleteCommand);
-//								    		}
-//								    	});
-//									}
-//								}
+								SSpan span = (SSpan) getGraphPart().getVisualIDMap().get("S" + iD);
+								final NodeDeleteCommand spanDeleteCommand = new NodeDeleteCommand();
+								spanDeleteCommand.setModel(span);
+								spanDeleteCommand.setGraph(span.getSGraph());
+								spanDeleteCommand.setCoordinates(((AbstractGraphicalEditPart) getGraphPart().getViewer().getEditPartRegistry().get(span)).getFigure().getBounds());
+								Display.getDefault().syncExec(new Runnable() {
+									@Override
+									public void run() {
+										commandStack.execute(spanDeleteCommand);
+									}
+								});
 								break;
-								
 							case 'T': // SToken
 								// TODO: Implement
 								break;
-							
+							case 'p':
 							case 'P': // SPointingRelation
-//								for (SPointingRelation pointingRelation : graph.getSPointingRelations()) {
-//									String valueString = pointingRelation.getSName().substring(12);
-//									if (iD.equals(valueString)) {
-//										final SPointingRelationDeleteCommand sPointingRelationDeleteCommand = new SPointingRelationDeleteCommand();
-//										sPointingRelationDeleteCommand.setSPointingRelation(pointingRelation);
-//										Display.getDefault().asyncExec(new Runnable() {
-//								    		public void run() {
-//								    	    	commandStack.execute(sPointingRelationDeleteCommand);
-//								    		}
-//								    	});
-//									}
-//								}
+								SPointingRelation pointingRelation = (SPointingRelation) getGraphPart().getVisualIDMap().get("P" + iD);
+								final RelationDeleteCommand pointingRelDeleteCommand = new RelationDeleteCommand();
+								pointingRelDeleteCommand.setRelation(pointingRelation);
+								Display.getDefault().syncExec(new Runnable() {
+									@Override
+									public void run() {
+										commandStack.execute(pointingRelDeleteCommand);
+									}
+								});
 								break;
-								
+							case 'd':
 							case 'D': // SDominanceRelation
-//								for (SDominanceRelation dominanceRelation : graph.getSDominanceRelations()) {
-//									String valueString = dominanceRelation.getSName().substring(7);
-//									if (iD.equals(valueString)) {
-//										final SDominanceRelationDeleteCommand sDominanceRelationDeleteCommand = new SDominanceRelationDeleteCommand();
-//										sDominanceRelationDeleteCommand.setSDominanceRelation(dominanceRelation);
-//										Display.getDefault().asyncExec(new Runnable() {
-//								    		public void run() {
-//								    	    	commandStack.execute(sDominanceRelationDeleteCommand);
-//								    		}
-//								    	});
-//									}
-//								}
+								SDominanceRelation dominanceRelation = (SDominanceRelation) getGraphPart().getVisualIDMap().get("D" + iD);
+								final RelationDeleteCommand dominanceRelDeleteCommand = new RelationDeleteCommand();
+								dominanceRelDeleteCommand.setRelation(dominanceRelation);
+								Display.getDefault().syncExec(new Runnable() {
+									@Override
+									public void run() {
+										commandStack.execute(dominanceRelDeleteCommand);
+									}
+								});
+								break;
+							case 'o':
+							case 'O': // SDominanceRelation
+								SOrderRelation orderRelation = (SOrderRelation) getGraphPart().getVisualIDMap().get("O" + iD);
+								final RelationDeleteCommand orderRelDeleteCommand = new RelationDeleteCommand();
+								orderRelDeleteCommand.setRelation(orderRelation);
+								Display.getDefault().syncExec(new Runnable() {
+									@Override
+									public void run() {
+										commandStack.execute(orderRelDeleteCommand);
+									}
+								});
+								break;
+							case 'r':
+							case 'R': // SSpanningRelation
+								SSpanningRelation spanningRelation = (SSpanningRelation) getGraphPart().getVisualIDMap().get("R" + iD);
+								final RelationDeleteCommand spanningRelDeleteCommand = new RelationDeleteCommand();
+								spanningRelDeleteCommand.setRelation(spanningRelation);
+								Display.getDefault().syncExec(new Runnable() {
+									@Override
+									public void run() {
+										commandStack.execute(spanningRelDeleteCommand);
+									}
+								});
 								break;
 							}
 						}
+				
 //						
 //					case 'p': // Create parent node
 //					case 'c': // Create child node
@@ -499,7 +516,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 					EditPartViewer editPartViewer = ((GraphEditor) editor).getEditPartViewer();
 					console.setGraphPart((GraphPart) editPartViewer.getContents());
-					console.setGraph(console.getGraphPart().getModel());
+					console.setGraph(getGraphPart().getModel());
 					console.setEditor(editor);
 					try {
 						console.out.write("Working on " + editor.getEditorInput().getName() + ".\n");

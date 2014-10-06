@@ -40,7 +40,7 @@ public class AtomicalAnnotationGraphParser {
 	public static HashMap<Object, Object> parseParameters(String rawParameters) { // FIXME Change Object to String and TEST
 		HashMap<Object, Object> hash = new HashMap<Object, Object>();
 		hash.put("attributes".intern(), new LinkedHashMap<Object, Object>()); // Attributes
-		hash.put("layer_switch", new ArrayList<String>(1));
+		hash.put("switch", new ArrayList<String>(1));
 		hash.put("keys".intern(), new ArrayList<Object>()); // Valueless keys, used for deleting parameters
 		hash.put("elements".intern(), new ArrayList<String>()); // All nodes and edges from the String
 		hash.put("words".intern(), new ArrayList<String>()); // All Strings that are not attributes
@@ -126,8 +126,8 @@ public class AtomicalAnnotationGraphParser {
 						break;
 					}
 				}
-				else if (word.matches("-fs|-[fs]")) // layer switch
-					((ArrayList<String>) hash.get("layer_switch")).add(word.substring(1));
+				else if (word.matches("-dsop")) // edge switch
+					((ArrayList<String>) hash.get("switch")).add(word.substring(1));
 			}
 			else 
 				if ((m = ((Pattern) r.get("ctrl")).matcher(rawParameters)).find());

@@ -39,7 +39,7 @@
       <command
             defaultHandler="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler"
             id="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
-            name="Open XXX">
+            name="Open ConsoleView">
       </command>
    </extension>
 
