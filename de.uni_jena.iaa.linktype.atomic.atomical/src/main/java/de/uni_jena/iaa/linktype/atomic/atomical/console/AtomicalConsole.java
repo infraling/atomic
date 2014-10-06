@@ -9,7 +9,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
@@ -25,11 +27,21 @@ import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.exceptions.GraphInsertException;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.uni_jena.iaa.linktype.atomic.atomical.parser.AtomicalAnnotationGraphParser;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditor;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.AnnotationDeleteCommand;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.ElementAnnotateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeCreateCommand;
 
 /**
@@ -103,7 +115,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		}
 	}
 	
-	private void executeCommand(final CommandStack commandStack, String atomicALCommand, HashMap<Object, Object> atomicALParameters) {
+	private void executeCommand(final CommandStack commandStack, String atomicALCommand, HashMap<Object, Object> atomicALParameters) throws IOException {
 		// FIXME TODO Refactor for readability/re-usability + check for uncaught exceptions
 				char commandChar = 0;
 				try {
@@ -179,100 +191,99 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 //				    	});
 //				    	break;
 //				    	
-//					case 'a': // Annotate
-//						if (atomicALParameters.get("attributes") != null) {
-//							final LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
-//							final ArrayList<Object> keys = (ArrayList<Object>) atomicALParameters.get("keys");
-//							ArrayList<String> elementIDs = (ArrayList<String>) atomicALParameters.get("elements");
-//							ArrayList<SAnnotatableElement> elementsToAnnotate = new ArrayList<SAnnotatableElement>();
-//							for (int i = 0; i < elementIDs.size(); i++) {
-//								String iD = elementIDs.get(i).substring(1);
-//								// Get respective EObject from elementID
-//								switch (elementIDs.get(i).charAt(0)) {
-//								case 'N': // SStructure
-//									for (SStructure structure : graph.getSStructures()) {
-//										String valueString = structure.getSName().substring(9); // 9 -> "structure"
-//										if (iD.equals(valueString)) 
-//											elementsToAnnotate.add(structure);
-//									}
-//									break;
-//								
-//								case 'T': // SToken
-//									for (SToken token : graph.getSTokens()) {
-//										String valueString = token.getSName().substring(4); // 4 -> "sTok"
-//										if (iD.equals(valueString)) 
-//											elementsToAnnotate.add(token);
-//									}
-//									break;
-//									
-//								case 'S': // SSpan
-//									for (SSpan span : graph.getSSpans()) {
-//										String valueString = span.getSName().substring(5); // 5 -> "sSpan"
-//										if (iD.equals(valueString)) 
-//											elementsToAnnotate.add(span);
-//									}
-//									break;
-//									
-//								case 'P': // SPointingRelation
-//									for (SPointingRelation pointingRelation : graph.getSPointingRelations()) {
-//										String valueString = pointingRelation.getSName().substring(12); // 12 -> "sPointingRel"
-//										if (iD.equals(valueString))
-//											elementsToAnnotate.add(pointingRelation);
-//									}
-//									break;
-//									
-//								case 'D': // SDominanceRelation
-//									for (final SDominanceRelation dominanceRelation : graph.getSDominanceRelations()) {
-//										String valueString = dominanceRelation.getSName().substring(7); // 7 -> "sDomRel"
-//										if (iD.equals(valueString)) 
-//											elementsToAnnotate.add(dominanceRelation);
-//									}
-//									break;
-//								
-//								case 'R': // SSpanningRelation
-//									for (final SSpanningRelation spanningRelation : graph.getSSpanningRelations()) {
-//										String valueString = spanningRelation.getSName().substring(8); // 7 -> "sSpanRel"
-//										if (iD.equals(valueString)) 
-//											elementsToAnnotate.add(spanningRelation);
-//									}
-//									break;
-//									
-//								default:
-//									break;
-//								} 
-//							}
-//							for (final SAnnotatableElement element : elementsToAnnotate) {
-//								Display.getDefault().asyncExec(new Runnable() {
-//									
-//									@Override
-//									public void run() {
-//										for (Object keyObject : attributes.keySet()) {
-//											SAnnotation anno = SaltFactory.eINSTANCE.createSAnnotation();
-//											String key = (String) keyObject; 
-//											String val = (String) attributes.get(key);
-//									        anno.setSName(key);
-//									        anno.setSValue(val);
-//									        try {
-//									        	element.addSAnnotation(anno);	
-//											} catch (GraphInsertException e) {
-//												element.getSAnnotation(key).setSValue(val);
-//											}
-//										}
-//										for (Object keyObject : keys) {
-//											final SAnnotationDeleteCommand sAnnotationDeleteCommand = new SAnnotationDeleteCommand();
-//											SAnnotation anno = element.getSAnnotation((String) keyObject);
-//											sAnnotationDeleteCommand.setSAnnotation(anno);
-//											Display.getDefault().asyncExec(new Runnable() {
-//									    		public void run() {
-//									    	    	commandStack.execute(sAnnotationDeleteCommand);
-//									    		}
-//									    	});
-//										}
-//									}
-//								});
-//							}
-//						}
-//						break;
+					case 'a': // Annotate
+						if (atomicALParameters.get("attributes") != null) {
+							final LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
+							final ArrayList<Object> keys = (ArrayList<Object>) atomicALParameters.get("keys");
+							ArrayList<String> elementIDs = (ArrayList<String>) atomicALParameters.get("elements");
+							ArrayList<SAnnotatableElement> elementsToAnnotate = new ArrayList<SAnnotatableElement>();
+							for (int i = 0; i < elementIDs.size(); i++) {
+								String iD = elementIDs.get(i).substring(1);
+								// Get respective EObject from elementID
+								switch (elementIDs.get(i).charAt(0)) {
+								case 'N':
+								case 'n': // SStructure
+									SStructure structure = graph.getSStructures().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									elementsToAnnotate.add(structure);
+									break;
+								
+								case 'T':	
+								case 't': // SToken
+									SToken token = graph.getSTokens().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									elementsToAnnotate.add(token);
+									break;
+									
+								case 'S':
+								case 's': // SSpan
+									SSpan span = graph.getSSpans().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									elementsToAnnotate.add(span);
+									break;
+								
+								case 'P':	
+								case 'p': // SPointingRelation
+									SPointingRelation pointingRelation = graph.getSPointingRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									elementsToAnnotate.add(pointingRelation);
+									break;
+									
+								case 'D':
+								case 'd': // SDominanceRelation
+									SDominanceRelation dominanceRelation = graph.getSDominanceRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									elementsToAnnotate.add(dominanceRelation);
+									break;
+								
+								case 'R':	
+								case 'r': // SSpanningRelation
+									SSpanningRelation spanningRelation = graph.getSSpanningRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									elementsToAnnotate.add(spanningRelation);
+									break;
+									
+								case 'O':
+								case 'o': // SOrderRelation
+									SOrderRelation orderRelation = graph.getSOrderRelations().get(Integer.parseInt(iD) - 1); // -1 because the label shows id index+1
+									elementsToAnnotate.add(orderRelation);
+									break;
+
+								default:
+									break;
+								} 
+							}
+							for (final SAnnotatableElement element : elementsToAnnotate) {
+								Display.getDefault().asyncExec(new Runnable() {
+									
+									@Override
+									public void run() {
+										TreeMap<String, Pair<String, String>> annotationsToAdd = new TreeMap<String, Pair<String, String>>();
+										String namespace = null, key, val;
+										for (SAnnotation existingAnnotation : element.getSAnnotations()) {
+											namespace = existingAnnotation.getNamespace();
+											key = existingAnnotation.getName();
+											val = existingAnnotation.getValue().toString();
+											annotationsToAdd.put(key, Pair.of(namespace, val));
+										}
+										for (Object keyObject : attributes.keySet()) {
+											key = (String) keyObject; 
+											val = (String) attributes.get(key);
+											namespace = null; // FIXME: Remove once namespace is implemented for console
+									        annotationsToAdd.put(key, Pair.of(namespace, val));
+										}
+								        ElementAnnotateCommand elementAnnotateCommand = new ElementAnnotateCommand();
+								        elementAnnotateCommand.setModel(element);
+								        elementAnnotateCommand.setAnnotations(annotationsToAdd);
+								        commandStack.execute(elementAnnotateCommand);
+										for (Object keyObject : keys) {
+											if (attributes.get(keyObject) == null) { // I.e., no value, i.e., annotation should be deleted
+												final AnnotationDeleteCommand sAnnotationDeleteCommand = new AnnotationDeleteCommand();
+												SAnnotation anno = element.getSAnnotation((String) keyObject);
+												sAnnotationDeleteCommand.setModel(anno);
+												sAnnotationDeleteCommand.setModelParent(element);
+								    	    	commandStack.execute(sAnnotationDeleteCommand);
+											}
+										}
+									}
+								});
+							}
+						}
+						break;
 //						
 //					case 'd': // Delete element
 //						// Determine type of element & create respective command
@@ -434,11 +445,12 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	private void displayHelp() {
 		try {
 			out.write("Command                           Arguments                       Syntax example\n"+
-					"n (New node)*                     [key]:[value]                   n pos:np\n"+
+					"n (New structure node)"+/***/"            [key]:[value]                   n pos:np\n"+
+					"s (New span node)"+/***/"                 [element] [element] [key]:[val] s t1 t2 type:np\n"+
 					"e (New edge)                      [source] [target] [key]:[value] e n1 n2 r:coref\n"+
-					"a (Annotate)*                     [element] [key]:[val] / [key]:  a n1 pos:np\n"+
-					"d (Delete element) [element]                                      d t1\n"+
-					"p (Group under new parent)*       [element] [element] [key]:[val] p t1 t2 pos:np\n"/*+
+					"a (Annotate)"+/***/"                      [element] [key]:[val] / [key]:  a n1 pos:np\n"+
+					"d (Delete element)                [element]                       d t1\n"+
+					"p (Group under new parent)"+/***/"        [element] [element] [key]:[val] p t1 t2 pos:np\n"/*+
 					"c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"+
 					"t (Append new token)              [string]                        t Foobar\n"+
 					"l (Switch annotation level)*      [level]                         l -s\n"+

@@ -84,31 +84,41 @@ public class AtomicalAnnotationGraphParser {
 			else if ((m = ((Pattern) r.get("string")).matcher(rawParameters)).find()) {
 				String word = m.group(2) != null ? m.group(2).replace('\"', '"') : m.group(1);
 				((ArrayList<String>) hash.get("words")).add(word);
-				if (word.matches("^([DNPTRS]\\d+)|M$")) { // ENT (not ent as in ltraw) because in Atomic caps are used for IDs
+				if (word.matches("^([DNPTRSOdnptrso]\\d+)|M$")) { // ENT (not ent as in ltraw) because in Atomic caps are used for IDs
 					((ArrayList<String>) hash.get("elements")).add(word);
 					switch (word.charAt(0)) {
 					case 'N':
+					case 'n':
 						((ArrayList<String>) hash.get("nodes")).add(word);
 						((ArrayList<String>) hash.get("all_nodes")).add(word);
 						break;
 					case 'S':
+					case 's':
 						((ArrayList<String>) hash.get("spans")).add(word);
 						((ArrayList<String>) hash.get("all_nodes")).add(word);
 						break;
-					case 'M':
-						((ArrayList<String>) hash.get("meta")).add(word);
-						((ArrayList<String>) hash.get("all_nodes")).add(word);
-						break;
+//					case 'M':
+//						((ArrayList<String>) hash.get("meta")).add(word);
+//						((ArrayList<String>) hash.get("all_nodes")).add(word);
+//						break;
 					case 'D':
+					case 'd':
 						((ArrayList<String>) hash.get("edges")).add(word);
 						break;
 					case 'P':
+					case 'p':
+						((ArrayList<String>) hash.get("edges")).add(word);
+						break;
+					case 'O':
+					case 'o':
 						((ArrayList<String>) hash.get("edges")).add(word);
 						break;
 					case 'R':
+					case 'r':
 						((ArrayList<String>) hash.get("edges")).add(word);
 						break;
 					case 'T':
+					case 't':
 						((ArrayList<String>) hash.get("tokens")).add(word);
 						((ArrayList<String>) hash.get("all_nodes")).add(word);
 						break;

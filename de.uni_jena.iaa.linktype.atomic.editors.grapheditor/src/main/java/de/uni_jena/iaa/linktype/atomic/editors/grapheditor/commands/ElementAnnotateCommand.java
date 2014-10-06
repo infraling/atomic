@@ -21,6 +21,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 public class ElementAnnotateCommand extends Command {
 	
 	private SAnnotatableElement model;
+	// Contains annotations in the format <"Annotation key", Pair<"Namespace","Value">>
 	private TreeMap<String, Pair<String, String>> annotations = new TreeMap<String, Pair<String, String>>();
 	
 	@Override 

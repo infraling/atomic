@@ -11,6 +11,9 @@ Require-Bundle: org.eclipse.ui,
  de.uni_jena.iaa.linktype.atomic.editors.grapheditor,
  org.eclipse.gef,
  de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon,
- de.hu_berlin.german.korpling.saltnpepper.salt-saltCore
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore,
+ org.eclipse.emf.common;bundle-version="2.7.0",
+ de.hu_berlin.german.korpling.saltnpepper.salt-graph,
+ org.apache.commons.lang3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
