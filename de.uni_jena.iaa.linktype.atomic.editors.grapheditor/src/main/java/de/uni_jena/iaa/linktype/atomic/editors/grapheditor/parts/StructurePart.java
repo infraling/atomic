@@ -55,7 +55,7 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new NodeFigure(PartUtils.getVisualID(getModel()), NodeFigure.STRUCTURE_MODEL);
+		return new NodeFigure(((GraphPart) getParent()).getVisualIDMap().inverse().get(getModel()), NodeFigure.STRUCTURE_MODEL);
 	}
 
 	@Override

@@ -15,9 +15,12 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+
+import com.google.common.collect.HashBiMap;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
@@ -37,6 +40,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	private GraphAdapter adapter;
 	private Map<SToken, String> tokenTextRegistry;
 	public Object removingObject;
+	private HashBiMap<String, EObject> visualIDMap = HashBiMap.create();
 
 	public GraphPart(SDocumentGraph model) {
 		setModel(model);
@@ -87,16 +91,19 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		for (SToken token : getModel().getSTokens()) {
 			if (token.getSDocumentGraph() == getModel()) {
 				modelChildren.add(token);
+				getVisualIDMap().put("T" + (getModel().getSTokens().indexOf(token) + 1), token);
 			}
 		}
 		for (SStructure structure : getModel().getSStructures()) {
 			if (structure.getSDocumentGraph() == getModel()) {
 				modelChildren.add(structure);
+				getVisualIDMap().put("N" + (getModel().getSStructures().indexOf(structure) + 1), structure);
 			}
 		}
 		for (SSpan span : getModel().getSSpans()) {
 			if (span.getSDocumentGraph() == getModel()) {
 				modelChildren.add(span);
+				getVisualIDMap().put("S" + (getModel().getSSpans().indexOf(span) + 1), span);
 			}
 		}
 		return modelChildren;
@@ -178,6 +185,20 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 */
 	public void setTokenTextRegistry(Map<SToken, String> tokenTextRegistry) {
 		this.tokenTextRegistry = tokenTextRegistry;
+	}
+
+	/**
+	 * @return the visualIDMap
+	 */
+	public HashBiMap<String, EObject> getVisualIDMap() {
+		return visualIDMap;
+	}
+
+	/**
+	 * @param visualIDMap the visualIDMap to set
+	 */
+	public void setVisualIDMap(HashBiMap<String, EObject> visualIDMap) {
+		this.visualIDMap = visualIDMap;
 	}
 
 }

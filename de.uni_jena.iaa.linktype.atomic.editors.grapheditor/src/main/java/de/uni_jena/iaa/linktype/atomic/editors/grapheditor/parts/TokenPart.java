@@ -53,7 +53,7 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new NodeFigure(PartUtils.getVisualID(getModel()), NodeFigure.TOKEN_MODEL);
+		return new NodeFigure(((GraphPart) getParent()).getVisualIDMap().inverse().get(getModel()), NodeFigure.TOKEN_MODEL);
 	}
 	
 	@Override
