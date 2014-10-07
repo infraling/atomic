@@ -4,6 +4,7 @@
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor;
 
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -44,6 +45,8 @@ public class CoreferenceEditor extends TextEditor {
 	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
 		viewer = new SourceViewer(parent, ruler /* TODO: introduce IVerticalRuler later*/, getOverviewRuler() /* TODO check if OverviewRuler is helpful*/, isOverviewRulerVisible() /* TODO check if needed later */, SWT.WRAP | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
 		getSourceViewerDecorationSupport(viewer);
+		IPreferenceStore store = getPreferenceStore();
+		store.setValue(PREFERENCE_TEXT_DRAG_AND_DROP_ENABLED, true);
 		
 		// Add menus
 		MenuManager menuManager = new MenuManager();
