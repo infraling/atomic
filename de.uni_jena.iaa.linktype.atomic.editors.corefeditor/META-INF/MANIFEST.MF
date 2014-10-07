@@ -5,6 +5,8 @@ Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.editors.corefeditor;singlet
 Bundle-Version: 0.2.0.qualifier
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.editors.corefeditor.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.ui.editors;bundle-version="3.7.0",
+ org.eclipse.jface.text;bundle-version="3.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
