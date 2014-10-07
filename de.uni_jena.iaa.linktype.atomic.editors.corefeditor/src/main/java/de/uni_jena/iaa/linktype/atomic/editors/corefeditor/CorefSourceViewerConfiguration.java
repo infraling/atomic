@@ -10,5 +10,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
  *
  */
 public class CorefSourceViewerConfiguration extends SourceViewerConfiguration {
+	
+	
 
 }

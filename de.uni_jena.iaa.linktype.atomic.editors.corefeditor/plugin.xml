@@ -11,5 +11,70 @@
             name="Atomic Coreference Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:de.uni_jena.iaa.linktype.atomic.editors.corefeditor.contextmenu?before=additions">
+         <command
+               commandId="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createMarkableCommand"
+               label="Create markable"
+               mnemonic="m"
+               style="push"
+               tooltip="Creates a (singular-reference) markable from the current selection">
+            <visibleWhen>
+               <test
+                     property="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.hasNonEmptyTextSelection">
+               </test>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Creates a (singular-reference) markable from the current selection"
+            id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createMarkableCommand"
+            name="Create markable">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.handlers.CreateMarkableHandler"
+            commandId="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createMarkableCommand">
+            <activeWhen>
+               <with variable="activePartId">
+                     <equals
+                           value="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor">
+                     </equals>
+               </with>
+         </activeWhen>
+         <enabledWhen>
+            <test
+                  property="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.hasNonEmptyTextSelection">
+            </test>
+         </enabledWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.propertytesters.SelectionPropertyTester"
+            id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.hasNonEmptyTextSelection"
+            namespace="de.uni_jena.iaa.linktype.atomic.editors.corefeditor"
+            properties="hasNonEmptyTextSelection"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createMarkableCommand"
+            contextId="org.eclipse.ui.textEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M">
+      </key>
+   </extension>
 
 </plugin>
