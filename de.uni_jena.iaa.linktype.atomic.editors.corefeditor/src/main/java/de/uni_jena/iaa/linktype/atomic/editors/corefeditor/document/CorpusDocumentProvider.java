@@ -1,0 +1,104 @@
+/**
+ * 
+ */
+package de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.editors.text.FileDocumentProvider;
+import org.eclipse.ui.IFileEditorInput;
+
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+
+/**
+ * @author Stephan Druskat
+ *
+ */
+public class CorpusDocumentProvider extends FileDocumentProvider {
+	
+	private SDocument sDocument;
+
+	@Override
+	protected IDocument createDocument(Object element) throws CoreException {
+		IDocument document = new Document();
+		if (element instanceof IFileEditorInput) {
+			IFileEditorInput input = (IFileEditorInput) element;
+			String fileName = input.getFile().getName();
+			// FIXME Check if input is a SaltProject file, and if it is, display info about SaltProject
+			if (fileName.equals("saltProject." + SaltFactory.FILE_ENDING_SALT)) {
+				StringBuilder contents = buildSaltProjectInfo(input);
+				document.set(contents.toString());
+			}
+			// Check if input is a .salt file, and if it is not a SaltProject,
+			// i.e., if it is a persisted SDocument.
+			else if (fileName.endsWith(SaltFactory.FILE_ENDING_SALT) && !fileName.equals("saltProject." + SaltFactory.FILE_ENDING_SALT)) {
+				setSDocument(SaltFactory.eINSTANCE.createSDocument());
+				getSDocument().loadSDocumentGraph(URI.createFileURI(input.getFile().getLocation().toOSString()));
+				SDocumentModel model = new SDocumentModel(getSDocument());
+				document.set(model.getCorpusText());
+			}
+			return document;
+		}
+		return null;
+	}
+
+	/**
+	 * @param input
+	 * @return
+	 */
+	private StringBuilder buildSaltProjectInfo(IFileEditorInput input) {
+		final String nl = "\n";
+		StringBuilder contents = new StringBuilder();
+		SaltProject project = SaltFactory.eINSTANCE.createSaltProject();
+		project.loadSaltProject(URI.createFileURI(input.getFile().getRawLocation().makeAbsolute().toOSString()));
+		contents.append("Information about SaltProject " + project.getSName() + nl);
+		int headlineLength = contents.length();
+		for (int i = 1; i < headlineLength; i++) {
+			contents.append("=");
+		}
+		contents.append(nl + nl + "Name: " + project.getSName());
+		contents.append(nl + "Corpora: " + project.getSCorpusGraphs().get(0).getSCorpora().size() + nl + nl);
+		EList<SDocument> sDocs = project.getSCorpusGraphs().get(0).getSDocuments();
+		String sDocsString = nl + "| Documents (" + sDocs.size() + ") |";
+		for (int j = 1; j < sDocsString.length(); j++)
+			contents.append("-");
+		contents.append(sDocsString + nl);
+		for (int j = 1; j < sDocsString.length(); j++)
+			contents.append("-");
+		for (SDocument sDoc : sDocs) {
+			SDocumentGraph graph = sDoc.getSDocumentGraph();
+			int ind = ECollections.indexOf(sDocs, sDoc, 0);
+			contents.append(nl + "(" + (ind + 1) + ") "+ sDoc.getSName());
+			contents.append(nl + "Tokens: " + graph.getSTokens().size());
+			contents.append(nl + "Nodes: " + graph.getSNodes().size());
+		}
+		return contents;
+	}
+	
+	@Override
+	protected IDocument createEmptyDocument() {
+		return null;
+	}
+
+	/**
+	 * @return the sDocument
+	 */
+	public SDocument getSDocument() {
+		return sDocument;
+	}
+
+	/**
+	 * @param sDocument the sDocument to set
+	 */
+	public void setSDocument(SDocument sDocument) {
+		this.sDocument = sDocument;
+	}
+
+}

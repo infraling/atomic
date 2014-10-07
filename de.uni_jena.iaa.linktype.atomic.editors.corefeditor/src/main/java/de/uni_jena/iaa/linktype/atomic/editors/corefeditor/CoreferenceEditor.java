@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.editors.text.TextEditor;
 
-import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.documentb.CorpusDocumentProvider;
+import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.CorpusDocumentProvider;
 
 /**
  * @author Stephan Druskat
