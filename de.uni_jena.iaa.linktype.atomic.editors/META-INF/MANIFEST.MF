@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Editors Support
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.editors
+Bundle-Version: 0.2.0.qualifier
+Bundle-Activator: de.uni_jena.iaa.linktype.atomic.editors.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.emf.common;bundle-version="2.7.0",
+ de.hu_berlin.german.korpling.saltnpepper.salt-graph;bundle-version="1.1.8",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon;bundle-version="1.1.8",
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.8",
+ org.eclipse.emf.ecore;bundle-version="2.7.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
