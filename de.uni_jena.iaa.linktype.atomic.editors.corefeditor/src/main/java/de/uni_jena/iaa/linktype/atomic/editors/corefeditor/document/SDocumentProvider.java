@@ -25,23 +25,24 @@ public class SDocumentProvider extends FileDocumentProvider {
 	
 	private SDocument sDocument;
 	private SDocumentModel model;
+	private IFileEditorInput input;
 
 	@Override
 	protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document = new Document();
 		if (element instanceof IFileEditorInput) {
-			IFileEditorInput input = (IFileEditorInput) element;
-			String fileName = input.getFile().getName();
+			setInput((IFileEditorInput) element);
+			String fileName = getInput().getFile().getName();
 			// FIXME Check if input is a SaltProject file, and if it is, display info about SaltProject
 			if (fileName.equals("saltProject." + SaltFactory.FILE_ENDING_SALT)) {
-				StringBuilder contents = buildSaltProjectInfo(input);
+				StringBuilder contents = buildSaltProjectInfo(getInput());
 				document.set(contents.toString());
 			}
 			// Check if input is a .salt file, and if it is not a SaltProject,
 			// i.e., if it is a persisted SDocument.
 			else if (fileName.endsWith(SaltFactory.FILE_ENDING_SALT) && !fileName.equals("saltProject." + SaltFactory.FILE_ENDING_SALT)) {
 				setSDocument(SaltFactory.eINSTANCE.createSDocument());
-				URI graphURI = URI.createFileURI(input.getFile().getLocation().toOSString());
+				URI graphURI = URI.createFileURI(getInput().getFile().getLocation().toOSString());
 				getSDocument().loadSDocumentGraph(graphURI);
 				setModel(new SDocumentModel(getSDocument()));
 				getModel().setGraphURI(graphURI);
@@ -116,6 +117,20 @@ public class SDocumentProvider extends FileDocumentProvider {
 	 */
 	public void setModel(SDocumentModel model) {
 		this.model = model;
+	}
+
+	/**
+	 * @return the input
+	 */
+	public IFileEditorInput getInput() {
+		return input;
+	}
+
+	/**
+	 * @param input the input to set
+	 */
+	public void setInput(IFileEditorInput input) {
+		this.input = input;
 	}
 
 }

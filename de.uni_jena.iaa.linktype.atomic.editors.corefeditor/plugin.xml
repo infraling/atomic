@@ -115,5 +115,15 @@
             sequence="M1+R">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.ReferenceView"
+            id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview"
+            name="Reference View"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
