@@ -21,9 +21,10 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
  * @author Stephan Druskat
  *
  */
-public class CorpusDocumentProvider extends FileDocumentProvider {
+public class SDocumentProvider extends FileDocumentProvider {
 	
 	private SDocument sDocument;
+	private SDocumentModel model;
 
 	@Override
 	protected IDocument createDocument(Object element) throws CoreException {
@@ -40,9 +41,11 @@ public class CorpusDocumentProvider extends FileDocumentProvider {
 			// i.e., if it is a persisted SDocument.
 			else if (fileName.endsWith(SaltFactory.FILE_ENDING_SALT) && !fileName.equals("saltProject." + SaltFactory.FILE_ENDING_SALT)) {
 				setSDocument(SaltFactory.eINSTANCE.createSDocument());
-				getSDocument().loadSDocumentGraph(URI.createFileURI(input.getFile().getLocation().toOSString()));
-				SDocumentModel model = new SDocumentModel(getSDocument());
-				document.set(model.getCorpusText());
+				URI graphURI = URI.createFileURI(input.getFile().getLocation().toOSString());
+				getSDocument().loadSDocumentGraph(graphURI);
+				setModel(new SDocumentModel(getSDocument()));
+				getModel().setGraphURI(graphURI);
+				document.set(getModel().getCorpusText());
 			}
 			return document;
 		}
@@ -99,6 +102,20 @@ public class CorpusDocumentProvider extends FileDocumentProvider {
 	 */
 	public void setSDocument(SDocument sDocument) {
 		this.sDocument = sDocument;
+	}
+
+	/**
+	 * @return the model
+	 */
+	public SDocumentModel getModel() {
+		return model;
+	}
+
+	/**
+	 * @param model the model to set
+	 */
+	public void setModel(SDocumentModel model) {
+		this.model = model;
 	}
 
 }

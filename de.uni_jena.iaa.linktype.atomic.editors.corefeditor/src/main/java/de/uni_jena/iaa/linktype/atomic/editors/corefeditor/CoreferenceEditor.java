@@ -4,17 +4,24 @@
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor;
 
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 
-import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.CorpusDocumentProvider;
+import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.SDocumentProvider;
 
 /**
  * @author Stephan Druskat
@@ -29,7 +36,7 @@ public class CoreferenceEditor extends TextEditor {
 	 */
 	public CoreferenceEditor() {
 		super();
-		setDocumentProvider(new CorpusDocumentProvider());
+		setDocumentProvider(new SDocumentProvider());
 		this.setEditorContextMenuId("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.contextmenu");
 	}
 	
@@ -104,8 +111,44 @@ public class CoreferenceEditor extends TextEditor {
 		 */
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-			// TODO Auto-generated method stub
+//			selectAllFullWordsInSelection(event);
+		}
 
+		/**
+		 * @param event
+		 */
+		private void selectAllFullWordsInSelection(SelectionChangedEvent event) {
+			int offset = -1, length = -1;
+			ISelection selection = event.getSelection();
+			if (selection instanceof TextSelection) {
+				offset = ((TextSelection) selection).getOffset();
+				length = ((TextSelection) selection).getLength();
+			}
+			ISelectionProvider provider = event.getSelectionProvider();
+			String text = null;
+			if (provider instanceof SourceViewer) {
+				IDocument document = ((SourceViewer) provider).getDocument();
+				text = document.get();
+			}
+			// Find bordering whitespaces
+			String textBeforeOffset = text.substring(0, offset);
+			int positionWhitespaceBeforeOffset = 0; // Re-usable in case the selection includes the first word, i.e., no whitespace is found
+			for (int i = positionWhitespaceBeforeOffset; i < textBeforeOffset.length(); i++) {
+			    if (Character.isWhitespace(textBeforeOffset.charAt(i))) {
+			        positionWhitespaceBeforeOffset = i;
+			    }
+			}
+			int positionWhitespaceAfterSelection = offset + length;
+			for (int i = positionWhitespaceAfterSelection; i < text.length(); i++) {
+			    if (Character.isWhitespace(text.charAt(i))) {
+			        positionWhitespaceAfterSelection = i;
+			        break;
+			    }
+			}
+			IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			if (activeEditor instanceof CoreferenceEditor && ((CoreferenceEditor) activeEditor).getViewer() instanceof SourceViewer) {
+				((ITextEditor) activeEditor).selectAndReveal(positionWhitespaceBeforeOffset + 1, (positionWhitespaceAfterSelection - positionWhitespaceBeforeOffset));
+			}
 		}
 	}
 

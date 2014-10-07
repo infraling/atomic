@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.equinox.p2.ui.sdk;bundle-version="1.0.200"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: de.uni_jena.iaa.linktype.atomic.core.registries

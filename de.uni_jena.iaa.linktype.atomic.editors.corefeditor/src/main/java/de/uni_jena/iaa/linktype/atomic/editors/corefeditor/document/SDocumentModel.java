@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
@@ -20,6 +21,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 public class SDocumentModel extends SDocumentDecorator {
 
 	private HashSet<Object[]> corpusTokens;
+	private URI graphURI;
 
 	public SDocumentModel(SDocument decoratedSDocument) {
 		super(decoratedSDocument);
@@ -49,6 +51,17 @@ public class SDocumentModel extends SDocumentDecorator {
 
 	public HashSet<Object[]> getCorpusTokens() {
 		return corpusTokens;
+	}
+
+	public void setGraphURI(URI graphURI) {
+		this.graphURI = graphURI;
+	}
+
+	/**
+	 * @return the graphURI
+	 */
+	public URI getGraphURI() {
+		return graphURI;
 	}
 
 }
