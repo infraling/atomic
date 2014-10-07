@@ -18,6 +18,7 @@ public class CreateReferenceHandler extends AbstractCreateMarkablesHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		super.execute(event);
+		// Open reference editor, add span, give reference a name
 		return null;
 	}
 

@@ -35,6 +35,8 @@ import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.SDocumentPro
  */
 public abstract class AbstractCreateMarkablesHandler extends AbstractHandler {
 
+	protected SSpan span;
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
@@ -72,7 +74,7 @@ public abstract class AbstractCreateMarkablesHandler extends AbstractHandler {
 				tokenListForSpan.add(token);
 			}
 		}
-		SSpan span = model.getGraph().createSSpan(tokenListForSpan);
+		setSpan(model.getGraph().createSSpan(tokenListForSpan));
 	}
 
 	/**
@@ -129,6 +131,20 @@ public abstract class AbstractCreateMarkablesHandler extends AbstractHandler {
 			textSelection = (TextSelection) selection;
 		}
 		return textSelection;
+	}
+
+	/**
+	 * @return the span
+	 */
+	public SSpan getSpan() {
+		return span;
+	}
+
+	/**
+	 * @param span the span to set
+	 */
+	public void setSpan(SSpan span) {
+		this.span = span;
 	}
 
 }
