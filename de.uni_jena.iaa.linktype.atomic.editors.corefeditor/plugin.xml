@@ -17,6 +17,17 @@
             allPopups="false"
             locationURI="popup:de.uni_jena.iaa.linktype.atomic.editors.corefeditor.contextmenu?before=additions">
          <command
+               commandId="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createNewReference"
+               label="Create new reference"
+               mnemonic="r"
+               style="push">
+            <visibleWhen>
+               <test
+                     property="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.hasNonEmptyTextSelection">
+               </test>
+            </visibleWhen>
+         </command>
+         <command
                commandId="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createMarkableCommand"
                label="Create markable"
                mnemonic="m"
@@ -32,6 +43,11 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
+      <command
+            description="Creates a new reference and adds the markable created en route to it"
+            id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createNewReference"
+            name="Create new reference">
+      </command>
       <command
             description="Creates a (singular-reference) markable from the current selection"
             id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createMarkableCommand"
@@ -49,6 +65,23 @@
                            value="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor">
                      </equals>
                </with>
+         </activeWhen>
+         <enabledWhen>
+            <test
+                  property="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.hasNonEmptyTextSelection">
+            </test>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.handlers.CreateReferenceHandler"
+            commandId="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createNewReference">
+         <activeWhen>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor">
+               </equals>
+            </with>
          </activeWhen>
          <enabledWhen>
             <test
@@ -74,6 +107,12 @@
             contextId="org.eclipse.ui.textEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M">
+      </key>
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.createNewReference"
+            contextId="org.eclipse.ui.textEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+R">
       </key>
    </extension>
 

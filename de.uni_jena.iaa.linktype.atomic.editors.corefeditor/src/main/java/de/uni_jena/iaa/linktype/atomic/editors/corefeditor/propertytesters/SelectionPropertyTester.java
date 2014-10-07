@@ -34,7 +34,7 @@ public class SelectionPropertyTester extends PropertyTester {
 				isTestPassed = !textSelection.getText().isEmpty();
 			} catch (NullPointerException e) {
 				// Do nothing, will throw an NPE at opening of editor,
-				// probably because the part hasn't been activeated yet.
+				// probably because the part hasn't been activated yet.
 			}
 		}
 		return isTestPassed;

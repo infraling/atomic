@@ -10,7 +10,7 @@ import org.eclipse.core.commands.ExecutionException;
  * @author Stephan Druskat
  *
  */
-public class CreateMarkableHandler extends AbstractCreateMarkablesHandler {
+public class CreateReferenceHandler extends AbstractCreateMarkablesHandler {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
