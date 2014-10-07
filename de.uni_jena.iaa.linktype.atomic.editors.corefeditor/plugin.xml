@@ -4,7 +4,9 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
+            class="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor"
             default="false"
+            extensions="salt"
             id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor"
             name="Atomic Coreference Editor">
       </editor>
