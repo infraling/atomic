@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore,
  de.hu_berlin.german.korpling.saltnpepper.salt-saltCore;bundle-version="1.1.8",
  org.eclipse.core.expressions;bundle-version="3.4.300",
- de.uni_jena.iaa.linktype.atomic.core
+ de.uni_jena.iaa.linktype.atomic.core,
+ de.uni_jena.iaa.linktype.atomic.editors
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
