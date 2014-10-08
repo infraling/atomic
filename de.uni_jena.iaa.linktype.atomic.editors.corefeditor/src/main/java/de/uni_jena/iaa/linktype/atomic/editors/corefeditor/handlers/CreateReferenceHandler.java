@@ -17,6 +17,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.SDocumentProvider;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.ReferenceView;
+import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel;
 
 /**
  * @author Stephan Druskat
@@ -41,7 +42,8 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 				graph = sDocument.getSDocumentGraph();
 			}
 			try {
-				page.showView("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview");
+//				page.showView("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview");
+				page.openEditor(new ReferenceModel(graph), "de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceeditor");
 			} catch (PartInitException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

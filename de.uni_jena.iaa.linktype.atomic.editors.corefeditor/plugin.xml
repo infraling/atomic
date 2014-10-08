@@ -10,6 +10,12 @@
             id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor"
             name="Atomic Coreference Editor">
       </editor>
+      <editor
+            class="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.ReferenceEditor"
+            default="false"
+            id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceeditor"
+            name="Atomic Reference Editor">
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
