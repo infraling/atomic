@@ -42,19 +42,19 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 			EList<SToken> sortedTokens = ((SSpan) obj).getSDocumentGraph().getSortedSTokenByText(tokens);
 			reList.clear();
 			reList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
-			System.err.println(reList);
 			StringBuilder text = new StringBuilder();
 			for (SToken token : sortedTokens) {
 				STextualDS ds = token.getSDocumentGraph().getSTextualDSs().get(0);
 				SDataSourceSequence sequence = token.getSDocumentGraph().getOverlappedDSSequences(token, reList).get(0);
 				text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
 			}
-			styledString = new StyledString(text.toString());
+			styledString = new StyledString(text.toString() + " (" + ((SSpan) obj).getSName() + ")");
 		}
 		cell.setText(styledString.toString());
 		cell.setStyleRanges(styledString.getStyleRanges());
 		cell.setImage(getImage(obj));
 		super.update(cell);
+		getViewer().refresh();
 	}
 
 	/*
@@ -140,7 +140,6 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 				SDataSourceSequence sequence = token.getSDocumentGraph().getOverlappedDSSequences(token, reList).get(0);
 				text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
 			}
-			System.err.println("AR");
 			return text.toString();
 		}
 		return null;

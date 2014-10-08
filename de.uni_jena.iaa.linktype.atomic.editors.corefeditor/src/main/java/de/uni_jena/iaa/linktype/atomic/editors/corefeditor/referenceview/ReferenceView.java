@@ -113,7 +113,6 @@ public class ReferenceView extends ViewPart {
 
 			@Override
 			protected Object getValue(Object element) {
-				System.err.println(element);
 				if (element instanceof Reference) {
 					return ((Reference) element).getName();
 				} 
@@ -129,7 +128,6 @@ public class ReferenceView extends ViewPart {
 						SDataSourceSequence sequence = token.getSDocumentGraph().getOverlappedDSSequences(token, reList).get(0);
 						text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
 					}
-					System.err.println(">>> " + text.toString());
 					return text.toString();
 				}
 				return element;

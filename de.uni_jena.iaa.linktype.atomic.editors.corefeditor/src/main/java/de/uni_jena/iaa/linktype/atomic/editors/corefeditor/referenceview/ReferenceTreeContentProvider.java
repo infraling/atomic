@@ -28,6 +28,7 @@ public class ReferenceTreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		viewer.refresh();
 	}
 
 	@Override
@@ -41,7 +42,9 @@ public class ReferenceTreeContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof Reference) {
-			return ((Reference) parentElement).getSpans().toArray();
+			for (SSpan o : ((Reference) parentElement).getSpanMap().values()) {
+			}
+			return ((Reference) parentElement).getSpanMap().values().toArray();
 		}
 		return null;
 	}

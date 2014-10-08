@@ -3,18 +3,31 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor.dnd;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel;
 
@@ -55,6 +68,15 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 	}
 
 	private boolean performDrop(Object data, boolean createNewReference) {
+		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		TextSelection selection = null;
+		int start = -1;
+		int end = -1;
+		if (editor instanceof CoreferenceEditor) {
+			selection = (TextSelection) ((CoreferenceEditor) editor).getSelectionProvider().getSelection();
+			start = selection.getOffset();
+			end = start + selection.getLength();
+		}
 		Reference reference = new Reference();
 		reference.setName("New referent");
 		Object input = viewer.getInput();
@@ -69,9 +91,6 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			EList<SToken> tokenListForSpan = new BasicEList<SToken>();
 			EList<STYPE_NAME> textualRelations= new BasicEList<STYPE_NAME>();
 			textualRelations.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
-			int start = text.getSText().indexOf(data.toString());
-			int end = start + data.toString().length();
-			System.err.println("OPERATING ON " + text.getSText().substring(start, end));
 			for (SToken token : graph.getSTokens()) {
 				SDataSourceSequence sequence = graph.getOverlappedDSSequences(token, textualRelations).get(0);
 				if (sequence.getSStart() >= start && sequence.getSEnd() <= (end)) {
@@ -81,6 +100,8 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			span = graph.createSSpan(tokenListForSpan);
 			reference.getSpans().add(span);
 		}
+		TreeMap<Integer, SSpan> spanMap = reference.getSpanMap();
+		spanMap.put(start, span);
 		viewer.setInput(model);
 		viewer.setExpandedState(reference, true);
 		return false;
@@ -88,6 +109,15 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 
 	@Override
 	public boolean performDrop(Object data) {
+		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		TextSelection selection = null;
+		int start = -1;
+		int end = -1;
+		if (editor instanceof CoreferenceEditor) {
+			selection = (TextSelection) ((CoreferenceEditor) editor).getSelectionProvider().getSelection();
+			start = selection.getOffset();
+			end = start + selection.getLength();
+		}
 		ReferenceModel input = (ReferenceModel) viewer.getInput();
 		if (getTarget() instanceof Reference) {
 			SDocumentGraph graph = input.getDecoratedSDocumentGraph();
@@ -96,8 +126,6 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			EList<SToken> tokenListForSpan = new BasicEList<SToken>();
 			EList<STYPE_NAME> textualRelations= new BasicEList<STYPE_NAME>();
 			textualRelations.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
-			int start = text.getSText().indexOf(data.toString());
-			int end = start + data.toString().length();
 			for (SToken token : graph.getSTokens()) {
 				SDataSourceSequence sequence = graph.getOverlappedDSSequences(token, textualRelations).get(0);
 				if (sequence.getSStart() >= start && sequence.getSEnd() <= (end)) {
@@ -106,6 +134,8 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			}
 			SSpan span = graph.createSSpan(tokenListForSpan);
 			((Reference) getTarget()).getSpans().add(span);
+			TreeMap<Integer, SSpan> spanMap = ((Reference) getTarget()).getSpanMap();
+			spanMap.put(start, span);
 			viewer.setInput(input);
 			viewer.setExpandedState(getTarget(), true);
 			return false;

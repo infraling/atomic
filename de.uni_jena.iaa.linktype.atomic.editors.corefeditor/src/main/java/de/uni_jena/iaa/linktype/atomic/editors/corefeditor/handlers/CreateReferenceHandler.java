@@ -35,13 +35,11 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 		if (page != null) {
 			IEditorPart editor = page.getActiveEditor();
-			System.err.println(editor.getEditorInput());
 			SDocumentGraph graph = null;
 			if (editor instanceof CoreferenceEditor) {
 				SDocument sDocument = ((SDocumentProvider) ((CoreferenceEditor) editor).getDocumentProvider()).getSDocument();
 				graph = sDocument.getSDocumentGraph();
 			}
-			System.err.println(graph);
 			try {
 				page.showView("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview");
 			} catch (PartInitException e) {
