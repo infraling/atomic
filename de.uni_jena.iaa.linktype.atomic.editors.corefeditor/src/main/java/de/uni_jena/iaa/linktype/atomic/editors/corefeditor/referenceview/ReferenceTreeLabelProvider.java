@@ -3,6 +3,8 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview;
 
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
@@ -10,6 +12,11 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
 
 /**
@@ -28,8 +35,21 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 			styledString.append(" (" + ((Reference) obj).getSpans().size()
 					+ ")", StyledString.COUNTER_STYLER);
 		}
-		else {
-			styledString = new StyledString(obj.toString());
+		else if (obj instanceof SSpan) {
+			EList<STYPE_NAME> reList = new BasicEList<STYPE_NAME>();
+			reList.add(STYPE_NAME.SSPANNING_RELATION);
+			EList<SToken> tokens = ((SSpan) obj).getSDocumentGraph().getOverlappedSTokens(((SSpan) obj), reList);
+			EList<SToken> sortedTokens = ((SSpan) obj).getSDocumentGraph().getSortedSTokenByText(tokens);
+			reList.clear();
+			reList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
+			System.err.println(reList);
+			StringBuilder text = new StringBuilder();
+			for (SToken token : sortedTokens) {
+				STextualDS ds = token.getSDocumentGraph().getSTextualDSs().get(0);
+				SDataSourceSequence sequence = token.getSDocumentGraph().getOverlappedDSSequences(token, reList).get(0);
+				text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
+			}
+			styledString = new StyledString(text.toString());
 		}
 		cell.setText(styledString.toString());
 		cell.setStyleRanges(styledString.getStyleRanges());
@@ -107,6 +127,21 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 	public String getText(Object element) {
 		if (element instanceof Reference) {
 			return ((Reference) element).getName();
+		}
+		else if (element instanceof SSpan) {
+			EList<STYPE_NAME> reList = new BasicEList<STYPE_NAME>();
+			reList.add(STYPE_NAME.SSPANNING_RELATION);
+			EList<SToken> tokens = ((SSpan) element).getSDocumentGraph().getOverlappedSTokens(((SSpan) element), reList);
+			reList.clear();
+			reList.add(STYPE_NAME.STEXTUAL_RELATION);
+			StringBuilder text = new StringBuilder();
+			for (SToken token : tokens) {
+				STextualDS ds = token.getSDocumentGraph().getSTextualDSs().get(0);
+				SDataSourceSequence sequence = token.getSDocumentGraph().getOverlappedDSSequences(token, reList).get(0);
+				text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
+			}
+			System.err.println("AR");
+			return text.toString();
 		}
 		return null;
 	}
