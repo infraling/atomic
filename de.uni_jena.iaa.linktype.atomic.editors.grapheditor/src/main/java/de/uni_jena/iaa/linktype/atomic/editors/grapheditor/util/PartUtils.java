@@ -207,15 +207,20 @@ public class PartUtils {
 		Collections.sort(xList);
 		Collections.sort(yList);
 		// Calculate x
-		int x = 0;
+		int x = 100; // Default value
 		for (Iterator<Integer> iterator = xList.iterator(); iterator.hasNext();) {
 			Integer integer = (Integer) iterator.next();
 			x = x + integer.intValue();
 		}
-		x = x / xList.size();
+		if (xList.size() > 0) {
+			x = x / xList.size();
+		}
 		xY[0] = x;
 		// Calculate y
-		int y = yList.get(0) - 100; // FIXME -100 is hardcoded
+		int y = 100; // Default value
+		if (yList.size() > 0) {
+			y = yList.get(0) - 100; // FIXME -100 is hardcoded
+		}
 		xY[1] = y;
 		return xY;
 	}
