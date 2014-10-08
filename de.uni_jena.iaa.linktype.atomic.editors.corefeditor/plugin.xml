@@ -8,14 +8,13 @@
             default="false"
             extensions="salt"
             id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor"
-            name="OLD Atomic Coreference Editor">
+            name="Atomic Coreference Editor">
       </editor>
       <editor
             class="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.ReferenceEditor"
             default="false"
-            extensions="salt"
             id="de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceeditor"
-            name="Atomic Coreference Editor">
+            name="Atomic Reference Editor">
       </editor>
    </extension>
    <extension
