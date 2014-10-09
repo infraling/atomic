@@ -19,6 +19,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -32,6 +36,27 @@ import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.SDocumentPro
 public class CoreferenceEditor extends TextEditor {
 	
 	private SourceViewer viewer;
+	private final IPartListener partListener = new IPartListener() {
+		public void partActivated(IWorkbenchPart part) {}
+		public void partBroughtToTop(IWorkbenchPart part) {}
+		public void partClosed(IWorkbenchPart part) {
+			if (part == CoreferenceEditor.this) {
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				IEditorReference[] editorRefs = page.getEditorReferences();
+				for (int i = 0; i < editorRefs.length; i++) {
+					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceeditor")) {
+						part = editorRefs[i].getPart(false);
+						page.closeEditor((IEditorPart) part, true);
+					}
+				}
+				getSite().getWorkbenchWindow().getPartService().removePartListener(this);
+			}
+		}
+		public void partDeactivated(IWorkbenchPart part) {}
+		public void partOpened(IWorkbenchPart part) {}
+		};
+
+
 
 	/**
 	 * 
@@ -58,7 +83,7 @@ public class CoreferenceEditor extends TextEditor {
 		// Add listeners
 		viewer.addSelectionChangedListener(new CorefEditorSelectionChangedListener());
 		enableSanityChecking(false);
-
+		this.getSite().getWorkbenchWindow().getPartService().addPartListener(this.partListener);
 				
 		return viewer;
 	}

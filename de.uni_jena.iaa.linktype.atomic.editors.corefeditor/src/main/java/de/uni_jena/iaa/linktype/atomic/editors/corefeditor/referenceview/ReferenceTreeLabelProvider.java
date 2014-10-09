@@ -48,7 +48,7 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 				SDataSourceSequence sequence = token.getSDocumentGraph().getOverlappedDSSequences(token, reList).get(0);
 				text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
 			}
-			styledString = new StyledString(text.toString() + " (" + ((SSpan) obj).getSName() + ")");
+			styledString = new StyledString(text.toString());
 		}
 		cell.setText(styledString.toString());
 		cell.setStyleRanges(styledString.getStyleRanges());

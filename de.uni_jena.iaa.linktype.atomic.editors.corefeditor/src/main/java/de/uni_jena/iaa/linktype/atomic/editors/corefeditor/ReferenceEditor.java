@@ -25,8 +25,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -68,6 +70,25 @@ public class ReferenceEditor extends EditorPart {
 	private CheckboxTreeViewer treeViewer;
 	private boolean dirty;
 	private SDocument document;
+	private final IPartListener partListener = new IPartListener() {
+		public void partActivated(IWorkbenchPart part) {}
+		public void partBroughtToTop(IWorkbenchPart part) {}
+		public void partClosed(IWorkbenchPart part) {
+			if (part == ReferenceEditor.this) {
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				IEditorReference[] editorRefs = page.getEditorReferences();
+				for (int i = 0; i < editorRefs.length; i++) {
+					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
+						part = editorRefs[i].getPart(false);
+						page.closeEditor((IEditorPart) part, false);
+					}
+				}
+				getSite().getWorkbenchWindow().getPartService().removePartListener(this);
+			}
+		}
+		public void partDeactivated(IWorkbenchPart part) {}
+		public void partOpened(IWorkbenchPart part) {}
+		};
 
 	/**
 	 * 
@@ -92,6 +113,7 @@ public class ReferenceEditor extends EditorPart {
 		createContentTree(treeComposite);
 //		sashForm.setWeights(new int[] {1, 1});
 		treeViewer.setInput(model);
+		this.getSite().getWorkbenchWindow().getPartService().addPartListener(this.partListener);
 		}
 
 	private void createContentTree(Composite treeComposite) {
