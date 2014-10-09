@@ -76,6 +76,7 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 				IEditorPart referenceEditor = page
 						.openEditor(model,
 								"de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceeditor");
+				page.activate(referenceEditor);
 				if (referenceEditor != null) {
 					splitEditorArea();
 				}

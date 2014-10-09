@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.WorkbenchPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
@@ -28,6 +29,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor;
+import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.ReferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel;
 
@@ -39,10 +41,16 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 
 	private final CheckboxTreeViewer viewer;
 	private Object target;
+	private ReferenceEditor editor;
 
 	public ReferenceViewDropListener(CheckboxTreeViewer viewer) {
 		super(viewer);
 		this.viewer = viewer;
+	}
+
+	public ReferenceViewDropListener(CheckboxTreeViewer treeViewer, ReferenceEditor referenceEditor) {
+		this(treeViewer);
+		this.editor = referenceEditor;
 	}
 
 	@Override
@@ -104,6 +112,8 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 		spanMap.put(start, span);
 		viewer.setInput(model);
 		viewer.setExpandedState(reference, true);
+		getEditor().setDirty(true);
+		getEditor().fireDirtyProperty();
 		return false;
 	}
 
@@ -138,6 +148,8 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			spanMap.put(start, span);
 			viewer.setInput(input);
 			viewer.setExpandedState(getTarget(), true);
+			getEditor().setDirty(true);
+			getEditor().fireDirtyProperty();
 			return false;
 		}
 		return false;
@@ -160,6 +172,20 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 	 */
 	public void setTarget(Object target) {
 		this.target = target;
+	}
+
+	/**
+	 * @return the editor
+	 */
+	public ReferenceEditor getEditor() {
+		return editor;
+	}
+
+	/**
+	 * @param editor the editor to set
+	 */
+	public void setEditor(ReferenceEditor editor) {
+		this.editor = editor;
 	}
 
 }

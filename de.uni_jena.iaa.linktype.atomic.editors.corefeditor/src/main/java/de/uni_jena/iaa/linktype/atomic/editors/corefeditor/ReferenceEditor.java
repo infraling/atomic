@@ -102,7 +102,7 @@ public class ReferenceEditor extends EditorPart {
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		Transfer[] transferTypes = new Transfer[] { TextTransfer.getInstance() };
 		treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-		treeViewer.addDropSupport(operations, transferTypes, new ReferenceViewDropListener(treeViewer));
+		treeViewer.addDropSupport(operations, transferTypes, new ReferenceViewDropListener(treeViewer, this));
 		treeViewer.addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
@@ -139,7 +139,7 @@ public class ReferenceEditor extends EditorPart {
 					data.setName(value.toString());
 				}
 				treeViewer.update(element, null);
-				dirty = true;
+				setDirty(true);
 				firePropertyChange(PROP_DIRTY);
 			}
 
@@ -201,7 +201,7 @@ public class ReferenceEditor extends EditorPart {
 	public void doSave(IProgressMonitor monitor) {
 		document.setSDocumentGraph(graph);
 		document.saveSDocumentGraph(model.getGraphURI());
-		dirty = false;
+		setDirty(false);
 		firePropertyChange(PROP_DIRTY);
 	}
 
@@ -267,6 +267,17 @@ public class ReferenceEditor extends EditorPart {
 	public void setFocus() {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * @param dirty the dirty to set
+	 */
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
+	public void fireDirtyProperty() {
+		firePropertyChange(PROP_DIRTY);
 	}
 
 }
