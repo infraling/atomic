@@ -126,7 +126,7 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 				TreeMap<Integer, SSpan> spanMap = reference.getSpanMap();
 				spanMap.put(start, span);
 			}
-			else System.err.println("Span already exists in reference.");
+			else System.err.println("Span already exists in reference. " + this.getClass());
 		}
 		viewer.setInput(model);
 		viewer.setExpandedState(reference, true);
@@ -174,9 +174,11 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			if (!reference.getSpans().contains(span)) {
 				reference.getSpans().add(span);
 				spanMap.put(start, span);
+				createRelations(span, (Reference) getTarget(), spanMap);
 			}
-			else System.err.println("Span already exists in reference.");
-			createRelations(span, (Reference) getTarget(), spanMap);
+			else {
+				System.err.println("Span already exists in reference. " + this.getClass()); // FIXME: Doesn't work yet as there's always a new span added
+			}
 			viewer.setInput(input);
 			viewer.setExpandedState(getTarget(), true);
 			getEditor().setDirty(true);
