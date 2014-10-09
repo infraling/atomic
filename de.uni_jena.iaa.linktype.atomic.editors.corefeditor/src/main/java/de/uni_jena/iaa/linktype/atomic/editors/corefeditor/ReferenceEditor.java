@@ -91,24 +91,36 @@ public class ReferenceEditor extends EditorPart {
 	private boolean dirty;
 	private SDocument document;
 	private final IPartListener partListener = new IPartListener() {
-		public void partActivated(IWorkbenchPart part) {}
-		public void partBroughtToTop(IWorkbenchPart part) {}
+		public void partActivated(IWorkbenchPart part) {
+		}
+
+		public void partBroughtToTop(IWorkbenchPart part) {
+		}
+
 		public void partClosed(IWorkbenchPart part) {
 			if (part == ReferenceEditor.this) {
-				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				IWorkbenchPage page = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage();
 				IEditorReference[] editorRefs = page.getEditorReferences();
 				for (int i = 0; i < editorRefs.length; i++) {
-					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
+					if (editorRefs[i]
+							.getId()
+							.equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
 						part = editorRefs[i].getPart(false);
 						page.closeEditor((IEditorPart) part, false);
 					}
 				}
-				getSite().getWorkbenchWindow().getPartService().removePartListener(this);
+				getSite().getWorkbenchWindow().getPartService()
+						.removePartListener(this);
 			}
 		}
-		public void partDeactivated(IWorkbenchPart part) {}
-		public void partOpened(IWorkbenchPart part) {}
-		};
+
+		public void partDeactivated(IWorkbenchPart part) {
+		}
+
+		public void partOpened(IWorkbenchPart part) {
+		}
+	};
 
 	/**
 	 * 
@@ -116,25 +128,30 @@ public class ReferenceEditor extends EditorPart {
 	public ReferenceEditor() {
 		super();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
+	 * .Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout());
-//		SashForm sashForm = new SashForm(parent, SWT.NONE);
-//		Composite viewComposite = new Composite(sashForm, SWT.NONE);
-//		viewComposite.setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-//		createViewArea(viewComposite);
+		// SashForm sashForm = new SashForm(parent, SWT.NONE);
+		// Composite viewComposite = new Composite(sashForm, SWT.NONE);
+		// viewComposite.setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		// createViewArea(viewComposite);
 		Composite treeComposite = new Composite(parent, SWT.NONE);
 		model = (ReferenceModel) getEditorInput();
 		document = model.getDocument();
 		createContentTree(treeComposite);
-//		sashForm.setWeights(new int[] {1, 1});
+		// sashForm.setWeights(new int[] {1, 1});
 		treeViewer.setInput(model);
-		this.getSite().getWorkbenchWindow().getPartService().addPartListener(this.partListener);
-		}
+		this.getSite().getWorkbenchWindow().getPartService()
+				.addPartListener(this.partListener);
+	}
 
 	private void createContentTree(Composite treeComposite) {
 		treeComposite.setLayout(new FillLayout());
@@ -144,69 +161,48 @@ public class ReferenceEditor extends EditorPart {
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		Transfer[] transferTypes = new Transfer[] { TextTransfer.getInstance() };
 		treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-		treeViewer.addDropSupport(operations, transferTypes, new ReferenceViewDropListener(treeViewer, this));
+		treeViewer.addDropSupport(operations, transferTypes,
+				new ReferenceViewDropListener(treeViewer, this));
 		treeViewer.addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
 					treeViewer.setSubtreeChecked(event.getElement(), true);
-					colorElement(treeViewer.getCheckedElements());
+					colorElement(event.getElement());
 				} else {
-					removeColor(treeViewer.getCheckedElements());
+					removeColor(event.getElement());
 					treeViewer.setSubtreeChecked(event.getElement(), false);
 				}
 			}
 
-			private void removeColor(Object[] elements) {
+			private void removeColor(Object object) {
 				SourceViewer viewer = null;
-				IEditorReference[] editorRefs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+				StyledText widget = null;
+				IEditorReference[] editorRefs = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage()
+						.getEditorReferences();
 				for (int i = 0; i < editorRefs.length; i++) {
-					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
-						IEditorPart part = (IEditorPart) editorRefs[i].getPart(false);
+					if (editorRefs[i]
+							.getId()
+							.equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
+						IEditorPart part = (IEditorPart) editorRefs[i]
+								.getPart(false);
 						viewer = ((CoreferenceEditor) part).getViewer();
+						widget = viewer.getTextWidget();
 					}
 				}
-				for (int i = 0; i < elements.length; i++) {
+				if (object instanceof Reference) {
+					
 					Registries registries = Registries.getInstance();
-					registries.putColor("black", "000000");
-					int size = elements.length;
-					if (elements[i] instanceof Reference) {
-						for (SSpan span : ((Reference) elements[i]).getSpans()) {
-							Color color = registries.getColor("black", "000000");
-							EList<STYPE_NAME> refList = new BasicEList<STYPE_NAME>();
-							refList.add(STYPE_NAME.SSPANNING_RELATION);
-							EList<SToken> tokens = graph.getOverlappedSTokens(span, refList);
-							refList.clear();
-							refList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
-							for (SToken token : tokens) {
-								SDataSourceSequence sequence = graph.getOverlappedDSSequences(token, refList).get(0);
-								TextPresentation style = new TextPresentation();
-								style.addStyleRange(new StyleRange(sequence.getSStart(), sequence.getSEnd() - sequence.getSStart(), color, null));
-								((SourceViewer) viewer).changeTextPresentation(style, true);
-							}
-						}
-					}
-				}
-				
-			}
-
-			private void colorElement(Object[] elements) {
-				SourceViewer viewer = null;
-				IEditorReference[] editorRefs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-				for (int i = 0; i < editorRefs.length; i++) {
-					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
-						IEditorPart part = (IEditorPart) editorRefs[i].getPart(false);
-						viewer = ((CoreferenceEditor) part).getViewer();
-					}
-				}
-				for (int i = 0; i < elements.length; i++) {
-					Registries registries = Registries.getInstance();
-					int size = elements.length;
 					RandomColorGenerator generator = new RandomColorGenerator();
 					List<RGB> colors = null;
 					try {
-						colors = generator.createRandomizedRgbList(size, 0.99f, 0.99f, RandomColorGenerator.GOLDEN_RATIO);
-						registries.putColor(String.valueOf(i), colors.get(i));
+						colors = generator.createRandomizedRgbList(
+								1, 0.99f,
+								0.99f, RandomColorGenerator.GOLDEN_RATIO);
+							registries.putColor("1",
+									colors.get(0));
+						
 					} catch (InstantiationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -223,37 +219,111 @@ public class ReferenceEditor extends EditorPart {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (elements[i] instanceof Reference) {
-						for (SSpan span : ((Reference) elements[i]).getSpans()) {
-							Color color = registries.getColor(String.valueOf(i), registries.toHex(colors.get(i)));
-							EList<STYPE_NAME> refList = new BasicEList<STYPE_NAME>();
-							refList.add(STYPE_NAME.SSPANNING_RELATION);
-							EList<SToken> tokens = graph.getOverlappedSTokens(span, refList);
-							refList.clear();
-							refList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
-							for (SToken token : tokens) {
-								SDataSourceSequence sequence = graph.getOverlappedDSSequences(token, refList).get(0);
-								TextPresentation style = new TextPresentation();
-								style.addStyleRange(new StyleRange(sequence.getSStart(), sequence.getSEnd() - sequence.getSStart(), color, null));
-								((SourceViewer) viewer).changeTextPresentation(style, true);
-							}
+
+					for (int j = 0; j < ((Reference) object).getSpans().size(); j++) {
+						SSpan span = ((Reference) object).getSpans().get(j);
+						Color color = registries.getColor("1",
+								registries.toHex(colors.get(0)));
+						EList<STYPE_NAME> refList = new BasicEList<STYPE_NAME>();
+						refList.add(STYPE_NAME.SSPANNING_RELATION);
+						EList<SToken> tokens = graph.getOverlappedSTokens(span,
+								refList);
+						refList.clear();
+						refList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
+						for (SToken token : tokens) {
+							SDataSourceSequence sequence = graph
+									.getOverlappedDSSequences(token, refList)
+									.get(0);
+							TextPresentation style = new TextPresentation();
+							style.addStyleRange(new StyleRange(sequence
+									.getSStart(), sequence.getSEnd()
+									- sequence.getSStart(), null, null));
+							((SourceViewer) viewer).changeTextPresentation(
+									style, true);
 						}
 					}
 				}
-				
+
+			}
+
+			private void colorElement(Object object) {
+				SourceViewer viewer = null;
+				IEditorReference[] editorRefs = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage()
+						.getEditorReferences();
+				for (int i = 0; i < editorRefs.length; i++) {
+					if (editorRefs[i]
+							.getId()
+							.equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
+						IEditorPart part = (IEditorPart) editorRefs[i]
+								.getPart(false);
+						viewer = ((CoreferenceEditor) part).getViewer();
+					}
+				}
+				if (object instanceof Reference) {
+					Registries registries = Registries.getInstance();
+					RandomColorGenerator generator = new RandomColorGenerator();
+					List<RGB> colors = null;
+					try {
+						colors = generator.createRandomizedRgbList(
+								1, 0.99f,
+								0.99f, RandomColorGenerator.GOLDEN_RATIO);
+							registries.putColor("1",
+									colors.get(0));
+						
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					for (int j = 0; j < ((Reference) object).getSpans().size(); j++) {
+						SSpan span = ((Reference) object).getSpans().get(j);
+						Color color = registries.getColor("1",
+								registries.toHex(colors.get(0)));
+						EList<STYPE_NAME> refList = new BasicEList<STYPE_NAME>();
+						refList.add(STYPE_NAME.SSPANNING_RELATION);
+						EList<SToken> tokens = graph.getOverlappedSTokens(span,
+								refList);
+						refList.clear();
+						refList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
+						for (SToken token : tokens) {
+							SDataSourceSequence sequence = graph
+									.getOverlappedDSSequences(token, refList)
+									.get(0);
+							TextPresentation style = new TextPresentation();
+							style.addStyleRange(new StyleRange(sequence
+									.getSStart(), sequence.getSEnd()
+									- sequence.getSStart(), color, null));
+							((SourceViewer) viewer).changeTextPresentation(
+									style, true);
+						}
+					}
+				}
 			}
 		});
 		addEditingSupport(treeViewer);
 	}
 
-//	private void createViewArea(Composite parent) {
-//		parent.setLayout(new FillLayout());
-//		Composite viewPanel = new Composite(parent, SWT.NONE);
-//		viewPanel.setLayout(new FillLayout());
-//	}
-//
-//
-		private void addEditingSupport(final CheckboxTreeViewer treeViewer) {
+	// private void createViewArea(Composite parent) {
+	// parent.setLayout(new FillLayout());
+	// Composite viewPanel = new Composite(parent, SWT.NONE);
+	// viewPanel.setLayout(new FillLayout());
+	// }
+	//
+	//
+	private void addEditingSupport(final CheckboxTreeViewer treeViewer) {
 		final TreeViewerColumn column = new TreeViewerColumn(treeViewer,
 				SWT.NONE);
 		column.setLabelProvider(new ReferenceTreeLabelProvider());
@@ -267,8 +337,7 @@ public class ReferenceEditor extends EditorPart {
 				if (element instanceof Reference) {
 					Reference data = (Reference) element;
 					data.setName(value.toString());
-				}
-				else if (element instanceof SAnnotation) {
+				} else if (element instanceof SAnnotation) {
 					((SAnnotation) element).setValue(value);
 				}
 				treeViewer.update(element, null);
@@ -280,22 +349,27 @@ public class ReferenceEditor extends EditorPart {
 			protected Object getValue(Object element) {
 				if (element instanceof Reference) {
 					return ((Reference) element).getName();
-				} 
-				else if (element instanceof SSpan) {
+				} else if (element instanceof SSpan) {
 					EList<STYPE_NAME> reList = new BasicEList<STYPE_NAME>();
 					reList.add(STYPE_NAME.SSPANNING_RELATION);
-					EList<SToken> tokens = ((SSpan) element).getSDocumentGraph().getOverlappedSTokens(((SSpan) element), reList);
+					EList<SToken> tokens = ((SSpan) element)
+							.getSDocumentGraph().getOverlappedSTokens(
+									((SSpan) element), reList);
 					reList.clear();
 					reList.add(STYPE_NAME.STEXTUAL_RELATION);
 					StringBuilder text = new StringBuilder();
 					for (SToken token : tokens) {
-						STextualDS ds = token.getSDocumentGraph().getSTextualDSs().get(0);
-						SDataSourceSequence sequence = token.getSDocumentGraph().getOverlappedDSSequences(token, reList).get(0);
-						text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
+						STextualDS ds = token.getSDocumentGraph()
+								.getSTextualDSs().get(0);
+						SDataSourceSequence sequence = token
+								.getSDocumentGraph()
+								.getOverlappedDSSequences(token, reList).get(0);
+						text.append(ds.getSText().substring(
+								sequence.getSStart(), sequence.getSEnd())
+								+ " ");
 					}
 					return text.toString();
-				}
-				else if (element instanceof SAnnotation) {
+				} else if (element instanceof SAnnotation) {
 					return ((SAnnotation) element).getValueString();
 				}
 				return element;
@@ -308,7 +382,8 @@ public class ReferenceEditor extends EditorPart {
 
 			@Override
 			protected boolean canEdit(Object element) {
-				return element instanceof Reference || element instanceof SAnnotation;
+				return element instanceof Reference
+						|| element instanceof SAnnotation;
 			}
 		});
 
@@ -362,8 +437,9 @@ public class ReferenceEditor extends EditorPart {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		if (!(input instanceof ReferenceModel)) {
-			throw new RuntimeException("Wrong input! Expecting de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel.\n"
-					+ "But input is " + input.getClass());
+			throw new RuntimeException(
+					"Wrong input! Expecting de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel.\n"
+							+ "But input is " + input.getClass());
 		}
 		ReferenceModel model = (ReferenceModel) input;
 		this.model = model;
@@ -406,7 +482,8 @@ public class ReferenceEditor extends EditorPart {
 	}
 
 	/**
-	 * @param dirty the dirty to set
+	 * @param dirty
+	 *            the dirty to set
 	 */
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
