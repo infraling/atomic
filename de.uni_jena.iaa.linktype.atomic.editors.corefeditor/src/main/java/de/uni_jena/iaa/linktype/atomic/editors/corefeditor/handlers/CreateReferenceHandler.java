@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -32,9 +34,14 @@ import org.eclipse.ui.internal.WorkbenchPage;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextOverlappingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.SDocumentProvider;
@@ -108,7 +115,6 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 			for (Edge outEdge : graph.getOutEdges(span.getSId())) {
 				if (outEdge instanceof SPointingRelation) {
 					if (((SPointingRelation) outEdge).getSAnnotation("ATOMIC::coref") != null) {
-						System.err.println("ADD SPAN");
 						spansToAdd.add(span);
 						for (SProcessingAnnotation refAnno : span.getSProcessingAnnotations()) {
 							if (refAnno.getName().startsWith("REFERENT_NAME")) {
@@ -122,7 +128,6 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 			for (Edge inEdge : graph.getInEdges(span.getSId())) {
 				if (inEdge instanceof SPointingRelation) {
 					if (((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref") != null) {
-						System.err.println("ADD SPAN");
 						spansToAdd.add(span);
 						for (SProcessingAnnotation refAnno : span.getSProcessingAnnotations()) {
 							if (refAnno.getName().startsWith("REFERENT_NAME")) {
@@ -151,36 +156,45 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 //			model.addReference(reference);
 //		}
 		for (String name : nameSet) {
+			Reference reference = new Reference();
+			reference.setName(name);
+			EList<STYPE_NAME> refList = new BasicEList<STYPE_NAME>();
+			refList.add(STYPE_NAME.SSPANNING_RELATION);
 			for (SSpan span: spansToAdd) {
 				for (SProcessingAnnotation anno : span.getSProcessingAnnotations()) {
-					if (anno.getQName().split("ATOMIC::")[0].startsWith("REFERENT_NAME")) {
-						for (Reference ref : model.getReferences()) {
-							if (!ref.getName().equals(anno.getValueString())) {
-								Reference reference = new Reference();
-								reference.setName(anno.getValueString());
-								for (SSpan span2 : spansToAdd) {
-									for (SProcessingAnnotation anno2 : span2.getSProcessingAnnotations()) {
-										if (anno2.getQName().split("ATOMIC::")[0].startsWith("REFERENT_NAME")) {
-											if (anno2.getValueString().equals(reference.getName())) {
-												reference.addSpan(span2);
-											}
-										}
+					if (anno.getQName().split("ATOMIC::")[1].startsWith("REFERENT_NAME")) {
+						if (anno.getValueString().equals(name)) {
+							if (!reference.getSpans().contains(span)) {
+								reference.addSpan(span);
+								EList<SToken> tokens = graph.getOverlappedSTokens(span, refList);
+								int start = graph.getSTextualDSs().get(0).getSText().length() - 1;
+								refList.clear();
+								refList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
+								for (SToken token : tokens) {
+									SDataSourceSequence sequence = graph.getOverlappedDSSequences(token, refList).get(0);
+									if (sequence.getSStart() < start) {
+										start = sequence.getSStart();
 									}
 								}
+								reference.getSpanMap().put(start, span);
+							}
+							else {
+								System.err.println("Span already exists in reference. " + this.getClass());
 							}
 						}
 					}
 				}
 			}
+			model.addReference(reference);
 		}
 	}
 
 	private ReferenceModel constructNewReference(SDocumentGraph graph) {
 		ReferenceModel model = new ReferenceModel(graph);
-		Reference reference = new Reference();
-		// reference.addSpan(getSpan());
-		model.addReference(reference);
-		reference.setName("New referent " + (model.getReferences().indexOf(reference) + 1));
+//		Reference reference = new Reference();
+//		// reference.addSpan(getSpan());
+//		model.addReference(reference);
+//		reference.setName("New referent " + (model.getReferences().indexOf(reference) + 1));
 		return model;
 	}
 

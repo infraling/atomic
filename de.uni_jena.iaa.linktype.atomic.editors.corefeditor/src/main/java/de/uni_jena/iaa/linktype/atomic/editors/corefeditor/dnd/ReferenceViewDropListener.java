@@ -121,10 +121,13 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 				}
 			}
 			span.createSProcessingAnnotation("ATOMIC", "REFERENT_NAME" + (numberOfReferenceParticipation + 1), reference.getName());
-			reference.getSpans().add(span);
+			if (!reference.getSpans().contains(span)) {
+				reference.getSpans().add(span);
+				TreeMap<Integer, SSpan> spanMap = reference.getSpanMap();
+				spanMap.put(start, span);
+			}
+			else System.err.println("Span already exists in reference.");
 		}
-		TreeMap<Integer, SSpan> spanMap = reference.getSpanMap();
-		spanMap.put(start, span);
 		viewer.setInput(model);
 		viewer.setExpandedState(reference, true);
 		getEditor().setDirty(true);
@@ -166,9 +169,13 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 				}
 			}
 			span.createSProcessingAnnotation("ATOMIC", "REFERENT_NAME" + (numberOfReferenceParticipation + 1), ((Reference) getTarget()).getName());
-			((Reference) getTarget()).getSpans().add(span);
-			TreeMap<Integer, SSpan> spanMap = ((Reference) getTarget()).getSpanMap();
-			spanMap.put(start, span);
+			Reference reference = (Reference) getTarget();
+			TreeMap<Integer, SSpan> spanMap = reference.getSpanMap();
+			if (!reference.getSpans().contains(span)) {
+				reference.getSpans().add(span);
+				spanMap.put(start, span);
+			}
+			else System.err.println("Span already exists in reference.");
 			createRelations(span, (Reference) getTarget(), spanMap);
 			viewer.setInput(input);
 			viewer.setExpandedState(getTarget(), true);
