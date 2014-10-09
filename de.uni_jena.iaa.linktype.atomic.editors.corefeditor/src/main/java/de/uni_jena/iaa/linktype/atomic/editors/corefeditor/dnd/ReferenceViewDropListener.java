@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
@@ -33,10 +34,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.ReferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel;
+import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.SDocumentGraphDecorator;
 
 /**
  * @author Stephan Druskat
@@ -81,6 +84,7 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 	}
 
 	private boolean performDrop(Object data, boolean createNewReference) {
+		Object input = viewer.getInput();
 		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		TextSelection selection = null;
 		int start = -1;
@@ -91,13 +95,12 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			end = start + selection.getLength();
 		}
 		Reference reference = new Reference();
-		reference.setName("New referent");
-		Object input = viewer.getInput();
 		ReferenceModel model = null;
 		SSpan span = null;
 		if (input instanceof ReferenceModel) {
 			model = (ReferenceModel) input; 
 			model.addReference(reference);
+			reference.setName("New referent " + (model.getReferences().indexOf(reference) + 1));
 			SDocumentGraph graph = model.getDecoratedSDocumentGraph();
 			STextualDS text = graph.getSTextualDSs().get(0);
 			// create span
@@ -110,8 +113,14 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 					tokenListForSpan.add(token);
 				}
 			}
-			System.err.println("####################################################################");
 			span = graph.createSSpan(tokenListForSpan);
+			int numberOfReferenceParticipation = 0;
+			for (SProcessingAnnotation proAnno : span.getSProcessingAnnotations()) {
+				if (proAnno.getQName().split("ATOMIC::")[0].startsWith("REFERENT_NAME")) {
+					numberOfReferenceParticipation++;
+				}
+			}
+			span.createSProcessingAnnotation("ATOMIC", "REFERENT_NAME" + (numberOfReferenceParticipation + 1), reference.getName());
 			reference.getSpans().add(span);
 		}
 		TreeMap<Integer, SSpan> spanMap = reference.getSpanMap();
@@ -125,7 +134,6 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 
 	@Override
 	public boolean performDrop(Object data) {
-		System.err.println("########");
 		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		TextSelection selection = null;
 		int start = -1;
@@ -150,6 +158,14 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 				}
 			}
 			SSpan span = graph.createSSpan(tokenListForSpan);
+			System.err.println("-------- " + span.getSId());
+			int numberOfReferenceParticipation = 0;
+			for (SProcessingAnnotation proAnno : span.getSProcessingAnnotations()) {
+				if (proAnno.getQName().split("ATOMIC::")[0].startsWith("REFERENT_NAME")) {
+					numberOfReferenceParticipation++;
+				}
+			}
+			span.createSProcessingAnnotation("ATOMIC", "REFERENT_NAME" + (numberOfReferenceParticipation + 1), ((Reference) getTarget()).getName());
 			((Reference) getTarget()).getSpans().add(span);
 			TreeMap<Integer, SSpan> spanMap = ((Reference) getTarget()).getSpanMap();
 			spanMap.put(start, span);
@@ -214,21 +230,23 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 							}
 						}
 						EList<Edge> targetInEdges;
-						if ((targetInEdges = graph.getInEdges(targetSpan.getSId())).size() != 0) {// I.e., span is already target for another span
-							ArrayList<Edge> edgesToRemove2 = new ArrayList<Edge>();
-							for (Edge inEdge : targetInEdges) {
-								if (inEdge instanceof SPointingRelation) {
-									if (((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref") != null) {
-										targetAnno  = ((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref").getValueString();
-										if (((SPointingRelation) inEdge).getSSource() != null) { 
-//											graph.removeEdge(inEdge);
-											edgesToRemove2.add(inEdge);
+						if (targetSpan != null) {
+							if ((targetInEdges = graph.getInEdges(targetSpan.getSId())).size() != 0) {// I.e., span is already target for another span
+								ArrayList<Edge> edgesToRemove2 = new ArrayList<Edge>();
+								for (Edge inEdge : targetInEdges) {
+									if (inEdge instanceof SPointingRelation) {
+										if (((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref") != null) {
+											targetAnno  = ((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref").getValueString();
+											if (((SPointingRelation) inEdge).getSSource() != null) { 
+	//											graph.removeEdge(inEdge);
+												edgesToRemove2.add(inEdge);
+											}
 										}
 									}
 								}
-							}
-							for (Edge edge : edgesToRemove2) {
-								graph.removeEdge(edge);
+								for (Edge edge : edgesToRemove2) {
+									graph.removeEdge(edge);
+								}
 							}
 						}
 						sourceToThis.setSSource(sourceSpan);

@@ -3,6 +3,12 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor.handlers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.emf.common.util.URI;
@@ -24,8 +30,12 @@ import org.eclipse.ui.internal.PartSite;
 import org.eclipse.ui.internal.PartStack;
 import org.eclipse.ui.internal.WorkbenchPage;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.SDocumentProvider;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.ReferenceView;
@@ -67,6 +77,7 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 			try {
 				// page.showView("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview");
 				ReferenceModel model = constructNewReference(graph);
+				addExistingSpansToModel(model, graph);
 				if (sDocument != null) {
 					model.setDocument(sDocument);
 				}
@@ -88,12 +99,88 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 		return null;
 	}
 
+	private void addExistingSpansToModel(ReferenceModel model, SDocumentGraph graph) {
+		ArrayList<SSpan> spansToAdd = new ArrayList<SSpan>(); 
+//		Map<Integer, String> existingReferenceNames = new HashMap<Integer, String>();
+		Set<String> nameSet = new HashSet<String>();
+		int numberOfReferenceNamesIterator = 0;
+		for (SSpan span : graph.getSSpans()) {
+			for (Edge outEdge : graph.getOutEdges(span.getSId())) {
+				if (outEdge instanceof SPointingRelation) {
+					if (((SPointingRelation) outEdge).getSAnnotation("ATOMIC::coref") != null) {
+						System.err.println("ADD SPAN");
+						spansToAdd.add(span);
+						for (SProcessingAnnotation refAnno : span.getSProcessingAnnotations()) {
+							if (refAnno.getName().startsWith("REFERENT_NAME")) {
+//								existingReferenceNames.put(numberOfReferenceNamesIterator++, refAnno.getValueString());
+								nameSet.add(refAnno.getValueString());
+							}
+						}
+					}
+				}
+			}
+			for (Edge inEdge : graph.getInEdges(span.getSId())) {
+				if (inEdge instanceof SPointingRelation) {
+					if (((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref") != null) {
+						System.err.println("ADD SPAN");
+						spansToAdd.add(span);
+						for (SProcessingAnnotation refAnno : span.getSProcessingAnnotations()) {
+							if (refAnno.getName().startsWith("REFERENT_NAME")) {
+//								existingReferenceNames.put(numberOfReferenceNamesIterator++, refAnno.getValueString());
+								nameSet.add(refAnno.getValueString());
+							}
+						}
+					}
+				}
+			}
+		}
+//		for (int s = 0; s < existingReferenceNames.size(); s++) {
+//			System.err.println(s + " " + existingReferenceNames.get(Integer.valueOf(s)));
+//			Reference reference = new Reference();
+//			reference.setName(existingReferenceNames.get(s));
+//			for (SSpan span : spansToAdd) {
+//				for (SProcessingAnnotation nameAnno : span.getSProcessingAnnotations()) {
+//					if (nameAnno.getValueString().startsWith("REFERENT_NAME")) {
+//						if (nameAnno.getValueString().equals(reference.getName())) {
+//							reference.addSpan(span);
+//							System.err.println("ADD");
+//						}
+//					}
+//				}
+//			}
+//			model.addReference(reference);
+//		}
+		for (String name : nameSet) {
+			for (SSpan span: spansToAdd) {
+				for (SProcessingAnnotation anno : span.getSProcessingAnnotations()) {
+					if (anno.getQName().split("ATOMIC::")[0].startsWith("REFERENT_NAME")) {
+						for (Reference ref : model.getReferences()) {
+							if (!ref.getName().equals(anno.getValueString())) {
+								Reference reference = new Reference();
+								reference.setName(anno.getValueString());
+								for (SSpan span2 : spansToAdd) {
+									for (SProcessingAnnotation anno2 : span2.getSProcessingAnnotations()) {
+										if (anno2.getQName().split("ATOMIC::")[0].startsWith("REFERENT_NAME")) {
+											if (anno2.getValueString().equals(reference.getName())) {
+												reference.addSpan(span2);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private ReferenceModel constructNewReference(SDocumentGraph graph) {
 		ReferenceModel model = new ReferenceModel(graph);
 		Reference reference = new Reference();
 		// reference.addSpan(getSpan());
-		reference.setName("New referent");
 		model.addReference(reference);
+		reference.setName("New referent " + (model.getReferences().indexOf(reference) + 1));
 		return model;
 	}
 
