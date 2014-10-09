@@ -3,6 +3,8 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor.handlers;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -104,13 +106,14 @@ public class CreateMarkableHandler extends AbstractHandler {
 		String textBeforeOffset = text.substring(0, offset);
 		int positionWhitespaceBeforeOffset = 0; // Re-usable in case the selection includes the first word, i.e., no whitespace is found
 		for (int i = positionWhitespaceBeforeOffset; i < textBeforeOffset.length(); i++) {
-		    if (Character.isWhitespace(textBeforeOffset.charAt(i))) {
+			Pattern p = Pattern.compile("\\p{Punct}");
+		    if (Character.isWhitespace(textBeforeOffset.charAt(i)) || Pattern.matches("\\p{Punct}", String.valueOf(textBeforeOffset.charAt(i)))) {
 		        positionWhitespaceBeforeOffset = i;
 		    }
 		}
 		int positionWhitespaceAfterSelection = offset + length;
 		for (int i = positionWhitespaceAfterSelection; i < text.length(); i++) {
-		    if (Character.isWhitespace(text.charAt(i))) {
+		    if ((text.charAt(i) != "'".charAt(0)) && (Character.isWhitespace(text.charAt(i)) || Pattern.matches("\\p{Punct}", String.valueOf(text.charAt(i))))) {
 		        positionWhitespaceAfterSelection = i;
 		        break;
 		    }
