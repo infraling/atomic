@@ -22,12 +22,17 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.CoreferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.ReferenceEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
@@ -105,6 +110,7 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 					tokenListForSpan.add(token);
 				}
 			}
+			System.err.println("####################################################################");
 			span = graph.createSSpan(tokenListForSpan);
 			reference.getSpans().add(span);
 		}
@@ -119,6 +125,7 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 
 	@Override
 	public boolean performDrop(Object data) {
+		System.err.println("########");
 		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		TextSelection selection = null;
 		int start = -1;
@@ -146,6 +153,7 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			((Reference) getTarget()).getSpans().add(span);
 			TreeMap<Integer, SSpan> spanMap = ((Reference) getTarget()).getSpanMap();
 			spanMap.put(start, span);
+			createRelations(span, (Reference) getTarget(), spanMap);
 			viewer.setInput(input);
 			viewer.setExpandedState(getTarget(), true);
 			getEditor().setDirty(true);
@@ -153,6 +161,101 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 			return false;
 		}
 		return false;
+	}
+
+	private void createRelations(SSpan span, Reference reference, TreeMap<Integer,SSpan> map) {
+		System.err.println(reference.getSpans().size());
+//		if (refherence.getSpans().size() > 1) {
+//			TreeMap<Integer, SSpan> map = reference.getSpanMap();
+			for (Entry<Integer, SSpan> entry : map.entrySet()) {
+				if (entry.getValue() == span) {
+					SDocumentGraph graph = span.getSDocumentGraph();
+					Integer higherKey = map.higherKey(entry.getKey());
+					SSpan sourceSpan = null;
+					if (higherKey != null) {
+						sourceSpan = map.get(higherKey);
+					}
+					Integer lowerKey = map.lowerKey(entry.getKey());
+					SSpan targetSpan = null;
+					if (lowerKey != null) {
+						targetSpan = map.get(lowerKey);
+					}
+					String targetAnno = null;
+					String sourceAnno = null;
+					if (sourceSpan != null) {
+						SPointingRelation sourceToThis = SaltFactory.eINSTANCE.createSPointingRelation();
+						EList<Edge> sourceOutEdges;
+						SNode oldTarget = null; 
+						Node oldTargetsTarget = null; 
+						if ((sourceOutEdges = graph.getOutEdges(sourceSpan.getSId())).size() != 0) {// I.e., span is already source for another span
+							ArrayList<Edge> edgesToRemove = new ArrayList<Edge>();
+							for (Edge outEdge : sourceOutEdges) {
+								if (outEdge instanceof SPointingRelation) {
+									if (((SPointingRelation) outEdge).getSAnnotation("ATOMIC::coref") != null) {
+										sourceAnno = ((SPointingRelation) outEdge).getSAnnotation("ATOMIC::coref").getValueString();
+										if (((SPointingRelation) outEdge).getSTarget() != null) {
+//											graph.removeEdge(outEdge);
+											edgesToRemove.add(outEdge);
+										}
+//										edge.setTarget(span);
+//										EList<Edge> oldOutEdges;
+//										if ((oldOutEdges = graph.getOutEdges(oldTarget.getSId())).size() != 0) {// I.e., span is already source for another span)
+//											for (Edge oldOutEdge : oldOutEdges) {
+//												if (((SPointingRelation) oldOutEdge).getSAnnotation("ATOMIC::coref") != null) {
+//													oldTargetsTarget = oldOutEdge.getTarget();
+//												}
+//											}
+//										}
+									}
+								}
+							}
+							for (Edge edge : edgesToRemove) {
+								graph.removeEdge(edge);
+							}
+						}
+						EList<Edge> targetInEdges;
+						if ((targetInEdges = graph.getInEdges(targetSpan.getSId())).size() != 0) {// I.e., span is already target for another span
+							ArrayList<Edge> edgesToRemove2 = new ArrayList<Edge>();
+							for (Edge inEdge : targetInEdges) {
+								if (inEdge instanceof SPointingRelation) {
+									if (((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref") != null) {
+										targetAnno  = ((SPointingRelation) inEdge).getSAnnotation("ATOMIC::coref").getValueString();
+										if (((SPointingRelation) inEdge).getSSource() != null) { 
+//											graph.removeEdge(inEdge);
+											edgesToRemove2.add(inEdge);
+										}
+									}
+								}
+							}
+							for (Edge edge : edgesToRemove2) {
+								graph.removeEdge(edge);
+							}
+						}
+						sourceToThis.setSSource(sourceSpan);
+						sourceToThis.setSTarget(span);
+						if (sourceAnno != null) {
+							sourceToThis.createSAnnotation("ATOMIC", "coref", sourceAnno);
+						}
+						else {
+							sourceToThis.createSAnnotation("ATOMIC", "coref", "[edit]");
+						}
+						span.getSDocumentGraph().addEdge(sourceToThis);
+					}
+					if (targetSpan != null) {
+						SPointingRelation thisToTarget = SaltFactory.eINSTANCE.createSPointingRelation();
+						thisToTarget.setSSource(span);
+						thisToTarget.setSTarget(targetSpan);
+						if (targetAnno != null) {
+							thisToTarget.createSAnnotation("ATOMIC", "coref", targetAnno);
+						}
+						else {
+							thisToTarget.createSAnnotation("ATOMIC", "coref", "[edit]");
+						}
+						span.getSDocumentGraph().addEdge(thisToTarget);
+					}
+				}
+			}
+//		}
 	}
 
 	@Override
