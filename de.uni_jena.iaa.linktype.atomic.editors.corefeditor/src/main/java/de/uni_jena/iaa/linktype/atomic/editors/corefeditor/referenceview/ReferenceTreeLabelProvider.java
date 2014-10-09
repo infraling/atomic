@@ -54,7 +54,7 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 		cell.setStyleRanges(styledString.getStyleRanges());
 		cell.setImage(getImage(obj));
 		super.update(cell);
-		getViewer().refresh();
+//		getViewer().refresh();
 	}
 
 	/*

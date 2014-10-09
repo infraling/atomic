@@ -3,10 +3,12 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 
 /**
@@ -16,6 +18,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 public class ReferenceModel extends SDocumentGraphDecorator implements IEditorInput {
 	
 	private final int id;
+	private SDocument document;
+	private URI graphURI;
 
 	public ReferenceModel(SDocumentGraph decoratedGraph, int id) {
 		super(decoratedGraph);
@@ -60,4 +64,32 @@ public class ReferenceModel extends SDocumentGraphDecorator implements IEditorIn
 		return "Display referents and markables";
 	}
 
+	/**
+	 * @return the document
+	 */
+	public SDocument getDocument() {
+		return document;
+	}
+
+	/**
+	 * @param document the document to set
+	 */
+	public void setDocument(SDocument document) {
+		this.document = document;
+	}
+
+	/**
+	 * @return the graphURI
+	 */
+	public URI getGraphURI() {
+		return graphURI;
+	}
+
+	/**
+	 * @param graphURI the graphURI to set
+	 */
+	public void setGraphURI(URI graphURI) {
+		this.graphURI = graphURI;
+	}
+	
 }

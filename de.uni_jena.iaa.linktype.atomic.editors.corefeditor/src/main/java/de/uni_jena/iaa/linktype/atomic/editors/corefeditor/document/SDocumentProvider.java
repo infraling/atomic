@@ -26,6 +26,7 @@ public class SDocumentProvider extends FileDocumentProvider {
 	private SDocument sDocument;
 	private SDocumentModel model;
 	private IFileEditorInput input;
+	private URI graphURI;
 
 	@Override
 	protected IDocument createDocument(Object element) throws CoreException {
@@ -42,10 +43,10 @@ public class SDocumentProvider extends FileDocumentProvider {
 			// i.e., if it is a persisted SDocument.
 			else if (fileName.endsWith(SaltFactory.FILE_ENDING_SALT) && !fileName.equals("saltProject." + SaltFactory.FILE_ENDING_SALT)) {
 				setSDocument(SaltFactory.eINSTANCE.createSDocument());
-				URI graphURI = URI.createFileURI(getInput().getFile().getLocation().toOSString());
-				getSDocument().loadSDocumentGraph(graphURI);
+				setGraphURI(URI.createFileURI(getInput().getFile().getLocation().toOSString()));
+				getSDocument().loadSDocumentGraph(getGraphURI());
 				setModel(new SDocumentModel(getSDocument()));
-				getModel().setGraphURI(graphURI);
+				getModel().setGraphURI(getGraphURI());
 				document.set(getModel().getCorpusText());
 			}
 			return document;
@@ -131,6 +132,20 @@ public class SDocumentProvider extends FileDocumentProvider {
 	 */
 	public void setInput(IFileEditorInput input) {
 		this.input = input;
+	}
+
+	/**
+	 * @return the graphURI
+	 */
+	public URI getGraphURI() {
+		return graphURI;
+	}
+
+	/**
+	 * @param graphURI the graphURI to set
+	 */
+	public void setGraphURI(URI graphURI) {
+		this.graphURI = graphURI;
 	}
 
 }

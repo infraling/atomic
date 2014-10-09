@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -56,9 +57,17 @@ public class CoreferenceEditor extends TextEditor {
 		
 		// Add listeners
 		viewer.addSelectionChangedListener(new CorefEditorSelectionChangedListener());
+		enableSanityChecking(false);
+
 				
 		return viewer;
 	}
+	
+	@Override
+	protected void sanityCheckState(IEditorInput input) {
+		// Do nothing
+	}
+	
 	
 	@Override
 	protected void initializeEditor() {
