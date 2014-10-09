@@ -53,7 +53,7 @@ public class CreateMarkableHandler extends AbstractHandler {
 		TextSelection selection = getSelection(event);
 		selection = resetSelection(selection, event);
 		changeColorForSelection(editor, selection);
-		createSpanOverSelection(editor, selection);
+//		createSpanOverSelection(editor, selection);
 		return null;
 	}
 
