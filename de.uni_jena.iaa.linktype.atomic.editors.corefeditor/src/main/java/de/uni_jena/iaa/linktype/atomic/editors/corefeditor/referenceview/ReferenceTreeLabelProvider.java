@@ -17,6 +17,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
 
 /**
@@ -49,6 +50,9 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 				text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
 			}
 			styledString = new StyledString(text.toString());
+		}
+		else if (obj instanceof SAnnotation) {
+			styledString = new StyledString(((SAnnotation) obj).getValueString());
 		}
 		cell.setText(styledString.toString());
 		cell.setStyleRanges(styledString.getStyleRanges());
@@ -141,6 +145,10 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 				text.append(ds.getSText().substring(sequence.getSStart(), sequence.getSEnd()) + " ");
 			}
 			return text.toString();
+		}
+		else if (element instanceof String) {
+			System.err.println("STRIIIIIIIIIIIIIIIING");
+			return (String) element;
 		}
 		return null;
 	}

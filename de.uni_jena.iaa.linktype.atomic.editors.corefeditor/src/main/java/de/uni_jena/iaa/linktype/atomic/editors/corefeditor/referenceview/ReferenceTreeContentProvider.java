@@ -5,7 +5,11 @@ package de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel;
 
@@ -46,6 +50,16 @@ public class ReferenceTreeContentProvider implements ITreeContentProvider {
 			}
 			return ((Reference) parentElement).getSpanMap().values().toArray();
 		}
+		else if (parentElement instanceof SSpan) {
+			for (Edge edge : model.getDecoratedSDocumentGraph().getInEdges(((SSpan) parentElement).getSId())) {
+				if (edge instanceof SPointingRelation) {
+					SAnnotation anno = ((SPointingRelation) edge).getSAnnotation("ATOMIC::coref");
+					if (anno != null) {
+						return new SAnnotation[]{anno};
+					}
+				}
+			}
+		}
 		return null;
 	}
 
@@ -64,7 +78,14 @@ public class ReferenceTreeContentProvider implements ITreeContentProvider {
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof SSpan) {
-			return false;
+			for (Edge edge : model.getDecoratedSDocumentGraph().getInEdges(((SSpan) element).getSId())) {
+				if (edge instanceof SPointingRelation) {
+					SAnnotation anno = ((SPointingRelation) edge).getSAnnotation("ATOMIC::coref");
+					if (anno != null) {
+						return true;
+					}
+				}
+			}
 		}
 		else if (element instanceof Reference) {
 			return ((Reference) element).getSpans().size() > 0;

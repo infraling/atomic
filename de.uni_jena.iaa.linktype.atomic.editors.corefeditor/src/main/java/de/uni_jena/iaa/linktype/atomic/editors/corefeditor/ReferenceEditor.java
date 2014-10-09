@@ -3,9 +3,22 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.corefeditor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.text.TextPresentation;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -15,11 +28,15 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -51,12 +68,15 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.uni_jena.iaa.linktype.atomic.core.registries.Registries;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.dnd.ReferenceViewDropListener;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.ReferenceCellEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.ReferenceTreeContentProvider;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.ReferenceTreeLabelProvider;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.Reference;
 import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceview.model.ReferenceModel;
+import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.utils.RandomColorGenerator;
 
 /**
  * @author Stephan Druskat
@@ -130,9 +150,97 @@ public class ReferenceEditor extends EditorPart {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
 					treeViewer.setSubtreeChecked(event.getElement(), true);
+					colorElement(treeViewer.getCheckedElements());
 				} else {
+					removeColor(treeViewer.getCheckedElements());
 					treeViewer.setSubtreeChecked(event.getElement(), false);
 				}
+			}
+
+			private void removeColor(Object[] elements) {
+				SourceViewer viewer = null;
+				IEditorReference[] editorRefs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+				for (int i = 0; i < editorRefs.length; i++) {
+					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
+						IEditorPart part = (IEditorPart) editorRefs[i].getPart(false);
+						viewer = ((CoreferenceEditor) part).getViewer();
+					}
+				}
+				for (int i = 0; i < elements.length; i++) {
+					Registries registries = Registries.getInstance();
+					registries.putColor("black", "000000");
+					int size = elements.length;
+					if (elements[i] instanceof Reference) {
+						for (SSpan span : ((Reference) elements[i]).getSpans()) {
+							Color color = registries.getColor("black", "000000");
+							EList<STYPE_NAME> refList = new BasicEList<STYPE_NAME>();
+							refList.add(STYPE_NAME.SSPANNING_RELATION);
+							EList<SToken> tokens = graph.getOverlappedSTokens(span, refList);
+							refList.clear();
+							refList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
+							for (SToken token : tokens) {
+								SDataSourceSequence sequence = graph.getOverlappedDSSequences(token, refList).get(0);
+								TextPresentation style = new TextPresentation();
+								style.addStyleRange(new StyleRange(sequence.getSStart(), sequence.getSEnd() - sequence.getSStart(), color, null));
+								((SourceViewer) viewer).changeTextPresentation(style, true);
+							}
+						}
+					}
+				}
+				
+			}
+
+			private void colorElement(Object[] elements) {
+				SourceViewer viewer = null;
+				IEditorReference[] editorRefs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+				for (int i = 0; i < editorRefs.length; i++) {
+					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
+						IEditorPart part = (IEditorPart) editorRefs[i].getPart(false);
+						viewer = ((CoreferenceEditor) part).getViewer();
+					}
+				}
+				for (int i = 0; i < elements.length; i++) {
+					Registries registries = Registries.getInstance();
+					int size = elements.length;
+					RandomColorGenerator generator = new RandomColorGenerator();
+					List<RGB> colors = null;
+					try {
+						colors = generator.createRandomizedRgbList(size, 0.99f, 0.99f, RandomColorGenerator.GOLDEN_RATIO);
+						registries.putColor(String.valueOf(i), colors.get(i));
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (elements[i] instanceof Reference) {
+						for (SSpan span : ((Reference) elements[i]).getSpans()) {
+							Color color = registries.getColor(String.valueOf(i), registries.toHex(colors.get(i)));
+							EList<STYPE_NAME> refList = new BasicEList<STYPE_NAME>();
+							refList.add(STYPE_NAME.SSPANNING_RELATION);
+							EList<SToken> tokens = graph.getOverlappedSTokens(span, refList);
+							refList.clear();
+							refList.add(STYPE_NAME.STEXT_OVERLAPPING_RELATION);
+							for (SToken token : tokens) {
+								SDataSourceSequence sequence = graph.getOverlappedDSSequences(token, refList).get(0);
+								TextPresentation style = new TextPresentation();
+								style.addStyleRange(new StyleRange(sequence.getSStart(), sequence.getSEnd() - sequence.getSStart(), color, null));
+								((SourceViewer) viewer).changeTextPresentation(style, true);
+							}
+						}
+					}
+				}
+				
 			}
 		});
 		addEditingSupport(treeViewer);
@@ -160,6 +268,9 @@ public class ReferenceEditor extends EditorPart {
 					Reference data = (Reference) element;
 					data.setName(value.toString());
 				}
+				else if (element instanceof SAnnotation) {
+					((SAnnotation) element).setValue(value);
+				}
 				treeViewer.update(element, null);
 				setDirty(true);
 				firePropertyChange(PROP_DIRTY);
@@ -184,6 +295,9 @@ public class ReferenceEditor extends EditorPart {
 					}
 					return text.toString();
 				}
+				else if (element instanceof SAnnotation) {
+					return ((SAnnotation) element).getValueString();
+				}
 				return element;
 			}
 
@@ -194,7 +308,7 @@ public class ReferenceEditor extends EditorPart {
 
 			@Override
 			protected boolean canEdit(Object element) {
-				return element instanceof Reference;
+				return element instanceof Reference || element instanceof SAnnotation;
 			}
 		});
 
