@@ -76,38 +76,6 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	@Override
 	public void run() {
 		out = newOutputStream();
-
-		// Activate input
-		IEditorPart editor = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if (editor instanceof GraphEditor) {
-			EditPartViewer editPartViewer = ((GraphEditor) editor)
-					.getEditPartViewer();
-			setGraphPart((GraphPart) editPartViewer.getContents());
-			if (getGraphPart().getModel() == getGraph()) {
-				return;
-			}
-			setGraph(getGraphPart().getModel());
-			setEditor(editor);
-			String excerpt = null; 
-			String text = getGraph().getSTextualDSs().get(0).getSText();
-			if (text.length() >= 50) {
-				excerpt = getGraph().getSTextualDSs().get(0).getSText().substring(0, 49) + "...";
-			}
-			else {
-				excerpt = text;
-			}
-			try {
-				out.write("Working on "
-						+ editor.getEditorInput().getName()
-						+ " (\""
-						+ excerpt + "\").\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
 		try {
 			out.write("To display a list of available commands, type \"help\".\n");
 		} catch (IOException e1) {
@@ -777,6 +745,13 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	 */
 	public void setEdgeSwitch(String edgeSwitch) {
 		this.edgeSwitch = edgeSwitch;
+	}
+
+	/**
+	 * @return the out
+	 */
+	public IOConsoleOutputStream getOut() {
+		return out;
 	}
 
 }
