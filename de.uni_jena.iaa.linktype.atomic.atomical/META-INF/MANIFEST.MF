@@ -16,6 +16,7 @@ Require-Bundle: org.eclipse.ui,
  de.hu_berlin.german.korpling.saltnpepper.salt-graph,
  org.apache.commons.lang3,
  com.google.guava,
- org.eclipse.emf.ecore;bundle-version="2.7.0"
+ org.eclipse.emf.ecore;bundle-version="2.7.0",
+ org.eclipse.core.expressions;bundle-version="3.4.300"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

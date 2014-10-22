@@ -11,6 +11,10 @@
                label="AtomicAL Console"
                mnemonic="A"
                style="push">
+            <visibleWhen>
+            	<test property="de.uni_jena.iaa.linktype.atomic.atomical.hasActiveEditor">
+            	</test>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>
@@ -37,10 +41,35 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler"
             id="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
             name="Open ConsoleView">
       </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="de.uni_jena.iaa.linktype.atomic.atomical.propertytesters.HasActiveEditorTester"
+            id="de.uni_jena.iaa.linktype.atomic.atomical.hasActiveEditorTester"
+            namespace="de.uni_jena.iaa.linktype.atomic.atomical"
+            properties="hasActiveEditor"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler"
+            commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand">
+         <!--<enabledWhen>
+            <test property="de.uni_jena.iaa.linktype.atomic.atomical.hasActiveEditor">
+            	</test>
+         </enabledWhen>
+         <activeWhen>
+            <test
+                  property="de.uni_jena.iaa.linktype.atomic.atomical.hasActiveEditor">
+            </test>
+         </activeWhen>-->
+      </handler>
    </extension>
 
 </plugin>
