@@ -24,8 +24,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
@@ -674,6 +676,10 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 
 					@Override
 					public void partClosed(IWorkbenchPart part) {
+						IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+						if (activePage.getActiveEditor() == null) {// I.e., there are no open editors
+							activePage.hideView(activePage.findView(IConsoleConstants.ID_CONSOLE_VIEW));
+						}
 					}
 
 					@Override
