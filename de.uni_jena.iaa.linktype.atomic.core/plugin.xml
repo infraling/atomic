@@ -68,8 +68,8 @@
          </menu>
          <menu
                id="de.uni_jena.iaa.linktype.atomic.menus.preferencesMenu"
-               label="Preferences"
-               mnemonic="P">
+               label="Options"
+               mnemonic="O">
             <command
                   commandId="org.eclipse.equinox.p2.ui.sdk.install"
                   label="Install new plugins"
@@ -183,6 +183,29 @@
                relative="org.eclipse.ui.editorss">
          </view>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="de.uni_jena.iaa.linktype.atomic.core.context"
+            name="Atomic Default Context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+Q Q">
+      </key>
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+Q C">
+      </key>
    </extension>
    <!-- Navigator above -->
 

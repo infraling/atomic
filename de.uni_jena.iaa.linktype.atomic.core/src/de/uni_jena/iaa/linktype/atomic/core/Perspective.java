@@ -18,9 +18,16 @@ package de.uni_jena.iaa.linktype.atomic.core;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextService;
 
 public class Perspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			   public void run() {
+			    ((IContextService) PlatformUI.getWorkbench().getService(IContextService.class)).activateContext("de.uni_jena.iaa.linktype.atomic.core.context");
+			   }
+			});
 	}
 }
