@@ -147,7 +147,6 @@ public class ReferenceTreeLabelProvider extends StyledCellLabelProvider
 			return text.toString();
 		}
 		else if (element instanceof String) {
-			System.err.println("STRIIIIIIIIIIIIIIIING");
 			return (String) element;
 		}
 		return null;

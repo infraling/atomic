@@ -126,7 +126,7 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 				TreeMap<Integer, SSpan> spanMap = reference.getSpanMap();
 				spanMap.put(start, span);
 			}
-			else System.err.println("Span already exists in reference. " + this.getClass());
+			else System.err.println("Span \"" + span + "\" already exists in reference.");
 		}
 		viewer.setInput(model);
 		viewer.setExpandedState(reference, true);
@@ -161,7 +161,6 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 				}
 			}
 			SSpan span = graph.createSSpan(tokenListForSpan);
-			System.err.println("-------- " + span.getSId());
 			int numberOfReferenceParticipation = 0;
 			for (SProcessingAnnotation proAnno : span.getSProcessingAnnotations()) {
 				if (proAnno.getQName().split("ATOMIC::")[0].startsWith("REFERENT_NAME")) {
@@ -177,7 +176,7 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 				createRelations(span, (Reference) getTarget(), spanMap);
 			}
 			else {
-				System.err.println("Span already exists in reference. " + this.getClass()); // FIXME: Doesn't work yet as there's always a new span added
+				System.err.println("Span \""+ span + "\" already exists in reference."); // FIXME: Doesn't work yet as there's always a new span added
 			}
 			viewer.setInput(input);
 			viewer.setExpandedState(getTarget(), true);
@@ -189,7 +188,6 @@ public class ReferenceViewDropListener extends ViewerDropAdapter {
 	}
 
 	private void createRelations(SSpan span, Reference reference, TreeMap<Integer,SSpan> map) {
-		System.err.println(reference.getSpans().size());
 //		if (refherence.getSpans().size() > 1) {
 //			TreeMap<Integer, SSpan> map = reference.getSpanMap();
 			for (Entry<Integer, SSpan> entry : map.entrySet()) {

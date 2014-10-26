@@ -179,7 +179,7 @@ public class CreateReferenceHandler extends CreateMarkableHandler {
 								reference.getSpanMap().put(start, span);
 							}
 							else {
-								System.err.println("Span already exists in reference. " + this.getClass());
+								System.err.println("Span \"" + span + "\" already exists in reference.");
 							}
 						}
 					}

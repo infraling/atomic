@@ -45,7 +45,6 @@ public class SDocumentProvider extends FileDocumentProvider {
 				setSDocument(SaltFactory.eINSTANCE.createSDocument());
 				setGraphURI(URI.createFileURI(getInput().getFile().getLocation().toOSString()));
 				getSDocument().loadSDocumentGraph(getGraphURI());
-				System.err.println(getSDocument());
 				setModel(new SDocumentModel(getSDocument()));
 				getModel().setGraphURI(getGraphURI());
 				document.set(getModel().getCorpusText());

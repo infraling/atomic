@@ -31,32 +31,40 @@ import de.uni_jena.iaa.linktype.atomic.editors.corefeditor.document.SDocumentPro
 
 /**
  * @author Stephan Druskat
- *
+ * 
  */
 public class CoreferenceEditor extends TextEditor {
-	
+
 	private SourceViewer viewer;
 	private final IPartListener partListener = new IPartListener() {
-		public void partActivated(IWorkbenchPart part) {}
-		public void partBroughtToTop(IWorkbenchPart part) {}
+		public void partActivated(IWorkbenchPart part) {
+		}
+
+		public void partBroughtToTop(IWorkbenchPart part) {
+		}
+
 		public void partClosed(IWorkbenchPart part) {
 			if (part == CoreferenceEditor.this) {
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-				IEditorReference[] editorRefs = page.getEditorReferences();
-				for (int i = 0; i < editorRefs.length; i++) {
-					if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceeditor")) {
-						part = editorRefs[i].getPart(false);
-						page.closeEditor((IEditorPart) part, true);
+				if (page != null) {
+					IEditorReference[] editorRefs = page.getEditorReferences();
+					for (int i = 0; i < editorRefs.length; i++) {
+						if (editorRefs[i].getId().equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.referenceeditor")) {
+							part = editorRefs[i].getPart(false);
+							page.closeEditor((IEditorPart) part, true);
+						}
 					}
+					getSite().getWorkbenchWindow().getPartService().removePartListener(this);
 				}
-				getSite().getWorkbenchWindow().getPartService().removePartListener(this);
 			}
 		}
-		public void partDeactivated(IWorkbenchPart part) {}
-		public void partOpened(IWorkbenchPart part) {}
-		};
 
+		public void partDeactivated(IWorkbenchPart part) {
+		}
 
+		public void partOpened(IWorkbenchPart part) {
+		}
+	};
 
 	/**
 	 * 
@@ -66,69 +74,86 @@ public class CoreferenceEditor extends TextEditor {
 		setDocumentProvider(new SDocumentProvider());
 		this.setEditorContextMenuId("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.contextmenu");
 	}
-	
+
 	@Override
 	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-		viewer = new SourceViewer(parent, ruler /* TODO: introduce IVerticalRuler later*/, getOverviewRuler() /* TODO check if OverviewRuler is helpful*/, isOverviewRulerVisible() /* TODO check if needed later */, SWT.WRAP | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
+		viewer = new SourceViewer(parent, ruler /*
+												 * TODO: introduce
+												 * IVerticalRuler later
+												 */, getOverviewRuler() /*
+																		 * TODO
+																		 * check
+																		 * if
+																		 * OverviewRuler
+																		 * is
+																		 * helpful
+																		 */, isOverviewRulerVisible() /*
+																									 * TODO
+																									 * check
+																									 * if
+																									 * needed
+																									 * later
+																									 */, SWT.WRAP | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
 		getSourceViewerDecorationSupport(viewer);
 		IPreferenceStore store = getPreferenceStore();
 		store.setValue(PREFERENCE_TEXT_DRAG_AND_DROP_ENABLED, true);
-		
+
 		// Add menus
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, viewer);
-		
+
 		// Add listeners
 		viewer.addSelectionChangedListener(new CorefEditorSelectionChangedListener());
 		enableSanityChecking(false);
 		this.getSite().getWorkbenchWindow().getPartService().addPartListener(this.partListener);
-				
+
 		return viewer;
 	}
-	
+
 	@Override
 	protected void sanityCheckState(IEditorInput input) {
 		// Do nothing
 	}
-	
-	
+
 	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
 		setSourceViewerConfiguration(new CorefSourceViewerConfiguration());
 	}
-	
+
 	// Make the editor read-only
 	@Override
 	public boolean isEditable() {
-	    return false;
+		return false;
 	}
 
 	@Override
 	public boolean isEditorInputModifiable() {
-	    return false;
+		return false;
 	}
 
 	@Override
 	public boolean isEditorInputReadOnly() {
-	    return true;
+		return true;
 	}
 
 	@Override
 	public boolean isDirty() {
-	    return false;
+		return false;
 	}
+
 	// EO Make the editor read-only
-	
+
 	// Hide the context menu
 	@Override
 	protected boolean isEditorInputIncludedInContextMenu() {
 		return false;
 	}
+
 	// EO Hide the context menu (above)
-	
+
 	public SourceViewer getViewer() {
 		return viewer;
 	}
@@ -139,16 +164,20 @@ public class CoreferenceEditor extends TextEditor {
 
 	/**
 	 * @author Stephan Druskat
-	 *
+	 * 
 	 */
 	public class CorefEditorSelectionChangedListener implements ISelectionChangedListener {
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-//			selectAllFullWordsInSelection(event);
+			// selectAllFullWordsInSelection(event);
 		}
 
 		/**
@@ -169,18 +198,21 @@ public class CoreferenceEditor extends TextEditor {
 			}
 			// Find bordering whitespaces
 			String textBeforeOffset = text.substring(0, offset);
-			int positionWhitespaceBeforeOffset = 0; // Re-usable in case the selection includes the first word, i.e., no whitespace is found
+			int positionWhitespaceBeforeOffset = 0; // Re-usable in case the
+													// selection includes the
+													// first word, i.e., no
+													// whitespace is found
 			for (int i = positionWhitespaceBeforeOffset; i < textBeforeOffset.length(); i++) {
-			    if (Character.isWhitespace(textBeforeOffset.charAt(i))) {
-			        positionWhitespaceBeforeOffset = i;
-			    }
+				if (Character.isWhitespace(textBeforeOffset.charAt(i))) {
+					positionWhitespaceBeforeOffset = i;
+				}
 			}
 			int positionWhitespaceAfterSelection = offset + length;
 			for (int i = positionWhitespaceAfterSelection; i < text.length(); i++) {
-			    if (Character.isWhitespace(text.charAt(i))) {
-			        positionWhitespaceAfterSelection = i;
-			        break;
-			    }
+				if (Character.isWhitespace(text.charAt(i))) {
+					positionWhitespaceAfterSelection = i;
+					break;
+				}
 			}
 			IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 			if (activeEditor instanceof CoreferenceEditor && ((CoreferenceEditor) activeEditor).getViewer() instanceof SourceViewer) {

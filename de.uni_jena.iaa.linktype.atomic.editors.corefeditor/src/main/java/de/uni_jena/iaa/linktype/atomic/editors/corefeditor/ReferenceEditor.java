@@ -101,17 +101,19 @@ public class ReferenceEditor extends EditorPart {
 			if (part == ReferenceEditor.this) {
 				IWorkbenchPage page = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getActivePage();
-				IEditorReference[] editorRefs = page.getEditorReferences();
-				for (int i = 0; i < editorRefs.length; i++) {
-					if (editorRefs[i]
-							.getId()
-							.equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
-						part = editorRefs[i].getPart(false);
-						page.closeEditor((IEditorPart) part, false);
+				if (page != null) {
+					IEditorReference[] editorRefs = page.getEditorReferences();
+					for (int i = 0; i < editorRefs.length; i++) {
+						if (editorRefs[i]
+								.getId()
+								.equals("de.uni_jena.iaa.linktype.atomic.editors.corefeditor.editor")) {
+							part = editorRefs[i].getPart(false);
+							page.closeEditor((IEditorPart) part, false);
+						}
 					}
+					getSite().getWorkbenchWindow().getPartService()
+							.removePartListener(this);
 				}
-				getSite().getWorkbenchWindow().getPartService()
-						.removePartListener(this);
 			}
 		}
 
