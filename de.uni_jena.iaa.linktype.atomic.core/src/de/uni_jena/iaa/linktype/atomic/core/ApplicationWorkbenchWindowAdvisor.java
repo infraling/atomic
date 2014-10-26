@@ -27,6 +27,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
+import org.eclipse.ui.internal.ide.EditorAreaDropAdapter;
 import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
 import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
@@ -41,7 +42,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         return new ApplicationActionBarAdvisor(configurer);
     }
     
-    @Override
+    @SuppressWarnings("restriction")
+	@Override
     public void preWindowOpen() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
         configurer.setInitialSize(new Point(1000, 800));
@@ -49,6 +51,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setShowCoolBar(true);
         configurer.setShowStatusLine(true);
         configurer.setShowProgressIndicator(true);
+        // FIXME: Replace internal class with custom class (EditorAreaDropAdapter)!
+        configurer.configureEditorAreaDropListener(new EditorAreaDropAdapter(configurer.getWindow()));
     }
     
     @Override
