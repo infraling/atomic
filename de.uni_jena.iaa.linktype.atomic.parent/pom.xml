@@ -12,6 +12,7 @@
   <module>../de.uni_jena.iaa.linktype.atomic.model.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.pepper</module>
   <module>../de.uni_jena.iaa.linktype.atomic.model.salt</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.editors</module>
   <module>../de.uni_jena.iaa.linktype.atomic.editors.grapheditor</module>
   <module>../de.uni_jena.iaa.linktype.atomic.editors.corefeditor</module>
   <module>../de.uni_jena.iaa.linktype.atomic.editors.feature</module>
@@ -19,10 +20,6 @@
   <module>../de.uni_jena.iaa.linktype.atomic.atomical.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
-  <module>
-  	../de.uni_jena.iaa.linktype.atomic.editors.corefeditor
-  </module>
-  <module>../de.uni_jena.iaa.linktype.atomic.editors</module>
   </modules>
   
   <properties>
