@@ -69,7 +69,6 @@ public class AtomicalConsoleFactory implements IConsoleFactory {
 									+ " (\""
 									+ excerpt + "\").\n");
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}

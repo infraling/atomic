@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.sound.midi.SysexMessage;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
@@ -677,8 +679,11 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					@Override
 					public void partClosed(IWorkbenchPart part) {
 						IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-						if (activePage.getActiveEditor() == null) {// I.e., there are no open editors
+						try {
 							activePage.hideView(activePage.findView(IConsoleConstants.ID_CONSOLE_VIEW));
+						} catch (NullPointerException e) {
+							// Do nothing. Will throw an NPE when exiting the application with the Console View open, as
+							// activePage will be null.
 						}
 					}
 
