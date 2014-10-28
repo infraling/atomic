@@ -2,7 +2,7 @@
 <feature
       id="de.uni_jena.iaa.linktype.atomic.core.feature"
       label="Atomic Core Application"
-      version="0.1.6"
+      version="0.1.7.qualifier"
       provider-name="&quot;Towards a corpus-based typology of clause linkage&quot; research project at the Friedrich Schiller University Jena">
 
    <description url="http://www.example.com/description">
