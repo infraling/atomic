@@ -104,16 +104,16 @@ public class AtomicalAnnotationGraphParser {
 //						break;
 					case 'D':
 					case 'd':
-						((ArrayList<String>) hash.get("edges")).add(word);
-						break;
+//						((ArrayList<String>) hash.get("edges")).add(word);
+//						break;
 					case 'P':
 					case 'p':
-						((ArrayList<String>) hash.get("edges")).add(word);
-						break;
+//						((ArrayList<String>) hash.get("edges")).add(word);
+//						break;
 					case 'O':
 					case 'o':
-						((ArrayList<String>) hash.get("edges")).add(word);
-						break;
+//						((ArrayList<String>) hash.get("edges")).add(word);
+//						break;
 					case 'R':
 					case 'r':
 						((ArrayList<String>) hash.get("edges")).add(word);
