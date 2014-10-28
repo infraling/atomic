@@ -72,14 +72,14 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	public AtomicalConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		addEditorListener();
+		out = newOutputStream();
+		err = newOutputStream();
 		Thread t = new Thread(this);
 		t.start();
 	}
 
 	@Override
 	public void run() {
-		out = newOutputStream();
-		err = newOutputStream();
 		try {
 			out.write("To display a list of available commands, type \"help\".\n");
 		} catch (IOException e1) {
