@@ -2,7 +2,7 @@
 <feature
       id="de.uni_jena.iaa.linktype.atomic.atomical.feature"
       label="Atomic AtomicAL Feature"
-      version="0.1.7.qualifier">
+      version="0.1.6">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
