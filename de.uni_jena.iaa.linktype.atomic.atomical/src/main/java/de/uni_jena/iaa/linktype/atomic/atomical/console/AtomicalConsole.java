@@ -554,7 +554,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			break;
 
 		default:
-			out.write("Unknown command. Please type \"help\" to see a list of the available commands.\n");
+			err.write("Unknown command. Please type \"help\" to see a list of the available commands.\n");
 			break;
 		}
 	}
