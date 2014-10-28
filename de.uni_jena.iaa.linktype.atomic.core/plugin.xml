@@ -112,6 +112,11 @@
             id="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
             name="Exit">
       </command>
+      <command
+            defaultHandler="de.uni_jena.iaa.linktype.atomic.core.commands.UnavailableKeyboardShortcutHandler"
+            id="de.uni_jena.iaa.linktype.atomic.core.keyboardShortcutNotAvailableCommand"
+            name="Keyboard Shortcut not available">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
@@ -195,13 +200,13 @@
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            commandId="de.uni_jena.iaa.linktype.atomic.core.keyboardShortcutNotAvailableCommand"
             contextId="de.uni_jena.iaa.linktype.atomic.core.context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+Q Q">
       </key>
       <key
-            commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            commandId="de.uni_jena.iaa.linktype.atomic.core.keyboardShortcutNotAvailableCommand"
             contextId="de.uni_jena.iaa.linktype.atomic.core.context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+Q C">

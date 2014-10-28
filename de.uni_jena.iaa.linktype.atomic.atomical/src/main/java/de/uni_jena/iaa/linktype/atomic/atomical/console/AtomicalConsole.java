@@ -20,7 +20,6 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
@@ -127,18 +126,23 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		}
 		if (editor != null) {
 			final CommandStack commandStack = ((GraphEditor) editor).getDomain().getCommandStack();
-			boolean canExecute = validateInput(atomicALCommand, atomicALParameters);
-			if (canExecute) {
-				executeCommand(commandStack, atomicALCommand, atomicALParameters);	
-			}
-			else {
-				err.write("Command cannot be executed due to an error in the syntax.\n");
-			}
+//			boolean canExecute = validateInput(atomicALCommand, atomicALParameters);
+//			if (canExecute) {
+				try {
+					executeCommand(commandStack, atomicALCommand, atomicALParameters);	
+				} catch (Exception e) {
+					e.printStackTrace();
+					err.write("Command could not be executed due to an error in the syntax.\n");
+				}
+//			}
+//			else {
+//				err.write("Command could not be executed due to an error in the syntax.\n");
+//			}
 		}
 	}
 
 	private boolean validateInput(String atomicALCommand, HashMap<Object,Object> atomicALParameters) {
-		// TODO Auto-generated method stub
+		// FIXME: Implement
 		return true;
 	}
 
