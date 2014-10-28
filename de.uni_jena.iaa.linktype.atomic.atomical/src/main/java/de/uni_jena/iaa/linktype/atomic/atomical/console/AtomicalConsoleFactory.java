@@ -44,7 +44,6 @@ public class AtomicalConsoleFactory implements IConsoleFactory {
 				}
 			}
 			if (!exists) {
-				console.clearConsole();
 				// Activate input
 				IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 				if (editor instanceof GraphEditor) {
