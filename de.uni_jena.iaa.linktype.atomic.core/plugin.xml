@@ -82,6 +82,17 @@
                label="View"
                mnemonic="V">
          </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.helpMenu"
+               label="Help"
+               mnemonic="H">
+            <command
+                  commandId="org.eclipse.ui.help.displayHelp"
+                  label="Atomic Help"
+                  mnemonic="H"
+                  style="push">
+            </command>
+         </menu>
       </menuContribution>
       <menuContribution
             allPopups="false"
