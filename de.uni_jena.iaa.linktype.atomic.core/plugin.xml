@@ -223,6 +223,19 @@
             sequence="M3+M2+Q C">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.index">
+      <index
+            file="index.xml">
+      </index>
+   </extension>
    <!-- Navigator above -->
 
 </plugin>
