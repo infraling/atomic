@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+	version="5.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xl="http://www.w3.org/1999/xlink">
+	<info>
+		<title>Atomic User Guide</title>
+	</info>
+	<section>
+		<title>Examples</title>
+		<para>The five boxing wizards jump quickly. A quick movement of the
+			enemy will jeopardize six gunboats. Few black taxis drive up major
+			roads on quiet hazy nights. The quick brown fox jumped over the lazy
+			dogs. Pack my red box with five dozen quality jugs.</para>
+		<note>
+			<title>Upcoming Changes</title>
+			<para>
+				Future versions of this feature may not be backward-compatible.
+				Consider implementing the revised interface now.
+			</para>
+		</note>
+		<figure xml:id="figure.svg.DEP4E">
+			<title>Scalable Vector Graphics (SVG)</title>
+			<mediaobject>
+				<imageobject>
+					<imagedata scalefit="1" width="100%" contentdepth="100%"
+						format="svg" fileref="resources/test.png" />
+				</imageobject>
+			</mediaobject>
+		</figure>
+		<equation xml:id="equation.mml.pq-formula">
+			<title>Mathematical Markup Language (MathML)</title>
+			<xi:include href="includes/pq-formula.mml">
+				<xi:fallback>
+					<para>XINCLUDE-ERROR</para>
+				</xi:fallback>
+			</xi:include>
+		</equation>
+		<example xml:id="example.java.HelloDocBook">
+			<title>Java Program</title>
+			<programlisting language="java">
+				<xi:include parse="text" href="includes/HelloDocBook.java">
+					<xi:fallback>
+						<para>XINCLUDE-ERROR</para>
+					</xi:fallback>
+				</xi:include>
+			</programlisting>
+		</example>
+	</section>
+</article>
