@@ -52,8 +52,19 @@
 					<emphasis>New Atomic Project</emphasis>
 					.
 				</para>
+				<figure id="figure_new_project_wizard">
+<title>The New Project Wizard at Step 2.</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="resources/new_project.png"/>
+</imageobject>
+<textobject>
+<phrase>The New Project Wizard at Step 2.</phrase>
+</textobject>
+</mediaobject>
+</figure>
 				<para>
-					In the next step (cf. ???Figure???), fill in the project name,
+					In the next step (cf. <xref linkend="figure_new_project_wizard" />), fill in the project name,
 					and
 					<itemizedlist>
 						<listitem>
