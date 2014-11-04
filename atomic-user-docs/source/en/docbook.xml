@@ -26,14 +26,18 @@
 			<para>There are two ways to create a project in Atomic:</para>
 			<itemizedlist>
 				<listitem>
-					<xref linkend="new_project" />
-					from scratch, providing the corpus
-					text.
+					<para>
+						<xref linkend="new_project" />
+						from scratch, providing the corpus
+						text.
+					</para>
 				</listitem>
 				<listitem>
-					<xref linkend="import_corpus" />
-					from one of the formats which can be read
-					by Pepper.
+					<para>
+						<xref linkend="import_corpus" />
+						from one of the formats which can be read
+						by Pepper.
+					</para>
 				</listitem>
 			</itemizedlist>
 			<sect3 id="new_project" xreflabel="Create a new project">
@@ -53,32 +57,39 @@
 					.
 				</para>
 				<figure id="figure_new_project_wizard">
-<title>The New Project Wizard at Step 2.</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="resources/new_project.png"/>
-</imageobject>
-<textobject>
-<phrase>The New Project Wizard at Step 2.</phrase>
-</textobject>
-</mediaobject>
-</figure>
+					<title>The New Project Wizard at Step 2.</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="resources/new_project.png"
+								scalefit="1" width="100%" contentdepth="100%" />
+						</imageobject>
+						<textobject>
+							<phrase>The New Project Wizard at Step 2.</phrase>
+						</textobject>
+					</mediaobject>
+				</figure>
 				<para>
-					In the next step (cf. <xref linkend="figure_new_project_wizard" />), fill in the project name,
+					In the next step (cf.
+					<xref linkend="figure_new_project_wizard" />
+					), fill in the project name,
 					and
 					<itemizedlist>
 						<listitem>
-							choose a
-							<emphasis>.txt</emphasis>
-							file containing the corpus text and select the file's
-							encoding,
-							or
+							<para>
+								choose a
+								<emphasis>.txt</emphasis>
+								file containing the corpus text and select the file's
+								encoding,
+								or
+							</para>
 						</listitem>
 						<listitem>
-							enter the corpus text via the text field provided after clicking
-							the
-							<emphasis>...</emphasis>
-							button.
+							<para>
+								enter the corpus text via the text field provided after clicking
+								the
+								<emphasis>...</emphasis>
+								button.
+							</para>
 						</listitem>
 					</itemizedlist>
 					Finally, choose the tokenizer that should be used to tokenize the
@@ -107,37 +118,10 @@
 					</menuchoice>
 					.
 					Follow the instructions provided by the Import Wizard to import a
-					corpus from one of the supported formats. These are currently
-					<itemizedlist>
-						<listitem>
-							CoNLL
-						</listitem>
-						<listitem>
-							EXMARaLDA
-						</listitem>
-						<listitem>
-							Elan
-						</listitem>
-						<listitem>
-							MMAX2
-						</listitem>
-						<listitem>
-							PAULA
-						</listitem>
-						<listitem>
-							RelANNIS
-						</listitem>
-						<listitem>
-							SaltXML
-						</listitem>
-						<listitem>
-							Treetagger
-						</listitem>
-						<listitem>
-							UAM
-						</listitem>
-					</itemizedlist>
-					The corpus will be imported, and wrapped in a new project.
+					corpus from one of the supported formats. These are currently:
+					CoNLL, EXMARaLDA, Elan, MMAX2, PAULA, RelANNIS, SaltXML,
+					Treetagger, UAM. The corpus will be imported, and wrapped in a new
+					project.
 					<footnote>
 						<para>
 							Should any errors occur during the import, please report them to
@@ -168,6 +152,20 @@
 				</menuchoice>
 				from the pop-up menu. When opening a newly created document, the
 				editing area will show the tokenized corpus text.
+				<figure id="figure_annotation_graph_editor">
+					<title>Atomic application window with Annotation Graph Editor.
+					</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="resources/app_window.png" scalefit="1"
+								width="100%" contentdepth="100%" />
+						</imageobject>
+						<textobject>
+							<phrase>Atomic application window with Annotation Graph Editor.
+							</phrase>
+						</textobject>
+					</mediaobject>
+				</figure>
 			</para>
 			<sect3>
 				<title>Tool-based annotation</title>
@@ -176,117 +174,121 @@
 					describe how to use the tools in the palette to create an
 					annotation graph for the corpus document.
 				</para>
+				<sect4>
+					<title>Creating nodes</title>
+					<para>Click on the Structure Tool or the Node Tool in order to
+						create a new node. Then, either drag-and-drop the tool onto a
+						position of your choice in the editing area, or click on the
+						editing area at the position of your choice.
+					</para>
+					<para>Drag-and-drop will
+						create the node, but will not open the
+						annotation field for direct
+						annotation of the newly created node.
+						Click-and-point will create
+						the node and open the annotation field
+						for direct annotation of the
+						node.
+					</para>
+					<para>If you have selected any nodes in the editing area before
+						using a node tool, the new node will be created, and edges will be
+						created from it to all of the selected nodes.
+					</para>
+					<para>
+						When using the Structure Tool, the type of the newly created edges
+						will be
+						<emphasis>dominance relation</emphasis>
+						.
+					</para>
+					<para>
+						When using the Span Tool, the type of the newly created edges will
+						be
+						<emphasis>spanning relation</emphasis>
+						, and edges will only be created to selected nodes of type
+						<emphasis>token</emphasis>
+						.
+					</para>
+				</sect4>
+				<sect4>
+					<title>Creating edges</title>
+					<para>To create an edge, click on the respective tool, then click
+						on
+						the node that shold be the source of the edge, and subsequently
+						on
+						the node that should be the target of the edge.
+					</para>
+					<para>
+						The edge will be created, but the annotation field will not
+						automatically open. In order to annotate edges, please see
+						<xref linkend="annotation_elements" />
+						.
+					</para>
+				</sect4>
+				<sect4 id="annotation_elements" xreflabel="Annotation of elements">
+					<title>Annotation of elements</title>
+					<para>
+						In the Annotation Graph Editor, annotations have a
+						<emphasis>key</emphasis>
+						and a
+						<emphasis>value</emphasis>
+						, and optionally can be assigned to a
+						<emphasis>namespace</emphasis>
+						. Annotations are entered in the annotation field using either of
+						the following patterns.
+						<screen>
+							[namespace]::[key]:[value]
+							[key]:[value]
+						</screen>
+						[Key] and [value] are shown directly on the element, the namespace
+						is shown in a pop-up when hovering over an annotation.
+					</para>
+					<para>
+						Elements (i.e., nodes as well as edges) can be annotated by
+						selecting the element via the mouse or
+						the keyboard's arrow
+						buttons,
+						and then either clicking on it once,
+						or pressing
+						<emphasis>Return</emphasis>
+						.
+					</para>
+					<para>
+						This action will open the annotation field for direct editing.
+						You
+						can enter one or more annotations, with one annotation per line.
+						To
+						add a line-break, press
+						<emphasis>Return.</emphasis>
+						To commit the annotations, press
+						<emphasis>CTRL + Return</emphasis>
+						. To abort editing the annotations, press
+						<emphasis>ESC</emphasis>
+						.
+						<emphasis>Return</emphasis>
+						, to finish editing the annotations, press
+					</para>
+					<para>
+						To edit a single existing annotation on an element, select the
+						annotation by mouse or keyboard, and either click on it, or press
+						<emphasis>Return</emphasis>
+						. This will open the single annotation field. Change the
+						annotation, and press
+						<emphasis>Return</emphasis>
+						to commit the annotation. Press
+						<emphasis>ESC</emphasis>
+						to abort the editing process.
+					</para>
+				</sect4>
+				<sect4>
+					<title>Deleting elements and annotations</title>
+					<para>
+						In order to delete elements and annotations, select the respective
+						element(s) or annotation(s) per mouse or keyboard and either press
+						<emphasis>DEL</emphasis>
+						or click the delete symbol in the menu bar.
+					</para>
+				</sect4>
 			</sect3>
-			<sect4>
-				<title>Creating nodes</title>
-				<para>Click on the Structure Tool or the Node Tool in order to
-					create a new node. Then, either drag-and-drop the tool onto a
-					position of your choice in the editing area, or click on the
-					editing area at the position of your choice.
-				</para>
-				<para>Drag-and-drop will
-					create the node, but will not open the
-					annotation field for direct
-					annotation of the newly created node.
-					Click-and-point will create
-					the node and open the annotation field
-					for direct annotation of the
-					node.
-				</para>
-				<para>If you have selected any nodes in the editing area before
-					using a node tool, the new node will be created, and edges will be
-					created from it to all of the selected nodes.
-				</para>
-				<para>
-					When using the Structure Tool, the type of the newly created edges
-					will be
-					<emphasis>dominance relation</emphasis>
-					.
-				</para>
-				<para>
-					When using the Span Tool, the type of the newly created edges will
-					be
-					<emphasis>spanning relation</emphasis>
-					, and edges will only be created to selected nodes of type
-					<emphasis>token</emphasis>
-					.
-				</para>
-			</sect4>
-			<sect4>
-				<title>Creating edges</title>
-				<para>To create an edge, click on the respective tool, then click on
-					the node that shold be the source of the edge, and subsequently on
-					the node that should be the target of the edge.
-				</para>
-				<para>
-					The edge will be created, but the annotation field will not
-					automatically open. In order to annotate edges, please see
-					<xref linkend="annotation_elements" />
-					.
-				</para>
-			</sect4>
-			<sect4 id="annotation_elements" xreflabel="Annotation of elements">
-				<title>Annotation of elements</title>
-				<para>
-					In the Annotation Graph Editor, annotations have a
-					<emphasis>key</emphasis>
-					and a
-					<emphasis>value</emphasis>
-					, and optionally can be assigned to a
-					<emphasis>namespace</emphasis>
-					. Annotations are entered in the annotation field using either of
-					the following patterns.
-					<screen>
-						[namespace]::[key]:[value]
-						[key]:[value]
-					</screen>
-					[Key] and [value] are shown directly on the element, the namespace
-					is shown in a pop-up when hovering over an annotation.
-				</para>
-				<para>
-					Elements (i.e., nodes as well as edges) can be annotated by
-					selecting the element via the mouse or
-					the keyboard's arrow buttons,
-					and then either clicking on it once,
-					or pressing
-					<emphasis>Return</emphasis>
-					.
-				</para>
-				<para>
-					This action will open the annotation field for direct editing.
-					You
-					can enter one or more annotations, with one annotation per line. To
-					add a line-break, press
-					<emphasis>Return.</emphasis>
-					To commit the annotations, press
-					<emphasis>CTRL + Return</emphasis>
-					. To abort editing the annotations, press
-					<emphasis>ESC</emphasis>
-					.
-					<emphasis>Return</emphasis>
-					, to finish editing the annotations, press
-				</para>
-				<para>
-					To edit a single existing annotation on an element, select the
-					annotation by mouse or keyboard, and either click on it, or press
-					<emphasis>Return</emphasis>
-					. This will open the single annotation field. Change the
-					annotation, and press
-					<emphasis>Return</emphasis>
-					to commit the annotation. Press
-					<emphasis>ESC</emphasis>
-					to abort the editing process.
-				</para>
-			</sect4>
-			<sect4>
-				<title>Deleting elements and annotations</title>
-				<para>
-					In order to delete elements and annotations, select the respective
-					element(s) or annotation(s) per mouse or keyboard and either press
-					<emphasis>DEL</emphasis>
-					or click the delete symbol in the menu bar.
-				</para>
-			</sect4>
 			<sect3>
 				<title>Command-line-based annotation with AtomicAL</title>
 				<para>Atomic provides the native annotation language Atomic
