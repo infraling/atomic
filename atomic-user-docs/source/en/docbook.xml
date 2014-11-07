@@ -636,8 +636,10 @@
 					</tbody>
 				</tgroup>
 			</table>
-
-
+		</sect2>
+		<sect2 id="reference_install_new_plugins" xreflabel="Plugin installation reference">
+			<title>Install new plugins</title>
+			<para>In Atomic, you can install new functionality at runtime.</para>
 		</sect2>
 	</sect1>
 </article>
