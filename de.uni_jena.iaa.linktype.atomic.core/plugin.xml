@@ -71,8 +71,14 @@
                label="Options"
                mnemonic="O">
             <command
+                  commandId="org.eclipse.epp.mpc.ui.command.showMarketplaceWizard"
+                  label="Install new plugins from Eclipse Marketplace"
+                  mnemonic="m"
+                  style="push">
+            </command>
+            <command
                   commandId="org.eclipse.equinox.p2.ui.sdk.install"
-                  label="Install new plugins"
+                  label="Install new plugins from p2 repository"
                   mnemonic="I"
                   style="push">
             </command>

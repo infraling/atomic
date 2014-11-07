@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.navigator;bundle-version="3.5.101",
  org.eclipse.ui.navigator.resources;bundle-version="3.4.300",
  org.eclipse.equinox.p2.ui.sdk;bundle-version="1.0.200",
- org.eclipse.ui.workbench
+ org.eclipse.ui.workbench,
+ org.eclipse.epp.mpc.ui;bundle-version="1.1.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-data @noDefault</programArgs>
-      <vmArgs>-Dosgi.startLevel=7</vmArgs>
+      <vmArgs>-Dosgi.startLevel=7 -Dorg.eclipse.swt.browser.DefaultType=mozilla</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
