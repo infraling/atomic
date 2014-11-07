@@ -73,7 +73,7 @@
             <command
                   commandId="org.eclipse.epp.mpc.ui.command.showMarketplaceWizard"
                   label="Install new plugins from Eclipse Marketplace"
-                  mnemonic="m"
+                  mnemonic="M"
                   style="push">
             </command>
             <command
