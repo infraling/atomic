@@ -689,23 +689,21 @@
 					. This will open the Eclipse Marketplace client. Its use is fairly
 					self-explanatory. You can browse different categories, or search
 					for plugins. Once you have found a plugin you want to install,
-					simply click the provided install button next to the search result.
+					simply click the provided install button next to the search result,
+					and follow the instructions.
 				</para>
 				<sect4>
-					<title>Example: Install Git support in Atomic</title>
-					<para>In order to be able to version your corpora and annotations,
-						and enable them for collaborative work, you may want to use a
-						versioning system such as git, Subversion, or similar. In order be
-						able to use these CVS from within Atomic, you may want to have CVS
-						integration in the application itself instead of having to use an
-						external command line. There are at least one (or more) plugins
-						for this purpose available from the marketplace for all major
-						versoin control systems.
-					</para>
+					<title>Example: Install XML editing support in Atomic</title>
 					<para>
-						In the case of git, the plugin you would want to install is
-						<emphasis>EGit - Git Team Provider</emphasis>
-						. To install this plugin, do the following.
+						If you are working on corpus annotations available in an XML
+						dialect, such as SaltXML which is used in Atomic, you may want to
+						be able to edit the source files comfortably with a dedicated XML
+						editor. There is a variety of solutions available from the Eclipse
+						Marketplace, including
+						<link
+							xl:href="http://marketplace.eclipse.org/content/xmlespresso-xml-editor-eclipse-plugin">XMLEspresso</link>
+						, which can automatically generate grammars for unknown XML
+						schemas and DTDs. To install this plugin, do the following.
 					</para>
 					<itemizedlist>
 						<listitem>
@@ -714,15 +712,42 @@
 						<listitem>
 							<para>
 								Search for "
-								<emphasis>egit</emphasis>
-								". The first result should be the EGit Team Provider plugin.
+								<emphasis>xmlespresso</emphasis>
+								". The first result should be the XMLEspresso plugin.
 							</para>
 						</listitem>
 						<listitem>
 							<para>Click the install button.</para>
 						</listitem>
 						<listitem>
-							<para>The EM client will calculate dependencies</para>
+							<para>The EM client will calculate requirements and dependencies. Once
+								its finished, review the items that you want to install and
+								click
+								<emphasis>Next</emphasis>
+								.
+							</para>
+						</listitem>
+						<listitem>
+							<para>Read the license and accept it.</para>
+						</listitem>
+						<listitem>
+							<para>
+								Atomic will now install XMLEspresso. Once its finished, you wil be
+								prompted to restart Atomic. Click
+								<emphasis>Restart Now</emphasis>
+								.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Once Atomic is restarted, XMLEspresso is installed and accessible via
+								right-click on an XML, or .salt, file in the Navigation View, and the 
+								<menuchoice>
+								<guimenu>Open With</guimenu>
+								<guisubmenu>Other ...</guisubmenu>
+								</menuchoice> menu item
+								.
+							</para>
 						</listitem>
 					</itemizedlist>
 				</sect4>
@@ -772,11 +797,16 @@
 					<title>Example: Install Git support in Atomic</title>
 					<para>In order to be able to version your corpora and annotations,
 						and enable them for collaborative work, you may want to use a
-						versioning system such as git, Subversion, or similar. In order be
-						able to use these CVS from within Atomic, you may want to have CVS
-						integration in the application itself instead of having to use an
-						external command line. There are at least one (or more) plugins
-						for this purpose available from the Eclipse p2 repository for all
+						versioning system such as git, Subversion, or similar. And in
+						order to be
+						able to use these CVS from within Atomic, you may want
+						to have CVS
+						integration in the application itself instead of having
+						to use an
+						external command line. There are at least one (or more)
+						plugins
+						for this purpose available from the Eclipse p2 repository
+						for all
 						major
 						version control systems.
 					</para>
@@ -851,8 +881,36 @@
 								EGit, please refer to the
 								<link xl:href="http://wiki.eclipse.org/EGit/User_Guide">EGit User Guide</link>
 								.
+							</para><para>Once
+								its finished, review the items that you want to install and
+								click
+								<emphasis>Next</emphasis>
+								.
 							</para>
 						</listitem>
+						<listitem>
+							<para>Read the license and accept it.</para>
+						</listitem>
+						<listitem>
+							<para>
+								Atomic will now install EGit. Once its finished, you wil be
+								prompted to restart Atomic. Click
+								<emphasis>Restart Now</emphasis>
+								.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Once Atomic is restarted, EGit is installed and accessible via
+								right-click on a project in the Navigation View (cf. <xref linkend="figure.egit_1" xrefstyle="template:%n" />). You can
+								now use EGit to version your corpus documents or any other files
+								you have in your workspace. For more information on how to use
+								EGit, please refer to the
+								<link xl:href="http://wiki.eclipse.org/EGit/User_Guide">EGit User Guide</link>
+								.
+							</para>
+						</listitem>
+					
 					</itemizedlist>
 					<figure xml:id="figure.egit_1">
 						<title>Sharing an Atomic project to a git repository.</title>
