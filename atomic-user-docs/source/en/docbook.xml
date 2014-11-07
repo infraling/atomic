@@ -639,7 +639,40 @@
 		</sect2>
 		<sect2 id="reference_install_new_plugins" xreflabel="Plugin installation reference">
 			<title>Install new plugins</title>
-			<para>In Atomic, you can install new functionality at runtime.</para>
+			<para>In Atomic, you can very easily add new functionality to the
+				application yourself, at runtime. This is done by installing
+				additional plugins in Atomic. There are generally two way to achieve
+				this, depending on how the plugin is being made available:
+			</para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						<xref linkend="reference_markeplace" />
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<xref linkend="reference_p2" />
+					</para>
+				</listitem>
+			</itemizedlist>
+			<sect3 id="reference_marketplace" xreflabel="Install new plugins via the Eclipse Marketplace">
+				<title>Install new plugins via the Eclipse Marketplace</title>
+				<para>
+					The
+					<link xl:href="http://marketplace.eclipse.org/">Eclipse Marketplace</link>
+					is a platform for third-party Eclipse-based solution, i.e., plugins
+					(or complete applications). Plugins available from the marketplace
+					can be consumed by any Eclipse-based application, such as Atomic.
+					Searching the marketplace and installing software from it is
+					achieved via the Eclipse Marketplace client included in Atomic.
+				</para>
+				<para>In order to install a new plugin, go to </para>
+			</sect3>
+			<sect3 id="reference_p2" xreflabel="Install new plugins from a p2 repository">
+				<title>Install new plugins from a p2 repository</title>
+				<para></para>
+			</sect3>
 		</sect2>
 	</sect1>
 </article>
