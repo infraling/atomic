@@ -40,7 +40,7 @@
 					</para>
 				</listitem>
 			</itemizedlist>
-			<sect3 id="new_project" xreflabel="Create a new project">
+			<sect3 xml:id="new_project" xreflabel="Create a new project">
 				<title>Create a new project</title>
 				<para>
 					To create a new Atomic project, open the
@@ -56,7 +56,7 @@
 					<emphasis>New Atomic Project</emphasis>
 					.
 				</para>
-				<figure id="figure_new_project_wizard">
+				<figure xml:id="figure_new_project_wizard">
 					<title>The New Project Wizard at Step 2.</title>
 					<mediaobject>
 						<imageobject>
@@ -102,7 +102,7 @@
 					created.
 				</para>
 			</sect3>
-			<sect3 id="import_corpus" xreflabel="Import an existing corpus">
+			<sect3 xml:id="import_corpus" xreflabel="Import an existing corpus">
 				<title>Import an existing corpus</title>
 				<para>
 					In order to import an existing corpus, right-click into the
@@ -152,7 +152,7 @@
 				</menuchoice>
 				from the pop-up menu. When opening a newly created document, the
 				editing area will show the tokenized corpus text.
-				<figure id="figure_annotation_graph_editor">
+				<figure xml:id="figure_annotation_graph_editor">
 					<title>Atomic application window with Annotation Graph Editor.
 					</title>
 					<mediaobject>
@@ -224,7 +224,7 @@
 						.
 					</para>
 				</sect4>
-				<sect4 id="annotation_elements" xreflabel="Annotation of elements">
+				<sect4 xml:id="annotation_elements" xreflabel="Annotation of elements">
 					<title>Annotation of elements</title>
 					<para>
 						In the Annotation Graph Editor, annotations have a
@@ -390,7 +390,7 @@
 						<screen>e -p n2 n1 coref::coreftype:anaph</screen>
 					</para>
 				</sect4>
-				<sect4 id="atomical_annotation_elements">
+				<sect4 xml:id="atomical_annotation_elements">
 					<title>Annotation of elements</title>
 					<para>
 						To annotate elements, use the
@@ -447,7 +447,7 @@
 	</sect1>
 	<sect1>
 		<title>Reference</title>
-		<sect2 id="reference_atomical" xreflabel="AtomicAL reference">
+		<sect2 xml:id="reference_atomical" xreflabel="AtomicAL reference">
 			<title>AtomicAL</title>
 			<para>
 				Note that some AtomicAL commands can be issued not only for single
@@ -605,7 +605,7 @@
 				</tgroup>
 			</table>
 
-			<table frame='all' id="reference_atomical_edge_types">
+			<table frame='all' xml:id="reference_atomical_edge_types">
 				<title>AtomicAL edge type flags</title>
 				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 					<colspec colname='c1' colwidth="1*" />
@@ -637,7 +637,7 @@
 				</tgroup>
 			</table>
 		</sect2>
-		<sect2 id="reference_install_new_plugins" xreflabel="Plugin installation reference">
+		<sect2 xml:id="reference_install_new_plugins" xreflabel="Plugin installation reference">
 			<title>Install new plugins</title>
 			<para>In Atomic, you can very easily add new functionality to the
 				application yourself, at runtime. This is done by installing
@@ -647,7 +647,7 @@
 			<itemizedlist>
 				<listitem>
 					<para>
-						<xref linkend="reference_markeplace" />
+						<xref linkend="reference_marketplace" />
 					</para>
 				</listitem>
 				<listitem>
@@ -656,7 +656,7 @@
 					</para>
 				</listitem>
 			</itemizedlist>
-			<sect3 id="reference_marketplace" xreflabel="Install new plugins via the Eclipse Marketplace">
+			<sect3 xml:id="reference_marketplace" xreflabel="Install new plugins via the Eclipse Marketplace">
 				<title>Install new plugins via the Eclipse Marketplace</title>
 				<para>
 					The
@@ -665,13 +665,214 @@
 					(or complete applications). Plugins available from the marketplace
 					can be consumed by any Eclipse-based application, such as Atomic.
 					Searching the marketplace and installing software from it is
-					achieved via the Eclipse Marketplace client included in Atomic.
+					achieved via the
+					<link linkend="figure.figure_marketplace">Eclipse Marketplace client</link>
+					included in Atomic.
 				</para>
-				<para>In order to install a new plugin, go to </para>
+				<figure xml:id="figure.figure_marketplace">
+					<title>The Eclipse Marketplace client.</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata scalefit="1" width="100%" contentdepth="100%"
+								align="center" valign="middle" format="PNG"
+								fileref="resources/marketplace.png" />
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<para>
+					In order to install a new plugin, go to
+					<menuchoice>
+						<guimenu>Options</guimenu>
+						<guisubmenu>Install new plugins from Eclipse Marketplace
+						</guisubmenu>
+					</menuchoice>
+					. This will open the Eclipse Marketplace client. Its use is fairly
+					self-explanatory. You can browse different categories, or search
+					for plugins. Once you have found a plugin you want to install,
+					simply click the provided install button next to the search result.
+				</para>
+				<sect4>
+					<title>Example: Install Git support in Atomic</title>
+					<para>In order to be able to version your corpora and annotations,
+						and enable them for collaborative work, you may want to use a
+						versioning system such as git, Subversion, or similar. In order be
+						able to use these CVS from within Atomic, you may want to have CVS
+						integration in the application itself instead of having to use an
+						external command line. There are at least one (or more) plugins
+						for this purpose available from the marketplace for all major
+						versoin control systems.
+					</para>
+					<para>
+						In the case of git, the plugin you would want to install is
+						<emphasis>EGit - Git Team Provider</emphasis>
+						. To install this plugin, do the following.
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>Open the Eclipse Marketplace Client (see above).</para>
+						</listitem>
+						<listitem>
+							<para>
+								Search for "
+								<emphasis>egit</emphasis>
+								". The first result should be the EGit Team Provider plugin.
+							</para>
+						</listitem>
+						<listitem>
+							<para>Click the install button.</para>
+						</listitem>
+						<listitem>
+							<para>The EM client will calculate dependencies</para>
+						</listitem>
+					</itemizedlist>
+				</sect4>
 			</sect3>
-			<sect3 id="reference_p2" xreflabel="Install new plugins from a p2 repository">
+			<sect3 xml:id="reference_p2" xreflabel="Install new plugins from a p2 repository">
 				<title>Install new plugins from a p2 repository</title>
-				<para></para>
+				<para>
+					Atomic can install plugins from p2 repositories, e.g., when they
+					are not available via the
+					<link linkend="reference_marketplace">Eclipse Marketplace</link>
+					. All of the plugins provided by Eclipse are available from the
+					official Eclipse Software Site. Atomic includes an Install Wizard
+					to search the available plugins and install them as needed. You can
+					access it via
+					<menuchoice>
+						<guimenu>Options</guimenu>
+						<guisubmenu>Install new plugins from p2 repository</guisubmenu>
+					</menuchoice>
+					. In the Wizard you have to provide the URL of a p2 repository
+					(Atomic already includes the reference to the official Eclipse
+					repository). Select the
+					<emphasis>Software Site for additional Eclipse plugins</emphasis>
+					from the
+					<emphasis>Work with:</emphasis>
+					field, and wait until the contents are fully loaded. The plugins
+					are shown in categories, but you can switch categorization off in
+					the self-explanatory
+					<link linkend="figure.p2">Install Wizard</link>
+					as well.
+				</para>
+				<para>
+					For further information on how to install plugins from a p2
+					repository, cf.
+					<xref linkend="ex_p2" xrefstyle="template:%n" />
+					.
+				</para>
+				<figure xml:id="figure.p2">
+					<title>Atomic's Install Wizard.</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata scalefit="1" width="100%" contentdepth="100%"
+								align="center" valign="middle" format="PNG" fileref="resources/p2.png" />
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<sect4 xml:id="ex_p2" xreflabel="Example: Install Git support in Atomic">
+					<title>Example: Install Git support in Atomic</title>
+					<para>In order to be able to version your corpora and annotations,
+						and enable them for collaborative work, you may want to use a
+						versioning system such as git, Subversion, or similar. In order be
+						able to use these CVS from within Atomic, you may want to have CVS
+						integration in the application itself instead of having to use an
+						external command line. There are at least one (or more) plugins
+						for this purpose available from the Eclipse p2 repository for all
+						major
+						version control systems.
+					</para>
+					<para>
+						In the case of git, the plugin you would want to install is
+						<emphasis>Eclipse EGit</emphasis>
+						. To install this plugin, do the following.
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>Open the Install Wizard (see above).</para>
+						</listitem>
+						<listitem>
+							<para>
+								Select the p2 repository to work with, in this case
+								<emphasis>Software Site for additional Eclipse plugins
+								</emphasis>
+								at
+								<link xl:href="http://download.eclipse.org/releases/indigo">http://download.eclipse.org/releases/indigo
+								</link>
+								. This is the default site and is already defined in Atomic.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Search for "
+								<emphasis>egit</emphasis>
+								", or browse the category
+								<emphasis>Collaboration</emphasis>
+								until you find the entry
+								"
+								<emphasis>Eclipse EGit</emphasis>
+								".
+							</para>
+						</listitem>
+						<listitem>
+							<para>Check the checkbox next to the plugin name.</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click
+								<emphasis>Next</emphasis>
+								.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								The wizard will calculate requirements and dependencies. Once
+								its finished, review the items that you want to install and
+								click
+								<emphasis>Next</emphasis>
+								.
+							</para>
+						</listitem>
+						<listitem>
+							<para>Read the license and accept it.</para>
+						</listitem>
+						<listitem>
+							<para>
+								Atomic will now install EGit. Once its finished, you wil be
+								prompted to restart Atomic. Click
+								<emphasis>Restart Now</emphasis>
+								.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Once Atomic is restarted, EGit is installed and accessible via
+								right-click on a project in the Navigation View (cf. ). You can
+								now use EGit to version your corpus documents or any other files
+								you have in your workspace. For more information on how to use
+								EGit, please refer to the
+								<link xl:href="http://wiki.eclipse.org/EGit/User_Guide">EGit User Guide</link>
+								.
+							</para>
+						</listitem>
+					</itemizedlist>
+					<figure xml:id="figure.egit_1">
+						<title>Sharing an Atomic project to a git repository.</title>
+						<mediaobject>
+							<imageobject>
+								<imagedata scalefit="1" width="100%" contentdepth="100%"
+									align="center" valign="middle" format="PNG" fileref="resources/egit_1.png" />
+							</imageobject>
+						</mediaobject>
+					</figure>
+					<figure xml:id="figure.egit_2">
+						<title>Configure a git repository in Atomic.</title>
+						<mediaobject>
+							<imageobject>
+								<imagedata scalefit="1" width="100%" contentdepth="100%"
+									align="center" valign="middle" format="PNG" fileref="resources/egit_2.png" />
+							</imageobject>
+						</mediaobject>
+					</figure>
+				</sect4>
 			</sect3>
 		</sect2>
 	</sect1>
