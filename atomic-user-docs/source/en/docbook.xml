@@ -18,9 +18,24 @@
 	</info>
 	<sect1>
 		<title>Getting started</title>
-		<para>This guide describes example workflows for using Atomic to
-			annotate a corpus.
+		<para>This guide gives a workflow example for annotating a corpus with Atomic.
 		</para>
+		<sect2>
+		<title>Further resources</title>
+		<para>If you want to know more about Atomic, please refer to the <link xl:href="http://linktype.iaa.uni-jena.de/atomic">Atomic website</link>.</para>
+		<para>If you want to receive notifications about upcoming changes, new releases, etc., or get in touch with other Atomic users, please subscribe to the <link xl:href="https://lserv.uni-jena.de/mailman/listinfo/atomic-user">Atomic Users mailing list (atomic-user@listserv.uni-jena.de)</link>.</para>
+		<para>If you have suggestions, feature requests, problems, or want to file a bug report, please create a new issue at <link xl:href="https://github.com/infraling/atomic/issues">Atomic's issue tracker at github.com</link>.</para>
+		<para>Atomic is open source under the <link xl:href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</link>, and you can find the source code at <link xl:href="https://github.com/infraling/atomic">github.com/infraling/atomic</link>.</para>
+		</sect2>
+		<sect2>
+			<title>The workspace</title>
+			<para>In Atomic, workspaces can be defined. A workspace is a physical
+				location where Atomic stores projects, folders and files. You are
+				asked to pick a workspace location when running Atomic for the first
+				time, and each subsequent time you run the application if you
+				haven't activated the option to remember the workspace.</para>
+		</sect2>
+
 		<sect2>
 			<title>Creating a project</title>
 			<para>There are two ways to create a project in Atomic:</para>
@@ -176,7 +191,7 @@
 				</para>
 				<sect4>
 					<title>Creating nodes</title>
-					<para>Click on the Structure Tool or the Node Tool in order to
+					<para>Click on the Structure Tool or the Span Tool in order to
 						create a new node. Then, either drag-and-drop the tool onto a
 						position of your choice in the editing area, or click on the
 						editing area at the position of your choice.
@@ -205,7 +220,7 @@
 						be
 						<emphasis>spanning relation</emphasis>
 						, and edges will only be created to selected nodes of type
-						<emphasis>token</emphasis>
+						<emphasis>token</emphasis>, as spanning relations only accept tokens as target nodes
 						.
 					</para>
 				</sect4>
@@ -260,12 +275,8 @@
 						add a line-break, press
 						<emphasis>Return.</emphasis>
 						To commit the annotations, press
-						<emphasis>CTRL + Return</emphasis>
-						. To abort editing the annotations, press
-						<emphasis>ESC</emphasis>
-						.
-						<emphasis>Return</emphasis>
-						, to finish editing the annotations, press
+						<emphasis>CTRL + Return</emphasis>. To abort editing the annotations, press
+						<emphasis>ESC</emphasis>.
 					</para>
 					<para>
 						To edit a single existing annotation on an element, select the
@@ -407,7 +418,7 @@
 								<para>
 									one or more annotations in one of the following forms,
 									where the last one (an annotation with a null value) marks an
-									existing annotation with key [key] to be deleted
+									existing annotation with key [key] for deletion.
 								</para>
 							</listitem>
 						</itemizedlist>
@@ -661,7 +672,7 @@
 				<para>
 					The
 					<link xl:href="http://marketplace.eclipse.org/">Eclipse Marketplace</link>
-					is a platform for third-party Eclipse-based solution, i.e., plugins
+					is a platform for third-party Eclipse-based solutions, i.e., plugins
 					(or complete applications). Plugins available from the marketplace
 					can be consumed by any Eclipse-based application, such as Atomic.
 					Searching the marketplace and installing software from it is
@@ -720,7 +731,8 @@
 							<para>Click the install button.</para>
 						</listitem>
 						<listitem>
-							<para>The EM client will calculate requirements and dependencies. Once
+							<para>
+								The EM client will calculate requirements and dependencies. Once
 								its finished, review the items that you want to install and
 								click
 								<emphasis>Next</emphasis>
@@ -732,7 +744,8 @@
 						</listitem>
 						<listitem>
 							<para>
-								Atomic will now install XMLEspresso. Once its finished, you wil be
+								Atomic will now install XMLEspresso. Once its finished, you wil
+								be
 								prompted to restart Atomic. Click
 								<emphasis>Restart Now</emphasis>
 								.
@@ -740,12 +753,15 @@
 						</listitem>
 						<listitem>
 							<para>
-								Once Atomic is restarted, XMLEspresso is installed and accessible via
-								right-click on an XML, or .salt, file in the Navigation View, and the 
+								Once Atomic is restarted, XMLEspresso is installed and
+								accessible via
+								right-click on an XML, or .salt, file in the
+								Navigation View, and the
 								<menuchoice>
-								<guimenu>Open With</guimenu>
-								<guisubmenu>Other ...</guisubmenu>
-								</menuchoice> menu item
+									<guimenu>Open With</guimenu>
+									<guisubmenu>Other ...</guisubmenu>
+								</menuchoice>
+								menu item
 								.
 							</para>
 						</listitem>
@@ -881,7 +897,9 @@
 								EGit, please refer to the
 								<link xl:href="http://wiki.eclipse.org/EGit/User_Guide">EGit User Guide</link>
 								.
-							</para><para>Once
+							</para>
+							<para>
+								Once
 								its finished, review the items that you want to install and
 								click
 								<emphasis>Next</emphasis>
@@ -902,15 +920,19 @@
 						<listitem>
 							<para>
 								Once Atomic is restarted, EGit is installed and accessible via
-								right-click on a project in the Navigation View (cf. <xref linkend="figure.egit_1" xrefstyle="template:%n" />). You can
-								now use EGit to version your corpus documents or any other files
-								you have in your workspace. For more information on how to use
+								right-click on a project in the Navigation View (cf.
+								<xref linkend="figure.egit_1" xrefstyle="template:%n" />
+								). You can
+								now use EGit to version your corpus documents or any
+								other files
+								you have in your workspace. For more information on
+								how to use
 								EGit, please refer to the
 								<link xl:href="http://wiki.eclipse.org/EGit/User_Guide">EGit User Guide</link>
 								.
 							</para>
 						</listitem>
-					
+
 					</itemizedlist>
 					<figure xml:id="figure.egit_1">
 						<title>Sharing an Atomic project to a git repository.</title>
