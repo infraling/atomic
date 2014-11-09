@@ -119,6 +119,11 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			displayHelp();
 			return;
 		}
+		else if (atomicALCommand.equalsIgnoreCase("clear")) {
+			clearConsole();
+			return;
+		}
+		
 		try {
 			editor = getEditor();
 		} catch (NullPointerException e) {
@@ -587,8 +592,11 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			out.write("Command                           Arguments                               Syntax example\n" + "n (New structure node)" + /***/
 			"            [key]:[value]                           n pos:np\n" + "s (New span node)" + /***/
 			"                 [element] [element] [key]:[val]         s t1 t2 type:np\n" + "e (New edge)                      -[type] [source] [target] [key]:[value] e -d n1 n2 r:coref\n" + "a (Annotate)" + /***/
-			"                      [element] [key]:[val] / [key]:          a n1 pos:np\n" + "d (Delete element)                [element] [element]                     d t1 n2\n" + "p (Group under new parent)" + /***/
-			"        [element] [element] [key]:[val]         p t1 t2 pos:np\n"/*
+			"                      [element] [key]:[val] / [key]:          a n1 pos:np\n" + "d (Delete element)                [element] [element]                     d t1 n2\n" + 
+			"p (Group under new parent)        [element] [element] [key]:[val]         p t1 t2 pos:np\n"+
+			"help (Displays this command overview)\n"+
+			"clear (Clears the console)\n"
+			/*
 																			 * +
 																			 * "c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"
 																			 * +
