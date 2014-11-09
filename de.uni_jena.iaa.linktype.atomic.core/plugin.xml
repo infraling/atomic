@@ -88,6 +88,17 @@
                label="View"
                mnemonic="V">
          </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.helpMenu"
+               label="Help"
+               mnemonic="H">
+            <command
+                  commandId="org.eclipse.ui.help.displayHelp"
+                  label="Help Contents"
+                  mnemonic="H"
+                  style="push">
+            </command>
+         </menu>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -217,6 +228,19 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+Q C">
       </key>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.index">
+      <index
+            file="index.xml">
+      </index>
    </extension>
    <!-- Navigator above -->
 
