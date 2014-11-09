@@ -88,7 +88,7 @@
                mnemonic="H">
             <command
                   commandId="org.eclipse.ui.help.displayHelp"
-                  label="Atomic Help"
+                  label="Help Contents"
                   mnemonic="H"
                   style="push">
             </command>
