@@ -205,6 +205,44 @@
 					annotation graph for the corpus document.
 				</para>
 				<sect4>
+					<title>Keyboard navigation</title>
+					<para>The Annotation Graph Editor can be navigated via the keyboard using the following keys.</para>
+					<itemizedlist>
+						<listitem>
+							<para><emphasis>Arrows (Left, Right, Up, Down)</emphasis>: Change the currently selected element.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Shift-Arrows</emphasis>: Extend the currently selected element to include the elements to the left, the right, above, or below.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Ctrl-Arrows</emphasis>: Move focus to a different element without changing the
+selection.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Ctrl-Shift-Arrows</emphasis>: Scroll the GEF viewer left, right, up, or down.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Alt-Down Arrow</emphasis>: Change the currently selected element to be the first
+nested element within the element that currently has focus.
+							</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Alt-Up Arrow</emphasis>: Change the currently selected element to be the parent
+element containing the element that currently has focus.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>/, \</emphasis>: Change the selection to be a connection associated with the element
+with focus. Repeatedly pressing either of these keys cycles the current
+selection forward or backward through the connections associated with
+the element with focus.
+							</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>?, |</emphasis>: Extend the selection to include connections associated with the element with focus.</para>
+						</listitem>
+					</itemizedlist>
+				</sect4>
+				<sect4>
 					<title>Creating nodes</title>
 					<para>Click on the Structure Tool or the Span Tool in order to
 						create a new node. Then, either drag-and-drop the tool onto a
