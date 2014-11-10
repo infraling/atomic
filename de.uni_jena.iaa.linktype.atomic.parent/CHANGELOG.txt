@@ -6,4 +6,4 @@ Version 0.1.7
 =============
 - Add 'clear' command to the AtomicAL console
 - Add Eclipse Marketplace Client to GUI
-- Add Eclipse help to GUI, and Atomic User Guide (PDF) to application root
+- Add Eclipse help to GUI, and Atomic User Guide (PDF) as well as changelog to application root
