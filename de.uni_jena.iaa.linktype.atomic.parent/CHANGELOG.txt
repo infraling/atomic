@@ -7,3 +7,15 @@ Version 0.1.7
 - Add 'clear' command to the AtomicAL console
 - Add Eclipse Marketplace Client to GUI
 - Add Eclipse help to GUI, and Atomic User Guide (PDF) as well as changelog to application root
+
+Version 0.1.6
+=============
+- Fixes AtomicAL console freeze after executing faulty commands
+
+Version 0.1.5
+=============
+- Add set annotation capabilities to AtomicAL
+
+Version 0.1.4
+=============
+Initial release
