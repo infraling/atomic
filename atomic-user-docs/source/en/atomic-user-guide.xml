@@ -559,7 +559,11 @@ the element with focus.
 							<entry></entry>
 							<entry>help</entry>
 						</row>
-
+						<row>
+							<entry>clear (Clear the console)</entry>
+							<entry></entry>
+							<entry>clear</entry>
+						</row>
 						<row>
 							<entry>n (New structure node)</entry>
 							<entry>[key]:[value]</entry>
