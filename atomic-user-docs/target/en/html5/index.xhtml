@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Atomic User Guide v0.1.7</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="next" href="#d0e16" title="Getting started"/></head><body><header/><section xml:lang="en" class="article" id="d0e1"><div class="titlepage"><div><div><h1 class="title">Atomic User Guide v0.1.7</h1></div><div><div class="author"><h3 class="author">Stephan Druskat</h3></div></div><div><div class="author"><h3 class="author"><span class="orgname">Friedrich Schiller University Jena</span></h3></div></div><div><p class="copyright">Copyright © 2014 
+				Friedrich Schiller University Jena
+			</p></div></div><hr/></div><section class="sect1" id="d0e16"><div class="titlepage"><div><div><h2 class="title" style="clear: both">Getting started</h2></div></div></div><p>This guide gives a workflow example for annotating a corpus with
+			Atomic.
+		</p><section class="sect2" id="d0e21"><div class="titlepage"><div><div><h3 class="title">Resources</h3></div></div></div><p>
+				If you want to know more about Atomic, please refer to the
+				<a class="link" href="http://linktype.iaa.uni-jena.de/atomic" target="_top">Atomic website</a>
+				.
+			</p><p>
+				If you want to receive notifications about upcoming changes, new
+				releases, etc., or get in touch with other Atomic users, please
+				subscribe to the
+				<a class="link" href="https://lserv.uni-jena.de/mailman/listinfo/atomic-user" target="_top">Atomic Users mailing list
+					(atomic-user@listserv.uni-jena.de)</a>
+				.
+			</p><p>
+				If you have suggestions, feature requests, problems, or want to file
+				a bug report, please create a new issue at
+				<a class="link" href="https://github.com/infraling/atomic/issues" target="_top">Atomic's issue tracker at github.com</a>
+				. When reporting bugs, please don't forget to mention the version of
+				Atomic you are using, and your operating system and architecture
+				(e.g., Windows 7, 64 bit).
+			</p><p>
+				Atomic is open source under the
+				<a class="link" href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_top">Apache License, Version 2.0</a>
+				, and you can find the source code at
+				<a class="link" href="https://github.com/infraling/atomic" target="_top">github.com/infraling/atomic</a>
+				.
+			</p><p>
+				If you want to learn about Salt (Atomic's data model), or Pepper,
+				the converter framework for linguistic formats (included in Atomic),
+				please go to
+				<a class="link" href="https://korpling.german.hu-berlin.de/saltnpepper/" target="_top">the SaltNPepper homepage</a>
+				.
+			</p></section><section class="sect2" id="d0e52"><div class="titlepage"><div><div><h3 class="title">The workspace</h3></div></div></div><p>In Atomic, workspaces can be defined. A workspace is a physical
+				location (i.e., path on the file system) where Atomic stores
+				projects, folders and files. You are
+				asked to pick a workspace
+				location when running Atomic for the first
+				time, and each subsequent
+				time you run the application if you
+				haven't activated the option to
+				remember the workspace.
+			</p></section><section class="sect2" id="d0e57"><div class="titlepage"><div><div><h3 class="title">Creating a project</h3></div></div></div><p>There are two ways to create a project in Atomic:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+						<a class="xref" href="#new_project" title="Create a new project">Create a new project</a>
+						from scratch, providing the corpus
+						text.
+					</p></li><li class="listitem"><p>
+						<a class="xref" href="#import_corpus" title="Import an existing corpus">Import an existing corpus</a>
+						from one of the formats which can be read
+						by Pepper.
+					</p></li></ul></div><section class="sect3" id="new_project"><div class="titlepage"><div><div><h4 class="title">Create a new project</h4></div></div></div><p>
+					To create a new Atomic project, open the
+					<span class="emphasis"><em>New Project Wizard</em></span>, either by going to
+					<span class="guimenu">File</span> → <span class="guisubmenu">New Project</span>, or by pressing
+					<span class="emphasis"><em>CTRL + N</em></span>. In the wizard, choose
+					<span class="emphasis"><em>New Atomic Project</em></span>.
+				</p><div class="figure" id="figure_new_project_wizard"><p class="title"><strong>Figure 1. The New Project Wizard at Step 2.</strong></p><div class="figure-contents"><div class="mediaobject"><table style="border: 0; width: 100%; cellpadding: 0; cellspacing: 0;"><tr><td><img src="resources/new_project.png" height="360" alt="The New Project Wizard at Step 2."/></td></tr></table></div></div></div><br class="figure-break"/><p>
+					In the next step (cf.
+					<a class="xref" href="#figure_new_project_wizard" title="Figure 1. The New Project Wizard at Step 2.">Figure 1, “The New Project Wizard at Step 2.”</a>), fill in the project name,
+					and
+					</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+								choose a
+								<span class="emphasis"><em>.txt</em></span>
+								file containing the corpus text and select the file's
+								encoding,
+								or
+							</p></li><li class="listitem"><p>
+								enter the corpus text via the text field provided after clicking
+								the
+								<span class="emphasis"><em>...</em></span>
+								button.
+							</p></li></ul></div><p>
+					Finally, choose the tokenizer that should be used to tokenize the
+					corpus text (currently, only the TreeTagger Tokenizer is
+					available), and press
+					<span class="emphasis"><em>Finish</em></span>.
+				</p><p>The corpus text will now be tokenized, and the project
+					created.
+				</p></section><section class="sect3" id="import_corpus"><div class="titlepage"><div><div><h4 class="title">Import an existing corpus</h4></div></div></div><p>
+					In order to import an existing corpus, right-click into the
+					<span class="emphasis"><em>Navigation</em></span> window and choose
+					<span class="guimenuitem">Import ...</span> from the pop-up menu. In the Import Wizard, choose
+					<span class="guimenu">Atomic</span> → <span class="guisubmenu">Corpus Import</span>.
+					Follow the instructions provided by the Import Wizard to import a
+					corpus from one of the supported formats. These are currently:
+					CoNLL, EXMARaLDA, Elan, MMAX2, PAULA, RelANNIS, SaltXML,
+					Treetagger, UAM. The corpus will be imported, and wrapped in a new
+					project.
+				</p></section></section><section class="sect2" id="d0e143"><div class="titlepage"><div><div><h3 class="title">Annotation with the Annotation Graph Editor</h3></div></div></div><p>
+				To open a corpus document of your choice in the Annotation Graph
+				Editor, double-click the file containing the respective corpus
+				document in the Navigation view. Should you have opened this file
+				with another editor before, Atomic will have remembered the editor
+				the file was opened with last. In this case, right-click onto the
+				file, and choose
+				<span class="guimenu">Open With</span> → <span class="guisubmenu">Annotation Graph Editor</span> from the pop-up menu. When opening a newly created document, the
+				editing area will show the tokenized corpus text.
+				</p><div class="figure" id="figure_annotation_graph_editor"><p class="title"><strong>Figure 2. Atomic application window with Annotation Graph Editor.
+					</strong></p><div class="figure-contents"><div class="mediaobject"><table style="border: 0; width: 100%; cellpadding: 0; cellspacing: 0;"><tr><td><img src="resources/app_window.png" height="360" alt="Atomic application window with Annotation Graph Editor."/></td></tr></table></div></div></div><p><br class="figure-break"/>
+			</p><section class="sect3" id="d0e164"><div class="titlepage"><div><div><h4 class="title">Tool-based annotation</h4></div></div></div><p>The Annotation Graph Editor includes a tools palette which can
+					be used for tool-based annotation. The following paragraphs
+					describe how to use the tools in the palette to create an
+					annotation graph for the corpus document.
+				</p><section class="sect4" id="d0e169"><div class="titlepage"><div><div><h5 class="title">Keyboard navigation</h5></div></div></div><p>The Annotation Graph Editor can be navigated via the keyboard using the following keys.</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="emphasis"><em>Arrows (Left, Right, Up, Down)</em></span>: Change the currently selected element.</p></li><li class="listitem"><p><span class="emphasis"><em>Shift-Arrows</em></span>: Extend the currently selected element to include the elements to the left, the right, above, or below.</p></li><li class="listitem"><p><span class="emphasis"><em>Ctrl-Arrows</em></span>: Move focus to a different element without changing the
+selection.</p></li><li class="listitem"><p><span class="emphasis"><em>Ctrl-Shift-Arrows</em></span>: Scroll the GEF viewer left, right, up, or down.</p></li><li class="listitem"><p><span class="emphasis"><em>Alt-Down Arrow</em></span>: Change the currently selected element to be the first
+nested element within the element that currently has focus.
+							</p></li><li class="listitem"><p><span class="emphasis"><em>Alt-Up Arrow</em></span>: Change the currently selected element to be the parent
+element containing the element that currently has focus.</p></li><li class="listitem"><p><span class="emphasis"><em>/, \</em></span>: Change the selection to be a connection associated with the element
+with focus. Repeatedly pressing either of these keys cycles the current
+selection forward or backward through the connections associated with
+the element with focus.
+							</p></li><li class="listitem"><p><span class="emphasis"><em>?, |</em></span>: Extend the selection to include connections associated with the element with focus.</p></li></ul></div></section><section class="sect4" id="d0e215"><div class="titlepage"><div><div><h5 class="title">Creating nodes</h5></div></div></div><p>Click on the Structure Tool or the Span Tool in order to
+						create a new node. Then, either drag-and-drop the tool onto a
+						position of your choice in the editing area, or click on the
+						editing area at the position of your choice.
+					</p><p>Drag-and-drop will
+						create the node, but will not open the
+						annotation field for direct
+						annotation of the newly created node.
+						Click-and-point will create
+						the node and open the annotation field
+						for direct annotation of the
+						node.
+					</p><p>If you have selected any nodes in the editing area before
+						using a node tool, the new node will be created, and edges will be
+						created from it to all of the selected nodes.
+					</p><p>
+						When using the Structure Tool, the type of the newly created edges
+						will be
+						<span class="emphasis"><em>dominance relation</em></span>.
+					</p><p>
+						When using the Span Tool, the type of the newly created edges will
+						be
+						<span class="emphasis"><em>spanning relation</em></span>, and edges will only be created to selected nodes of type
+						<span class="emphasis"><em>token</em></span>, as spanning relations only accept tokens as target nodes.
+					</p></section><section class="sect4" id="d0e237"><div class="titlepage"><div><div><h5 class="title">Creating edges</h5></div></div></div><p>To create an edge, click on the respective tool, then click
+						on
+						the node that should be the source of the edge, and subsequently
+						on
+						the node that should be the target of the edge.
+					</p><p>
+						The edge will be created, but the annotation field will not
+						automatically open. In order to annotate edges, please see
+						<a class="xref" href="#annotation_elements" title="Annotation of elements">Annotation of elements</a>.
+					</p></section><section class="sect4" id="annotation_elements"><div class="titlepage"><div><div><h5 class="title">Annotation of elements</h5></div></div></div><p>
+						In the Annotation Graph Editor, annotations have a
+						<span class="emphasis"><em>key</em></span>
+						and a
+						<span class="emphasis"><em>value</em></span>, and optionally can be assigned to a
+						<span class="emphasis"><em>namespace</em></span>. Annotations are entered in the annotation field using either of
+						the following patterns.
+						</p><pre class="screen">
+							[namespace]::[key]:[value]
+							[key]:[value]
+						</pre><p>
+						[Key] and [value] are shown directly on the element, the namespace
+						is shown in a pop-up when hovering over an annotation.
+					</p><p>
+						Elements (i.e., nodes as well as edges) can be annotated by
+						selecting the element via the mouse or
+						the keyboard's arrow
+						buttons,
+						and then either clicking on it once,
+						or pressing
+						<span class="emphasis"><em>Return</em></span>.
+					</p><p>
+						This action will open the annotation field for direct editing.
+						You
+						can enter one or more annotations, with one annotation per line.
+						To
+						add a line-break, press
+						<span class="emphasis"><em>Return</em></span>.
+						To commit the annotations, press
+						<span class="emphasis"><em>CTRL + Return</em></span>. To abort editing the annotations, press
+						<span class="emphasis"><em>ESC</em></span>.
+					</p><p>
+						To edit a single existing annotation on an element, select the
+						annotation by mouse or keyboard, and either click on it, or press
+						<span class="emphasis"><em>Return</em></span>. This will open the single annotation field. Change the
+						annotation, and press
+						<span class="emphasis"><em>Return</em></span>
+						to commit it. Press
+						<span class="emphasis"><em>ESC</em></span>
+						to abort the editing process.
+					</p></section><section class="sect4" id="d0e290"><div class="titlepage"><div><div><h5 class="title">Deleting elements and annotations</h5></div></div></div><p>
+						In order to delete elements and annotations, select the respective
+						element(s) or annotation(s) per mouse or keyboard and either press
+						<span class="emphasis"><em>DEL</em></span>
+						or click the delete symbol in the menu bar.
+					</p></section></section><section class="sect3" id="d0e298"><div class="titlepage"><div><div><h4 class="title">Command-line-based annotation with AtomicAL</h4></div></div></div><p>Atomic provides the native annotation language Atomic
+					Annotation Language (AtomicAL) for rapid command-line annotation.
+				</p><p>
+					The AtomicAL console is available when an editor with AtomicAL
+					support is open. The AtomicAL console can be opened via the menu:
+					<span class="guimenu">View</span> → <span class="guisubmenu">AtomicAL Console</span>. The AtomicAL console displays the name of the document it is
+					currently working on as well as the first few characters of the
+					corpus text.
+				</p><p>
+					For a complete list of available commands, see
+					<a class="xref" href="#reference_atomical" title="AtomicAL">AtomicAL reference</a>.
+				</p><section class="sect4" id="d0e315"><div class="titlepage"><div><div><h5 class="title">Creating nodes</h5></div></div></div><p>
+						To create a new structure node, use the
+						<span class="emphasis"><em>n</em></span>
+						command. It takes as arguments
+						</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>one or more annotations in one of the following forms.
+								</p></li></ul></div><p>
+						</p><pre class="screen">
+							[key]:[value]
+							[namespace]::[key]:[value]
+						</pre><p>
+						Example:
+						</p><pre class="screen">n syntax::cat:NP lemma:Atomic</pre><p>
+					</p><p>
+						To create a new span node, use the
+						<span class="emphasis"><em>s</em></span>
+						command. It takes as arguments
+						</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>one or more annotations in one of the following forms.
+								</p></li></ul></div><p>
+						</p><pre class="screen">
+							[key]:[value]
+							[namespace]::[key]:[value]
+						</pre><p>
+						Example:
+						</p><pre class="screen">s coref::reftype:group text:"The board"</pre><p>
+					</p></section><section class="sect4" id="d0e350"><div class="titlepage"><div><div><h5 class="title">Creating edges</h5></div></div></div><p>
+						To create a new edge, use the
+						<span class="emphasis"><em>e</em></span>
+						command. It takes as arguments
+						</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+									an edge type flag, which defines the
+									type of the edge to be
+									created
+								</p><p>
+									For a list of valid flags see
+									<a class="xref" href="#reference_atomical_edge_types" title="Table 2. AtomicAL edge type flags">Table 2, “AtomicAL edge type flags”</a>. Also see there for an explanation of how edge type flags are
+									re-used.
+								</p></li><li class="listitem"><p>
+									exactly one source node, referenced via its ID
+								</p></li><li class="listitem"><p>
+									exactly one target node, referenced via its ID
+								</p></li><li class="listitem"><p>one or more annotations in one of the following forms.
+								</p></li></ul></div><p>
+						</p><pre class="screen">
+							[key]:[value]
+							[namespace]::[key]:[value]
+						</pre><p>
+						Example:
+						</p><pre class="screen">e -p n2 n1 coref::coreftype:anaph</pre><p>
+					</p></section><section class="sect4" id="atomical_annotation_elements"><div class="titlepage"><div><div><h5 class="title">Annotation of elements</h5></div></div></div><p>
+						To annotate elements, use the
+						<span class="emphasis"><em>a</em></span>
+						command. It takes as arguments
+						</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+									an element or a list of elements or a set of elements or a
+									combination of the three
+								</p></li><li class="listitem"><p>
+									one or more annotations in one of the following forms,
+									where the last one (an annotation with a null value) marks an
+									existing annotation with key [key] for deletion.
+								</p></li></ul></div><p>
+						</p><pre class="screen">
+							[key]:[value]
+							[namespace]::[key]:[value]
+							[key]:
+						</pre><p>
+						Example:
+						</p><pre class="screen">a n1 n3 t2..t5 d3 o4 x: y:y z::z:z</pre><p>
+					</p></section><section class="sect4" id="d0e404"><div class="titlepage"><div><div><h5 class="title">Deleting elements and annotations</h5></div></div></div><p>
+						For the deletion of annotations, see
+						<a class="xref" href="#atomical_annotation_elements" title="Annotation of elements">the section called “Annotation of elements”</a>.
+					</p><p>
+						To delete elements, use the
+						<span class="emphasis"><em>d</em></span>
+						command. It takes as arguments
+						</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+									an element or a list of elements or a set of elements or a
+									combination of the three
+								</p></li></ul></div><p>
+						Example:
+						</p><pre class="screen">d n1..n5 d1 o3</pre><p>
+					</p></section></section></section></section><section class="sect1" id="d0e424"><div class="titlepage"><div><div><h2 class="title" style="clear: both">Reference</h2></div></div></div><section class="sect2" id="reference_atomical"><div class="titlepage"><div><div><h3 class="title">AtomicAL</h3></div></div></div><p>
+				Note that some AtomicAL commands can be issued not only for single
+				elements, but also for sets of elements where all elements are of
+				the same type and have subsequent IDs. The following command, for
+				example, groups all tokens from
+				<span class="emphasis"><em>t1</em></span>
+				to
+				<span class="emphasis"><em>t5</em></span>
+				(i.e.,
+				<span class="emphasis"><em>t1</em></span>, <span class="emphasis"><em>t2</em></span>, <span class="emphasis"><em>t3</em></span>, <span class="emphasis"><em>t4</em></span>, and
+				<span class="emphasis"><em>t5</em></span>) under a new parent structure node, which is annotated with
+				<span class="emphasis"><em>cat:NP</em></span>.
+				</p><pre class="screen">p t1..t5 cat:NP</pre><p>
+			</p><p>
+				Also note that whenever a command takes
+				<span class="emphasis"><em>[key]:[value]</em></span>
+				or
+				<span class="emphasis"><em>[key]:</em></span>
+				commands, these can be grouped. I.e., to annotate element
+				<span class="emphasis"><em>n1</em></span>
+				with annotations
+				<span class="emphasis"><em>x:x</em></span>, <span class="emphasis"><em>y:y</em></span>	and
+				<span class="emphasis"><em>z:z</em></span>, you can do so in one single command, as shown below.
+				</p><pre class="screen">a n1 x:x y:y z:z</pre><p>
+			</p><div class="table" id="d0e482"><p class="title"><strong>Table 1. AtomicAL commands</strong></p><div class="table-contents"><table style="width: 100%; border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col style="width: 33%; "/><col style="width: 33%; "/><col style="width: 34%; "/></colgroup><thead><tr><th style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Command</th><th style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Arguments</th><th style="text-align: left; border-bottom: 0.5pt solid ; ">
+								Syntax example
+								<a href="#ftn.d0e495" class="footnote"><sup class="footnote" id="d0e495">[a]</sup></a>
+							</th></tr></thead><tbody><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">help (Show help)</td><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> </td><td style="text-align: left; border-bottom: 0.5pt solid ; ">help</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">clear (Clear the console)</td><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> </td><td style="text-align: left; border-bottom: 0.5pt solid ; ">clear</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">n (New structure node)</td><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">[key]:[value]</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">n pos:np</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">s (New span node)</td><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">
+								[element] [element] [key]:[value]
+								<br/>
+								[element]..[element] [key]:[value]
+							</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">
+								s t1 t2 t3 cat:NP
+								<br/>
+								s t1..t10 cat:NP
+							</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">e (New edge)</td><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">
+								-[type]
+								<a href="#ftn.d0e541" class="footnote"><sup class="footnote" id="d0e541">[b]</sup></a>
+								[source] [target] [key]:[value]
+							</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">
+								e -d n1 t3 cat:NP
+							</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">a (Annotate)</td><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">
+								[element] [key]:[value]
+								<br/>
+								[element] [key]:
+							</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">
+								a n1 pos:np
+								<br/>
+								(Deletes the annotation with key [key])
+							</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">d (Delete element)</td><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">
+								d [element] [element]
+								<br/>
+								d [element]..[element]
+							</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">
+								d n1 n2 n3
+								<br/>
+								d n1..n10
+							</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; ">p (Group under new parent)</td><td style="text-align: left; border-right: 0.5pt solid ; ">
+								p [element] [element] [key:val]
+								<br/>
+								p [element]..[element] [key:val]
+							</td><td style="text-align: left; ">
+								p n1 n2 cat:NP
+								<br/>
+								p n1..n8 cat:NP
+							</td></tr></tbody><tbody class="footnotes"><tr><td colspan="3"><div id="ftn.d0e495" class="footnote"><p><a href="#d0e495" class="para"><sup class="para">[a] </sup></a>
+										For reasons of readability, namespace annotations have been
+										left out completely. Please note that whenever a command can
+										take a
+										<span class="emphasis"><em>[key]:[value]</em></span>, it can also take a
+										<span class="emphasis"><em>[namespace]::[key]:[value]</em></span>
+										argument.
+									</p></div><div id="ftn.d0e541" class="footnote"><p><a href="#d0e541" class="para"><sup class="para">[b] </sup></a>
+										Cf.
+										<a class="xref" href="#reference_atomical_edge_types" title="Table 2. AtomicAL edge type flags">Table 2, “AtomicAL edge type flags”</a>. Also note that if a flag has been set in an
+										<span class="emphasis"><em>e</em></span>
+										command before, this flag can be re-used in subsequent uses of
+										the command, i.e., the edge type flag remains active until a
+										new flag is explicitly set. In order to re-use the active
+										flag, don't specify a flag with the command (e.g.,
+										<span class="emphasis"><em>e n1 n2</em></span>).
+									</p></div></td></tr></tbody></table></div></div><br class="table-break"/><div class="table" id="reference_atomical_edge_types"><p class="title"><strong>Table 2. AtomicAL edge type flags</strong></p><div class="table-contents"><table style="width: 100%; border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col style="width: 50%; text-align: left; " class="c1"/><col style="width: 50%; text-align: left; " class="c2"/></colgroup><thead><tr><th style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Flag</th><th style="text-align: left; border-bottom: 0.5pt solid ; ">Edge type</th></tr></thead><tbody><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">d</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">Dominance relation</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">s</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">Spanning relation</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">p</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">Pointing relation</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; ">o</td><td style="text-align: left; ">Order relation</td></tr></tbody></table></div></div><br class="table-break"/></section><section class="sect2" id="reference_install_new_plugins"><div class="titlepage"><div><div><h3 class="title">Install new plugins</h3></div></div></div><p>In Atomic, you can very easily add new functionality to the
+				application yourself, at runtime. This is done by installing
+				additional plugins in Atomic. There are generally two way to achieve
+				this, depending on how the plugin is being made available:
+			</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+						<a class="xref" href="#reference_marketplace" title="Install new plugins via the Eclipse Marketplace">Install new plugins via the Eclipse Marketplace</a>
+					</p></li><li class="listitem"><p>
+						<a class="xref" href="#reference_p2" title="Install new plugins from a p2 repository">Install new plugins from a p2 repository</a>
+					</p></li></ul></div><section class="sect3" id="reference_marketplace"><div class="titlepage"><div><div><h4 class="title">Install new plugins via the Eclipse Marketplace</h4></div></div></div><p>
+					The
+					<a class="link" href="http://marketplace.eclipse.org/" target="_top">Eclipse Marketplace</a>
+					is a platform for third-party Eclipse-based solutions, i.e.,
+					plugins
+					(or complete applications). Plugins available from the
+					marketplace
+					can be consumed by any Eclipse-based application, such
+					as Atomic.
+					Searching the marketplace and installing software from it
+					is
+					achieved via the
+					<a class="link" href="#figure.figure_marketplace" title="Figure 3. The Eclipse Marketplace client.">Eclipse Marketplace client</a>
+					included in Atomic.
+				</p><div class="figure" id="figure.figure_marketplace"><p class="title"><strong>Figure 3. The Eclipse Marketplace client.</strong></p><div class="figure-contents"><div style="text-align: center; " class="mediaobject"><table style="border: 0; width: 100%; cellpadding: 0; cellspacing: 0;"><tr><td style="text-align: center; vertical-align: middle; "><img style="text-align: middle; " src="resources/marketplace.png" height="360" alt="The Eclipse Marketplace client."/></td></tr></table></div></div></div><br class="figure-break"/><p>
+					In order to install a new plugin, go to
+					<span class="guimenu">Options</span> → <span class="guisubmenu">Install new plugins from Eclipse Marketplace
+						</span>. This will open the Eclipse Marketplace client. Its use is fairly
+					self-explanatory. You can browse different categories, or search
+					for plugins. Once you have found a plugin you want to install,
+					simply click the provided install button next to the search result,
+					and follow the instructions.
+				</p><section class="sect4" id="d0e662"><div class="titlepage"><div><div><h5 class="title">Example: Install XML editing support in Atomic</h5></div></div></div><p>
+						If you are working on corpus annotations available in an XML
+						dialect, such as SaltXML which is used in Atomic, you may want to
+						be able to edit the source files comfortably with a dedicated XML
+						editor. There is a variety of solutions available from the Eclipse
+						Marketplace, including
+						<a class="link" href="http://marketplace.eclipse.org/content/xmlespresso-xml-editor-eclipse-plugin" target="_top">XMLEspresso</a>, which can automatically generate grammars for unknown XML
+						schemas and DTDs. To install this plugin, do the following.
+					</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Open the Eclipse Marketplace Client (see above).</p></li><li class="listitem"><p>
+								Search for "<span class="emphasis"><em>xmlespresso</em></span>". The first result should be the XMLEspresso plugin.
+							</p></li><li class="listitem"><p>Click the install button.</p></li><li class="listitem"><p>
+								The EM client will calculate requirements and dependencies. Once
+								its finished, review the items that you want to install and
+								click
+								<span class="emphasis"><em>Next</em></span>.
+							</p></li><li class="listitem"><p>Read the license and accept it.</p></li><li class="listitem"><p>
+								Atomic will now install XMLEspresso. Once its finished, you wil
+								be
+								prompted to restart Atomic. Click
+								<span class="emphasis"><em>Restart Now</em></span>.
+							</p></li><li class="listitem"><p>
+								Once Atomic is restarted, XMLEspresso is installed and
+								accessible via
+								right-click on an XML, or .salt, file in the
+								Navigation View, and the
+								<span class="guimenu">Open With</span> → <span class="guisubmenu">Other ...</span>
+								menu item.
+							</p></li></ul></div></section></section><section class="sect3" id="reference_p2"><div class="titlepage"><div><div><h4 class="title">Install new plugins from a p2 repository</h4></div></div></div><p>
+					Atomic can install plugins from p2 repositories, e.g., when they
+					are not available via the
+					<a class="link" href="#reference_marketplace" title="Install new plugins via the Eclipse Marketplace">Eclipse Marketplace</a>. All of the plugins provided by Eclipse are available from the
+					official Eclipse Software Site. Third-party plugins may have their
+					own update sites, usually specified on the plugins homepage. Atomic
+					includes an Install Wizard
+					to search the available plugins and
+					install them as needed. You can
+					access it via
+					<span class="guimenu">Options</span> → <span class="guisubmenu">Install new plugins from p2 repository</span>. In the Wizard you have to provide the URL of a p2 repository
+					(Atomic already includes the reference to the official Eclipse
+					repository). Select the
+					<span class="emphasis"><em>Software Site for additional Eclipse plugins</em></span>
+					from the
+					<span class="emphasis"><em>Work with:</em></span>
+					field, and wait until the contents are fully loaded. The plugins
+					are shown in categories, but you can switch categorization off in
+					the self-explanatory
+					<a class="link" href="#figure.p2" title="Figure 4. Atomic's Install Wizard.">Install Wizard</a>
+					as well.
+				</p><p>
+					For further information on how to install plugins from a p2
+					repository, cf.
+					<a class="xref" href="#ex_p2" title="Example: Install Git support in Atomic">Example: Install Git support in Atomic</a>.
+				</p><div class="figure" id="figure.p2"><p class="title"><strong>Figure 4. Atomic's Install Wizard.</strong></p><div class="figure-contents"><div style="text-align: center; " class="mediaobject"><table style="border: 0; width: 100%; cellpadding: 0; cellspacing: 0;"><tr><td style="text-align: center; vertical-align: middle; "><img style="text-align: middle; " src="resources/p2.png" height="360" alt="Atomic's Install Wizard."/></td></tr></table></div></div></div><br class="figure-break"/><section class="sect4" id="ex_p2"><div class="titlepage"><div><div><h5 class="title">Example: Install Git support in Atomic</h5></div></div></div><p>In order to be able to version your corpora and annotations,
+						and enable them for collaborative work, you may want to use a
+						versioning system such as git, Subversion, or similar. And in
+						order to be
+						able to use these CVS from within Atomic, you may want
+						to have CVS
+						integration in the application itself instead of having
+						to use an
+						external command line. There are at least one (or more)
+						plugins
+						for this purpose available from the Eclipse p2 repository
+						for all
+						major
+						version control systems.
+					</p><p>
+						In the case of git, the plugin you would want to install is
+						<span class="emphasis"><em>Eclipse EGit</em></span>. To install this plugin, do the following.
+					</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Open the Install Wizard (see above).</p></li><li class="listitem"><p>
+								Select the p2 repository to work with, in this case
+								<span class="emphasis"><em>Software Site for additional Eclipse plugins
+								</em></span>
+								at
+								<a class="link" href="http://download.eclipse.org/releases/indigo" target="_top">http://download.eclipse.org/releases/indigo
+								</a>. This is the default site and is already defined in Atomic.
+							</p></li><li class="listitem"><p>
+								Search for "<span class="emphasis"><em>egit</em></span>", or browse the category
+								<span class="emphasis"><em>Collaboration</em></span>
+								until you find the entry
+								"<span class="emphasis"><em>Eclipse EGit</em></span>".
+							</p></li><li class="listitem"><p>Check the checkbox next to the plugin name.</p></li><li class="listitem"><p>
+								Click
+								<span class="emphasis"><em>Next</em></span>.
+							</p></li><li class="listitem"><p>
+								The wizard will calculate requirements and dependencies. Once
+								its finished, review the items that you want to install and
+								click
+								<span class="emphasis"><em>Next</em></span>.
+							</p></li><li class="listitem"><p>Read the license and accept it.</p></li><li class="listitem"><p>
+								Atomic will now install EGit.
+								Once its finished, you will be
+								prompted to restart Atomic. Click
+								<span class="emphasis"><em>Restart Now</em></span>.
+							</p></li><li class="listitem"><p>
+								Once Atomic is restarted, EGit is installed and accessible via
+								right-click on a project in the Navigation View (cf.
+								<a class="xref" href="#figure.egit_1" title="Figure 5. Sharing an Atomic project to a git repository.">Figure 5, “Sharing an Atomic project to a git repository.”</a>). You can
+								now use EGit to version your corpus documents or any
+								other files
+								you have in your workspace. For more information on
+								how to use
+								EGit, please refer to the
+								<a class="link" href="http://wiki.eclipse.org/EGit/User_Guide" target="_top">EGit User Guide</a>.
+							</p></li></ul></div><div class="figure" id="figure.egit_1"><p class="title"><strong>Figure 5. Sharing an Atomic project to a git repository.</strong></p><div class="figure-contents"><div style="text-align: center; " class="mediaobject"><table style="border: 0; width: 100%; cellpadding: 0; cellspacing: 0;"><tr><td style="text-align: center; vertical-align: middle; "><img style="text-align: middle; " src="resources/egit_1.png" height="360" alt="Sharing an Atomic project to a git repository."/></td></tr></table></div></div></div><br class="figure-break"/><div class="figure" id="figure.egit_2"><p class="title"><strong>Figure 6. Configure a git repository in Atomic.</strong></p><div class="figure-contents"><div style="text-align: center; " class="mediaobject"><table style="border: 0; width: 100%; cellpadding: 0; cellspacing: 0;"><tr><td style="text-align: center; vertical-align: middle; "><img style="text-align: middle; " src="resources/egit_2.png" height="360" alt="Configure a git repository in Atomic."/></td></tr></table></div></div></div><br class="figure-break"/></section></section></section></section></section><footer/></body></html>
