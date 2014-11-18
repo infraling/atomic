@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<toc label="Atomic User Guide v0.1.7" topic="index.html">
+<toc label="Atomic User Guide v0.1.8" topic="index.html">
    <topic label="Getting started" href="index.html#d0e16">
       <topic label="Resources" href="index.html#d0e21"/>
       <topic label="The workspace" href="index.html#d0e52"/>
@@ -11,15 +11,15 @@
          <topic label="Tool-based annotation" href="index.html#d0e164">
             <topic label="Keyboard navigation" href="index.html#d0e169"/>
             <topic label="Creating nodes" href="index.html#d0e215"/>
-            <topic label="Creating edges" href="index.html#d0e237"/>
+            <topic label="Creating edges" href="index.html#d0e245"/>
             <topic label="Annotation of elements" href="index.html#annotation_elements"/>
-            <topic label="Deleting elements and annotations" href="index.html#d0e290"/>
+            <topic label="Deleting elements and annotations" href="index.html#d0e298"/>
          </topic>
-         <topic label="Command-line-based annotation with AtomicAL" href="index.html#d0e298">
-            <topic label="Creating nodes" href="index.html#d0e315"/>
-            <topic label="Creating edges" href="index.html#d0e350"/>
+         <topic label="Command-line-based annotation with AtomicAL" href="index.html#d0e306">
+            <topic label="Creating nodes" href="index.html#d0e323"/>
+            <topic label="Creating edges" href="index.html#d0e358"/>
             <topic label="Annotation of elements" href="index.html#atomical_annotation_elements"/>
-            <topic label="Deleting elements and annotations" href="index.html#d0e404"/>
+            <topic label="Deleting elements and annotations" href="index.html#d0e412"/>
          </topic>
       </topic>
    </topic>
@@ -27,7 +27,7 @@
       <topic label="AtomicAL" href="ar01s02.html#reference_atomical"/>
       <topic label="Install new plugins" href="ar01s02.html#reference_install_new_plugins">
          <topic label="Install new plugins via the Eclipse Marketplace" href="ar01s02.html#reference_marketplace">
-            <topic label="Example: Install XML editing support in Atomic" href="ar01s02.html#d0e662"/>
+            <topic label="Example: Install XML editing support in Atomic" href="ar01s02.html#d0e670"/>
          </topic>
          <topic label="Install new plugins from a p2 repository" href="ar01s02.html#reference_p2">
             <topic label="Example: Install Git support in Atomic" href="ar01s02.html#ex_p2"/>

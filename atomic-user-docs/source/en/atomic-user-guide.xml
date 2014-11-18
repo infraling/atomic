@@ -2,7 +2,7 @@
 <article xml:lang="en" xmlns="http://docbook.org/ns/docbook"
 	version="5.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xl="http://www.w3.org/1999/xlink">
 	<info>
-		<title>Atomic User Guide v0.1.7</title>
+		<title>Atomic User Guide v0.1.8</title>
 		<author>
 			<personname>Stephan Druskat</personname>
 		</author>
@@ -258,17 +258,20 @@ the element with focus.
 						for direct annotation of the
 						node.
 					</para>
+					<para>Alternatively, you can use the keyboard shortcuts <emphasis>CTRL + 1</emphasis> to create spans, and
+					<emphasis>CTRL + 0</emphasis> to create structures.
+					</para>
 					<para>If you have selected any nodes in the editing area before
-						using a node tool, the new node will be created, and edges will be
+						using a node tool or keyboard shortcut, the new node will be created, and edges will be
 						created from it to all of the selected nodes.
 					</para>
 					<para>
-						When using the Structure Tool, the type of the newly created edges
+						When using the Structure Tool or CTRL + 0, the type of the newly created edges
 						will be
 						<emphasis>dominance relation</emphasis>.
 					</para>
 					<para>
-						When using the Span Tool, the type of the newly created edges will
+						When using the Span Tool or CTRL + 1, the type of the newly created edges will
 						be
 						<emphasis>spanning relation</emphasis>, and edges will only be created to selected nodes of type
 						<emphasis>token</emphasis>, as spanning relations only accept tokens as target nodes.

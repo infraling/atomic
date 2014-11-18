@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Atomic User Guide v0.1.7</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Atomic User Guide v0.1.7"><link rel="next" href="ar01s02.html" title="Reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="en" class="article"><div class="titlepage"><div><div><h1 class="title"><a name="d0e1"></a>Atomic User Guide v0.1.7</h1></div><div><div class="author"><h3 class="author">Stephan Druskat</h3></div></div><div><div class="author"><h3 class="author"><span class="orgname">Friedrich Schiller University Jena</span></h3></div></div><div><p class="copyright">Copyright &copy; 2014 
+   <title>Atomic User Guide v0.1.8</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Atomic User Guide v0.1.8"><link rel="next" href="ar01s02.html" title="Reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="en" class="article"><div class="titlepage"><div><div><h1 class="title"><a name="d0e1"></a>Atomic User Guide v0.1.8</h1></div><div><div class="author"><h3 class="author">Stephan Druskat</h3></div></div><div><div class="author"><h3 class="author"><span class="orgname">Friedrich Schiller University Jena</span></h3></div></div><div><p class="copyright">Copyright &copy; 2014 
 				Friedrich Schiller University Jena
 			</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="index.html#d0e16">Getting started</a></span></dt><dt><span class="sect1"><a href="ar01s02.html">Reference</a></span></dt></dl></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e16"></a>Getting started</h2></div></div></div><p>This guide gives a workflow example for annotating a corpus with
 			Atomic.
@@ -124,19 +124,21 @@ the element with focus.
 						the node and open the annotation field
 						for direct annotation of the
 						node.
+					</p><p>Alternatively, you can use the keyboard shortcuts <span class="emphasis"><em>CTRL + 1</em></span> to create spans, and
+					<span class="emphasis"><em>CTRL + 0</em></span> to create structures.
 					</p><p>If you have selected any nodes in the editing area before
-						using a node tool, the new node will be created, and edges will be
+						using a node tool or keyboard shortcut, the new node will be created, and edges will be
 						created from it to all of the selected nodes.
 					</p><p>
-						When using the Structure Tool, the type of the newly created edges
+						When using the Structure Tool or CTRL + 0, the type of the newly created edges
 						will be
 						<span class="emphasis"><em>dominance relation</em></span>.
 					</p><p>
-						When using the Span Tool, the type of the newly created edges will
+						When using the Span Tool or CTRL + 1, the type of the newly created edges will
 						be
 						<span class="emphasis"><em>spanning relation</em></span>, and edges will only be created to selected nodes of type
 						<span class="emphasis"><em>token</em></span>, as spanning relations only accept tokens as target nodes.
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e237"></a>Creating edges</h5></div></div></div><p>To create an edge, click on the respective tool, then click
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e245"></a>Creating edges</h5></div></div></div><p>To create an edge, click on the respective tool, then click
 						on
 						the node that should be the source of the edge, and subsequently
 						on
@@ -185,12 +187,12 @@ the element with focus.
 						to commit it. Press
 						<span class="emphasis"><em>ESC</em></span>
 						to abort the editing process.
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e290"></a>Deleting elements and annotations</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e298"></a>Deleting elements and annotations</h5></div></div></div><p>
 						In order to delete elements and annotations, select the respective
 						element(s) or annotation(s) per mouse or keyboard and either press
 						<span class="emphasis"><em>DEL</em></span>
 						or click the delete symbol in the menu bar.
-					</p></div></div><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="d0e298"></a>Command-line-based annotation with AtomicAL</h4></div></div></div><p>Atomic provides the native annotation language Atomic
+					</p></div></div><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="d0e306"></a>Command-line-based annotation with AtomicAL</h4></div></div></div><p>Atomic provides the native annotation language Atomic
 					Annotation Language (AtomicAL) for rapid command-line annotation.
 				</p><p>
 					The AtomicAL console is available when an editor with AtomicAL
@@ -201,7 +203,7 @@ the element with focus.
 				</p><p>
 					For a complete list of available commands, see
 					<a class="xref" href="ar01s02.html#reference_atomical" title="AtomicAL">AtomicAL reference</a>.
-				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e315"></a>Creating nodes</h5></div></div></div><p>
+				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e323"></a>Creating nodes</h5></div></div></div><p>
 						To create a new structure node, use the
 						<span class="emphasis"><em>n</em></span>
 						command. It takes as arguments
@@ -225,7 +227,7 @@ the element with focus.
 						</pre><p>
 						Example:
 						</p><pre class="screen">s coref::reftype:group text:"The board"</pre><p>
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e350"></a>Creating edges</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e358"></a>Creating edges</h5></div></div></div><p>
 						To create a new edge, use the
 						<span class="emphasis"><em>e</em></span>
 						command. It takes as arguments
@@ -268,7 +270,7 @@ the element with focus.
 						</pre><p>
 						Example:
 						</p><pre class="screen">a n1 n3 t2..t5 d3 o4 x: y:y z::z:z</pre><p>
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e404"></a>Deleting elements and annotations</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e412"></a>Deleting elements and annotations</h5></div></div></div><p>
 						For the deletion of annotations, see
 						<a class="xref" href="index.html#atomical_annotation_elements" title="Annotation of elements">the section called &#8220;Annotation of elements&#8221;</a>.
 					</p><p>

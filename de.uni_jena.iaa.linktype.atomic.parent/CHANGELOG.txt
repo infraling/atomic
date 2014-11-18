@@ -2,6 +2,10 @@
 * Changelog for Atomic *
 ************************
 
+Version 0.1.8
+=============
+- Adds enhancement request #33: "Create keyboard shortcuts for creating spans and structures"
+
 Version 0.1.7
 =============
 - Add 'clear' command to the AtomicAL console
