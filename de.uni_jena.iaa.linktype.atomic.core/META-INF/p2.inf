@@ -1,3 +1,5 @@
 instructions.configure=\
   addRepository(type:0,location:http${#58}//download.eclipse.org/releases/indigo,name:Software Site for additional Eclipse plugins);\
-  addRepository(type:1,location:http${#58}//download.eclipse.org/releases/indigo,name:Software Site for additional Eclipse plugins);
+  addRepository(type:1,location:http${#58}//download.eclipse.org/releases/indigo,name:Software Site for additional Eclipse plugins);\
+  addRepository(type:0,location:http${#58}//linktype.iaa.uni-jena.de/atomic/updates/,name:Atomic Update Site);\
+  addRepository(type:1,location:http${#58}//linktype.iaa.uni-jena.de/atomic/updates/,name:Atomic Update Site);
