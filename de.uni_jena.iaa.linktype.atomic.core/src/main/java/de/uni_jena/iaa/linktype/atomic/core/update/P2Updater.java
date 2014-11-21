@@ -29,17 +29,12 @@ public class P2Updater {
 		try {
 			addUpdateSite(agent);
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ProvisioningSession session = new ProvisioningSession(agent);
-		// the default update operation looks for updates to the currently
-		// running profile, using the default profile root marker. To change
-		// which installable units are being updated, use the more detailed
-		// constructors.
 		UpdateOperation operation = new UpdateOperation(session);
-//		SubMonitor sub = SubMonitor.convert(monitor, "Checking for application updates...", 200);
-		IStatus status = operation.resolveModal(null);//sub.newChild(100));
+		SubMonitor sub = SubMonitor.convert(monitor, "Checking for application updates...", 200);
+		IStatus status = operation.resolveModal(sub.newChild(100));
 		if (status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
 			return status;
 		}
@@ -47,13 +42,8 @@ public class P2Updater {
 			throw new OperationCanceledException();
 
 		if (status.getSeverity() != IStatus.ERROR) {
-			// More complex status handling might include showing the user what
-			// updates
-			// are available if there are multiples, differentiating patches vs.
-			// updates, etc.
-			// In this example, we simply update as suggested by the operation.
 			ProvisioningJob job = operation.getProvisioningJob(null);
-			status = job.runModal(null);//sub.newChild(100));
+			status = job.runModal(sub.newChild(100));
 			if (status.getSeverity() == IStatus.CANCEL)
 				throw new OperationCanceledException();
 		}
@@ -61,7 +51,6 @@ public class P2Updater {
 	}
 
 	public static void addUpdateSite(IProvisioningAgent provisioningAgent) throws InvocationTargetException {
-		// Load repository manager
 		IMetadataRepositoryManager metadataManager = (IMetadataRepositoryManager) provisioningAgent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		if (metadataManager == null) {
 			System.err.println("Metadata manager was null");
@@ -69,8 +58,6 @@ public class P2Updater {
 			throwable.fillInStackTrace();
 			throw new InvocationTargetException(throwable);
 		}
-
-		// Load artifact manager
 		IArtifactRepositoryManager artifactManager = (IArtifactRepositoryManager) provisioningAgent.getService(IArtifactRepositoryManager.SERVICE_NAME);
 		if (artifactManager == null) {
 			System.err.println("Artifact manager was null");
@@ -78,8 +65,6 @@ public class P2Updater {
 			throwable.fillInStackTrace();
 			throw new InvocationTargetException(throwable);
 		}
-
-		// Load repo
 		try {
 			URI repoLocation = new URI("http://linktype.iaa.uni-jena.de/atomic/updates/");
 			System.out.println("Adding repository " + repoLocation);

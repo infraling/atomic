@@ -16,24 +16,17 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
 import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
-import org.eclipse.equinox.p2.operations.UpdateOperation;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -47,8 +40,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import de.uni_jena.iaa.linktype.atomic.core.update.AtomicAutoUpdateJob;
-import de.uni_jena.iaa.linktype.atomic.core.update.P2UpdateUtil;
-import de.uni_jena.iaa.linktype.atomic.core.update.P2Updater;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
@@ -82,26 +73,21 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 				wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[] { wizardElement });
 			}
 		}
+
 		final IProvisioningAgent agent = (IProvisioningAgent) ServiceHelper.getService(Activator.bundleContext, IProvisioningAgent.SERVICE_NAME);
 		if (agent == null) {
 			LogHelper.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No provisioning agent found.  This application is not set up for updates."));
 		}
-		// XXX if we're restarting after updating, don't check again.
 		final IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
 		if (prefStore.getBoolean(JUSTUPDATED)) {
 			prefStore.setValue(JUSTUPDATED, false);
 			return;
 		}
 
-		// XXX check for updates before starting up.
-		// If an update is performed, restart. Otherwise log
-		// the status.
 		BundleContext bundleContext = Activator.getDefault().getBundle().getBundleContext();
 		ServiceReference<IProvisioningAgent> serviceReference = bundleContext.getServiceReference(IProvisioningAgent.class);
 		AtomicAutoUpdateJob job = new AtomicAutoUpdateJob(agent, prefStore, JUSTUPDATED);
 		job.schedule();
-		
-
 	}
 
 	private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {

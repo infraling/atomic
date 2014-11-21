@@ -3,7 +3,6 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.update;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -15,8 +14,6 @@ import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.operations.UpdateOperation;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -38,7 +35,7 @@ public class AtomicAutoUpdateJob extends Job {
 	}
 
 	public AtomicAutoUpdateJob(IProvisioningAgent agent, IPreferenceStore prefStore, String justupdated) {
-		super("Atomic Auto-Update");
+		super("Updating Atomic");
 		this.agent = agent;
 		this.prefStore = prefStore;
 		this.JUSTUPDATED = justupdated;
@@ -51,50 +48,23 @@ public class AtomicAutoUpdateJob extends Job {
 			atomicUpdateSite = InetAddress.getByName("linktype.iaa.uni-jena.de");
 			System.out.println("Can connect to " + atomicUpdateSite.getHostName() + ".");
 
-			// #####################################
-			// Eigentlicher Job
-			
-//			final IRunnableWithProgress runnable = new IRunnableWithProgress() {
-//				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					IStatus updateStatus = P2Updater.checkForUpdates(agent, monitor);
-					if (updateStatus.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
-						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-							public void run() {
-								MessageDialog.openInformation(null, "Updates", "No updates were found");
-							}
-						});
-					} else if (updateStatus.getSeverity() != IStatus.ERROR) {
-						prefStore.setValue(JUSTUPDATED, true);
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								PlatformUI.getWorkbench().restart();
-							}
-						});
-					} else {
-						LogHelper.log(updateStatus);
+			IStatus updateStatus = P2Updater.checkForUpdates(agent, monitor);
+			if (updateStatus.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
+				System.out.println("No updates were found.");
+			} else if (updateStatus.getSeverity() != IStatus.ERROR) {
+				prefStore.setValue(JUSTUPDATED, true);
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						boolean restart = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Restart Atomic?", "The latest Atomic updates have been installed. In order to activate them, it is necessary to restart the application.\nRestart now?");
+						if (restart) {
+							PlatformUI.getWorkbench().restart();
+						}
 					}
-//				}
-//			};
-//			Display.getDefault().asyncExec(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					try {
-//						new ProgressMonitorDialog(null).run(true, true, runnable);
-//					} catch (InvocationTargetException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			});
-
-			// #####################################
-
+				});
+			} else {
+				LogHelper.log(updateStatus);
+			}
 		} catch (UnknownHostException e) {
-			// FIXME: No internet connection, react!
 			System.err.println("No internet connection, aborting update.");
 		}
 		return Status.OK_STATUS;
