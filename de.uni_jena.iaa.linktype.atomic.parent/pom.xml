@@ -44,6 +44,12 @@
       <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
     </repository>
     
+    <repository>
+      <id>slf4j-log4j2-logging</id>
+      <layout>p2</layout>
+      <url>http://sdruskat.net/logging-p2/updates</url>
+    </repository>
+    
   </repositories>
   
    <build>
