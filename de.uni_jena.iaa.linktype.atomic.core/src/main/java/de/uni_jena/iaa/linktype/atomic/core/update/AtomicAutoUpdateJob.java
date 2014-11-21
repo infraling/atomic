@@ -35,7 +35,7 @@ public class AtomicAutoUpdateJob extends Job {
 	}
 
 	public AtomicAutoUpdateJob(IProvisioningAgent agent, IPreferenceStore prefStore, String justupdated) {
-		super("Updating Atomic");
+		super("Searching for updates");
 		this.agent = agent;
 		this.prefStore = prefStore;
 		this.JUSTUPDATED = justupdated;
