@@ -12,6 +12,7 @@
 <booleanAttribute key="clearwslog" value="false"/>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/de.uni_jena.iaa.linktype.atomic.product.JRebel"/>
 <booleanAttribute key="default" value="false"/>
+<booleanAttribute key="generateProfile" value="true"/>
 <booleanAttribute key="includeOptional" value="true"/>
 <stringAttribute key="location" value="${workspace_loc}/../runtime-de.uni_jena.iaa.linktype.atomic.product"/>
 <listAttribute key="org.eclipse.jdt.launching.CLASSPATH">
