@@ -501,6 +501,13 @@ the element with focus.
 				</sect4>
 			</sect3>
 		</sect2>
+		<sect2>
+			<title>Updates</title>
+			<para>If your computer is connected to the internet, Atomic will automatically check 
+			for available updates on startup. If updates are available, you will be notified and have the option 
+			to install the available updates. Installed updates will be available after the next restart of the application. You will also be prompted to restart once the
+			 installation of updates is completed.</para>
+		</sect2>
 	</sect1>
 	<sect1>
 		<title>Reference</title>

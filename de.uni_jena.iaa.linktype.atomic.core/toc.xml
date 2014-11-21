@@ -22,12 +22,13 @@
             <topic label="Deleting elements and annotations" href="index.html#d0e412"/>
          </topic>
       </topic>
+      <topic label="Updates" href="index.html#d0e432"/>
    </topic>
    <topic label="Reference" href="ar01s02.html">
       <topic label="AtomicAL" href="ar01s02.html#reference_atomical"/>
       <topic label="Install new plugins" href="ar01s02.html#reference_install_new_plugins">
          <topic label="Install new plugins via the Eclipse Marketplace" href="ar01s02.html#reference_marketplace">
-            <topic label="Example: Install XML editing support in Atomic" href="ar01s02.html#d0e670"/>
+            <topic label="Example: Install XML editing support in Atomic" href="ar01s02.html#d0e675"/>
          </topic>
          <topic label="Install new plugins from a p2 repository" href="ar01s02.html#reference_p2">
             <topic label="Example: Install Git support in Atomic" href="ar01s02.html#ex_p2"/>
