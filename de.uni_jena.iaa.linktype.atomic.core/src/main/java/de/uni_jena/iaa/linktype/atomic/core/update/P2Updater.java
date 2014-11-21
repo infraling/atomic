@@ -81,7 +81,7 @@ public class P2Updater {
 
 		// Load repo
 		try {
-			URI repoLocation = new URI("http://linktype.iaa.uni-jena.de/atomic/updates/");
+			URI repoLocation = new URI("http://linktype.iaa.uni-jena.de/atomic/updates");
 			System.out.println("Adding repository " + repoLocation);
 			metadataManager.loadRepository(repoLocation, null);
 			artifactManager.loadRepository(repoLocation, null);
