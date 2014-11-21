@@ -38,8 +38,8 @@ public class P2Updater {
 		// which installable units are being updated, use the more detailed
 		// constructors.
 		UpdateOperation operation = new UpdateOperation(session);
-		SubMonitor sub = SubMonitor.convert(monitor, "Checking for application updates...", 200);
-		IStatus status = operation.resolveModal(sub.newChild(100));
+//		SubMonitor sub = SubMonitor.convert(monitor, "Checking for application updates...", 200);
+		IStatus status = operation.resolveModal(null);//sub.newChild(100));
 		if (status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
 			return status;
 		}
@@ -53,7 +53,7 @@ public class P2Updater {
 			// updates, etc.
 			// In this example, we simply update as suggested by the operation.
 			ProvisioningJob job = operation.getProvisioningJob(null);
-			status = job.runModal(sub.newChild(100));
+			status = job.runModal(null);//sub.newChild(100));
 			if (status.getSeverity() == IStatus.CANCEL)
 				throw new OperationCanceledException();
 		}
@@ -81,7 +81,7 @@ public class P2Updater {
 
 		// Load repo
 		try {
-			URI repoLocation = new URI("http://linktype.iaa.uni-jena.de/atomic/updates");
+			URI repoLocation = new URI("http://linktype.iaa.uni-jena.de/atomic/updates/");
 			System.out.println("Adding repository " + repoLocation);
 			metadataManager.loadRepository(repoLocation, null);
 			artifactManager.loadRepository(repoLocation, null);

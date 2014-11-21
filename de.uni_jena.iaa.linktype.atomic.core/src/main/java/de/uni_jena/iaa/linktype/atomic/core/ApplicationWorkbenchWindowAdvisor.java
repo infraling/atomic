@@ -43,6 +43,8 @@ import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
 import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
 import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import de.uni_jena.iaa.linktype.atomic.core.update.AtomicAutoUpdateJob;
 import de.uni_jena.iaa.linktype.atomic.core.update.P2UpdateUtil;
@@ -80,13 +82,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 				wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[] { wizardElement });
 			}
 		}
-		final IProvisioningAgent agent = (IProvisioningAgent) ServiceHelper
-				.getService(Activator.bundleContext,
-						IProvisioningAgent.SERVICE_NAME);
+		final IProvisioningAgent agent = (IProvisioningAgent) ServiceHelper.getService(Activator.bundleContext, IProvisioningAgent.SERVICE_NAME);
 		if (agent == null) {
-			LogHelper
-					.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-							"No provisioning agent found.  This application is not set up for updates."));
+			LogHelper.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No provisioning agent found.  This application is not set up for updates."));
 		}
 		// XXX if we're restarting after updating, don't check again.
 		final IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
@@ -98,47 +96,14 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		// XXX check for updates before starting up.
 		// If an update is performed, restart. Otherwise log
 		// the status.
-		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor)
-					throws InvocationTargetException, InterruptedException {
-				IStatus updateStatus = P2Updater.checkForUpdates(agent, monitor);
-				if (updateStatus.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
-					PlatformUI.getWorkbench().getDisplay()
-							.asyncExec(new Runnable() {
-								public void run() {
-									MessageDialog.openInformation(null,
-											"Updates", "No updates were found");
-								}
-							});
-				} else if (updateStatus.getSeverity() != IStatus.ERROR) {
-					prefStore.setValue(JUSTUPDATED, true);
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-						PlatformUI.getWorkbench().restart();
-						}
-						});
-				} else {
-					LogHelper.log(updateStatus);
-				}
-			}
-		};
-		Display.getDefault().asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					new ProgressMonitorDialog(null).run(true, true, runnable);
-				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}		
-			}
-		});
+		BundleContext bundleContext = Activator.getDefault().getBundle().getBundleContext();
+		ServiceReference<IProvisioningAgent> serviceReference = bundleContext.getServiceReference(IProvisioningAgent.class);
+		AtomicAutoUpdateJob job = new AtomicAutoUpdateJob(agent, prefStore, JUSTUPDATED);
+		job.schedule();
+		
 
 	}
+
 	private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
 		List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
 		for (IWizardCategory wizardCategory : categories) {
