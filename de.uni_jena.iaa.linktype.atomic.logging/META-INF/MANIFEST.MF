@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Logging Plugin
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.logging
+Bundle-Version: 0.1.8.qualifier
+Bundle-Activator: de.uni_jena.iaa.linktype.atomic.logging.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ log4j.over.slf4j;bundle-version="1.7.7",
+ org.apache.logging.log4j.api;bundle-version="2.1.0",
+ org.apache.logging.log4j.core;bundle-version="2.1.0",
+ org.apache.logging.log4j.slf4j-impl;bundle-version="2.1.0",
+ slf4j.api;bundle-version="1.7.7",
+ org.eclipse.ui.workbench
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
