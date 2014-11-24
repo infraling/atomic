@@ -18,12 +18,16 @@ import org.eclipse.equinox.p2.operations.ProvisioningSession;
 import org.eclipse.equinox.p2.operations.UpdateOperation;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stephan Druskat
  * 
  */
 public class P2Updater {
+	
+	private static final Logger log = LoggerFactory.getLogger(P2Updater.class);
 
 	public static IStatus checkForUpdates(IProvisioningAgent agent, IProgressMonitor monitor) throws OperationCanceledException {
 		try {
@@ -53,28 +57,28 @@ public class P2Updater {
 	public static void addUpdateSite(IProvisioningAgent provisioningAgent) throws InvocationTargetException {
 		IMetadataRepositoryManager metadataManager = (IMetadataRepositoryManager) provisioningAgent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		if (metadataManager == null) {
-			System.err.println("Metadata manager was null");
 			Throwable throwable = new Throwable("Could not load Metadata Repository Manager");
 			throwable.fillInStackTrace();
+			log.error("Metadata manager was null", throwable);
 			throw new InvocationTargetException(throwable);
 		}
 		IArtifactRepositoryManager artifactManager = (IArtifactRepositoryManager) provisioningAgent.getService(IArtifactRepositoryManager.SERVICE_NAME);
 		if (artifactManager == null) {
-			System.err.println("Artifact manager was null");
 			Throwable throwable = new Throwable("Could not load Artifact Repository Manager");
 			throwable.fillInStackTrace();
+			log.error("Artifact manager was null", throwable);
 			throw new InvocationTargetException(throwable);
 		}
 		try {
 			URI repoLocation = new URI("http://linktype.iaa.uni-jena.de/atomic/updates/");
-			System.out.println("Adding repository " + repoLocation);
+			log.info("Adding repository " + repoLocation);
 			metadataManager.loadRepository(repoLocation, null);
 			artifactManager.loadRepository(repoLocation, null);
 		} catch (ProvisionException pe) {
-			System.err.println("Caught provisioning exception " + pe.getMessage());
+			log.error("Caught provisioning exception", pe.getMessage());
 			throw new InvocationTargetException(pe);
 		} catch (URISyntaxException e) {
-			System.err.println("Caught URI syntax exception " + e.getMessage());
+			log.error("Caught URI syntax exception", e.getMessage());
 			throw new InvocationTargetException(e);
 		}
 	}

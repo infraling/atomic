@@ -17,12 +17,16 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stephan Druskat
  * 
  */
 public class AtomicAutoUpdateJob extends Job {
+	
+	private static final Logger log = LoggerFactory.getLogger(AtomicAutoUpdateJob.class);
 
 	private IProvisioningAgent agent;
 	private IPreferenceStore prefStore;
@@ -46,11 +50,11 @@ public class AtomicAutoUpdateJob extends Job {
 		InetAddress atomicUpdateSite = null;
 		try {
 			atomicUpdateSite = InetAddress.getByName("linktype.iaa.uni-jena.de");
-			System.out.println("Can connect to " + atomicUpdateSite.getHostName() + ".");
+			log.info("Can connect to " + atomicUpdateSite.getHostName() + ".");
 
 			IStatus updateStatus = P2Updater.checkForUpdates(agent, monitor);
 			if (updateStatus.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
-				System.out.println("No updates were found.");
+				log.info("No updates were found.");
 			} else if (updateStatus.getSeverity() != IStatus.ERROR) {
 				prefStore.setValue(JUSTUPDATED, true);
 				Display.getDefault().asyncExec(new Runnable() {
@@ -65,7 +69,7 @@ public class AtomicAutoUpdateJob extends Job {
 				LogHelper.log(updateStatus);
 			}
 		} catch (UnknownHostException e) {
-			System.err.println("No internet connection, aborting update.");
+			log.warn("No internet connection, aborting update.");
 		}
 		return Status.OK_STATUS;
 	}
