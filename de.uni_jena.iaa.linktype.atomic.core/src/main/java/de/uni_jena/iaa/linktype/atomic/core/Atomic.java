@@ -21,17 +21,22 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class controls all aspects of the application's execution
  */
 public class Atomic implements IApplication {
+	
+	private static final Logger log = LoggerFactory.getLogger(Atomic.class);
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 
+		log.info("Started Atomic");
 		Display display = null;
 		if (Display.getCurrent() != null) {
 	    	display = Display.getCurrent();
@@ -39,7 +44,6 @@ public class Atomic implements IApplication {
 	    else {
 	    	display = PlatformUI.createDisplay();
 	    }
-
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
 				if (returnCode == PlatformUI.RETURN_RESTART) return IApplication.EXIT_RESTART;
