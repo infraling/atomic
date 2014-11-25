@@ -37,6 +37,7 @@
 				<product>
 					<id>de.uni_jena.iaa.linktype.atomic.product</id>
 					<archiveFileName>atomic-${project.version}</archiveFileName>
+					<rootFolder>atomic</rootFolder>
 				</product>
 			</products>
 		</configuration>

@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
@@ -56,6 +58,8 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalV
  *
  */
 public class GraphEditor extends GraphicalEditorWithFlyoutPalette {
+	
+	private static final Logger log = LoggerFactory.getLogger(GraphEditor.class);
 
 	private boolean isModelGraph = false; // Used for instance-testing for setContents()
 	private HashSet<SToken> tokenMap; // For use as model for sub-graph editing

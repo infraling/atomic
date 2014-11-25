@@ -20,6 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
+import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
+import org.eclipse.equinox.p2.core.IProvisioningAgent;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
@@ -30,46 +36,67 @@ import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
 import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
 import org.eclipse.ui.wizards.IWizardCategory;
 import org.eclipse.ui.wizards.IWizardDescriptor;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+import de.uni_jena.iaa.linktype.atomic.core.update.AtomicAutoUpdateJob;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-    public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-        super(configurer);
-    }
+	private static final String JUSTUPDATED = "justUpdated";
 
-    public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
-        return new ApplicationActionBarAdvisor(configurer);
-    }
-    
-    @Override
-    public void preWindowOpen() {
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setInitialSize(new Point(1000, 800));
-        configurer.setShowMenuBar(true);
-        configurer.setShowCoolBar(true);
-        configurer.setShowStatusLine(true);
-        configurer.setShowProgressIndicator(true);
-    }
-    
-    @Override
-    public void postWindowOpen() {
-    	AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry)PlatformUI.getWorkbench().getNewWizardRegistry();
-    	IWizardCategory[] categories = PlatformUI.getWorkbench().getNewWizardRegistry().getRootCategory().getCategories();
-    	for(IWizardDescriptor wizard : getAllWizards(categories)){
-    	    if(wizard.getCategory().getId().matches("org.eclipse.ui.Basic")){
-    	        WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
-    	        wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[]{wizardElement});
-    	    }
-    	}
-    }
-    
-    private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
-    	List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
-    	for(IWizardCategory wizardCategory : categories){
-    		results.addAll(Arrays.asList(wizardCategory.getWizards()));
-    		results.addAll(Arrays.asList(getAllWizards(wizardCategory.getCategories())));
-    	}
-    	return results.toArray(new IWizardDescriptor[0]);
+	public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+		super(configurer);
 	}
-    
+
+	public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
+		return new ApplicationActionBarAdvisor(configurer);
+	}
+
+	@Override
+	public void preWindowOpen() {
+		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+		configurer.setInitialSize(new Point(1000, 800));
+		configurer.setShowMenuBar(true);
+		configurer.setShowCoolBar(true);
+		configurer.setShowStatusLine(true);
+		configurer.setShowProgressIndicator(true);
+	}
+
+	@Override
+	public void postWindowOpen() {
+		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI.getWorkbench().getNewWizardRegistry();
+		IWizardCategory[] categories = PlatformUI.getWorkbench().getNewWizardRegistry().getRootCategory().getCategories();
+		for (IWizardDescriptor wizard : getAllWizards(categories)) {
+			if (wizard.getCategory().getId().matches("org.eclipse.ui.Basic")) {
+				WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+				wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[] { wizardElement });
+			}
+		}
+
+		final IProvisioningAgent agent = (IProvisioningAgent) ServiceHelper.getService(Activator.bundleContext, IProvisioningAgent.SERVICE_NAME);
+		if (agent == null) {
+			LogHelper.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No provisioning agent found.  This application is not set up for updates."));
+		}
+		final IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+		if (prefStore.getBoolean(JUSTUPDATED)) {
+			prefStore.setValue(JUSTUPDATED, false);
+			return;
+		}
+
+		BundleContext bundleContext = Activator.getDefault().getBundle().getBundleContext();
+		ServiceReference<IProvisioningAgent> serviceReference = bundleContext.getServiceReference(IProvisioningAgent.class);
+		AtomicAutoUpdateJob job = new AtomicAutoUpdateJob(agent, prefStore, JUSTUPDATED);
+		job.schedule();
+	}
+
+	private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
+		List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
+		for (IWizardCategory wizardCategory : categories) {
+			results.addAll(Arrays.asList(wizardCategory.getWizards()));
+			results.addAll(Arrays.asList(getAllWizards(wizardCategory.getCategories())));
+		}
+		return results.toArray(new IWizardDescriptor[0]);
+	}
+
 }

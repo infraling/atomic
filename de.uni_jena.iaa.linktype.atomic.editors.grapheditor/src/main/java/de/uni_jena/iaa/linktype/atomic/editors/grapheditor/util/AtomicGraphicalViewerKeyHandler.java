@@ -23,6 +23,8 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
@@ -37,6 +39,8 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
  * 
  */
 public class AtomicGraphicalViewerKeyHandler extends GraphicalViewerKeyHandler {
+	
+	private static final Logger log = LoggerFactory.getLogger(AtomicGraphicalViewerKeyHandler.class);
 
 	/**
 	 * @param viewer
@@ -60,10 +64,10 @@ public class AtomicGraphicalViewerKeyHandler extends GraphicalViewerKeyHandler {
 		}
 		if ((event.stateMask & SWT.CTRL) != 0) {
 			if (event.character == '1') {
-				System.err.println("Create SPAN");
+				log.info("Creating SSpan with keyboard shortcut CTRL+1");
 				createSpan();
 			} else if (event.character == '0') {
-				System.err.println("CREATE STRUCTURE");
+				log.info("Creating SStructure with keyboard shortcut CTRL+0");
 				createStructure();
 			}
 		}
@@ -74,7 +78,6 @@ public class AtomicGraphicalViewerKeyHandler extends GraphicalViewerKeyHandler {
 		final GraphicalViewer viewer = getViewer();
 		EditPart graphPart = viewer.getRootEditPart().getContents();
 		if (graphPart instanceof GraphPart) {
-			System.err.println("GO");
 			final NodeCreateCommand createNodeCommand = new NodeCreateCommand();
 			createNodeCommand.setGraph((SDocumentGraph) graphPart.getModel());
 			List<EditPart> selectedEditParts = viewer.getSelectedEditParts();
@@ -98,10 +101,6 @@ public class AtomicGraphicalViewerKeyHandler extends GraphicalViewerKeyHandler {
 				Collections.sort(xList);
 				y = yList.get(0) - 100;
 				x = (xList.get(xList.size() - 1) + xList.get(0)) / 2;
-				System.err.println((xList.get(xList.size() - 1)));
-				System.err.println(xList.get(0));
-				System.err.println(xList.size());
-				System.err.println(xList.size() / 2);
 				createNodeCommand.setLocation(new Point(x, y));
 			}
 			SStructure sStructure = SaltFactory.eINSTANCE.createSStructure();
@@ -123,7 +122,6 @@ public class AtomicGraphicalViewerKeyHandler extends GraphicalViewerKeyHandler {
 		final GraphicalViewer viewer = getViewer();
 		EditPart graphPart = viewer.getRootEditPart().getContents();
 		if (graphPart instanceof GraphPart) {
-			System.err.println("GO");
 			final NodeCreateCommand createNodeCommand = new NodeCreateCommand();
 			createNodeCommand.setGraph((SDocumentGraph) graphPart.getModel());
 			List<EditPart> selectedEditParts = viewer.getSelectedEditParts();

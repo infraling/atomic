@@ -18,6 +18,7 @@
   <module>../de.uni_jena.iaa.linktype.atomic.atomical.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.logging</module>
   </modules>
   
   <properties>
@@ -42,6 +43,12 @@
       <id>eclipse-orbit</id>
       <layout>p2</layout>
       <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
+    </repository>
+    
+    <repository>
+      <id>slf4j-log4j2-logging</id>
+      <layout>p2</layout>
+      <url>http://sdruskat.net/logging-p2/updates</url>
     </repository>
     
   </repositories>
