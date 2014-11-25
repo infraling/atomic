@@ -5,6 +5,9 @@
 Version 0.1.8
 =============
 - Adds enhancement request #33: "Create keyboard shortcuts for creating spans and structures"
+- Fixes #34: "atomic folder in zip"
+- Adds logging
+- Adds auto-update functionality
 
 Version 0.1.7
 =============
