@@ -8,7 +8,7 @@
 <unit id="de.hu_berlin.german.korpling.saltnpepper.pepper.modules.feature.group" version="1.2.0.201403061037"/>
 <unit id="de.hu_berlin.german.korpling.saltnpepper.pepper.core.source.feature.group" version="1.2.0.201403061037"/>
 <unit id="de.hu_berlin.german.korpling.saltnpepper.salt.feature.group" version="1.2.0.201403061037"/>
-<repository location="file:/home/stephan/Dokumente/p2/pepper4eclipse/"/>
+<repository location="http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/1.1.8-SNAPSHOT/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.7.2.v20110927-2020-7G7W77A5WNgIRPdWXDIbNTSQPdQL"/>
@@ -18,18 +18,18 @@
 <unit id="org.eclipse.equinox.executable.feature.group" version="3.5.1.v20111216-1653-7P7NFUIFIbaUcU77s0KQWHw5HZTZ"/>
 <unit id="org.eclipse.epp.mpc.feature.group" version="1.1.1.I20110907-0947"/>
 <unit id="org.eclipse.platform.sdk" version="3.7.2.M20120208-0800"/>
-<repository location="file:/home/stephan/Dokumente/p2/indigo/"/>
+<repository location="http://download.eclipse.org/releases/indigo/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
-<repository location="file:/home/stephan/Dokumente/p2/orbit/"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="slf4j.api" version="1.7.7"/>
 <unit id="org.apache.logging.log4j.core" version="2.1.0"/>
 <unit id="org.apache.logging.log4j.api" version="2.1.0"/>
 <unit id="org.apache.logging.log4j.slf4j-impl" version="2.1.0"/>
-<repository location="file:/home/stephan/Dokumente/p2/logging/"/>
+<repository location="http://www.sdruskat.net/logging-p2/updates/"/>
 </location>
 </locations>
 <includeBundles>
