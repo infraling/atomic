@@ -242,6 +242,16 @@
             file="index.xml">
       </index>
    </extension>
+   <extension
+         id="atomicProjectNature"
+         name="Atomic Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="de.uni_jena.iaa.linktype.atomic.core.projects.AtomicProjectNature">
+         </run>
+      </runtime>
+   </extension>
    <!-- Navigator above -->
 
 </plugin>

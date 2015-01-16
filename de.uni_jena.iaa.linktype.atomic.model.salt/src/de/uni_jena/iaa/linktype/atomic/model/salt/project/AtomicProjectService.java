@@ -21,9 +21,11 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
+import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
+
 /**
  * 
- * @author Michael Grübsch
+ * @author Michael Grï¿½bsch
  * @version $Revision$, $Date$
  */
 public class AtomicProjectService
@@ -59,7 +61,7 @@ public class AtomicProjectService
 
     project.create(null);
     project.open(null);
-    // TODO CreateSaltProjectHandler.addAtomicProjectNatureToIProject(iProject); // FIXME Throws CoreException
+    AtomicProjectUtils.addAtomicProjectNatureToIProject(project);
     return project;
   }
 

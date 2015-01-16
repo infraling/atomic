@@ -5,7 +5,6 @@ package de.uni_jena.iaa.linktype.atomic.core.wizards.newproject;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -21,6 +20,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
@@ -32,6 +34,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
+import de.uni_jena.iaa.linktype.atomic.core.update.AtomicAutoUpdateJob;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
@@ -41,6 +44,8 @@ import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
  *
  */
 public class NewAtomicProjectWizard extends Wizard implements INewWizard {
+	
+	private static final Logger log = LoggerFactory.getLogger(AtomicAutoUpdateJob.class);
 	
 	private NewAtomicProjectWizardDetailsPage page;
 	private Object[] typedTokenizerToUse;
@@ -93,11 +98,13 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			monitor.subTask("Creating Atomic project (1/7)");
 			IProject iProject = createIProject(projectName);
 			monitor.worked(1);
+			log.info("Created new IProject");
 			
 			// Task 2 : select tokenizer
 			monitor.subTask("Collecting project metadata (2/7)");
 			typedTokenizerToUse = getTokenizerInstance(tokenizerName);
 			monitor.worked(1);
+			log.info("Collected project-specific creation settings (tokenizer to use, etc.).");
 			
 			// Task 2 : Create SaltProject and structure
 			monitor.subTask("Creating data model (3/7)");
@@ -105,21 +112,25 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			saltProject.setSName(projectName);
 			createSaltProjectStructure(saltProject);
 			monitor.worked(1);
+			log.info("Created data model.");
 			
 			// Task 3 : Populate project with corpus
 			monitor.subTask("Populating data model with corpus data (4/7)");
 			SDocumentGraph sDocumentGraph = createSDocumentStructure(saltProject, corpusText);
 			monitor.worked(1);
+			log.info("Populated data model with corpus data.");
 			
 			// Task 4 : Tokenize
 			monitor.subTask("Tokenizing corpus with selected tokenizer (tokenization) (5/7)");
 			tokenizeCorpusString(sDocumentGraph, typedTokenizerToUse);
 			monitor.worked(1);
+			log.info("Tokenized corpus.");
 			
 			// Task 5 : Annotate tokens with text meta info 
 			monitor.subTask("Tokenizing corpus with selected tokenizer (token annotation) (6/7)");
 			writeTextToTokens(sDocumentGraph);
 			monitor.worked(1);
+			log.info("Wrote token texts to tokens.");
 			
 			// Task 6 : Annotate tokens with text meta info 
 			monitor.subTask("Serializing project (7/7)");
@@ -129,6 +140,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				e.printStackTrace();
 			}
 			monitor.worked(1);
+			log.info("Saved SaltProject to IProject.");
 			
 			// Finished
 			monitor.done();
@@ -225,7 +237,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			try {
 				iProject.create(null);
 				iProject.open(null);
-//						addAtomicProjectNatureToIProject(iProject); // FIXME Throws CoreException
+				AtomicProjectUtils.addAtomicProjectNatureToIProject(iProject);
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -233,5 +245,4 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			return iProject;
 		}
 	}
-	
 }

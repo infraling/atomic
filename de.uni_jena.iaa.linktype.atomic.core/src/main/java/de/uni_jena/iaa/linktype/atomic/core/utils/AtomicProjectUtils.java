@@ -11,11 +11,16 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ListDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
 
@@ -24,6 +29,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
  *
  */
 public class AtomicProjectUtils {
+	
+	private static final Logger log = LoggerFactory.getLogger(AtomicProjectUtils.class);
 	
 	private static ArrayList<Object[]> tokenizers = new ArrayList<Object[]>() {
 		private static final long serialVersionUID = 1L;	
@@ -89,6 +96,18 @@ public class AtomicProjectUtils {
 		return tokenizerNameArray;
 	};
 	
-//	public static 
-
+	public static void addAtomicProjectNatureToIProject(IProject iProject) {
+		try {
+		      IProjectDescription description = iProject.getDescription();
+		      String[] natures = description.getNatureIds();
+		      String[] newNatures = new String[natures.length + 1];
+		      System.arraycopy(natures, 0, newNatures, 0, natures.length);
+		      newNatures[natures.length] = "de.uni_jena.iaa.linktype.atomic.core.atomicProjectNature";
+		      description.setNatureIds(newNatures);
+		      iProject.setDescription(description, null);
+		   } catch (CoreException e) {
+		      // Something went wrong
+		   }
+		log.info("Added Atomic Project Nature to IProject.");
+	}
 }
