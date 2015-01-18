@@ -1,4 +1,4 @@
-package de.uni_jena.iaa.linktype.atomic.core.wizards.newproject;
+package de.uni_jena.iaa.linktype.atomic.core.projects;
 
 import java.io.IOException;
 import java.util.ArrayList;

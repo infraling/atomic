@@ -147,7 +147,7 @@
       <wizard
             canFinishEarly="false"
             category="de.uni_jena.iaa.linktype.atomic.core.AtomicNewWizardCategory"
-            class="de.uni_jena.iaa.linktype.atomic.core.wizards.newproject.NewAtomicProjectWizard"
+            class="de.uni_jena.iaa.linktype.atomic.core.projects.NewAtomicProjectWizard"
             descriptionImage="icons/atomic_64x64.png"
             finalPerspective="de.uni_jena.iaa.linktype.atomic.core.perspective"
             icon="icons/atomic.ico"

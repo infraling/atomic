@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.uni_jena.iaa.linktype.atomic.core.wizards.newproject;
+package de.uni_jena.iaa.linktype.atomic.core.projects;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
