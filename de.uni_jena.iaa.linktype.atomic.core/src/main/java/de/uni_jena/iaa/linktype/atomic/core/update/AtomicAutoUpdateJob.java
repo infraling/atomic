@@ -31,12 +31,6 @@ public class AtomicAutoUpdateJob extends Job {
 	private IProvisioningAgent agent;
 	private IPreferenceStore prefStore;
 	private String JUSTUPDATED;
-	private IStatus result;
-
-	public AtomicAutoUpdateJob(String name) {
-		super(name);
-		// TODO Auto-generated constructor stub
-	}
 
 	public AtomicAutoUpdateJob(IProvisioningAgent agent, IPreferenceStore prefStore, String justupdated) {
 		super("Searching for updates");

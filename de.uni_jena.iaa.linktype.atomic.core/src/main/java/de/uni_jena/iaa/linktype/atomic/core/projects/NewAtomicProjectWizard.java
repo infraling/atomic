@@ -49,7 +49,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	
 	private NewAtomicProjectWizardDetailsPage page;
 	private Object[] typedTokenizerToUse;
-	public IFile projectIFile;
 	
 	/**
 	 * 
@@ -135,7 +134,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			// Task 6 : Annotate tokens with text meta info 
 			monitor.subTask("Serializing project (7/7)");
 			try {
-				NewAtomicProjectWizard.this.projectIFile = saveSaltProjectToIPproject(saltProject, iProject, projectName, sDocumentGraph);
+				saveSaltProjectToIPproject(saltProject, iProject, projectName, sDocumentGraph);
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
