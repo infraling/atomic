@@ -82,6 +82,15 @@
                   mnemonic="I"
                   style="push">
             </command>
+            <separator
+                  name="de.uni_jena.iaa.linktype.atomic.core.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences"
+                  style="push">
+            </command>
          </menu>
          <menu
                id="de.uni_jena.iaa.linktype.atomic.menus.viewMenu"
@@ -251,6 +260,14 @@
                class="de.uni_jena.iaa.linktype.atomic.core.projects.AtomicProjectNature">
          </run>
       </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="de.uni_jena.iaa.linktype.atomic.core.AtomicWorkbenchPreferencePage"
+            id="de.uni_jena.iaa.linktype.atomic.core.preferences.atomicMainPreferencePage"
+            name="Atomic">
+      </page>
    </extension>
    <!-- Navigator above -->
 

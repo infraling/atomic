@@ -17,11 +17,16 @@
 package de.uni_jena.iaa.linktype.atomic.core;
 
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -37,39 +42,51 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	@Override
 	public void initialize(IWorkbenchConfigurer configurer) {
-		// TEST if this / which parts of this can be removed after own icons have been added
+		// TEST if this / which parts of this can be removed after own icons
+		// have been added
 		super.initialize(configurer);
-		//configurer.setSaveAndRestore(true); // if you want
+		// configurer.setSaveAndRestore(true); // if you want
 		IDE.registerAdapters();
-		
+
 		final String ICONS_PATH = "icons/full/";
 		final String PATH_OBJECT = ICONS_PATH + "obj16/";
 		// TODO: Replace with path to own icons!
 		Bundle ideBundle = Platform.getBundle(IDEWorkbenchPlugin.IDE_WORKBENCH);
-		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT,
-		    PATH_OBJECT + "prj_obj.gif", true);
-		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED,
-		    PATH_OBJECT + "cprj_obj.gif", true);
+		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT, PATH_OBJECT + "prj_obj.gif", true);
+		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED, PATH_OBJECT + "cprj_obj.gif", true);
 	}
-	
-	public IAdaptable getDefaultPageInput()  {
-	    IWorkspace workspace = ResourcesPlugin.getWorkspace();
-	    return workspace.getRoot();
+
+	public IAdaptable getDefaultPageInput() {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		return workspace.getRoot();
 	}
-	
+
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-        return new ApplicationWorkbenchWindowAdvisor(configurer);
-    }
+		return new ApplicationWorkbenchWindowAdvisor(configurer);
+	}
 
 	public String getInitialWindowPerspectiveId() {
 		return PERSPECTIVE_ID;
 	}
-	
+
 	// TEST if this can be removed after addition of own icons.
-	private void declareWorkbenchImage(IWorkbenchConfigurer configurer_p, Bundle ideBundle, String symbolicName,
-			String path, boolean shared) {
-			   URL url = ideBundle.getEntry(path);
-			   ImageDescriptor desc = ImageDescriptor.createFromURL(url);
-			   configurer_p.declareImage(symbolicName, desc, shared);
+	private void declareWorkbenchImage(IWorkbenchConfigurer configurer_p, Bundle ideBundle, String symbolicName, String path, boolean shared) {
+		URL url = ideBundle.getEntry(path);
+		ImageDescriptor desc = ImageDescriptor.createFromURL(url);
+		configurer_p.declareImage(symbolicName, desc, shared);
+	}
+
+	@Override
+	public void postStartup() {
+		PreferenceManager preferenceManager = Activator.getDefault().getWorkbench().getPreferenceManager();
+
+		List<?> preferenceNodes = preferenceManager.getElements(PreferenceManager.PRE_ORDER);
+
+		for (Iterator<?> it = preferenceNodes.iterator(); it.hasNext();) {
+			IPreferenceNode preferenceNode = (IPreferenceNode) it.next();
+			if (preferenceNode.getId().startsWith("org.eclipse")) {
+				preferenceManager.remove(preferenceNode);
+			}
+		}
 	}
 }
