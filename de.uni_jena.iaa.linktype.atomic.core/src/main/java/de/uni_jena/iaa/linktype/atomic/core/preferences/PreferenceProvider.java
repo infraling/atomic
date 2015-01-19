@@ -11,20 +11,33 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
+ * This class is the central definition point for application preferences.
+ * Preferences are added by supplying a field to take in the preference,
+ * and a default value. It also provides these fields via a HashMap to the
+ * PreferenceInitializer and provides access to the preferences node to other
+ * plugins.
+ * 
+ * Cf. https://openchrom.wordpress.com/2014/01/11/how-to-handle-preferences-consistently/
+ * 
  * @author Stephan Druskat
  *
  */
-public class PreferenceSupplier {
+public class PreferenceProvider {
 	
 	public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
     public static final String PREFERENCE_NODE = "de.uni_jena.iaa.linktype.atomic.core";
 	
-	/* DEF -> DEFAULT */
+	/* DEF = DEFAULT */
 	
 	// Reserved word for annotating element type (STYPE)
 	public static final String STYPE = "string";
 	public static final String STYPE_DEF = "t";
 
+	/** Provides a HashMap of all (preference,preference default) pairs for
+	 * initialization by the PreferenceInitializer.
+	 * 
+	 * @return Map<String, String> entries A HashMap containing all (preference,preference default) pairs.
+	 */
 	public static Map<String, String> getInitializationEntries() {
 		Map<String, String> entries = new HashMap<String, String>();
 
@@ -33,6 +46,11 @@ public class PreferenceSupplier {
         return entries;
 	}
 	
+	/**
+	 * Provides access to the preference pairs from other places / plugins.
+	 * 
+	 * @return IEclipsePreferences The preferences root node. 
+	 */
 	public static IEclipsePreferences getPreferences() {
 	    return SCOPE_CONTEXT.getNode(PREFERENCE_NODE);
     }

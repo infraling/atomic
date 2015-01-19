@@ -74,7 +74,7 @@ public class AtomicAnnotationReservedWordsPreferencesPage extends FieldEditorPre
 	 */
 	@Override
 	protected void createFieldEditors() {
-		StringFieldEditor stringFieldEditor = new StringFieldEditor(PreferenceSupplier.STYPE, "Element type", -1, StringFieldEditor.VALIDATE_ON_KEY_STROKE, getFieldEditorParent());
+		StringFieldEditor stringFieldEditor = new StringFieldEditor(PreferenceProvider.STYPE, "Element type", -1, StringFieldEditor.VALIDATE_ON_KEY_STROKE, getFieldEditorParent());
 		addField(stringFieldEditor);
 	}
 
