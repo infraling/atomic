@@ -61,11 +61,8 @@ public class AtomicAnnotationReservedWordsPreferencesPage extends FieldEditorPre
 	@Override
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("Reserved words for annotation commands in Atomic:\n"
-				+ "The reserved word is used as the key for certain annotations.\n"
-				+ "I.e., if the reserved word for element type is set to \'t\',\n"
-				+ "the respective command to annotate an element with a type would be\n"
-				+ "\"t:<type>\".");
+		setDescription("Reserved words for annotation commands in Atomic: The reserved word is used as the key for certain annotations.\n"
+				+ "I.e., if the reserved word for element type is set to \'t\', the respective command to annotate an element with a type would be \"t:<type>\".");
 	}
 
 	/*
