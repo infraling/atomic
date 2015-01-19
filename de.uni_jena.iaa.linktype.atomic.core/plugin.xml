@@ -271,19 +271,19 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicWorkbenchPreferencePage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicPreferencePage"
             id="de.uni_jena.iaa.linktype.atomic.core.preferences.atomicMainPreferencePage"
             name="Atomic">
       </page>
       <page
             category="de.uni_jena.iaa.linktype.atomic.core.preferences.atomicMainPreferencePage"
-            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AnnotationWorkbenchPreferencePage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AnnotationPreferencePage"
             id="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
             name="Annotation">
       </page>
       <page
             category="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
-            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicAnnotationReservedWordsPreferencesPage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedWordsPreferencesPage"
             id="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationReservedWordsPreferencesPage"
             name="Reserved words">
       </page>
@@ -293,6 +293,27 @@
       <initializer
             class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicPreferencesInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedWordsPreferencesPage"
+            id="de.uni_jena.iaa.linktype.atomic.core.projects.properties.reservedWordsPropertyPage"
+            name="Reserved words">
+            <enabledWhen>
+    <and>
+            <instanceof
+             value="org.eclipse.core.resources.IProject">
+        </instanceof>
+            <adapt type="org.eclipse.core.resources.IResource" >
+                <test
+                 property="org.eclipse.core.resources.projectNature"
+                value="de.uni_jena.iaa.linktype.atomic.core.atomicProjectNature">
+                </test>
+            </adapt>   
+    </and>
+    </enabledWhen>
+      </page>
    </extension>
    <!-- Navigator above -->
 

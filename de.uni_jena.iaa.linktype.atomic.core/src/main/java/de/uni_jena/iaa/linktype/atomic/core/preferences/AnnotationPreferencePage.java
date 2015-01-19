@@ -16,19 +16,19 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Stephan Druskat
  *
  */
-public class AtomicWorkbenchPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class AnnotationPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	/**
 	 * 
 	 */
-	public AtomicWorkbenchPreferencePage() {
+	public AnnotationPreferencePage() {
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @param title
 	 */
-	public AtomicWorkbenchPreferencePage(String title) {
+	public AnnotationPreferencePage(String title) {
 		super("Atomic Preferences");
 	}
 
@@ -36,7 +36,7 @@ public class AtomicWorkbenchPreferencePage extends PreferencePage implements IWo
 	 * @param title
 	 * @param image
 	 */
-	public AtomicWorkbenchPreferencePage(String title, ImageDescriptor image) {
+	public AnnotationPreferencePage(String title, ImageDescriptor image) {
 		super(title, image);
 		// TODO Auto-generated constructor stub
 	}
@@ -56,7 +56,7 @@ public class AtomicWorkbenchPreferencePage extends PreferencePage implements IWo
 	@Override
 	protected Control createContents(Composite parent) {
 		Label label = new Label(parent, SWT.BOLD);
-		label.setText("Atomic Preferences\n\nChoose sub-category to edit preferences.");
+		label.setText("Annotation Preferences\n\nChoose sub-category to edit preferences.");
 		return label;
 	}
 
