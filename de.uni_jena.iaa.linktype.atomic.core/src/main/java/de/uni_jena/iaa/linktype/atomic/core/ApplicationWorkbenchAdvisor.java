@@ -78,6 +78,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	@Override
 	public void postStartup() {
+		// Hide Eclipse preferences from preferences dialog (to not puzzle user)
 		PreferenceManager preferenceManager = Activator.getDefault().getWorkbench().getPreferenceManager();
 
 		List<?> preferenceNodes = preferenceManager.getElements(PreferenceManager.PRE_ORDER);

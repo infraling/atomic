@@ -237,6 +237,12 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+Q C">
       </key>
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+Q">
+      </key>
    </extension>
    <extension
          point="org.eclipse.help.toc">
