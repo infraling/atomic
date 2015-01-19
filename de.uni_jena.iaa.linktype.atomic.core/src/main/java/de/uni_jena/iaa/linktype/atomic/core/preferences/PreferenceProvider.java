@@ -3,12 +3,12 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.preferences;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.Map;
 
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * This class is the central definition point for application preferences.
@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
  */
 public class PreferenceProvider {
 	
-	public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
+	public static final IScopeContext SCOPE_CONTEXT = ConfigurationScope.INSTANCE;
     public static final String PREFERENCE_NODE = "de.uni_jena.iaa.linktype.atomic.core";
 	
 	/* DEF = DEFAULT */
