@@ -56,7 +56,7 @@ public class AtomicProjectUtils {
 	    return buffer.toString();
 	}
 
-	public static String getFileEncoding() {
+	private static String getFileEncoding() {
 		// FIXME Add combobox to FileDialog rather than using extra dialog
 		// FIXME Add guessEncoding
 		// FIXME Clean up code and make safe

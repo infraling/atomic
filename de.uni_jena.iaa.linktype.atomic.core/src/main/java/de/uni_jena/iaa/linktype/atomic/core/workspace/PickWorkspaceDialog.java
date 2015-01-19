@@ -51,7 +51,7 @@ import org.eclipse.swt.widgets.Shell;
 public class PickWorkspaceDialog extends TitleAreaDialog {
 
 	    // The name of the file that tells us that the workspace directory belongs to our application
-	    public static final String  WS_IDENTIFIER          = ".atomic_workspace";
+	    private static final String  WS_IDENTIFIER          = ".atomic_workspace";
 
 	    // You would probably normally define these somewhere in your Preference Constants
 	    private static final String _KeyWorkspaceRootDir   = "wsRootDir";
@@ -88,7 +88,7 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	     * @param switchWorkspace true if we're using this dialog as a switch workspace dialog
 	     * @param wizardImage Image to show
 	     */
-	    public PickWorkspaceDialog(Shell shell, boolean switchWorkspace/*, Image wizardImage*/) {
+	    PickWorkspaceDialog(Shell shell, boolean switchWorkspace/*, Image wizardImage*/) {
 	        super(shell);
 	        this._switchWorkspace = switchWorkspace;
 	    }
@@ -108,7 +108,7 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	     * 
 	     * @return
 	     */
-	    public static boolean isRememberWorkspace() {
+	    static boolean isRememberWorkspace() {
 	        return _preferences.getBoolean(_KeyRememberWorkspace, false);
 	    }
 	    
@@ -117,7 +117,7 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	     * 
 	     * @return null if none
 	     */
-	    public static String getLastSetWorkspaceDirectory() {
+	    static String getLastSetWorkspaceDirectory() {
 	        return _preferences.get(_KeyWorkspaceRootDir, null);
 	    }
 
@@ -320,7 +320,7 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	     * @param dest -- A File object that represents the destination for the copy.
 	     * @throws IOException if unable to copy.
 	     */
-	    public static void copyFiles(File src, File dest) throws IOException {
+	    private static void copyFiles(File src, File dest) throws IOException {
 	        // Check to ensure that the source is valid...
 	        if (!src.exists()) {
 	            throw new IOException("Can not find source: " + src.getAbsolutePath());
@@ -504,7 +504,7 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 	     * @param wsRoot Workspace root directory as string
 	     * @return true if all checks and creations succeeded, false if there was a problem
 	     */
-	    public static boolean checkAndCreateWorkspaceRoot(String wsRoot) {
+	    private static boolean checkAndCreateWorkspaceRoot(String wsRoot) {
 	        try {
 	            File fRoot = new File(wsRoot);
 	            if (!fRoot.exists()) return false;

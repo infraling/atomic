@@ -39,8 +39,8 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	private Button btnBrowse, btnEnterText;
 	private SelectionAdapter buttonAdapter = createBrowseButtonListener();
 	private Combo comboTokenizer;
-	protected boolean isProjectNameComplete = false;
-	protected boolean isTextComplete = false;
+	private boolean isProjectNameComplete = false;
+	private boolean isTextComplete = false;
 	
 	/**
 	 * Create the wizard.
@@ -265,11 +265,11 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	 * @author Stephan Druskat
 	 *
 	 */
-	public class FileDialogWithConfirmation {
+	private class FileDialogWithConfirmation {
 		
 		private FileDialog dialog;
 
-		public FileDialogWithConfirmation(Shell activeShell, int open) {
+		private FileDialogWithConfirmation(Shell activeShell, int open) {
 			dialog = new FileDialog(activeShell, open);
 		}
 
@@ -281,7 +281,7 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 			dialog.setFilterExtensions(strings);
 		}
 
-		public String open() {
+		private String open() {
 			String fileName = null;
 
 		    boolean done = false;
@@ -315,9 +315,9 @@ public class NewAtomicProjectWizardDetailsPage extends WizardPage {
 	 * @author Stephan Druskat
 	 *
 	 */
-	public class InputDialogWithConfirmation extends InputDialog {
+	private class InputDialogWithConfirmation extends InputDialog {
 		
-		public InputDialogWithConfirmation(Shell activeShell, String title, String message, String initialContent, Object object) {
+		private InputDialogWithConfirmation(Shell activeShell, String title, String message, String initialContent, Object object) {
 			super(activeShell, title, message, initialContent, null);
 		}
 

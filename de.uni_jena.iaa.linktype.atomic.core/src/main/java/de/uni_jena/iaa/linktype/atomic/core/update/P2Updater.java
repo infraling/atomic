@@ -29,7 +29,7 @@ public class P2Updater {
 	
 	private static final Logger log = LoggerFactory.getLogger(P2Updater.class);
 
-	public static IStatus checkForUpdates(IProvisioningAgent agent, IProgressMonitor monitor) throws OperationCanceledException {
+	static IStatus checkForUpdates(IProvisioningAgent agent, IProgressMonitor monitor) throws OperationCanceledException {
 		try {
 			addUpdateSite(agent);
 		} catch (InvocationTargetException e) {
@@ -54,7 +54,7 @@ public class P2Updater {
 		return status;
 	}
 
-	public static void addUpdateSite(IProvisioningAgent provisioningAgent) throws InvocationTargetException {
+	private static void addUpdateSite(IProvisioningAgent provisioningAgent) throws InvocationTargetException {
 		IMetadataRepositoryManager metadataManager = (IMetadataRepositoryManager) provisioningAgent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		if (metadataManager == null) {
 			Throwable throwable = new Throwable("Could not load Metadata Repository Manager");
