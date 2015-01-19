@@ -29,4 +29,5 @@ Require-Bundle: org.eclipse.ui,
  de.uni_jena.iaa.linktype.atomic.logging;bundle-version="0.1.8"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: de.uni_jena.iaa.linktype.atomic.core.utils
+Export-Package: de.uni_jena.iaa.linktype.atomic.core.preferences,
+ de.uni_jena.iaa.linktype.atomic.core.utils

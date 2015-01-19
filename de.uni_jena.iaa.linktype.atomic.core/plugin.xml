@@ -89,6 +89,7 @@
             <command
                   commandId="org.eclipse.ui.window.preferences"
                   label="Preferences"
+                  mnemonic="P"
                   style="push">
             </command>
          </menu>
@@ -270,10 +271,28 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="de.uni_jena.iaa.linktype.atomic.core.AtomicWorkbenchPreferencePage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicWorkbenchPreferencePage"
             id="de.uni_jena.iaa.linktype.atomic.core.preferences.atomicMainPreferencePage"
             name="Atomic">
       </page>
+      <page
+            category="de.uni_jena.iaa.linktype.atomic.core.preferences.atomicMainPreferencePage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AnnotationWorkbenchPreferencePage"
+            id="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
+            name="Annotation">
+      </page>
+      <page
+            category="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicAnnotationReservedWordsPreferencesPage"
+            id="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationReservedWordsPreferencesPage"
+            name="Reserved words">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicPreferencesInitializer">
+      </initializer>
    </extension>
    <!-- Navigator above -->
 
