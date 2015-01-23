@@ -29,9 +29,12 @@ public class PreferenceSupplier {
 	
 	/* DEF = DEFAULT */
 	
+    // ### List reserved keys here ###
 	// Reserved key for annotating element type (STYPE)
 	public static final String STYPE = "sType";
 	public static final String STYPE_DEF = "t";
+	public static final String REMOVE_STYPE = "removeSType";
+	public static final String REMOVE_STYPE_DEF = "rt";
 
 	/** Provides a HashMap of all (preference,preference default) pairs for
 	 * initialization by the PreferenceInitializer.
@@ -41,7 +44,9 @@ public class PreferenceSupplier {
 	public static Map<String, String> getInitializationEntries() {
 		Map<String, String> entries = new HashMap<String, String>();
 
+		// ### Don't forget to add entries here ###
         entries.put(STYPE, STYPE_DEF);
+        entries.put(REMOVE_STYPE, REMOVE_STYPE_DEF);
 
         return entries;
 	}

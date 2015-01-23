@@ -83,8 +83,10 @@ public class ReservedKeysPreferencesPage extends FieldEditorOverlayPage implemen
 	@Override
 	protected void createFieldEditors() {
 		Composite composite = getFieldEditorParent();
-		StringFieldEditor stringFieldEditor = new StringFieldEditor(PreferenceSupplier.STYPE, "Element type", -1, StringFieldEditor.VALIDATE_ON_KEY_STROKE, composite);
-		addField(stringFieldEditor);
+		StringFieldEditor sTypeFieldEditor = new StringFieldEditor(PreferenceSupplier.STYPE, "Element type", -1, StringFieldEditor.VALIDATE_ON_KEY_STROKE, composite);
+		StringFieldEditor removeSTypeFieldEditor = new StringFieldEditor(PreferenceSupplier.REMOVE_STYPE, "Remove element type", -1, StringFieldEditor.VALIDATE_ON_KEY_STROKE, composite);
+		addField(sTypeFieldEditor);
+		addField(removeSTypeFieldEditor);
 	}
 
 	/* (non-Javadoc)
