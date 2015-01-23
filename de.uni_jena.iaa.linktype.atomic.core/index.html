@@ -161,6 +161,10 @@ the element with focus.
 						[Key] and [value] are shown directly on the element, the namespace
 						is shown in a pop-up when hovering over an annotation.
 					</p><p>
+						Please note that Atomic has some <span class="emphasis"><em>reserved keys</em></span> for annotation. These reserved keys
+						represent keys for specific annotations. For a more detailed explanation and a 
+						list of reserved keys, cf. <a class="xref" href="ar01s02.html#reference_reserved_words" title="Reserved keys">Reserved keys</a>.  
+					</p><p>
 						Elements (i.e., nodes as well as edges) can be annotated by
 						selecting the element via the mouse or
 						the keyboard's arrow
@@ -187,12 +191,12 @@ the element with focus.
 						to commit it. Press
 						<span class="emphasis"><em>ESC</em></span>
 						to abort the editing process.
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e298"></a>Deleting elements and annotations</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e305"></a>Deleting elements and annotations</h5></div></div></div><p>
 						In order to delete elements and annotations, select the respective
 						element(s) or annotation(s) per mouse or keyboard and either press
 						<span class="emphasis"><em>DEL</em></span>
 						or click the delete symbol in the menu bar.
-					</p></div></div><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="d0e306"></a>Command-line-based annotation with AtomicAL</h4></div></div></div><p>Atomic provides the native annotation language Atomic
+					</p></div></div><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="d0e313"></a>Command-line-based annotation with AtomicAL</h4></div></div></div><p>Atomic provides the native annotation language Atomic
 					Annotation Language (AtomicAL) for rapid command-line annotation.
 				</p><p>
 					The AtomicAL console is available when an editor with AtomicAL
@@ -203,7 +207,10 @@ the element with focus.
 				</p><p>
 					For a complete list of available commands, see
 					<a class="xref" href="ar01s02.html#reference_atomical" title="AtomicAL">AtomicAL reference</a>.
-				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e323"></a>Creating nodes</h5></div></div></div><p>
+				</p><p>Please note that Atomic has some <span class="emphasis"><em>reserved keys</em></span> for annotation. These reserved keys
+						represent keys for specific annotations. For a more detailed explanation and a 
+						list of reserved keys, cf. <a class="xref" href="ar01s02.html#reference_reserved_words" title="Reserved keys">Reserved keys</a>.  
+				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e337"></a>Creating nodes</h5></div></div></div><p>
 						To create a new structure node, use the
 						<span class="emphasis"><em>n</em></span>
 						command. It takes as arguments
@@ -227,7 +234,7 @@ the element with focus.
 						</pre><p>
 						Example:
 						</p><pre class="screen">s coref::reftype:group text:"The board"</pre><p>
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e358"></a>Creating edges</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e372"></a>Creating edges</h5></div></div></div><p>
 						To create a new edge, use the
 						<span class="emphasis"><em>e</em></span>
 						command. It takes as arguments
@@ -237,7 +244,7 @@ the element with focus.
 									created
 								</p><p>
 									For a list of valid flags see
-									<a class="xref" href="ar01s02.html#reference_atomical_edge_types" title="Table&nbsp;2.&nbsp;AtomicAL edge type flags">Table&nbsp;2, &#8220;AtomicAL edge type flags&#8221;</a>. Also see there for an explanation of how edge type flags are
+									<a class="xref" href="ar01s02.html#reference_atomical_edge_types" title="Table&nbsp;3.&nbsp;AtomicAL edge type flags">Table&nbsp;3, &#8220;AtomicAL edge type flags&#8221;</a>. Also see there for an explanation of how edge type flags are
 									re-used.
 								</p></li><li class="listitem"><p>
 									exactly one source node, referenced via its ID
@@ -270,7 +277,7 @@ the element with focus.
 						</pre><p>
 						Example:
 						</p><pre class="screen">a n1 n3 t2..t5 d3 o4 x: y:y z::z:z</pre><p>
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e412"></a>Deleting elements and annotations</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e426"></a>Deleting elements and annotations</h5></div></div></div><p>
 						For the deletion of annotations, see
 						<a class="xref" href="index.html#atomical_annotation_elements" title="Annotation of elements">the section called &#8220;Annotation of elements&#8221;</a>.
 					</p><p>
@@ -283,7 +290,7 @@ the element with focus.
 								</p></li></ul></div><p>
 						Example:
 						</p><pre class="screen">d n1..n5 d1 o3</pre><p>
-					</p></div></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="d0e432"></a>Updates</h3></div></div></div><p>If your computer is connected to the internet, Atomic will automatically check 
+					</p></div></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="d0e446"></a>Updates</h3></div></div></div><p>If your computer is connected to the internet, Atomic will automatically check 
 			for available updates on startup. If updates are available, you will be notified and have the option 
 			to install the available updates. Installed updates will be available after the next restart of the application. You will also be prompted to restart once the
 			 installation of updates is completed.</p></div></div></div></body></html>

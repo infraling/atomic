@@ -1,6 +1,13 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Reference</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Atomic User Guide v0.1.8"><link rel="up" href="index.html" title="Atomic User Guide v0.1.8"><link rel="prev" href="index.html" title="Atomic User Guide v0.1.8"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e437"></a>Reference</h2></div></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="reference_atomical"></a>AtomicAL</h3></div></div></div><p>
+   <title>Reference</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Atomic User Guide v0.1.8"><link rel="up" href="index.html" title="Atomic User Guide v0.1.8"><link rel="prev" href="index.html" title="Atomic User Guide v0.1.8"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e451"></a>Reference</h2></div></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="reference_reserved_words"></a>Reserved keys</h3></div></div></div><p>Atomic knows some reserved keys which represent keys for specific annotations.
+			One example is the annotation of <span class="emphasis"><em>element type</em></span>, which is represented
+			internally as a specific data type (as a Salt STYPE to be specific).</p><p>However, while reserved keys are necessary to have, they may comfortably be re-defined
+			in Atomic via the application preferences. It is possibly to overwrite these preferences on a
+			per-project-basis as well, e.g., in case a reserved key collides with tagset necessities. The latter is done from the Project Properties. To edit
+			the application preferences, go to <span class="guimenu">Options</span> &#8594; <span class="guisubmenu">Preferences
+						</span>. To edit a project's properties and overwrite the application-wide preferences, richt-click 
+					onto the project in the Navigation view, and choose <span class="guimenu">Properties</span> or press <span class="emphasis"><em>Alt + Enter</em></span>, then navigate to the <span class="emphasis"><em>Reserved keys</em></span> section.</p><div class="table"><a name="reference_reserved_words_table"></a><p class="title"><b>Table&nbsp;1.&nbsp;Reserved keys in Atomic</b></p><div class="table-contents"><table summary="Reserved keys in Atomic" border="1" width="100%"><colgroup><col width="50%" align="left" class="c1"><col width="50%" align="left" class="c2"></colgroup><thead><tr><th align="left">Annotation type</th><th align="left">Reserved key (default)</th></tr></thead><tbody><tr><td align="left">Element type (represented as STYPE in the data model)</td><td align="left">t</td></tr></tbody></table></div></div><br class="table-break"></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="reference_atomical"></a>AtomicAL</h3></div></div></div><p>
 				Note that some AtomicAL commands can be issued not only for single
 				elements, but also for sets of elements where all elements are of
 				the same type and have subsequent IDs. The following command, for
@@ -24,9 +31,9 @@
 				<span class="emphasis"><em>x:x</em></span>, <span class="emphasis"><em>y:y</em></span>	and
 				<span class="emphasis"><em>z:z</em></span>, you can do so in one single command, as shown below.
 				</p><pre class="screen">a n1 x:x y:y z:z</pre><p>
-			</p><div class="table"><a name="d0e495"></a><p class="title"><b>Table&nbsp;1.&nbsp;AtomicAL commands</b></p><div class="table-contents"><table summary="AtomicAL commands" border="1" width="100%"><colgroup><col width="33%"><col width="33%"><col width="34%"></colgroup><thead><tr><th align="left">Command</th><th align="left">Arguments</th><th align="left">
+			</p><div class="table"><a name="d0e553"></a><p class="title"><b>Table&nbsp;2.&nbsp;AtomicAL commands</b></p><div class="table-contents"><table summary="AtomicAL commands" border="1" width="100%"><colgroup><col width="33%"><col width="33%"><col width="34%"></colgroup><thead><tr><th align="left">Command</th><th align="left">Arguments</th><th align="left">
 								Syntax example
-								<a href="#ftn.d0e508" class="footnote" name="d0e508"><sup class="footnote">[a]</sup></a>
+								<a href="#ftn.d0e566" class="footnote" name="d0e566"><sup class="footnote">[a]</sup></a>
 							</th></tr></thead><tbody><tr><td align="left">help (Show help)</td><td align="left">&nbsp;</td><td align="left">help</td></tr><tr><td align="left">clear (Clear the console)</td><td align="left">&nbsp;</td><td align="left">clear</td></tr><tr><td align="left">n (New structure node)</td><td align="left">[key]:[value]</td><td align="left">n pos:np</td></tr><tr><td align="left">s (New span node)</td><td align="left">
 								[element] [element] [key]:[value]
 								<br>
@@ -37,7 +44,7 @@
 								s t1..t10 cat:NP
 							</td></tr><tr><td align="left">e (New edge)</td><td align="left">
 								-[type]
-								<a href="#ftn.d0e554" class="footnote" name="d0e554"><sup class="footnote">[b]</sup></a>
+								<a href="#ftn.d0e612" class="footnote" name="d0e612"><sup class="footnote">[b]</sup></a>
 								[source] [target] [key]:[value]
 							</td><td align="left">
 								e -d n1 t3 cat:NP
@@ -65,23 +72,23 @@
 								p n1 n2 cat:NP
 								<br>
 								p n1..n8 cat:NP
-							</td></tr></tbody><tbody class="footnotes"><tr><td colspan="3"><div id="ftn.d0e508" class="footnote"><p><a href="#d0e508" class="para"><sup class="para">[a] </sup></a>
+							</td></tr></tbody><tbody class="footnotes"><tr><td colspan="3"><div id="ftn.d0e566" class="footnote"><p><a href="#d0e566" class="para"><sup class="para">[a] </sup></a>
 										For reasons of readability, namespace annotations have been
 										left out completely. Please note that whenever a command can
 										take a
 										<span class="emphasis"><em>[key]:[value]</em></span>, it can also take a
 										<span class="emphasis"><em>[namespace]::[key]:[value]</em></span>
 										argument.
-									</p></div><div id="ftn.d0e554" class="footnote"><p><a href="#d0e554" class="para"><sup class="para">[b] </sup></a>
+									</p></div><div id="ftn.d0e612" class="footnote"><p><a href="#d0e612" class="para"><sup class="para">[b] </sup></a>
 										Cf.
-										<a class="xref" href="ar01s02.html#reference_atomical_edge_types" title="Table&nbsp;2.&nbsp;AtomicAL edge type flags">Table&nbsp;2, &#8220;AtomicAL edge type flags&#8221;</a>. Also note that if a flag has been set in an
+										<a class="xref" href="ar01s02.html#reference_atomical_edge_types" title="Table&nbsp;3.&nbsp;AtomicAL edge type flags">Table&nbsp;3, &#8220;AtomicAL edge type flags&#8221;</a>. Also note that if a flag has been set in an
 										<span class="emphasis"><em>e</em></span>
 										command before, this flag can be re-used in subsequent uses of
 										the command, i.e., the edge type flag remains active until a
 										new flag is explicitly set. In order to re-use the active
 										flag, don't specify a flag with the command (e.g.,
 										<span class="emphasis"><em>e n1 n2</em></span>).
-									</p></div></td></tr></tbody></table></div></div><br class="table-break"><div class="table"><a name="reference_atomical_edge_types"></a><p class="title"><b>Table&nbsp;2.&nbsp;AtomicAL edge type flags</b></p><div class="table-contents"><table summary="AtomicAL edge type flags" border="1" width="100%"><colgroup><col width="50%" align="left" class="c1"><col width="50%" align="left" class="c2"></colgroup><thead><tr><th align="left">Flag</th><th align="left">Edge type</th></tr></thead><tbody><tr><td align="left">d</td><td align="left">Dominance relation</td></tr><tr><td align="left">s</td><td align="left">Spanning relation</td></tr><tr><td align="left">p</td><td align="left">Pointing relation</td></tr><tr><td align="left">o</td><td align="left">Order relation</td></tr></tbody></table></div></div><br class="table-break"></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="reference_install_new_plugins"></a>Install new plugins</h3></div></div></div><p>In Atomic, you can very easily add new functionality to the
+									</p></div></td></tr></tbody></table></div></div><br class="table-break"><div class="table"><a name="reference_atomical_edge_types"></a><p class="title"><b>Table&nbsp;3.&nbsp;AtomicAL edge type flags</b></p><div class="table-contents"><table summary="AtomicAL edge type flags" border="1" width="100%"><colgroup><col width="50%" align="left" class="c1"><col width="50%" align="left" class="c2"></colgroup><thead><tr><th align="left">Flag</th><th align="left">Edge type</th></tr></thead><tbody><tr><td align="left">d</td><td align="left">Dominance relation</td></tr><tr><td align="left">s</td><td align="left">Spanning relation</td></tr><tr><td align="left">p</td><td align="left">Pointing relation</td></tr><tr><td align="left">o</td><td align="left">Order relation</td></tr></tbody></table></div></div><br class="table-break"></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="reference_install_new_plugins"></a>Install new plugins</h3></div></div></div><p>In Atomic, you can very easily add new functionality to the
 				application yourself, at runtime. This is done by installing
 				additional plugins in Atomic. There are generally two way to achieve
 				this, depending on how the plugin is being made available:
@@ -111,7 +118,7 @@
 					for plugins. Once you have found a plugin you want to install,
 					simply click the provided install button next to the search result,
 					and follow the instructions.
-				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e675"></a>Example: Install XML editing support in Atomic</h5></div></div></div><p>
+				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e733"></a>Example: Install XML editing support in Atomic</h5></div></div></div><p>
 						If you are working on corpus annotations available in an XML
 						dialect, such as SaltXML which is used in Atomic, you may want to
 						be able to edit the source files comfortably with a dedicated XML
