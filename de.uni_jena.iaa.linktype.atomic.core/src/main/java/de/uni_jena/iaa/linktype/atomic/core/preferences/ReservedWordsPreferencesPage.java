@@ -83,7 +83,7 @@ public class ReservedWordsPreferencesPage extends FieldEditorOverlayPage impleme
 	@Override
 	protected void createFieldEditors() {
 		Composite composite = getFieldEditorParent();
-		StringFieldEditor stringFieldEditor = new StringFieldEditor(PreferenceProvider.STYPE, "Element type", -1, StringFieldEditor.VALIDATE_ON_KEY_STROKE, composite);
+		StringFieldEditor stringFieldEditor = new StringFieldEditor(PreferenceSupplier.STYPE, "Element type", -1, StringFieldEditor.VALIDATE_ON_KEY_STROKE, composite);
 		addField(stringFieldEditor);
 	}
 

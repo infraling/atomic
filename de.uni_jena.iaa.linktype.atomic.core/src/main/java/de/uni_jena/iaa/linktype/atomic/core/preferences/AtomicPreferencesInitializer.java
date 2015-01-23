@@ -29,7 +29,7 @@ public class AtomicPreferencesInitializer extends AbstractPreferenceInitializer 
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		Map<String, String> initializationEntries = PreferenceProvider.getInitializationEntries();
+		Map<String, String> initializationEntries = PreferenceSupplier.getInitializationEntries();
         for(Map.Entry<String, String> entry : initializationEntries.entrySet()) {
             store.setDefault(entry.getKey(), entry.getValue());
         }

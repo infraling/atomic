@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
  * @author Stephan Druskat
  *
  */
-public class PreferenceProvider {
+public class PreferenceSupplier {
 	
 	public static final IScopeContext SCOPE_CONTEXT = ConfigurationScope.INSTANCE;
     public static final String PREFERENCE_NODE = "de.uni_jena.iaa.linktype.atomic.core";
