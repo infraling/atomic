@@ -92,7 +92,7 @@ public class ReservedWordsPreferencesPage extends FieldEditorOverlayPage impleme
 	 */
 	@Override
 	protected String getPageId() {
-		return "de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationReservedWordsPreferencesPage";
+		return "de.uni_jena.iaa.linktype.atomic.core.reservedKeysPreferencePage";
 	}
 
 }

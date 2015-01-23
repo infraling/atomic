@@ -6,7 +6,13 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
@@ -28,6 +34,19 @@ public class AnnotationAnnotateCommand extends Command {
 	
 	@Override 
 	public void execute() {
+		String pref = Platform.getPreferencesService().getString("de.uni_jena.iaa.linktype.atomic.core", "STYPE", "NOPE", null);
+		System.err.println("PREF " + pref);
+		IFile file = ((FileEditorInput) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput()).getFile();
+		try {
+			System.err.println(("PROP " + file.getProject().getPersistentProperty(new QualifiedName("de.uni_jena.iaa.linktype.atomic.core.reservedKeysPreferencePage", "STYPE"))));
+			for (Entry<QualifiedName, String> o : file.getProject().getPersistentProperties().entrySet()) {
+				System.err.println("P: " + o);
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		
 		String key = getKey();
 		String value = getValue();
 		String namespace = getNamespace();

@@ -30,7 +30,7 @@ public class PreferenceSupplier {
 	/* DEF = DEFAULT */
 	
 	// Reserved key for annotating element type (STYPE)
-	public static final String STYPE = "string";
+	public static final String STYPE = "sType";
 	public static final String STYPE_DEF = "t";
 
 	/** Provides a HashMap of all (preference,preference default) pairs for
