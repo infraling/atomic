@@ -28,6 +28,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.IDLabel;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.RelationFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart.AnnotationFigure;
@@ -83,6 +84,10 @@ public class RelationPart extends AbstractConnectionEditPart {
 	@Override
 	protected void refreshVisuals() { // FIXME TODO Refactor
 		RelationFigure figure = (RelationFigure) getFigure();
+		
+		if (((SRelation) getModel()).getLabel("saltCore", "STYPE") != null) {
+			figure.getLabel().setText(((GraphPart) getRoot().getContents()).getVisualIDMap().inverse().get(getModel()) + ":" + ((SRelation) getModel()).getLabel("saltCore", "STYPE").getValueString());
+		}
 
 		// Reorder figure.getChildren() to avoid IndexOutOfBoundsException
 		List<Object> customFigureChildren = new ArrayList<Object>();
@@ -175,6 +180,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 				break;
 			case Notification.ADD:
 				refreshChildren();
+				refresh();
 				break;
 			case Notification.REMOVING_ADAPTER:
 				getParent().refresh();

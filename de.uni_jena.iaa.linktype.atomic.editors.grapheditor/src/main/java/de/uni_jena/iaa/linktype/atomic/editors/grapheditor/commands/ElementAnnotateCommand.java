@@ -3,6 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -10,9 +11,21 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gef.commands.Command;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Label;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.impl.LabelImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
@@ -87,11 +100,10 @@ public class ElementAnnotateCommand extends Command {
 		SRelation rel = (SRelation) model;
 		Label sTypeLabel = rel.getLabel("saltCore", "STYPE");
 		if (sTypeLabel == null) { // Element has no STYPE yet
-			rel.addSType(value);
+			rel.createSFeature("saltCore", "STYPE", value);
 		}
 		else { // Element already has an STYPE
-			rel.removeLabel("saltCore", "STYPE"); // Doing it the hard way because it won't work by just setting valueString, no sir!
-			rel.addSType(value); // Re-add
+			rel.getLabel("saltCore", "STYPE").setValue(value);
 		}
 	}
 

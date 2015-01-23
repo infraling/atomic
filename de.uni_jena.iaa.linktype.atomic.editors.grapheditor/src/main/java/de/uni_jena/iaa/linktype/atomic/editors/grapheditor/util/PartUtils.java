@@ -53,6 +53,7 @@ public class PartUtils {
 	private static final Logger log = LoggerFactory.getLogger(PartUtils.class);
 
 	public static final String SANS10BOLD = "sansserif 10pt bold";
+	public static final String SANS8 = "sansserif 8pt";
 	public static final String VERYLIGHTGREY = "very light grey colour";
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
 	private static final int margin = 50;  // FIXME Hard-coded margin (5), make settable in Prefs
@@ -123,6 +124,8 @@ public class PartUtils {
 		FontData[] fontDataArray = new FontData[1];
 		if (fontStyle.equals(SANS10BOLD))
 			fontDataArray[0] = new FontData("sansserif", 10, SWT.BOLD); // FIXME: Parameterize with Preferences
+		if (fontStyle.equals(SANS8))
+			fontDataArray[0] = new FontData("sansserif", 8, SWT.NORMAL); // FIXME: Parameterize with Preferences
 		fontRegistry.put(fontStyle, fontDataArray);
 	}
 	

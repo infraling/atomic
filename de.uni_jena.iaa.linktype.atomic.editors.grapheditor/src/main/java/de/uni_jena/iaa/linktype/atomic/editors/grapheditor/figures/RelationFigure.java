@@ -8,6 +8,8 @@ import org.eclipse.draw2d.ConnectionLocator;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
+
 /**
  * @author Stephan Druskat
  *
@@ -42,6 +44,7 @@ public class RelationFigure extends PolylineConnection {
 			break;
 		}
 		label = new IDLabel(visualID);
+		PartUtils.setFont(label, PartUtils.SANS8);
 		add(getLabel(), new ConnectionLocator(this, ConnectionLocator.MIDDLE));
 	}
 
