@@ -283,7 +283,7 @@
       </page>
       <page
             category="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
-            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedWordsPreferencesPage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedKeysPreferencesPage"
             id="de.uni_jena.iaa.linktype.atomic.core.reservedKeysPreferencePage"
             name="Reserved keys">
       </page>
@@ -297,7 +297,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedWordsPreferencesPage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedKeysPreferencesPage"
             id="de.uni_jena.iaa.linktype.atomic.core.projects.properties.reservedWordsPropertyPage"
             name="Reserved keys">
             <enabledWhen>

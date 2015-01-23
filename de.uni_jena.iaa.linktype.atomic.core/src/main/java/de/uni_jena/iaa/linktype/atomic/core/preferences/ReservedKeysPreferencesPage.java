@@ -23,16 +23,16 @@ import de.uni_jena.iaa.linktype.atomic.core.projects.properties.FieldEditorOverl
  * @author Stephan Druskat
  * 
  */
-public class ReservedWordsPreferencesPage extends FieldEditorOverlayPage implements IWorkbenchPreferencePage {
+public class ReservedKeysPreferencesPage extends FieldEditorOverlayPage implements IWorkbenchPreferencePage {
 	
-	public ReservedWordsPreferencesPage() {
+	public ReservedKeysPreferencesPage() {
 		super(GRID);
 	}
 
 	/**
 	 * @param style
 	 */
-	public ReservedWordsPreferencesPage(int style) {
+	public ReservedKeysPreferencesPage(int style) {
 		super(style);
 		// TODO Auto-generated constructor stub
 	}
@@ -41,7 +41,7 @@ public class ReservedWordsPreferencesPage extends FieldEditorOverlayPage impleme
 	 * @param title
 	 * @param style
 	 */
-	public ReservedWordsPreferencesPage(String title, int style) {
+	public ReservedKeysPreferencesPage(String title, int style) {
 		super(title, style);
 		// TODO Auto-generated constructor stub
 	}
@@ -51,7 +51,7 @@ public class ReservedWordsPreferencesPage extends FieldEditorOverlayPage impleme
 	 * @param image
 	 * @param style
 	 */
-	public ReservedWordsPreferencesPage(String title, ImageDescriptor image, int style) {
+	public ReservedKeysPreferencesPage(String title, ImageDescriptor image, int style) {
 		super(title, image, style);
 		// TODO Auto-generated constructor stub
 	}
