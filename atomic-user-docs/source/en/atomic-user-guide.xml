@@ -552,10 +552,6 @@ the element with focus.
 							<entry>Element type (represented as STYPE in the data model)</entry>
 							<entry>t</entry>
 						</row>
-						<row>
-							<entry>Remove type (i.e., STYPE) from element</entry>
-							<entry>rt</entry>
-						</row>
 					</tbody>
 				</tgroup>
 			</table>
