@@ -29,7 +29,7 @@ public class PreferenceProvider {
 	
 	/* DEF = DEFAULT */
 	
-	// Reserved word for annotating element type (STYPE)
+	// Reserved key for annotating element type (STYPE)
 	public static final String STYPE = "string";
 	public static final String STYPE_DEF = "t";
 

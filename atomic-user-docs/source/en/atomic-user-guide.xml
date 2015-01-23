@@ -308,9 +308,9 @@ the element with focus.
 						is shown in a pop-up when hovering over an annotation.
 					</para>
 					<para>
-						Please note that Atomic has some <emphasis>reserved words</emphasis> for annotation. These reserved words
+						Please note that Atomic has some <emphasis>reserved keys</emphasis> for annotation. These reserved keys
 						represent keys for specific annotations. For a more detailed explanation and a 
-						list of reserved words, cf. <xref linkend="reference_reserved_words" />.  
+						list of reserved keys, cf. <xref linkend="reference_reserved_words" />.  
 					</para>
 					<para>
 						Elements (i.e., nodes as well as edges) can be annotated by
@@ -372,9 +372,9 @@ the element with focus.
 					For a complete list of available commands, see
 					<xref linkend="reference_atomical" />.
 				</para>
-				<para>Please note that Atomic has some <emphasis>reserved words</emphasis> for annotation. These reserved words
+				<para>Please note that Atomic has some <emphasis>reserved keys</emphasis> for annotation. These reserved keys
 						represent keys for specific annotations. For a more detailed explanation and a 
-						list of reserved words, cf. <xref linkend="reference_reserved_words" />.  
+						list of reserved keys, cf. <xref linkend="reference_reserved_words" />.  
 				</para>
 				<sect4>
 					<title>Creating nodes</title>
@@ -520,14 +520,14 @@ the element with focus.
 	</sect1>
 	<sect1>
 		<title>Reference</title>
-		<sect2 xml:id="reference_reserved_words" xreflabel="Reserved words">
-			<title>Reserved words</title>
-			<para>Atomic knows some reserved words which represent keys for specific annotations.
+		<sect2 xml:id="reference_reserved_words" xreflabel="Reserved keys">
+			<title>Reserved keys</title>
+			<para>Atomic knows some reserved keys which represent keys for specific annotations.
 			One example is the annotation of <emphasis>element type</emphasis>, which is represented
 			internally as a specific data type (as a Salt STYPE to be specific).</para>
-			<para>However, while reserved words are necessary to have, they may comfortably be re-defined
+			<para>However, while reserved keys are necessary to have, they may comfortably be re-defined
 			in Atomic via the application preferences. It is possibly to overwrite these preferences on a
-			per-project-basis as well, e.g., in case a reserved word collides with tagset necessities. The latter is done from the Project Properties. To edit
+			per-project-basis as well, e.g., in case a reserved key collides with tagset necessities. The latter is done from the Project Properties. To edit
 			the application preferences, go to <menuchoice>
 						<guimenu>Options</guimenu>
 						<guisubmenu>Preferences
@@ -535,16 +535,16 @@ the element with focus.
 					</menuchoice>. To edit a project's properties and overwrite the application-wide preferences, richt-click 
 					onto the project in the Navigation view, and choose <menuchoice>
 						<guimenu>Properties</guimenu>
-					</menuchoice> or press <emphasis>Alt + Enter</emphasis>, then navigate to the <emphasis>Reserved words</emphasis> section.</para>
+					</menuchoice> or press <emphasis>Alt + Enter</emphasis>, then navigate to the <emphasis>Reserved keys</emphasis> section.</para>
 					<table frame='all' xml:id="reference_reserved_words_table">
-				<title>Reserved words in Atomic</title>
+				<title>Reserved keys in Atomic</title>
 				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 					<colspec colname='c1' colwidth="1*" />
 					<colspec colname='c2' colwidth="1*" />
 					<thead>
 						<row>
 							<entry>Annotation type</entry>
-							<entry>Reserved word (default)</entry>
+							<entry>Reserved key (default)</entry>
 						</row>
 					</thead>
 					<tbody>

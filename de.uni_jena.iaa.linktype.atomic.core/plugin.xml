@@ -285,7 +285,7 @@
             category="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
             class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedWordsPreferencesPage"
             id="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationReservedWordsPreferencesPage"
-            name="Reserved words">
+            name="Reserved keys">
       </page>
    </extension>
    <extension
@@ -299,7 +299,7 @@
       <page
             class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedWordsPreferencesPage"
             id="de.uni_jena.iaa.linktype.atomic.core.projects.properties.reservedWordsPropertyPage"
-            name="Reserved words">
+            name="Reserved keys">
             <enabledWhen>
     <and>
             <instanceof
