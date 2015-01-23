@@ -24,7 +24,7 @@ public class AccessorUtil {
 	 */
 	public static String getReservedKeysProperty(String key) {
 		try {
-			return ((FileEditorInput) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput()).getFile().getProject().getPersistentProperty(new QualifiedName("de.uni_jena.iaa.linktype.atomic.core", key));
+			return ((FileEditorInput) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput()).getFile().getProject().getPersistentProperty(new QualifiedName("de.uni_jena.iaa.linktype.atomic.core.reservedKeysPreferencePage", key));
 		} catch (CoreException e) {
 			log.error("Core exception!", e);
 			e.printStackTrace();

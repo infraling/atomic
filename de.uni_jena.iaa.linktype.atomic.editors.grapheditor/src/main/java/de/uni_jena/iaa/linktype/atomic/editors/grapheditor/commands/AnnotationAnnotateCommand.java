@@ -6,16 +6,13 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
-
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Label;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AccessorUtil;
 
 /**
  * @author Stephan Druskat
@@ -34,22 +31,26 @@ public class AnnotationAnnotateCommand extends Command {
 	
 	@Override 
 	public void execute() {
-		String pref = Platform.getPreferencesService().getString("de.uni_jena.iaa.linktype.atomic.core", "STYPE", "NOPE", null);
-		System.err.println("PREF " + pref);
-		IFile file = ((FileEditorInput) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput()).getFile();
-		try {
-			System.err.println(("PROP " + file.getProject().getPersistentProperty(new QualifiedName("de.uni_jena.iaa.linktype.atomic.core.reservedKeysPreferencePage", "STYPE"))));
-			for (Entry<QualifiedName, String> o : file.getProject().getPersistentProperties().entrySet()) {
-				System.err.println("P: " + o);
-			}
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// Get reserved keys
+		String typeKey;
+		String useProjectSettings = AccessorUtil.getReservedKeysProperty("useProjectSettings");
+		if (useProjectSettings != null && useProjectSettings.equals("true")) {
+			typeKey = AccessorUtil.getReservedKeysProperty("sType");
+		} else {
+			typeKey = Platform.getPreferencesService().getString("de.uni_jena.iaa.linktype.atomic.core", "sType", "t", null);
 		}
-//		
 		String key = getKey();
 		String value = getValue();
 		String namespace = getNamespace();
+
+		// Check if STYPE operations need to be done
+		if (modelParent instanceof SRelation) {
+			if (key.equals(typeKey)) {
+				setSType(value);
+				return;
+			}
+		}
+		
 		if (getDuplicateAnnotationsToModify() == null) {
 			setAnnotationValues(key, value, namespace);
 		}
@@ -76,6 +77,21 @@ public class AnnotationAnnotateCommand extends Command {
 					break;
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param value2
+	 */
+	private void setSType(String value2) {
+		SRelation rel = (SRelation) modelParent;
+		Label sTypeLabel = rel.getLabel("saltCore", "STYPE");
+		if (sTypeLabel == null) { // Element has no STYPE yet
+			rel.addSType(value2);
+		}
+		else { // Element already has an STYPE
+			rel.removeLabel("saltCore", "STYPE"); // Doing it the hard way because it won't work by just setting valueString, no sir!
+			rel.addSType(value2); // Re-add
 		}
 	}
 
