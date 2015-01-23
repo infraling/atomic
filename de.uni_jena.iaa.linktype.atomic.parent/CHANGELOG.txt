@@ -2,6 +2,10 @@
 * Changelog for Atomic *
 ************************
 
+Version 0.1.9
+=============
+- Fixes #31: Enables setting STYPE on annotation graph relations
+
 Version 0.1.8
 =============
 - Adds enhancement request #33: "Create keyboard shortcuts for creating spans and structures"
