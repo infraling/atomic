@@ -180,7 +180,6 @@ public class RelationPart extends AbstractConnectionEditPart {
 				break;
 			case Notification.ADD:
 				refreshChildren();
-				refresh();
 				break;
 			case Notification.REMOVING_ADAPTER:
 				getParent().refresh();
