@@ -1,0 +1,3 @@
+The OpenNLP sentence detection models are distributed under the following licenses:
+- French: For research use only
+- All others: Apache License, Version 2.0
