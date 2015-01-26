@@ -47,8 +47,10 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	
 	private static final Logger log = LoggerFactory.getLogger(AtomicAutoUpdateJob.class);
 	
-	private NewAtomicProjectWizardDetailsPage page;
+	private NewAtomicProjectWizardDetailsPage detailsPage;
 	private Object[] typedTokenizerToUse;
+
+	private NewAtomicProjectWizardSentenceDetectionPage sentenceDetectionPage;
 	
 	/**
 	 * 
@@ -65,8 +67,10 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public void addPages() {
 		setWindowTitle("New Atomic project");
-		page = new NewAtomicProjectWizardDetailsPage();
-		addPage(page);
+		detailsPage = new NewAtomicProjectWizardDetailsPage();
+		addPage(detailsPage);
+		sentenceDetectionPage = new NewAtomicProjectWizardSentenceDetectionPage();
+		addPage(sentenceDetectionPage);
 	}
 
 	/* (non-Javadoc)
@@ -87,9 +91,9 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			setNeedsProgressMonitor(true);
-			String projectName = page.getTxtProjectName().getText();
-			String corpusText = page.getCorpusText();
-			String tokenizerName = page.getComboTokenizer().getText();
+			String projectName = detailsPage.getTxtProjectName().getText();
+			String corpusText = detailsPage.getCorpusText();
+			String tokenizerName = detailsPage.getComboTokenizer().getText();
 			
 			monitor.beginTask("Creating project from corpus", /*100*/IProgressMonitor.UNKNOWN);
 			
