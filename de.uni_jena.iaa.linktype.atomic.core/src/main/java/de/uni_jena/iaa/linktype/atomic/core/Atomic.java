@@ -16,9 +16,6 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -40,13 +37,6 @@ public class Atomic implements IApplication {
 	public Object start(IApplicationContext context) throws Exception {
 
 		log.info("Started Atomic");
-		SentenceDetectorImpl sd = new SentenceDetectorImpl();
-		List<int[]> x = sd.getSentenceRanges("This is a pony. This is not.");
-		System.err.println(x);
-		for (Iterator iterator = x.iterator(); iterator.hasNext();) {
-			int[] is = (int[]) iterator.next();
-			System.err.println(is);
-		}
 		Display display = null;
 		if (Display.getCurrent() != null) {
 	    	display = Display.getCurrent();
