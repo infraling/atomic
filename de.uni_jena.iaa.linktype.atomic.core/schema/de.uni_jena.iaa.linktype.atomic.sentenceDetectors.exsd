@@ -81,7 +81,13 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         public class SentenceDetectorImpl extends SentenceDetector {
+	@Override
+	public String[] detectSentences(String corpusText) {
+		return corpusText.split(&quot;(?&lt;=\\.)&quot;);
+	}
+}
+
       </documentation>
    </annotation>
 
