@@ -30,5 +30,6 @@ Require-Bundle: org.eclipse.ui,
  org.apache.opennlp.tools;bundle-version="1.5.3"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: de.uni_jena.iaa.linktype.atomic.core.preferences,
+Export-Package: de.uni_jena.iaa.linktype.atomic.core.corpus,
+ de.uni_jena.iaa.linktype.atomic.core.preferences,
  de.uni_jena.iaa.linktype.atomic.core.utils

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="de.uni_jena.iaa.linktype.atomic.sentenceDetectors" name="Sentence detectors for corpora" schema="schema/de.uni_jena.iaa.linktype.atomic.sentenceDetectors.exsd"/>
 
    <extension
          id="application"
@@ -314,6 +315,12 @@
     </and>
     </enabledWhen>
       </page>
+   </extension>
+   <extension
+         point="de.uni_jena.iaa.linktype.atomic.sentenceDetectors">
+      <sentenceDetector
+            class="de.uni_jena.iaa.linktype.atomic.core.SentenceDetectorImpl">
+      </sentenceDetector>
    </extension>
    <!-- Navigator above -->
 
