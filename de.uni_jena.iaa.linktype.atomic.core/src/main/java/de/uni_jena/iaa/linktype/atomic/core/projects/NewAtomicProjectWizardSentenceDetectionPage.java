@@ -36,7 +36,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 
 	private static final Logger log = LoggerFactory.getLogger(NewAtomicProjectWizardSentenceDetectionPage.class);
 
-	private enum SentenceDetectorType {
+	protected enum SentenceDetectorType {
 		OPENNLP, OPENNLP_CUSTOM, REGEX, THIRDPARTY
 	}
 
@@ -51,7 +51,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	private Combo thirdPartyCombo;
 	private SentenceDetectorType sentenceDetectorTypeToUse;
 	private Button btnLoadOwnApache;
-	protected String ownApacheString;
+	protected String ownApacheFileString;
 	public static final String DANISH = "Danish", GERMAN = "German",
 			ENGLISH = "English", FRENCH = "French", ITALIAN = "Italian",
 			DUTCH = "Dutch", PORTUGUESE = "Portuguese", SWEDISH = "Swedish";
@@ -118,7 +118,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 				dialog.setFilterExtensions(new String[] { "*.bin" });
 				String result = dialog.open();
 				if (!(result == null)) {
-					ownApacheString = result;
+					ownApacheFileString = result;
 					textUseOwnApache.setText(result);
 				}
 			}
@@ -250,6 +250,13 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	 */
 	public void setSentenceDetectorTypeToUse(SentenceDetectorType sentenceDetectorTypeToUse) {
 		this.sentenceDetectorTypeToUse = sentenceDetectorTypeToUse;
+	}
+
+	/**
+	 * @return the predefinedOpenNLPCombo
+	 */
+	public Combo getPredefinedOpenNLPCombo() {
+		return predefinedOpenNLPCombo;
 	}
 
 }
