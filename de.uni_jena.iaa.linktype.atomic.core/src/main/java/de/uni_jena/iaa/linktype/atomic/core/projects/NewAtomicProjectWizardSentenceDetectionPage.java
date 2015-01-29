@@ -13,6 +13,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.layout.GridData;
@@ -49,6 +51,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	private Combo thirdPartyCombo;
 	private SentenceDetectorType sentenceDetectorTypeToUse;
 	private Button btnLoadOwnApache;
+	protected String ownApacheString;
 	public static final String DANISH = "Danish", GERMAN = "German",
 			ENGLISH = "English", FRENCH = "French", ITALIAN = "Italian",
 			DUTCH = "Dutch", PORTUGUESE = "Portuguese", SWEDISH = "Swedish";
@@ -109,6 +112,17 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 		btnLoadOwnApache = new Button(container, SWT.NONE);
 		btnLoadOwnApache.setText("Load");
 		btnLoadOwnApache.addSelectionListener(btnSelectionAdapter);
+		btnLoadOwnApache.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog dialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.OPEN);
+				dialog.setFilterExtensions(new String[] { "*.bin" });
+				String result = dialog.open();
+				if (!(result == null)) {
+					ownApacheString = result;
+					textUseOwnApache.setText(result);
+				}
+			}
+		});
 
 		btnUseRegex = new Button(container, SWT.RADIO);
 		btnUseRegex.setText("Use a regular expression*");
@@ -130,9 +144,10 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 		btnUseThirdpartyDetector = new Button(container, SWT.RADIO);
 		btnUseThirdpartyDetector.setText("Use a third-party sentence detector");
 		btnUseThirdpartyDetector.addSelectionListener(btnSelectionAdapter);
-		thirdPartyCombo = new Combo(container, SWT.NONE);
+		thirdPartyCombo = new Combo(container, SWT.NONE | SWT.READ_ONLY);
 		thirdPartyCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		fillCombo(thirdPartyCombo);
+		thirdPartyCombo.addSelectionListener(btnSelectionAdapter);
 
 		Label lbltheRegularExpression = new Label(container, SWT.NONE);
 		lbltheRegularExpression.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
@@ -212,7 +227,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			setPageComplete(false);
 		}
 	}
-	
+
 	public void setRadioSelection(Button selectComposite) {
 		for (Button c : new ArrayList<Button>(Arrays.asList(btnPredefinedOpenNLP, btnUseOwnApache, btnUseRegex, btnUseThirdpartyDetector))) {
 			if (c.equals(selectComposite))
