@@ -315,13 +315,6 @@
     </and>
     </enabledWhen>
       </page>
-   </extension>
-   <extension
-         point="de.uni_jena.iaa.linktype.atomic.sentenceDetectors">
-      <sentenceDetector
-            class="de.uni_jena.iaa.linktype.atomic.core.SentenceDetectorImpl">
-      </sentenceDetector>
-   </extension>
-   <!-- Navigator above -->
+   </extension> <!-- Navigator above -->
 
 </plugin>

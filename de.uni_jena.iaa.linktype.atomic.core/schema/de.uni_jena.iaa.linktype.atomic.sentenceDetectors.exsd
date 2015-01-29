@@ -54,10 +54,24 @@
          </documentation>
       </annotation>
       <complexType>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The implementation of a sentence detector
+                  The class implementing the sentence detector
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn="de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetector:"/>
@@ -82,12 +96,11 @@
       </appinfo>
       <documentation>
          public class SentenceDetectorImpl extends SentenceDetector {
-	@Override
-	public String[] detectSentences(String corpusText) {
-		return corpusText.split(&quot;(?&lt;=\\.)&quot;);
-	}
+ @Override
+ public String[] detectSentences(String corpusText) {
+  return corpusText.split(&quot;(?&lt;=\\.)&quot;);
+ }
 }
-
       </documentation>
    </annotation>
 
