@@ -51,19 +51,6 @@ public class ElementAnnotateCommand extends Command {
 			} else {
 				model.removeLabel(anno.getName());
 			}
-			String name = anno.getName();
-			Assert.isTrue(!(model.getSAnnotations().contains(name))); // FIXME:
-																		// Refactor
-																		// to
-																		// unit
-																		// test
-																		// method
-			Assert.isTrue(!(model.getSAnnotations().contains(anno))); // FIXME:
-																		// Refactor
-																		// to
-																		// unit
-																		// test
-																		// method
 		}
 		// Create annotations from input
 		for (Entry<String, Pair<String, String>> anno : getAnnotations().entrySet()) {

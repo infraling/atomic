@@ -16,6 +16,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
@@ -49,6 +50,9 @@ public class NodeCreateCommand extends Command {
 				Object ePModel = editPart.getModel();
 				SRelation relation = null;
 				if (ePModel instanceof SStructure || ePModel instanceof SToken || ePModel instanceof SSpan) {
+					//FIXME either or
+					//getGraph().createSRelation(getModel(), (SNode)ePModel, STYPE_NAME.SDOMINANCE_RELATION, null);
+					
 					relation = SaltFactory.eINSTANCE.createSDominanceRelation();
 					relation.setSSource(getModel());
 					relation.setSTarget((SNode) ePModel);
