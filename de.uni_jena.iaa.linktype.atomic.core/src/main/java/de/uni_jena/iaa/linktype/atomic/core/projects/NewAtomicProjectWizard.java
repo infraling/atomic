@@ -297,9 +297,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 		private void tokenizeCorpusString(SDocumentGraph sDocumentGraph, Object[] typedTokenizerToUse) {
 			if (typedTokenizerToUse[0] instanceof Tokenizer) {
-				Tokenizer tokenizer = (Tokenizer) typedTokenizerToUse[0];
-				tokenizer.setsDocumentGraph(sDocumentGraph);
-				tokenizer.tokenize(sDocumentGraph.getSTextualDSs().get(0));
+				sDocumentGraph.tokenize();
 			}
 		}
 
@@ -311,9 +309,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			sDocument.setSDocumentGraph(sDocumentGraph);
 
 			// STextualDS
-			STextualDS sTextualDS = SaltFactory.eINSTANCE.createSTextualDS();
-			sTextualDS.setSText(corpusText);
-			sDocument.getSDocumentGraph().addSNode(sTextualDS);
+			sDocumentGraph.createSTextualDS(corpusText);
 			return sDocumentGraph;
 		}
 
