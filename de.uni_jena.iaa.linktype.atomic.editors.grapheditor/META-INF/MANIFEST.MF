@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore;bundle-version="2.7.0",
  org.apache.commons.lang3;bundle-version="3.1.0",
  com.google.guava;bundle-version="14.0.1",
- de.uni_jena.iaa.linktype.atomic.logging;bundle-version="0.1.8"
+ de.uni_jena.iaa.linktype.atomic.logging;bundle-version="0.1.8",
+ de.uni_jena.iaa.linktype.atomic.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: de.uni_jena.iaa.linktype.atomic.editors.grapheditor,
