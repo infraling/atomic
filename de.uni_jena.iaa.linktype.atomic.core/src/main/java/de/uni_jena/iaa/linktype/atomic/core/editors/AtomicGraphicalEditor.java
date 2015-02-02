@@ -12,6 +12,8 @@ import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.FileEditorInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
@@ -28,6 +30,8 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
  *
  */
 public abstract class AtomicGraphicalEditor extends GraphicalEditorWithFlyoutPalette {
+	
+	private static final Logger log = LoggerFactory.getLogger(AtomicGraphicalEditor.class);
 
 	/**
 	 * The model {@link SDocumentGraph} for this editor instance
@@ -44,10 +48,14 @@ public abstract class AtomicGraphicalEditor extends GraphicalEditorWithFlyoutPal
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
 		if (getEditorInput() instanceof FileEditorInput) {
-			setGraph(ModelRegistry.getModel(((FileEditorInput) getEditorInput()).getFile()));
+			FileEditorInput editorInput = (FileEditorInput) getEditorInput();
+			log.info("Getting model from {}.", editorInput.getFile());
+			setGraph(ModelRegistry.getModel(editorInput.getFile()));
+			log.info("Setting graph as contents in GraphicalViewer: {}.", getGraph());
 			getGraphicalViewer().setContents(getGraph());
 		}
 		else {
+			log.info("EditorInput is not an instance of FileEditorInput. Aborting and informing user.");
 			MessageDialog.openError(Display.getCurrent().getActiveShell(), "Action not applicable", "The Annotation Graph Editor cannot process the input you have selected.");
 		}
 	}
@@ -61,6 +69,7 @@ public abstract class AtomicGraphicalEditor extends GraphicalEditorWithFlyoutPal
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		IFile documentIFile = ((FileEditorInput) getEditorInput()).getFile();
+		log.info("Saving document {}.", documentIFile);
 		SDocument document = ModelLoader.getSDocumentFromSDocumentIFile(((FileEditorInput) getEditorInput()).getFile());
 		document.setSDocumentGraph(getGraph());
 		URI uri = URI.createFileURI(new File(documentIFile.getLocation().toString()).getAbsolutePath());
