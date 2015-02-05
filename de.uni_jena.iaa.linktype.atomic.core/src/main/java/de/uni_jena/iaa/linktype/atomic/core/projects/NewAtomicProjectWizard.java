@@ -23,7 +23,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -53,6 +55,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.LocaleProvider;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetector;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
@@ -122,6 +125,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	}
 
 	private final class AtomicProjectCreationRunnable implements IRunnableWithProgress {
+
+		private static final String EXTENSION_PROPERTY_CLASS = "class";
 
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			setNeedsProgressMonitor(true);
@@ -297,7 +302,20 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				}
 				break;
 			case THIRDPARTY:
-
+				String extensionName = sentenceDetectionPage.getThirdPartyCombo().getText();
+				IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(NewAtomicProjectWizardSentenceDetectionPage.EXTENSION_ID);
+				for (IConfigurationElement e : config) {
+					if (e.getAttribute(NewAtomicProjectWizardSentenceDetectionPage.THIRDPARTY_DETECTOR_EXTENSION_NAME).equals(extensionName)) {
+						try {
+							SentenceDetector thirdPartyDetector = (SentenceDetector) e.createExecutableExtension(EXTENSION_PROPERTY_CLASS);
+							sentenceSet = thirdPartyDetector.detectSentenceRanges(sDocumentGraph.getSTextualDSs().get(0).getSText());
+						}
+						catch (CoreException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
 				break;
 
 			default:

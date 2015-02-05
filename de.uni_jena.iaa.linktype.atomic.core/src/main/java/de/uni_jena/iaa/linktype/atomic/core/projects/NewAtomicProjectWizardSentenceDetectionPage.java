@@ -60,8 +60,8 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			ENGLISH = "English", FRENCH = "French", ITALIAN = "Italian",
 			DUTCH = "Dutch", PORTUGUESE = "Portuguese", SWEDISH = "Swedish";
 	public static final String NONE = "Please select ...";
-	private static final String THIRDPARTY_DETECTOR_EXTENSION_NAME = "name";
-	private static final String EXTENSION_ID = "de.uni_jena.iaa.linktype.atomic.sentenceDetectors";
+	public static final String THIRDPARTY_DETECTOR_EXTENSION_NAME = "name";
+	public static final String EXTENSION_ID = "de.uni_jena.iaa.linktype.atomic.sentenceDetectors";
 
 	/**
 	 * 
@@ -296,6 +296,13 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	 */
 	public Combo getLocaleCombo() {
 		return localeCombo;
+	}
+
+	/**
+	 * @return the thirdPartyCombo
+	 */
+	public Combo getThirdPartyCombo() {
+		return thirdPartyCombo;
 	}
 
 }

@@ -21,6 +21,6 @@ import com.google.common.collect.TreeRangeSet;
  */
 public abstract class SentenceDetector {
 	
-	protected abstract TreeRangeSet<Integer> detectSentenceRanges(String corpusText);
+	public abstract TreeRangeSet<Integer> detectSentenceRanges(String corpusText);
 
 }
