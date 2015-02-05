@@ -6,11 +6,8 @@ package de.uni_jena.iaa.linktype.atomic.core.projects;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +24,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -38,6 +36,9 @@ import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Range;
+import com.google.common.collect.TreeRangeSet;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
@@ -45,11 +46,11 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
-import de.uni_jena.iaa.linktype.atomic.core.update.AtomicAutoUpdateJob;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
@@ -60,7 +61,7 @@ import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
  */
 public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
-	private static final Logger log = LoggerFactory.getLogger(AtomicAutoUpdateJob.class);
+	private static final Logger log = LoggerFactory.getLogger(NewAtomicProjectWizard.class);
 
 	private static final Map<String, String> openNLPModels;
 	static {
@@ -167,7 +168,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 			// Detect sentence
 			monitor.subTask("Detecting sentences in corpus text");
-			detectSentences(sDocumentGraph, iProject);
+			TreeRangeSet<Integer> sentenceRanges = detectSentences(sDocumentGraph, iProject);
+			writeSentencesToModel(sDocumentGraph, sentenceRanges);
 			monitor.worked(1);
 			log.info("Detected sentences.");
 
@@ -187,10 +189,37 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 		/**
 		 * @param sDocumentGraph
+		 * @param sentenceRanges
+		 */
+		private void writeSentencesToModel(SDocumentGraph sDocumentGraph, TreeRangeSet<Integer> sentenceRanges) {
+			SLayer sentenceLayer = SaltFactory.eINSTANCE.createSLayer();
+			sentenceLayer.setSName("sentences");
+			sDocumentGraph.addSLayer(sentenceLayer);
+			EList<SToken> sentenceTokens = new BasicEList<SToken>();
+			for (Range<Integer> sentenceRange : sentenceRanges.asRanges()) {
+				sentenceTokens.clear();
+				for (SToken token : sDocumentGraph.getSTokens()) {
+					for (Edge edge : sDocumentGraph.getOutEdges(token.getSId())) {
+						if (edge instanceof STextualRelation) {
+							Range<Integer> range = Range.closed(((STextualRelation) edge).getSStart(), ((STextualRelation) edge).getSEnd());
+							if (sentenceRange.encloses(range)) {
+								sentenceTokens.add(token);
+							}
+						}
+					}
+				}
+				SSpan sentenceSSpan = sDocumentGraph.createSSpan(sentenceTokens);
+				sentenceLayer.getSNodes().add(sentenceSSpan);
+			}
+		}
+
+		/**
+		 * @param sDocumentGraph
 		 * @param iProject 
 		 * @throws FileNotFoundException
 		 */
-		private void detectSentences(SDocumentGraph sDocumentGraph, IProject iProject) {
+		private TreeRangeSet<Integer> detectSentences(SDocumentGraph sDocumentGraph, IProject iProject) {
+			TreeRangeSet<Integer> sentenceSet = TreeRangeSet.create(); 
 			switch (sentenceDetectionPage.getSentenceDetectorTypeToUse()) {
 			case OPENNLP:
 				String modelFileName = openNLPModels.get(sentenceDetectionPage.getPredefinedOpenNLPCombo().getText());
@@ -210,52 +239,44 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 					}
 				}
 				SentenceDetectorME sentenceDetector = new SentenceDetectorME(model);
-				String[] sentences = sentenceDetector.sentDetect(sDocumentGraph.getSTextualDSs().get(0).getSText());
 				Span[] sentenceSpans = sentenceDetector.sentPosDetect(sDocumentGraph.getSTextualDSs().get(0).getSText());
-				
-				// Serialization and deserialization example!
-				FileOutputStream fos;
-				try {
-					File iProjectLocation = new File(iProject.getLocation().toString());
-					String fileName = sDocumentGraph.getSDocument().getSName() + "_sentences.atomic";
-					fos = new FileOutputStream(iProjectLocation.getAbsolutePath() + "/" + fileName);
-					ObjectOutputStream oos = new ObjectOutputStream(fos);
-					oos.writeObject(sentences);
-					oos.close();
-					fos.close();
-					iProject.refreshLocal(IProject.DEPTH_INFINITE, null);
-					IFile iFile = iProject.getFile(fileName);
-					
-					// Deserialize
-					 FileInputStream inputFileStream = new FileInputStream(new File(iFile.getLocationURI()));
-				      ObjectInputStream objectInputStream = new ObjectInputStream(inputFileStream);
-				      String[] deserSentences = (String[]) objectInputStream.readObject();
-				      objectInputStream.close();
-				      inputFileStream.close();
-				      for (int i = 0; i < deserSentences.length; i++) {
-						System.err.println(">>> " + deserSentences[i]);
-					}
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				for (int i = 0; i < sentenceSpans.length; i++) {
+					sentenceSet.add(Range.closed(sentenceSpans[i].getStart(), sentenceSpans[i].getEnd()));
 				}
-				// Serialization and deserialization example!
-
 				break;
 			case OPENNLP_CUSTOM:
-
+				String customModelFileName = sentenceDetectionPage.getTextUseOwnApache().getText();
+				SentenceModel customModel = null;
+				InputStream customModelIn = null;
+				System.err.println(customModelFileName);
+				try {
+					File file = new File(customModelFileName);
+					customModelIn = new FileInputStream(file);
+				}
+				catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					customModel = new SentenceModel(customModelIn);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					if (customModelIn != null) {
+						try {
+							customModelIn.close();
+						} catch (IOException e) {
+						}
+					}
+				}
+				SentenceDetectorME customSentenceDetector = new SentenceDetectorME(customModel);
+				Span[] customSentenceSpans = customSentenceDetector.sentPosDetect(sDocumentGraph.getSTextualDSs().get(0).getSText());
+				for (int i = 0; i < customSentenceSpans.length; i++) {
+					sentenceSet.add(Range.closed(customSentenceSpans[i].getStart(), customSentenceSpans[i].getEnd()));
+				}
 				break;
-			case REGEX:
-
+			case SIMPLE_DELIMS:
+				
 				break;
 			case THIRDPARTY:
 
@@ -264,6 +285,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			default:
 				break;
 			}
+			return sentenceSet;
 
 		}
 

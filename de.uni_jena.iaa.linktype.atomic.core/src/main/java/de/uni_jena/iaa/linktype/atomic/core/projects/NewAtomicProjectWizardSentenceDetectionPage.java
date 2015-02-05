@@ -37,16 +37,16 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	private static final Logger log = LoggerFactory.getLogger(NewAtomicProjectWizardSentenceDetectionPage.class);
 
 	protected enum SentenceDetectorType {
-		OPENNLP, OPENNLP_CUSTOM, REGEX, THIRDPARTY
+		OPENNLP, OPENNLP_CUSTOM, SIMPLE_DELIMS, THIRDPARTY
 	}
 
 	boolean hasSelection = false;
 	private Text textUseOwnApache;
-	private Text textUseRegex;
+	private Text textUseDelims;
 	private Button btnPredefinedOpenNLP;
 	private Combo predefinedOpenNLPCombo;
 	private Button btnUseOwnApache;
-	private Button btnUseRegex;
+	private Button btnUseDelims;
 	private Button btnUseThirdpartyDetector;
 	private Combo thirdPartyCombo;
 	private SentenceDetectorType sentenceDetectorTypeToUse;
@@ -124,17 +124,17 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			}
 		});
 
-		btnUseRegex = new Button(container, SWT.RADIO);
-		btnUseRegex.setText("Use a regular expression*");
-		btnUseRegex.addSelectionListener(btnSelectionAdapter);
-		textUseRegex = new Text(container, SWT.BORDER);
-		textUseRegex.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		textUseRegex.addFocusListener(new FocusAdapter() {
+		btnUseDelims = new Button(container, SWT.RADIO);
+		btnUseDelims.setText("Use sentence delimiters*");
+		btnUseDelims.addSelectionListener(btnSelectionAdapter);
+		textUseDelims = new Text(container, SWT.BORDER);
+		textUseDelims.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		textUseDelims.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
-				setRadioSelection(btnUseRegex);
+				setRadioSelection(btnUseDelims);
 			}
 		});
-		textUseRegex.addKeyListener(new KeyAdapter() {
+		textUseDelims.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
 				updatePageComplete();
 				// FIXME TODO: Check whether input is a valid regex.
@@ -151,7 +151,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 
 		Label lbltheRegularExpression = new Label(container, SWT.NONE);
 		lbltheRegularExpression.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		lbltheRegularExpression.setText("*The regular expression will be used as parameter for a split operation on the corpus text.");
+		lbltheRegularExpression.setText("*Enter sentence delimiters separated by whitespaces, which will be used as parameters for a split operation on the corpus text.");
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
@@ -203,20 +203,20 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			}
 		} else if (btnUseOwnApache.getSelection()) {
 			setSentenceDetectorTypeToUse(SentenceDetectorType.OPENNLP_CUSTOM);
-			if (!predefinedOpenNLPCombo.getText().equals(NONE)) {
+			if (!getTextUseOwnApache().getText().isEmpty()) {
 				setErrorMessage(null);
 				setPageComplete(true);
 			} else {
 				setErrorMessage("Please load your Apache OpenNLP language model for sentence detection.");
 				setPageComplete(false);
 			}
-		} else if (btnUseRegex.getSelection()) {
-			setSentenceDetectorTypeToUse(SentenceDetectorType.REGEX);
-			if (!textUseRegex.getText().isEmpty()) {
+		} else if (btnUseDelims.getSelection()) {
+			setSentenceDetectorTypeToUse(SentenceDetectorType.SIMPLE_DELIMS);
+			if (!textUseDelims.getText().isEmpty()) {
 				setErrorMessage(null);
 				setPageComplete(true);
 			} else {
-				setErrorMessage("Please enter a regular expression");
+				setErrorMessage("Please enter a whitespace-separated list of sentence delimiters.");
 				setPageComplete(false);
 			}
 		} else if (btnUseThirdpartyDetector.getSelection()) {
@@ -229,7 +229,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	}
 
 	public void setRadioSelection(Button selectComposite) {
-		for (Button c : new ArrayList<Button>(Arrays.asList(btnPredefinedOpenNLP, btnUseOwnApache, btnUseRegex, btnUseThirdpartyDetector))) {
+		for (Button c : new ArrayList<Button>(Arrays.asList(btnPredefinedOpenNLP, btnUseOwnApache, btnUseDelims, btnUseThirdpartyDetector))) {
 			if (c.equals(selectComposite))
 				c.setSelection(true);
 			else
@@ -257,6 +257,13 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	 */
 	public Combo getPredefinedOpenNLPCombo() {
 		return predefinedOpenNLPCombo;
+	}
+
+	/**
+	 * @return the textUseOwnApache
+	 */
+	public Text getTextUseOwnApache() {
+		return textUseOwnApache;
 	}
 
 }

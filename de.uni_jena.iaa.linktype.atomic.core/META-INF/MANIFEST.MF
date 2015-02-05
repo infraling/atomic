@@ -28,7 +28,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.equinox.p2.metadata;bundle-version="2.1.0",
  de.uni_jena.iaa.linktype.atomic.logging;bundle-version="0.1.8",
  org.apache.opennlp.tools;bundle-version="1.5.3",
- org.eclipse.gef;bundle-version="3.7.2"
+ org.eclipse.gef;bundle-version="3.7.2",
+ com.google.guava;bundle-version="14.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: de.uni_jena.iaa.linktype.atomic.core.corpus,

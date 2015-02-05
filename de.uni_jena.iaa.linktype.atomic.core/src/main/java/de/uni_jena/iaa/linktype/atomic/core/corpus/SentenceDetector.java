@@ -3,31 +3,24 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.corpus;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
+
+import com.google.common.collect.Range;
+import com.google.common.collect.TreeRangeSet;
 
 /**
+ * Subclasses must override the method {@link SentenceDetector#detectSentenceRanges(String)}
+ * with their own implementation. The return type is a {@link TreeMap}-backed {@link Set} of
+ * {@link Range}s, i.e. of two integers (start, end) that define the index boundaries of a sentence
+ * within the corpus text. Subclasses must use {@link Range#closed(Comparable, Comparable)}
+ * for creating ranges to be added to the {@link TreeRangeSet}.
+ * 
  * @author Stephan Druskat
  *
  */
 public abstract class SentenceDetector {
 	
-	public List<int[]> getSentenceRanges(String corpusText) {
-		List<int[]> sentenceRanges = new ArrayList<int[]>();
-		int sentenceStartIndex = -1;
-		String[] sentences = detectSentences(corpusText);
-		for (int i = 0; i < sentences.length; i++) {
-			System.err.println(sentences[i].trim());
-		}
-		for (String sentence : sentences) {
-			int sentenceStart = corpusText.indexOf(sentence, sentenceStartIndex);
-			int sentenceEnd = sentenceStart + (sentence.length());
-			sentenceRanges.add(new int[]{sentenceStart, sentenceEnd});
-			sentenceStartIndex = sentenceEnd;
-		}
-		return sentenceRanges;
-	}
-	
-	protected abstract String[] detectSentences(String corpusText);
+	protected abstract TreeRangeSet<Integer> detectSentenceRanges(String corpusText);
 
 }
