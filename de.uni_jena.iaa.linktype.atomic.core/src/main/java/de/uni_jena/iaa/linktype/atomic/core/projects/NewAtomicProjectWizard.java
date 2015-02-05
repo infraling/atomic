@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.text.BreakIterator;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.LocaleProvider;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
@@ -112,7 +114,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		try {
 			getContainer().run(false, true, new AtomicProjectCreationRunnable());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true;
@@ -177,7 +180,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			monitor.subTask("Serializing project");
 			try {
 				saveSaltProjectToIPproject(saltProject, iProject, projectName, sDocumentGraph);
-			} catch (CoreException e) {
+			}
+			catch (CoreException e) {
 				e.printStackTrace();
 			}
 			monitor.worked(1);
@@ -215,11 +219,11 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 		/**
 		 * @param sDocumentGraph
-		 * @param iProject 
+		 * @param iProject
 		 * @throws FileNotFoundException
 		 */
 		private TreeRangeSet<Integer> detectSentences(SDocumentGraph sDocumentGraph, IProject iProject) {
-			TreeRangeSet<Integer> sentenceSet = TreeRangeSet.create(); 
+			TreeRangeSet<Integer> sentenceSet = TreeRangeSet.create();
 			switch (sentenceDetectionPage.getSentenceDetectorTypeToUse()) {
 			case OPENNLP:
 				String modelFileName = openNLPModels.get(sentenceDetectionPage.getPredefinedOpenNLPCombo().getText());
@@ -228,13 +232,16 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				modelIn = getClass().getResourceAsStream(modelFileName);
 				try {
 					model = new SentenceModel(modelIn);
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					e.printStackTrace();
-				} finally {
+				}
+				finally {
 					if (modelIn != null) {
 						try {
 							modelIn.close();
-						} catch (IOException e) {
+						}
+						catch (IOException e) {
 						}
 					}
 				}
@@ -259,13 +266,16 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				}
 				try {
 					customModel = new SentenceModel(customModelIn);
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					e.printStackTrace();
-				} finally {
+				}
+				finally {
 					if (customModelIn != null) {
 						try {
 							customModelIn.close();
-						} catch (IOException e) {
+						}
+						catch (IOException e) {
 						}
 					}
 				}
@@ -275,8 +285,16 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 					sentenceSet.add(Range.closed(customSentenceSpans[i].getStart(), customSentenceSpans[i].getEnd()));
 				}
 				break;
-			case SIMPLE_DELIMS:
-				
+			case BREAK_ITERATOR:
+				BreakIterator sentenceIterator = BreakIterator.getSentenceInstance(LocaleProvider.getLocale(sentenceDetectionPage.getLocaleCombo().getText()));
+				String corpusString = sDocumentGraph.getSTextualDSs().get(0).getSText();
+				sentenceIterator.setText(corpusString);
+				int start = sentenceIterator.first();
+				int end = -1;
+				while ((end = sentenceIterator.next()) != BreakIterator.DONE) {
+					sentenceSet.add(Range.closed(start, (end - 1)));
+					start = end;
+				}
 				break;
 			case THIRDPARTY:
 
@@ -378,11 +396,13 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				iProject.create(null);
 				iProject.open(null);
 				AtomicProjectUtils.addAtomicProjectNatureToIProject(iProject);
-			} catch (CoreException e) {
+			}
+			catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return iProject;
 		}
 	}
+
 }

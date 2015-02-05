@@ -3,6 +3,8 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.projects;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,16 +19,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.uni_jena.iaa.linktype.atomic.core.corpus.LocaleProvider;
 
 /**
  * @author Stephan Druskat
@@ -37,21 +40,22 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	private static final Logger log = LoggerFactory.getLogger(NewAtomicProjectWizardSentenceDetectionPage.class);
 
 	protected enum SentenceDetectorType {
-		OPENNLP, OPENNLP_CUSTOM, SIMPLE_DELIMS, THIRDPARTY
+		OPENNLP, OPENNLP_CUSTOM, BREAK_ITERATOR, THIRDPARTY
 	}
 
 	boolean hasSelection = false;
 	private Text textUseOwnApache;
-	private Text textUseDelims;
+	private Text textUseBreakIterator;
 	private Button btnPredefinedOpenNLP;
 	private Combo predefinedOpenNLPCombo;
 	private Button btnUseOwnApache;
-	private Button btnUseDelims;
+	private Button btnUseBreakIterator;
 	private Button btnUseThirdpartyDetector;
 	private Combo thirdPartyCombo;
 	private SentenceDetectorType sentenceDetectorTypeToUse;
 	private Button btnLoadOwnApache;
 	protected String ownApacheFileString;
+	private Combo localeCombo;
 	public static final String DANISH = "Danish", GERMAN = "German",
 			ENGLISH = "English", FRENCH = "French", ITALIAN = "Italian",
 			DUTCH = "Dutch", PORTUGUESE = "Portuguese", SWEDISH = "Swedish";
@@ -124,22 +128,13 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			}
 		});
 
-		btnUseDelims = new Button(container, SWT.RADIO);
-		btnUseDelims.setText("Use sentence delimiters*");
-		btnUseDelims.addSelectionListener(btnSelectionAdapter);
-		textUseDelims = new Text(container, SWT.BORDER);
-		textUseDelims.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		textUseDelims.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent e) {
-				setRadioSelection(btnUseDelims);
-			}
-		});
-		textUseDelims.addKeyListener(new KeyAdapter() {
-			public void keyReleased(KeyEvent e) {
-				updatePageComplete();
-				// FIXME TODO: Check whether input is a valid regex.
-			}
-		});
+		btnUseBreakIterator = new Button(container, SWT.RADIO);
+		btnUseBreakIterator.setText("Use java.text.BreakIterator*");
+		btnUseBreakIterator.addSelectionListener(btnSelectionAdapter);
+		localeCombo = new Combo(container, SWT.NONE | SWT.READ_ONLY);
+		localeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		fillCombo(localeCombo);
+		localeCombo.addSelectionListener(btnSelectionAdapter);
 
 		btnUseThirdpartyDetector = new Button(container, SWT.RADIO);
 		btnUseThirdpartyDetector.setText("Use a third-party sentence detector");
@@ -149,9 +144,28 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 		fillCombo(thirdPartyCombo);
 		thirdPartyCombo.addSelectionListener(btnSelectionAdapter);
 
-		Label lbltheRegularExpression = new Label(container, SWT.NONE);
-		lbltheRegularExpression.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		lbltheRegularExpression.setText("*Enter sentence delimiters separated by whitespaces, which will be used as parameters for a split operation on the corpus text.");
+		Link link = new Link(container, SWT.NONE);
+	    String message = "*Cf. the <a href=\"https://docs.oracle.com/javase/6/docs/api/java/text/BreakIterator.html\">BreakIterator API documentation</a>.";
+	    link.setText(message);
+	    link.setSize(400, 100);
+	    link.addSelectionListener(new SelectionAdapter(){
+	        @Override
+	        public void widgetSelected(SelectionEvent e) {
+	               System.out.println("You have selected: "+e.text);
+	               try {
+	                //  Open default external browser 
+	                PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(e.text));
+	              } 
+	             catch (PartInitException ex) {
+	                // TODO Auto-generated catch block
+	                 ex.printStackTrace();
+	            } 
+	            catch (MalformedURLException ex) {
+	                // TODO Auto-generated catch block
+	                ex.printStackTrace();
+	            }
+	        }
+	    });
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
@@ -187,6 +201,10 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 				log.error("Error getting extensions for extension point " + EXTENSION_ID, e);
 			}
 
+		} else if (combo.equals(localeCombo)) {
+			for (String localeDisplayName : LocaleProvider.getLocaleNames()) {
+				combo.add(localeDisplayName);
+			}
 		}
 		combo.select(0);
 	}
@@ -210,13 +228,13 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 				setErrorMessage("Please load your Apache OpenNLP language model for sentence detection.");
 				setPageComplete(false);
 			}
-		} else if (btnUseDelims.getSelection()) {
-			setSentenceDetectorTypeToUse(SentenceDetectorType.SIMPLE_DELIMS);
-			if (!textUseDelims.getText().isEmpty()) {
+		} else if (btnUseBreakIterator.getSelection()) {
+			setSentenceDetectorTypeToUse(SentenceDetectorType.BREAK_ITERATOR);
+			if (!localeCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
 				setPageComplete(true);
 			} else {
-				setErrorMessage("Please enter a whitespace-separated list of sentence delimiters.");
+				setErrorMessage("Please select the locale the BreakIterator should operate on.");
 				setPageComplete(false);
 			}
 		} else if (btnUseThirdpartyDetector.getSelection()) {
@@ -229,7 +247,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	}
 
 	public void setRadioSelection(Button selectComposite) {
-		for (Button c : new ArrayList<Button>(Arrays.asList(btnPredefinedOpenNLP, btnUseOwnApache, btnUseDelims, btnUseThirdpartyDetector))) {
+		for (Button c : new ArrayList<Button>(Arrays.asList(btnPredefinedOpenNLP, btnUseOwnApache, btnUseBreakIterator, btnUseThirdpartyDetector))) {
 			if (c.equals(selectComposite))
 				c.setSelection(true);
 			else
@@ -264,6 +282,20 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	 */
 	public Text getTextUseOwnApache() {
 		return textUseOwnApache;
+	}
+
+	/**
+	 * @return the textUseBreakIterator
+	 */
+	public Text getTextUseDelims() {
+		return textUseBreakIterator;
+	}
+
+	/**
+	 * @return the localeCombo
+	 */
+	public Combo getLocaleCombo() {
+		return localeCombo;
 	}
 
 }
