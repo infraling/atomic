@@ -4,28 +4,14 @@
 package de.uni_jena.iaa.linktype.atomic.core.projects;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.text.BreakIterator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import opennlp.tools.sentdetect.SentenceDetectorME;
-import opennlp.tools.sentdetect.SentenceModel;
-import opennlp.tools.util.Span;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -54,8 +40,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
-import de.uni_jena.iaa.linktype.atomic.core.corpus.LocaleProvider;
-import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetector;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetection;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
@@ -67,20 +52,6 @@ import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 	private static final Logger log = LoggerFactory.getLogger(NewAtomicProjectWizard.class);
-
-	private static final Map<String, String> openNLPModels;
-	static {
-		Map<String, String> aMap = new HashMap<String, String>();
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.DANISH, "/da-sent.bin");
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.GERMAN, "/de-sent.bin");
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.ENGLISH, "/en-sent.bin");
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.FRENCH, "/fr-sent.bin");
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.ITALIAN, "/it-sent.bin");
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.DUTCH, "/nl-sent.bin");
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.PORTUGUESE, "/pt-sent.bin");
-		aMap.put(NewAtomicProjectWizardSentenceDetectionPage.SWEDISH, "/se-sent.bin");
-		openNLPModels = Collections.unmodifiableMap(aMap);
-	}
 
 	private NewAtomicProjectWizardDetailsPage detailsPage;
 	private Object[] typedTokenizerToUse;
@@ -125,8 +96,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	}
 
 	private final class AtomicProjectCreationRunnable implements IRunnableWithProgress {
-
-		private static final String EXTENSION_PROPERTY_CLASS = "class";
 
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			setNeedsProgressMonitor(true);
@@ -228,94 +197,20 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		 * @throws FileNotFoundException
 		 */
 		private TreeRangeSet<Integer> detectSentences(SDocumentGraph sDocumentGraph, IProject iProject) {
+			String corpusText = sDocumentGraph.getSTextualDSs().get(0).getSText();
 			TreeRangeSet<Integer> sentenceSet = TreeRangeSet.create();
 			switch (sentenceDetectionPage.getSentenceDetectorTypeToUse()) {
 			case OPENNLP:
-				String modelFileName = openNLPModels.get(sentenceDetectionPage.getPredefinedOpenNLPCombo().getText());
-				SentenceModel model = null;
-				InputStream modelIn = null;
-				modelIn = getClass().getResourceAsStream(modelFileName);
-				try {
-					model = new SentenceModel(modelIn);
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-				finally {
-					if (modelIn != null) {
-						try {
-							modelIn.close();
-						}
-						catch (IOException e) {
-						}
-					}
-				}
-				SentenceDetectorME sentenceDetector = new SentenceDetectorME(model);
-				Span[] sentenceSpans = sentenceDetector.sentPosDetect(sDocumentGraph.getSTextualDSs().get(0).getSText());
-				for (int i = 0; i < sentenceSpans.length; i++) {
-					sentenceSet.add(Range.closed(sentenceSpans[i].getStart(), sentenceSpans[i].getEnd()));
-				}
+				sentenceSet = SentenceDetection.detectSentencesWithOpenNLP(sentenceDetectionPage.getPredefinedOpenNLPCombo().getText(), corpusText);
 				break;
 			case OPENNLP_CUSTOM:
-				String customModelFileName = sentenceDetectionPage.getTextUseOwnApache().getText();
-				SentenceModel customModel = null;
-				InputStream customModelIn = null;
-				System.err.println(customModelFileName);
-				try {
-					File file = new File(customModelFileName);
-					customModelIn = new FileInputStream(file);
-				}
-				catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					customModel = new SentenceModel(customModelIn);
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-				finally {
-					if (customModelIn != null) {
-						try {
-							customModelIn.close();
-						}
-						catch (IOException e) {
-						}
-					}
-				}
-				SentenceDetectorME customSentenceDetector = new SentenceDetectorME(customModel);
-				Span[] customSentenceSpans = customSentenceDetector.sentPosDetect(sDocumentGraph.getSTextualDSs().get(0).getSText());
-				for (int i = 0; i < customSentenceSpans.length; i++) {
-					sentenceSet.add(Range.closed(customSentenceSpans[i].getStart(), customSentenceSpans[i].getEnd()));
-				}
+				sentenceSet = SentenceDetection.detectSentencesWithCustomOpenNLP(sentenceDetectionPage.getTextUseOwnApache().getText(), corpusText);
 				break;
 			case BREAK_ITERATOR:
-				BreakIterator sentenceIterator = BreakIterator.getSentenceInstance(LocaleProvider.getLocale(sentenceDetectionPage.getLocaleCombo().getText()));
-				String corpusString = sDocumentGraph.getSTextualDSs().get(0).getSText();
-				sentenceIterator.setText(corpusString);
-				int start = sentenceIterator.first();
-				int end = -1;
-				while ((end = sentenceIterator.next()) != BreakIterator.DONE) {
-					sentenceSet.add(Range.closed(start, (end - 1)));
-					start = end;
-				}
+				sentenceSet = SentenceDetection.detectSentencesWithBreakIterator(sentenceDetectionPage.getLocaleCombo().getText(), corpusText);
 				break;
 			case THIRDPARTY:
-				String extensionName = sentenceDetectionPage.getThirdPartyCombo().getText();
-				IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(NewAtomicProjectWizardSentenceDetectionPage.EXTENSION_ID);
-				for (IConfigurationElement e : config) {
-					if (e.getAttribute(NewAtomicProjectWizardSentenceDetectionPage.THIRDPARTY_DETECTOR_EXTENSION_NAME).equals(extensionName)) {
-						try {
-							SentenceDetector thirdPartyDetector = (SentenceDetector) e.createExecutableExtension(EXTENSION_PROPERTY_CLASS);
-							sentenceSet = thirdPartyDetector.detectSentenceRanges(sDocumentGraph.getSTextualDSs().get(0).getSText());
-						}
-						catch (CoreException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				}
+				sentenceSet = SentenceDetection.detectSentencesWithThirdPartyExtension(sentenceDetectionPage.getThirdPartyCombo().getText(), corpusText);
 				break;
 
 			default:
