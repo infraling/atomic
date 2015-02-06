@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.uni_jena.iaa.linktype.atomic.core.corpus.LocaleProvider;
-import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetection;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetectionService;
 
 /**
  * @author Stephan Druskat
@@ -49,7 +49,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	private Button btnUseBreakIterator;
 	private Button btnUseThirdpartyDetector;
 	private Combo thirdPartyCombo;
-	private SentenceDetection.SentenceDetectorType sentenceDetectorTypeToUse;
+	private SentenceDetectionService.SentenceDetectorType sentenceDetectorTypeToUse;
 	private Button btnLoadOwnApache;
 	protected String ownApacheFileString;
 	private Combo localeCombo;
@@ -171,14 +171,14 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	private void fillCombo(Combo combo) {
 		combo.add(NONE, 0);
 		if (combo.equals(predefinedOpenNLPCombo)) {
-			combo.add(SentenceDetection.DANISH, 1);
-			combo.add(SentenceDetection.DUTCH, 2);
-			combo.add(SentenceDetection.ENGLISH, 3);
-			combo.add(SentenceDetection.FRENCH, 4);
-			combo.add(SentenceDetection.GERMAN, 5);
-			combo.add(SentenceDetection.ITALIAN, 6);
-			combo.add(SentenceDetection.PORTUGUESE, 7);
-			combo.add(SentenceDetection.SWEDISH, 8);
+			combo.add(SentenceDetectionService.DANISH, 1);
+			combo.add(SentenceDetectionService.DUTCH, 2);
+			combo.add(SentenceDetectionService.ENGLISH, 3);
+			combo.add(SentenceDetectionService.FRENCH, 4);
+			combo.add(SentenceDetectionService.GERMAN, 5);
+			combo.add(SentenceDetectionService.ITALIAN, 6);
+			combo.add(SentenceDetectionService.PORTUGUESE, 7);
+			combo.add(SentenceDetectionService.SWEDISH, 8);
 		} else if (combo.equals(thirdPartyCombo)) {
 			try {
 				IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
@@ -205,7 +205,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 
 	protected void updatePageComplete() {
 		if (btnPredefinedOpenNLP.getSelection()) {
-			setSentenceDetectorTypeToUse(SentenceDetection.SentenceDetectorType.OPENNLP);
+			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.OPENNLP);
 			if (!predefinedOpenNLPCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
 				setPageComplete(true);
@@ -214,7 +214,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 				setPageComplete(false);
 			}
 		} else if (btnUseOwnApache.getSelection()) {
-			setSentenceDetectorTypeToUse(SentenceDetection.SentenceDetectorType.OPENNLP_CUSTOM);
+			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.OPENNLP_CUSTOM);
 			if (!getTextUseOwnApache().getText().isEmpty()) {
 				setErrorMessage(null);
 				setPageComplete(true);
@@ -223,7 +223,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 				setPageComplete(false);
 			}
 		} else if (btnUseBreakIterator.getSelection()) {
-			setSentenceDetectorTypeToUse(SentenceDetection.SentenceDetectorType.BREAK_ITERATOR);
+			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.BREAK_ITERATOR);
 			if (!localeCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
 				setPageComplete(true);
@@ -232,7 +232,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 				setPageComplete(false);
 			}
 		} else if (btnUseThirdpartyDetector.getSelection()) {
-			setSentenceDetectorTypeToUse(SentenceDetection.SentenceDetectorType.THIRDPARTY);
+			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.THIRDPARTY);
 			setErrorMessage(null);
 			setPageComplete(true);
 		} else {
@@ -252,7 +252,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	/**
 	 * @return the sentenceDetectorTypeToUse
 	 */
-	public SentenceDetection.SentenceDetectorType getSentenceDetectorTypeToUse() {
+	public SentenceDetectionService.SentenceDetectorType getSentenceDetectorTypeToUse() {
 		return sentenceDetectorTypeToUse;
 	}
 
@@ -260,7 +260,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	 * @param sentenceDetectorTypeToUse
 	 *            the sentenceDetectorTypeToUse to set
 	 */
-	public void setSentenceDetectorTypeToUse(SentenceDetection.SentenceDetectorType sentenceDetectorTypeToUse) {
+	public void setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType sentenceDetectorTypeToUse) {
 		this.sentenceDetectorTypeToUse = sentenceDetectorTypeToUse;
 	}
 

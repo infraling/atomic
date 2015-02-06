@@ -30,7 +30,7 @@ import de.uni_jena.iaa.linktype.atomic.core.projects.NewAtomicProjectWizardSente
  * @author Stephan Druskat
  *
  */
-public class SentenceDetection {
+public class SentenceDetectionService {
 
 	private static final String EXTENSION_PROPERTY_CLASS = "class";
 
@@ -61,7 +61,7 @@ public class SentenceDetection {
 		String modelFileName = openNLPModels.get(selectedOpenNLPModule);
 		SentenceModel model = null;
 		InputStream modelIn = null;
-		modelIn = SentenceDetection.class.getResourceAsStream(modelFileName);
+		modelIn = SentenceDetectionService.class.getResourceAsStream(modelFileName);
 		try {
 			model = new SentenceModel(modelIn);
 		}

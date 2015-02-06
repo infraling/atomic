@@ -40,7 +40,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
-import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetection;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetectionService;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
 /**
@@ -201,16 +201,16 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			TreeRangeSet<Integer> sentenceSet = TreeRangeSet.create();
 			switch (sentenceDetectionPage.getSentenceDetectorTypeToUse()) {
 			case OPENNLP:
-				sentenceSet = SentenceDetection.detectSentencesWithOpenNLP(sentenceDetectionPage.getPredefinedOpenNLPCombo().getText(), corpusText);
+				sentenceSet = SentenceDetectionService.detectSentencesWithOpenNLP(sentenceDetectionPage.getPredefinedOpenNLPCombo().getText(), corpusText);
 				break;
 			case OPENNLP_CUSTOM:
-				sentenceSet = SentenceDetection.detectSentencesWithCustomOpenNLP(sentenceDetectionPage.getTextUseOwnApache().getText(), corpusText);
+				sentenceSet = SentenceDetectionService.detectSentencesWithCustomOpenNLP(sentenceDetectionPage.getTextUseOwnApache().getText(), corpusText);
 				break;
 			case BREAK_ITERATOR:
-				sentenceSet = SentenceDetection.detectSentencesWithBreakIterator(sentenceDetectionPage.getLocaleCombo().getText(), corpusText);
+				sentenceSet = SentenceDetectionService.detectSentencesWithBreakIterator(sentenceDetectionPage.getLocaleCombo().getText(), corpusText);
 				break;
 			case THIRDPARTY:
-				sentenceSet = SentenceDetection.detectSentencesWithThirdPartyExtension(sentenceDetectionPage.getThirdPartyCombo().getText(), corpusText);
+				sentenceSet = SentenceDetectionService.detectSentencesWithThirdPartyExtension(sentenceDetectionPage.getThirdPartyCombo().getText(), corpusText);
 				break;
 
 			default:
