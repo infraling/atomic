@@ -60,8 +60,8 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	/**
 	 * 
 	 */
-	public NewAtomicProjectWizardSentenceDetectionPage() {
-		super("Sentence detection");
+	public NewAtomicProjectWizardSentenceDetectionPage(String pageName) {
+		super(pageName);
 		setPageComplete(false);
 		setTitle("Sentence detection");
 		setDescription("Some Atomic editors work on sentences. Please choose how to detect sentences in the corpus text.");
@@ -90,6 +90,8 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 					setRadioSelection(btnUseThirdpartyDetector);
 				else if (e.widget.equals(btnLoadOwnApache))
 					setRadioSelection(btnUseOwnApache);
+				else if (e.widget.equals(localeCombo))
+					setRadioSelection(btnUseBreakIterator);
 			}
 		};
 
@@ -118,6 +120,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 				if (!(result == null)) {
 					ownApacheFileString = result;
 					textUseOwnApache.setText(result);
+					updatePageComplete();
 				}
 			}
 		});
@@ -139,27 +142,27 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 		thirdPartyCombo.addSelectionListener(btnSelectionAdapter);
 
 		Link link = new Link(container, SWT.NONE);
-	    String message = "*Cf. the <a href=\"https://docs.oracle.com/javase/6/docs/api/java/text/BreakIterator.html\">BreakIterator API documentation</a>.";
-	    link.setText(message);
-	    link.setSize(400, 100);
-	    link.addSelectionListener(new SelectionAdapter(){
-	        @Override
-	        public void widgetSelected(SelectionEvent e) {
-	               System.out.println("You have selected: "+e.text);
-	               try {
-	                //  Open default external browser 
-	                PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(e.text));
-	              } 
-	             catch (PartInitException ex) {
-	                // TODO Auto-generated catch block
-	                 ex.printStackTrace();
-	            } 
-	            catch (MalformedURLException ex) {
-	                // TODO Auto-generated catch block
-	                ex.printStackTrace();
-	            }
-	        }
-	    });
+		String message = "*Cf. the <a href=\"https://docs.oracle.com/javase/6/docs/api/java/text/BreakIterator.html\">BreakIterator API documentation</a>.";
+		link.setText(message);
+		link.setSize(400, 100);
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("You have selected: " + e.text);
+				try {
+					// Open default external browser
+					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(e.text));
+				}
+				catch (PartInitException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+				catch (MalformedURLException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		});
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
@@ -179,23 +182,27 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			combo.add(SentenceDetectionService.ITALIAN, 6);
 			combo.add(SentenceDetectionService.PORTUGUESE, 7);
 			combo.add(SentenceDetectionService.SWEDISH, 8);
-		} else if (combo.equals(thirdPartyCombo)) {
+		}
+		else if (combo.equals(thirdPartyCombo)) {
 			try {
 				IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
 				if (config.length == 0) {
 					combo.setEnabled(false);
 					btnUseThirdpartyDetector.setEnabled(false);
 					combo.add("Not available", 0);
-				} else {
+				}
+				else {
 					for (IConfigurationElement e : config) {
 						combo.add(e.getAttribute(THIRDPARTY_DETECTOR_EXTENSION_NAME));
 					}
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				log.error("Error getting extensions for extension point " + EXTENSION_ID, e);
 			}
 
-		} else if (combo.equals(localeCombo)) {
+		}
+		else if (combo.equals(localeCombo)) {
 			for (String localeDisplayName : LocaleProvider.getLocaleNames()) {
 				combo.add(localeDisplayName);
 			}
@@ -209,43 +216,54 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			if (!predefinedOpenNLPCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
 				setPageComplete(true);
-			} else {
+			}
+			else {
 				setErrorMessage("Please select an Apache OpenNLP language model for sentence detection.");
 				setPageComplete(false);
 			}
-		} else if (btnUseOwnApache.getSelection()) {
+		}
+		else if (btnUseOwnApache.getSelection()) {
 			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.OPENNLP_CUSTOM);
 			if (!getTextUseOwnApache().getText().isEmpty()) {
 				setErrorMessage(null);
 				setPageComplete(true);
-			} else {
+			}
+			else {
 				setErrorMessage("Please load your Apache OpenNLP language model for sentence detection.");
 				setPageComplete(false);
 			}
-		} else if (btnUseBreakIterator.getSelection()) {
+		}
+		else if (btnUseBreakIterator.getSelection()) {
 			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.BREAK_ITERATOR);
 			if (!localeCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
 				setPageComplete(true);
-			} else {
+			}
+			else {
 				setErrorMessage("Please select the locale the BreakIterator should operate on.");
 				setPageComplete(false);
 			}
-		} else if (btnUseThirdpartyDetector.getSelection()) {
+		}
+		else if (btnUseThirdpartyDetector.getSelection()) {
 			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.THIRDPARTY);
 			setErrorMessage(null);
 			setPageComplete(true);
-		} else {
+		}
+		else {
 			setPageComplete(false);
 		}
 	}
 
 	public void setRadioSelection(Button selectComposite) {
 		for (Button c : new ArrayList<Button>(Arrays.asList(btnPredefinedOpenNLP, btnUseOwnApache, btnUseBreakIterator, btnUseThirdpartyDetector))) {
-			if (c.equals(selectComposite))
+			if (c.equals(selectComposite)) {
 				c.setSelection(true);
-			else
+				updatePageComplete();
+			}
+			else {
 				c.setSelection(false);
+				updatePageComplete();
+			}
 		}
 	}
 
