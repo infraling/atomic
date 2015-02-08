@@ -25,10 +25,16 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
+
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.editors.AtomicGraphicalEditor;
+import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.GraphEditorPaletteFactory;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AdHocSentenceDetectionWizard;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
 
 /**
@@ -74,6 +80,11 @@ public class GraphEditor extends AtomicGraphicalEditor { // FIXME: CLean up this
 	@Override
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
+		SLayer sentenceLayer = getGraph().getSLayer(ModelRegistry.SENTENCE_LAYER);
+		if (sentenceLayer == null || sentenceLayer.getNodes().isEmpty()) {
+			WizardDialog adHocSentenceDetectionsWizard = new WizardDialog(Display.getCurrent().getActiveShell(), new AdHocSentenceDetectionWizard(getGraph()));
+			adHocSentenceDetectionsWizard.open();
+		}
 		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart();
 		ConnectionLayer connLayer = (ConnectionLayer) root.getLayer(LayerConstants.CONNECTION_LAYER);
 		GraphicalEditPart contentEditPart = (GraphicalEditPart) root.getContents();

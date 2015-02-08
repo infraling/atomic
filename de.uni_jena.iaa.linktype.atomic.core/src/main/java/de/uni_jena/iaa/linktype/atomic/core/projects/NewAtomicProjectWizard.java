@@ -75,7 +75,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		setWindowTitle("New Atomic project");
 		detailsPage = new NewAtomicProjectWizardDetailsPage();
 		addPage(detailsPage);
-		sentenceDetectionPage = new NewAtomicProjectWizardSentenceDetectionPage();
+		sentenceDetectionPage = new NewAtomicProjectWizardSentenceDetectionPage("Sentence detection");
 		addPage(sentenceDetectionPage);
 	}
 
