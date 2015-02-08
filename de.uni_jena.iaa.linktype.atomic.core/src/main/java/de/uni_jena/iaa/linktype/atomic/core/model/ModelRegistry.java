@@ -29,6 +29,7 @@ public class ModelRegistry {
 
 	private static Map<IFile, SDocumentGraph> documentGraphs = new HashMap<IFile, SDocumentGraph>();
 	private static Map<IFile, Integer> editorsOnDocumentIFile = new HashMap<IFile, Integer>();
+	public static final String SENTENCE_LAYER = "ATOMIC::SENTENCES";
 
 	/**
 	 * Returns an {@link SDocumentGraph} that has been loaded from an
