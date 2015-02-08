@@ -13,7 +13,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -25,7 +24,6 @@ import org.eclipse.ui.IWorkbench;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Range;
 import com.google.common.collect.TreeRangeSet;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
@@ -35,11 +33,9 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetectionService;
 import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
 
@@ -145,8 +141,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 			// Detect sentence
 			monitor.subTask("Detecting sentences in corpus text");
-			TreeRangeSet<Integer> sentenceRanges = detectSentences(sDocumentGraph, iProject);
-			writeSentencesToModel(sDocumentGraph, sentenceRanges);
+			TreeRangeSet<Integer> sentenceRanges = detectSentences(sDocumentGraph);
+			SentenceDetectionService.writeSentencesToModel(sDocumentGraph, sentenceRanges);
 			monitor.worked(1);
 			log.info("Detected sentences.");
 
@@ -167,36 +163,10 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 		/**
 		 * @param sDocumentGraph
-		 * @param sentenceRanges
-		 */
-		private void writeSentencesToModel(SDocumentGraph sDocumentGraph, TreeRangeSet<Integer> sentenceRanges) {
-			SLayer sentenceLayer = SaltFactory.eINSTANCE.createSLayer();
-			sentenceLayer.setSName("sentences");
-			sDocumentGraph.addSLayer(sentenceLayer);
-			EList<SToken> sentenceTokens = new BasicEList<SToken>();
-			for (Range<Integer> sentenceRange : sentenceRanges.asRanges()) {
-				sentenceTokens.clear();
-				for (SToken token : sDocumentGraph.getSTokens()) {
-					for (Edge edge : sDocumentGraph.getOutEdges(token.getSId())) {
-						if (edge instanceof STextualRelation) {
-							Range<Integer> range = Range.closed(((STextualRelation) edge).getSStart(), ((STextualRelation) edge).getSEnd());
-							if (sentenceRange.encloses(range)) {
-								sentenceTokens.add(token);
-							}
-						}
-					}
-				}
-				SSpan sentenceSSpan = sDocumentGraph.createSSpan(sentenceTokens);
-				sentenceLayer.getSNodes().add(sentenceSSpan);
-			}
-		}
-
-		/**
-		 * @param sDocumentGraph
 		 * @param iProject
 		 * @throws FileNotFoundException
 		 */
-		private TreeRangeSet<Integer> detectSentences(SDocumentGraph sDocumentGraph, IProject iProject) {
+		private TreeRangeSet<Integer> detectSentences(SDocumentGraph sDocumentGraph) {
 			String corpusText = sDocumentGraph.getSTextualDSs().get(0).getSText();
 			TreeRangeSet<Integer> sentenceSet = TreeRangeSet.create();
 			switch (sentenceDetectionPage.getSentenceDetectorTypeToUse()) {
@@ -217,7 +187,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				break;
 			}
 			return sentenceSet;
-
 		}
 
 		private IFile saveSaltProjectToIPproject(SaltProject saltProject, IProject iProject, String projectName, SDocumentGraph sDocumentGraph) throws CoreException {

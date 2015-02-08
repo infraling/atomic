@@ -285,6 +285,7 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 			setPageComplete(true);
 		}
 		else if (btnExistingSentenceLayer.getSelection()) {
+			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.EXISTING_LAYER);
 			if (!layerCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
 				setPageComplete(true);

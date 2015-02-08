@@ -16,6 +16,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
@@ -24,6 +26,13 @@ import opennlp.tools.util.Span;
 import com.google.common.collect.Range;
 import com.google.common.collect.TreeRangeSet;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.projects.NewAtomicProjectWizardSentenceDetectionPage;
 
 /**
@@ -35,7 +44,7 @@ public class SentenceDetectionService {
 	private static final String EXTENSION_PROPERTY_CLASS = "class";
 
 	public enum SentenceDetectorType {
-		OPENNLP, OPENNLP_CUSTOM, BREAK_ITERATOR, THIRDPARTY
+		OPENNLP, OPENNLP_CUSTOM, BREAK_ITERATOR, THIRDPARTY, EXISTING_LAYER
 	}
 
 	public static final String DANISH = "Danish", GERMAN = "German",
@@ -173,6 +182,32 @@ public class SentenceDetectionService {
 			}
 		}
 		return sentenceSet;
+	}
+
+	/**
+	 * @param sDocumentGraph
+	 * @param sentenceRanges
+	 */
+	public static void writeSentencesToModel(SDocumentGraph sDocumentGraph, TreeRangeSet<Integer> sentenceRanges) {
+		SLayer sentenceLayer = SaltFactory.eINSTANCE.createSLayer();
+		sentenceLayer.setSName("sentences");
+		sDocumentGraph.addSLayer(sentenceLayer);
+		EList<SToken> sentenceTokens = new BasicEList<SToken>();
+		for (Range<Integer> sentenceRange : sentenceRanges.asRanges()) {
+			sentenceTokens.clear();
+			for (SToken token : sDocumentGraph.getSTokens()) {
+				for (Edge edge : sDocumentGraph.getOutEdges(token.getSId())) {
+					if (edge instanceof STextualRelation) {
+						Range<Integer> range = Range.closed(((STextualRelation) edge).getSStart(), ((STextualRelation) edge).getSEnd());
+						if (sentenceRange.encloses(range)) {
+							sentenceTokens.add(token);
+						}
+					}
+				}
+			}
+			SSpan sentenceSSpan = sDocumentGraph.createSSpan(sentenceTokens);
+			sentenceLayer.getSNodes().add(sentenceSSpan);
+		}
 	}
 
 }
