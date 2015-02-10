@@ -54,7 +54,7 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 	protected String ownApacheFileString;
 	private Combo localeCombo;
 	private Button btnExistingSentenceLayer;
-	private Combo layerCombo;
+	private Combo layerCombo, layerOverwriteCombo;
 	private SDocumentGraph graph;
 	private ArrayList<SLayer> layerList;
 	public static final String NONE = "Please select ...";
@@ -72,7 +72,7 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 		this.graph = sDocumentGraph;
 		setPageComplete(false);
 		setTitle("Sentence detection");
-		setDescription("Some Atomic editors work on sentences. Please choose how to detect sentences in the corpus text.");
+		setDescription("The Annotation Graph Editor offers navigation of the corpus based on sentences, and the document you are trying to open\ndoes not have a recognizable sentence layer at the moment. Please choose how to detect sentences in the document text.");
 	}
 
 	/*
@@ -99,6 +99,8 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 				else if (e.widget.equals(btnLoadOwnApache))
 					setRadioSelection(btnUseOwnApache);
 				else if (e.widget.equals(layerCombo))
+					setRadioSelection(btnExistingSentenceLayer);
+				else if (e.widget.equals(layerOverwriteCombo))
 					setRadioSelection(btnExistingSentenceLayer);
 				else if (e.widget.equals(localeCombo))
 					setRadioSelection(btnUseBreakIterator);
@@ -155,15 +157,21 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 		sep1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		Label existingLayers = new Label(container, SWT.NONE);
 		existingLayers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		existingLayers.setText("If your corpus has already been parsed for sentence boundaries,\nplease select the layer that includes the resulting sentence spans below.");
+		existingLayers.setText("If your corpus has already been parsed for sentence boundaries and has a layer consisting exclusively of spans representing\nsentences in the document text, please select the respective layer below.");
 		
 		btnExistingSentenceLayer = new Button(container, SWT.RADIO);
 		btnExistingSentenceLayer.setText("Select an existing layer holding sentence spans only");
 		btnExistingSentenceLayer.addSelectionListener(btnSelectionAdapter);
 		layerCombo = new Combo(container, SWT.NONE | SWT.READ_ONLY);
-		layerCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		layerCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		fillCombo(layerCombo);
 		layerCombo.addSelectionListener(btnSelectionAdapter);
+		layerOverwriteCombo = new Combo(container, SWT.NONE | SWT.READ_ONLY);
+		layerOverwriteCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		layerOverwriteCombo.add(SentenceDetectionService.RENAME, 0);
+		layerOverwriteCombo.add(SentenceDetectionService.COPY, 1);
+		layerOverwriteCombo.select(0);
+		layerOverwriteCombo.addSelectionListener(btnSelectionAdapter);
 
 		Label sep2 = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
 		sep2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
@@ -236,9 +244,14 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 		}
 		else if (combo.equals(layerCombo)) {
 			layerList = new ArrayList<SLayer>();
+			// Add a null element at index 0, as later the layer will be retrieved
+			// from this list by way of combo.getSelectionIndex(), and the first layer will 
+			// be at (selection) index 1 (index 0 = "Please select ..."). 
+			getLayerList().add(null);
 			for (int i = 0; i < graph.getSLayers().size(); i++) {
 				SLayer layer = graph.getSLayers().get(i);
-				getLayerList().add(i, layer);
+				// Added at index i + 1 for reasons above (getSeletionIndex(), etc.))
+				getLayerList().add(i + 1, layer);
 				combo.add(layer.getSName());
 			}
 		}
@@ -375,6 +388,13 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 	 */
 	public ArrayList<SLayer> getLayerList() {
 		return layerList;
+	}
+
+	/**
+	 * @return the layerOverwriteCormbo
+	 */
+	public Combo getLayerOverwriteCombo() {
+		return layerOverwriteCombo;
 	}
 
 }

@@ -80,10 +80,12 @@ public class GraphEditor extends AtomicGraphicalEditor { // FIXME: CLean up this
 	@Override
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
-		SLayer sentenceLayer = getGraph().getSLayer(ModelRegistry.SENTENCE_LAYER);
+		SLayer sentenceLayer = getGraph().getSLayer(ModelRegistry.SENTENCE_LAYER_SID);
 		if (sentenceLayer == null || sentenceLayer.getNodes().isEmpty()) {
 			WizardDialog adHocSentenceDetectionsWizard = new WizardDialog(Display.getCurrent().getActiveShell(), new AdHocSentenceDetectionWizard(getGraph()));
 			adHocSentenceDetectionsWizard.open();
+			// Save document in case layers have changed
+			doSave(null);
 		}
 		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart();
 		ConnectionLayer connLayer = (ConnectionLayer) root.getLayer(LayerConstants.CONNECTION_LAYER);

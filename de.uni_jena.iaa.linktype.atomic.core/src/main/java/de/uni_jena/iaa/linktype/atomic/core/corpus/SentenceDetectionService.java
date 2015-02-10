@@ -33,6 +33,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
+import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 import de.uni_jena.iaa.linktype.atomic.core.projects.NewAtomicProjectWizardSentenceDetectionPage;
 
 /**
@@ -50,6 +51,8 @@ public class SentenceDetectionService {
 	public static final String DANISH = "Danish", GERMAN = "German",
 			ENGLISH = "English", FRENCH = "French", ITALIAN = "Italian",
 			DUTCH = "Dutch", PORTUGUESE = "Portuguese", SWEDISH = "Swedish";
+	
+	public static final String RENAME = "Rename and use existing layer", COPY = "Copy existing layer";
 	
 	private static final Map<String, String> openNLPModels;
 	static {
@@ -190,7 +193,8 @@ public class SentenceDetectionService {
 	 */
 	public static void writeSentencesToModel(SDocumentGraph sDocumentGraph, TreeRangeSet<Integer> sentenceRanges) {
 		SLayer sentenceLayer = SaltFactory.eINSTANCE.createSLayer();
-		sentenceLayer.setSName("sentences");
+		sentenceLayer.setSName(ModelRegistry.SENTENCE_LAYER_SNAME);
+		sentenceLayer.setSId(ModelRegistry.SENTENCE_LAYER_SID);
 		sDocumentGraph.addSLayer(sentenceLayer);
 		EList<SToken> sentenceTokens = new BasicEList<SToken>();
 		for (Range<Integer> sentenceRange : sentenceRanges.asRanges()) {
