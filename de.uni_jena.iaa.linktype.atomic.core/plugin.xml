@@ -53,6 +53,16 @@
                   tooltip="Opens a wizard dialog to help with the creation of new projects">
             </command>
             <command
+                  commandId="org.eclipse.ui.file.import"
+                  label="Import corpus"
+                  mnemonic="I"
+                  style="push">
+            </command>
+            <separator
+                  name="de.uni_jena.iaa.linktype.atomic.core.separator1"
+                  visible="true">
+            </separator>
+            <command
                   commandId="org.eclipse.ui.file.save"
                   label="Save"
                   mnemonic="S"
@@ -244,6 +254,12 @@
             contextId="de.uni_jena.iaa.linktype.atomic.core.context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+Q">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.import"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+I">
       </key>
    </extension>
    <extension
