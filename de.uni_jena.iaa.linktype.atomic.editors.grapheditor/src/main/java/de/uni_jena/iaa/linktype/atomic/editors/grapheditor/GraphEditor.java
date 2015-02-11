@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor;
 
-import java.util.Arrays;
+import java.util.Arrays; 
 import java.util.EventObject;
 import java.util.List;
 
@@ -11,6 +11,8 @@ import org.eclipse.draw2d.AutomaticRouter;
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalEditPart;
@@ -28,7 +30,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
-
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.editors.AtomicGraphicalEditor;
 import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
@@ -41,8 +43,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalV
  * @author Stephan Druskat
  * 
  */
-public class GraphEditor extends AtomicGraphicalEditor { // FIXME: CLean up this mess!
-
+public class GraphEditor extends AtomicGraphicalEditor { 
 	/**
 	 * 
 	 */
@@ -86,6 +87,11 @@ public class GraphEditor extends AtomicGraphicalEditor { // FIXME: CLean up this
 			adHocSentenceDetectionsWizard.open();
 			// Save document in case layers have changed
 			doSave(null);
+			// Refresh all tokens (notify them them so they will refresh themselves, 
+			// as newly added sentence spans' relations will otherwise point into nirvana.
+			for (SToken token : getGraph().getSTokens()) {
+				token.eNotify(new NotificationImpl(Notification.SET, false, true));
+			}
 		}
 		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart();
 		ConnectionLayer connLayer = (ConnectionLayer) root.getLayer(LayerConstants.CONNECTION_LAYER);
@@ -113,7 +119,10 @@ public class GraphEditor extends AtomicGraphicalEditor { // FIXME: CLean up this
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util.EventObject)
+	 * 
+	 * @see
+	 * org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util
+	 * .EventObject)
 	 */
 	@Override
 	public void commandStackChanged(EventObject event) {

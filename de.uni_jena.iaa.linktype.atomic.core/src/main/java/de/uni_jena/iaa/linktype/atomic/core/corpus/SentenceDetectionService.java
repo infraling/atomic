@@ -106,7 +106,6 @@ public class SentenceDetectionService {
 		TreeRangeSet<Integer> sentenceSet = TreeRangeSet.create();
 		SentenceModel customModel = null;
 		InputStream customModelIn = null;
-		System.err.println(customModelFileName);
 		try {
 			File file = new File(customModelFileName);
 			customModelIn = new FileInputStream(file);
