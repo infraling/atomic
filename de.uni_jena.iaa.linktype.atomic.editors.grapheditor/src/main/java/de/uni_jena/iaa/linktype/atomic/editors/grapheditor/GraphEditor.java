@@ -56,6 +56,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			if (!(incomingSelection instanceof IStructuredSelection)) {
 				return;
 			}
+			// TODO : Implement check whether it's a entence selection & react
 			IStructuredSelection ss = (IStructuredSelection) incomingSelection;
 			System.err.println(incomingSelection);
 		}
