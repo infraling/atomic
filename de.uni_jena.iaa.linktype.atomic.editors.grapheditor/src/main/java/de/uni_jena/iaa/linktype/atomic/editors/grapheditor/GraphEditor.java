@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor;
 
-import java.util.Arrays; 
+import java.util.Arrays;
 import java.util.EventObject;
 import java.util.List;
 
@@ -27,9 +27,15 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.editors.AtomicGraphicalEditor;
@@ -43,7 +49,18 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalV
  * @author Stephan Druskat
  * 
  */
-public class GraphEditor extends AtomicGraphicalEditor { 
+public class GraphEditor extends AtomicGraphicalEditor {
+
+	ISelectionListener listener = new ISelectionListener() {
+		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
+			if (!(incomingSelection instanceof IStructuredSelection)) {
+				return;
+			}
+			IStructuredSelection ss = (IStructuredSelection) incomingSelection;
+			System.err.println(incomingSelection);
+		}
+	};
+
 	/**
 	 * 
 	 */
@@ -51,7 +68,14 @@ public class GraphEditor extends AtomicGraphicalEditor {
 		setEditDomain(new DefaultEditDomain(this));
 		getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
 	}
+	
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		getSite().getPage().addSelectionListener(listener);
+	}
 
+	@Override
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
@@ -87,8 +111,10 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			adHocSentenceDetectionsWizard.open();
 			// Save document in case layers have changed
 			doSave(null);
-			// Refresh all tokens (notify them them so they will refresh themselves, 
-			// as newly added sentence spans' relations will otherwise point into nirvana.
+			// Refresh all tokens (notify them them so they will refresh
+			// themselves,
+			// as newly added sentence spans' relations will otherwise point
+			// into nirvana.
 			for (SToken token : getGraph().getSTokens()) {
 				token.eNotify(new NotificationImpl(Notification.SET, false, true));
 			}
@@ -137,5 +163,11 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public DefaultEditDomain getDomain() {
 		return getEditDomain();
 	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+        getSite().getPage().removeSelectionListener(listener);
+     }
 
 }
