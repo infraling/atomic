@@ -141,10 +141,15 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 			// Detect sentence
 			monitor.subTask("Detecting sentences in corpus text");
-			TreeRangeSet<Integer> sentenceRanges = detectSentences(sDocumentGraph);
-			SentenceDetectionService.writeSentencesToModel(sDocumentGraph, sentenceRanges);
+			if (sentenceDetectionPage.getSentenceDetectorTypeToUse() != null) {
+				TreeRangeSet<Integer> sentenceRanges = detectSentences(sDocumentGraph);
+				SentenceDetectionService.writeSentencesToModel(sDocumentGraph, sentenceRanges);
+				log.info("Detected sentences.");
+			}
+			else {
+				log.info("Skipping sentence detection");
+			}
 			monitor.worked(1);
-			log.info("Detected sentences.");
 
 			// Annotate tokens with text meta info
 			monitor.subTask("Serializing project");

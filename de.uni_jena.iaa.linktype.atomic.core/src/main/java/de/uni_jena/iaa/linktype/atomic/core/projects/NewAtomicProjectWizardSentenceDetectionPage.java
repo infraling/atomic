@@ -62,7 +62,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	 */
 	public NewAtomicProjectWizardSentenceDetectionPage(String pageName) {
 		super(pageName);
-		setPageComplete(false);
+		setPageComplete(true);
 		setTitle("Sentence detection");
 		setDescription("Some Atomic editors work on sentences. Please choose how to detect sentences in the corpus text.");
 	}
@@ -95,6 +95,10 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			}
 		};
 
+		Label label = new Label(container, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		label.setText("You can skip this step, and be asked to detect sentences again when opening an editor\nwhich requires sentence detection.");
+		
 		btnPredefinedOpenNLP = new Button(container, SWT.RADIO);
 		btnPredefinedOpenNLP.setText("Use a predefined Apache OpenNLP model");
 		btnPredefinedOpenNLP.addSelectionListener(btnSelectionAdapter);
@@ -215,42 +219,42 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.OPENNLP);
 			if (!predefinedOpenNLPCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
-				setPageComplete(true);
+//				setPageComplete(true);
 			}
 			else {
 				setErrorMessage("Please select an Apache OpenNLP language model for sentence detection.");
-				setPageComplete(false);
+//				setPageComplete(false);
 			}
 		}
 		else if (btnUseOwnApache.getSelection()) {
 			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.OPENNLP_CUSTOM);
 			if (!getTextUseOwnApache().getText().isEmpty()) {
 				setErrorMessage(null);
-				setPageComplete(true);
+//				setPageComplete(true);
 			}
 			else {
 				setErrorMessage("Please load your Apache OpenNLP language model for sentence detection.");
-				setPageComplete(false);
+//				setPageComplete(false);
 			}
 		}
 		else if (btnUseBreakIterator.getSelection()) {
 			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.BREAK_ITERATOR);
 			if (!localeCombo.getText().equals(NONE)) {
 				setErrorMessage(null);
-				setPageComplete(true);
+//				setPageComplete(true);
 			}
 			else {
 				setErrorMessage("Please select the locale the BreakIterator should operate on.");
-				setPageComplete(false);
+//				setPageComplete(false);
 			}
 		}
 		else if (btnUseThirdpartyDetector.getSelection()) {
 			setSentenceDetectorTypeToUse(SentenceDetectionService.SentenceDetectorType.THIRDPARTY);
 			setErrorMessage(null);
-			setPageComplete(true);
+//			setPageComplete(true);
 		}
 		else {
-			setPageComplete(false);
+//			setPageComplete(false);
 		}
 	}
 
