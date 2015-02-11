@@ -62,7 +62,7 @@ public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 	 */
 	public NewAtomicProjectWizardSentenceDetectionPage(String pageName) {
 		super(pageName);
-		setPageComplete(true);
+		setPageComplete(true); // User can skip sentence detection for now
 		setTitle("Sentence detection");
 		setDescription("Some Atomic editors work on sentences. Please choose how to detect sentences in the corpus text.");
 	}
