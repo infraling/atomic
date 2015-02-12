@@ -3,6 +3,12 @@
 <plugin>
    <extension
          point="org.eclipse.ui.views">
+      <view
+            class="de.uni_jena.iaa.linktype.atomic.views.sentenceview.SentenceView"
+            id="de.uni_jena.iaa.linktype.atomic.views.sentenceview"
+            name="Sentence View"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>
