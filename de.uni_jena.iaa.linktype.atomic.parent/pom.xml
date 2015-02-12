@@ -19,6 +19,7 @@
   <module>../de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature</module>
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
   <module>../de.uni_jena.iaa.linktype.atomic.logging</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.views.sentenceview</module>
   </modules>
   
   <properties>
