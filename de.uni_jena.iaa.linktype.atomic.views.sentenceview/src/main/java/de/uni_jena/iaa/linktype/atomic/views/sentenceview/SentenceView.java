@@ -11,16 +11,12 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableLayout;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,7 +25,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
@@ -57,37 +52,27 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 	@Override
 	public void createPartControl(Composite parent) {
 		getSite().setSelectionProvider(this);
-		parent.setLayout(new GridLayout(2, false));
-
+		parent.setLayout(new GridLayout(1, true));
+		
 		addSelectionButtons(parent);
-
-		sentenceTableViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
-		sentenceTableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		
+		sentenceTableViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		sentenceTableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+		sentenceTableViewer.setContentProvider(new SentenceContentProvider());
+		sentenceTableViewer.setLabelProvider(new SentenceLabelProvider());
+		sentenceTableViewer.setInput(getInput());
+		
+		TableColumn column = new TableColumn(sentenceTableViewer.getTable(), SWT.FILL);
+		column.setText("Sentences");
+		column.pack();
+		
 		sentenceTableViewer.addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				notifySelectionListeners();
 			}
 		});
-
-		Table sentenceTable = (Table) sentenceTableViewer.getControl();
-		TableLayout tableLayout = new TableLayout();
-		tableLayout.addColumnData(new ColumnWeightData(100, 50, true));
-		sentenceTable.setLayout(tableLayout);
-
-		sentenceTableViewer.setContentProvider(new SentenceContentProvider());
-
-		TableViewerColumn viewerCol = new TableViewerColumn(sentenceTableViewer, SWT.LEFT);
-		TableColumn col = viewerCol.getColumn();
-		col.setText("Sentence");
-		viewerCol.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				return retrieveSentenceFromSpan((SSpan) element);
-			}
-		});
-
-		sentenceTableViewer.setInput(getInput());
+		
 		sentenceTableViewer.getTable().setHeaderVisible(true);
 		sentenceTableViewer.getTable().setLinesVisible(true);
 	}
@@ -155,7 +140,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 	 * @param parent
 	 */
 	private void addSelectionButtons(Composite parent) {
-		Composite buttonComposite = new Composite(parent, SWT.RIGHT);
+		Composite buttonComposite = new Composite(parent, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(2, false));
 		buttonComposite.setData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		Button selectButton = createButton(buttonComposite, "Select all", GridData.HORIZONTAL_ALIGN_FILL);
