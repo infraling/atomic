@@ -10,5 +10,28 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:de.uni_jena.iaa.linktype.atomic.menus.viewMenu">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               label="Sentence View"
+               mnemonic="S"
+               style="push"
+               tooltip="Opens the Sentence View">
+               <parameter name="org.eclipse.ui.views.showView.viewId"
+					value="de.uni_jena.iaa.linktype.atomic.views.sentenceview"/>
+					<visibleWhen>
+            <with variable="activeEditorId">
+                     <equals
+                           value="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.editor">
+                     </equals>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
 
 </plugin>
