@@ -30,7 +30,7 @@ public class SentenceLabelProvider extends LabelProvider {
 	protected String retrieveSentenceFromSpan(SSpan span) {
 		EList<SToken> overlappedTokens = span.getSDocumentGraph().getOverlappedSTokens(span, new BasicEList<STYPE_NAME>(Arrays.asList(STYPE_NAME.SSPANNING_RELATION)));
 		EList<SToken> sortedTokens = span.getSDocumentGraph().getSortedSTokenByText(overlappedTokens);
-		int sentenceIndex = span.getSDocumentGraph().getSLayer(ModelRegistry.SENTENCE_LAYER_SID).getAllIncludedNodes().indexOf(span) + 1;
+		int sentenceIndex = span.getSDocumentGraph().getSLayer(ModelRegistry.SENTENCE_LAYER_SID).getAllIncludedNodes().indexOf(span);
 		String sentence = "";
 		for (int i = 0; i < sortedTokens.size(); i++) {
 			String tokenText = getTokenText(sortedTokens.get(i));
@@ -42,7 +42,9 @@ public class SentenceLabelProvider extends LabelProvider {
 			}
 		}
 		if (!sentence.isEmpty()) {
-			return sentence;
+			// Add whitespace at the end to make sure the whole sentence is displayed
+			// and not cut off by table border
+			return sentence + " ";
 		}
 		return null;
 	}
