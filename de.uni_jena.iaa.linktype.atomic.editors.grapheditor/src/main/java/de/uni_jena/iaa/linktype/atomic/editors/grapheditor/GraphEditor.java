@@ -57,8 +57,9 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				return;
 			}
 			// TODO : Implement check whether it's a entence selection & react
+			// TODO: React to empty selection
 			IStructuredSelection ss = (IStructuredSelection) incomingSelection;
-			System.err.println(incomingSelection);
+			System.err.println("GRAPH EDITOR: " + ((IStructuredSelection) incomingSelection));
 		}
 	};
 
