@@ -3,6 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 
 /**
  * A registry that keeps track of the {@link SDocumentGraph}s that have already
@@ -29,6 +32,8 @@ public class ModelRegistry {
 
 	private static Map<IFile, SDocumentGraph> documentGraphs = new HashMap<IFile, SDocumentGraph>();
 	private static Map<IFile, Integer> editorsOnDocumentIFile = new HashMap<IFile, Integer>();
+	private static Map<SDocumentGraph, ArrayList<SSpan>> sentenceMap = new HashMap<SDocumentGraph, ArrayList<SSpan>>();
+
 	public static final String SENTENCE_LAYER_SID = "ATOMIC::SENTENCES";
 	public static final String SENTENCE_LAYER_SNAME = "Sentences (detected)";
 
@@ -62,6 +67,17 @@ public class ModelRegistry {
 			}
 			else {
 				increaseEditorCountForSDocument(documentIFile);
+			}
+			// If graph contains sentence layer, add sentence spans
+			// to sentence map
+			if (documentGraph.getSLayer(SENTENCE_LAYER_SID) != null) {
+				ArrayList<SSpan> sentenceList = new ArrayList<SSpan>();
+				for (Node node : documentGraph.getSLayer(SENTENCE_LAYER_SID).getAllIncludedNodes()) {
+					if (node instanceof SSpan) {
+						sentenceList.add((SSpan) node);
+					}
+				}
+				sentenceMap.put(documentGraph, sentenceList);
 			}
 		}
 		else if (iFile.getName().endsWith(SaltFactory.FILE_ENDING_SALT)) {
@@ -139,6 +155,13 @@ public class ModelRegistry {
 		else {
 			// Should never be called
 		}
+	}
+
+	/**
+	 * @return the sentenceMap
+	 */
+	public static Map<SDocumentGraph, ArrayList<SSpan>> getSentenceMap() {
+		return sentenceMap;
 	}
 
 }
