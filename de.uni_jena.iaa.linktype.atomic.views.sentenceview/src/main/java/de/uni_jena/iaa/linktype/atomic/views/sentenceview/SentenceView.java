@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -25,6 +26,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
@@ -49,30 +51,33 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 
 	private CheckboxTableViewer sentenceTableViewer;
 
+	private SDocumentGraph graph;
+
 	@Override
 	public void createPartControl(Composite parent) {
+		graph = getInput();
 		getSite().setSelectionProvider(this);
 		parent.setLayout(new GridLayout(1, true));
-		
+
 		addSelectionButtons(parent);
-		
+
 		sentenceTableViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		sentenceTableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		sentenceTableViewer.setContentProvider(new SentenceContentProvider());
 		sentenceTableViewer.setLabelProvider(new SentenceLabelProvider());
-		sentenceTableViewer.setInput(getInput());
-		
+		sentenceTableViewer.setInput(getGraph());
+
 		TableColumn column = new TableColumn(sentenceTableViewer.getTable(), SWT.FILL);
 		column.setText("Sentences");
 		column.pack();
-		
+
 		sentenceTableViewer.addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				notifySelectionListeners();
 			}
 		});
-		
+
 		sentenceTableViewer.getTable().setHeaderVisible(true);
 		sentenceTableViewer.getTable().setLinesVisible(true);
 	}
@@ -146,8 +151,16 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 		Button selectButton = createButton(buttonComposite, "Select all", GridData.HORIZONTAL_ALIGN_FILL);
 		SelectionListener listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				sentenceTableViewer.setAllChecked(true);
-				notifySelectionListeners();
+				if (getGraph().getSTokens().size() > 500) {
+					if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Show whole graph?", "WARNING: Rendering all sentences at once is an expensive operation, which may take long, and in some cases result in an application crash.\nDo you want to proceed?")) {
+						sentenceTableViewer.setAllChecked(true);
+						notifySelectionListeners();
+					}
+				}
+				else {
+					sentenceTableViewer.setAllChecked(true);
+					notifySelectionListeners();
+				}
 			}
 		};
 		selectButton.addSelectionListener(listener);
@@ -227,6 +240,21 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 		for (int i = 0; i < list.length; i++) {
 			((ISelectionChangedListener) list[i]).selectionChanged(new SelectionChangedEvent(this, new StructuredSelection(sentenceTableViewer.getCheckedElements())));
 		}
+	}
+
+	/**
+	 * @return the graph
+	 */
+	public SDocumentGraph getGraph() {
+		return graph;
+	}
+
+	/**
+	 * @param graph
+	 *            the graph to set
+	 */
+	public void setGraph(SDocumentGraph graph) {
+		this.graph = graph;
 	}
 
 }
