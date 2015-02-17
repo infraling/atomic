@@ -4,6 +4,7 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,24 +28,22 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
 /**
  * @author Stephan Druskat
- *
+ * 
  */
 public class GraphPart extends AbstractGraphicalEditPart {
-	
+
 	private GraphAdapter adapter;
 	private Map<SToken, String> tokenTextRegistry;
 	public Object removingObject;
 	private HashBiMap<String, EObject> visualIDMap = HashBiMap.create();
+	private List<Object> dynamicModelChildrenList;
 
 	public GraphPart(SDocumentGraph model) {
 		setModel(model);
@@ -56,7 +55,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	private void registerTokenTexts() {
 		String text = getModel().getSTextualDSs().get(0).getSText();
 		for (SToken token : getModel().getSTokens()) {
-			for (Edge edge: getModel().getOutEdges(token.getSId())) {
+			for (Edge edge : getModel().getOutEdges(token.getSId())) {
 				if (edge instanceof STextualRelation) {
 					STextualRelation textualRelation = (STextualRelation) edge;
 					getTokenTextRegistry().put(token, text.substring(textualRelation.getSStart(), textualRelation.getSEnd()));
@@ -65,7 +64,9 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
@@ -75,48 +76,59 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		figure.setLayoutManager(new FreeformLayout());
 		return figure;
 	}
-	
+
 	@Override
 	protected void refreshVisuals() {
 		super.refreshVisuals();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new GraphXYLayoutEditPolicy());
 	}
-	
+
 	@Override
-	protected List<SNode> getModelChildren() {
-		List<SNode> modelChildren = new ArrayList<SNode>();
-		for (SToken token : getModel().getSTokens()) {
-			if (token.getSDocumentGraph() == getModel()) {
-				modelChildren.add(token);
-				if (!getVisualIDMap().containsValue(token))
-					getVisualIDMap().put("T" + (getModel().getSTokens().indexOf(token) + 1), token);
-			}
+	protected List<Object> getModelChildren() {
+		// List<SNode> modelChildren = new ArrayList<SNode>();
+		// for (SToken token : getModel().getSTokens()) {
+		// if (token.getSDocumentGraph() == getModel()) {
+		// modelChildren.add(token);
+		// if (!getVisualIDMap().containsValue(token))
+		// getVisualIDMap().put("T" + (getModel().getSTokens().indexOf(token) +
+		// 1), token);
+		// }
+		// }
+		// for (SStructure structure : getModel().getSStructures()) {
+		// if (structure.getSDocumentGraph() == getModel()) {
+		// modelChildren.add(structure);
+		// if (!getVisualIDMap().containsValue(structure))
+		// getVisualIDMap().put("N" +
+		// (getModel().getSStructures().indexOf(structure) + 1), structure);
+		// }
+		// }
+		// for (SSpan span : getModel().getSSpans()) {
+		// if (span.getSDocumentGraph() == getModel()) {
+		// modelChildren.add(span);
+		// if (!getVisualIDMap().containsValue(span))
+		// getVisualIDMap().put("S" + (getModel().getSSpans().indexOf(span) +
+		// 1), span);
+		// }
+		// }
+		// addRelationIDsToVisualIDMap();
+		// return modelChildren;
+		if (getDynamicModelChildrenList() != null) {
+			return getDynamicModelChildrenList();
 		}
-		for (SStructure structure : getModel().getSStructures()) {
-			if (structure.getSDocumentGraph() == getModel()) {
-				modelChildren.add(structure);
-				if (!getVisualIDMap().containsValue(structure))
-					getVisualIDMap().put("N" + (getModel().getSStructures().indexOf(structure) + 1), structure);
-			}
+		else {
+			return Arrays.asList(getModel().getSTokens().toArray());
 		}
-		for (SSpan span : getModel().getSSpans()) {
-			if (span.getSDocumentGraph() == getModel()) {
-				modelChildren.add(span);
-				if (!getVisualIDMap().containsValue(span))
-					getVisualIDMap().put("S" + (getModel().getSSpans().indexOf(span) + 1), span);
-			}
-		}
-		addRelationIDsToVisualIDMap();
-		return modelChildren;
 	}
-	
+
 	private void addRelationIDsToVisualIDMap() {
 		for (SDominanceRelation dominanceRel : getModel().getSDominanceRelations()) {
 			if (dominanceRel.getSDocumentGraph() == getModel()) {
@@ -143,8 +155,6 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			}
 		}
 
-
-
 	}
 
 	public SDocumentGraph getModel() {
@@ -159,19 +169,21 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	}
 
 	/**
-	 * @param adapter the adapter to set
+	 * @param adapter
+	 *            the adapter to set
 	 */
 	public void setAdapter(GraphAdapter adapter) {
 		this.adapter = adapter;
 	}
-	
+
 	/**
 	 * @author Stephan Druskat
-	 *
+	 * 
 	 */
 	public class GraphAdapter extends EContentAdapter {
-		
-		@Override public void notifyChanged(Notification n) {
+
+		@Override
+		public void notifyChanged(Notification n) {
 			switch (n.getEventType()) {
 			case Notification.REMOVE:
 				refreshChildren();
@@ -183,29 +195,31 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			default:
 				break;
 			}
-	    }
-	 
-		@Override public Notifier getTarget() {
-	    	return (SDocumentGraph) getModel();
-	    }
-	 
-	    @Override public boolean isAdapterForType(Object type) {
-	    	return type.equals(SDocumentGraph.class);
-	    }
+		}
+
+		@Override
+		public Notifier getTarget() {
+			return (SDocumentGraph) getModel();
+		}
+
+		@Override
+		public boolean isAdapterForType(Object type) {
+			return type.equals(SDocumentGraph.class);
+		}
 
 	}
-	
-	@Override 
+
+	@Override
 	public void activate() {
-		if(!isActive()) {
+		if (!isActive()) {
 			((SDocumentGraph) getModel()).eAdapters().add(getAdapter());
-	    }
+		}
 		super.activate();
 	}
-	 
-	@Override 
+
+	@Override
 	public void deactivate() {
-		if(isActive()) {
+		if (isActive()) {
 			((SDocumentGraph) getModel()).eAdapters().remove(getAdapter());
 		}
 		super.deactivate();
@@ -219,7 +233,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	}
 
 	/**
-	 * @param tokenTextRegistry the tokenTextRegistry to set
+	 * @param tokenTextRegistry
+	 *            the tokenTextRegistry to set
 	 */
 	public void setTokenTextRegistry(Map<SToken, String> tokenTextRegistry) {
 		this.tokenTextRegistry = tokenTextRegistry;
@@ -233,10 +248,26 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	}
 
 	/**
-	 * @param visualIDMap the visualIDMap to set
+	 * @param visualIDMap
+	 *            the visualIDMap to set
 	 */
 	public void setVisualIDMap(HashBiMap<String, EObject> visualIDMap) {
 		this.visualIDMap = visualIDMap;
+	}
+
+	/**
+	 * @return the dynamicModelChildrenList
+	 */
+	public List<Object> getDynamicModelChildrenList() {
+		return dynamicModelChildrenList;
+	}
+
+	/**
+	 * @param dynamicModelChildrenList
+	 *            the dynamicModelChildrenList to set
+	 */
+	public void setDynamicModelChildrenList(ArrayList<Object> dynamicModelChildrenList) {
+		this.dynamicModelChildrenList = dynamicModelChildrenList;
 	}
 
 }

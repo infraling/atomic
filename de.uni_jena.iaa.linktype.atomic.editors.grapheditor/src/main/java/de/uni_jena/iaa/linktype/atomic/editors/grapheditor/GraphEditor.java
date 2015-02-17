@@ -3,8 +3,10 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventObject;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.draw2d.AutomaticRouter;
@@ -36,12 +38,15 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.SubGraphService;
 import de.uni_jena.iaa.linktype.atomic.core.editors.AtomicGraphicalEditor;
 import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.GraphEditorPaletteFactory;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AdHocSentenceDetectionWizard;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
 
@@ -50,16 +55,38 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalV
  * 
  */
 public class GraphEditor extends AtomicGraphicalEditor {
+	
+	private ArrayList<Object> dynamicModelChildrenList = new ArrayList<Object>();
 
 	ISelectionListener listener = new ISelectionListener() {
 		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
 			if (!(incomingSelection instanceof IStructuredSelection)) {
 				return;
 			}
-			// TODO : Implement check whether it's a entence selection & react
-			// TODO: React to empty selection
-			IStructuredSelection ss = (IStructuredSelection) incomingSelection;
-			System.err.println("GRAPH EDITOR: " + ((IStructuredSelection) incomingSelection));
+			IStructuredSelection selection = (IStructuredSelection) incomingSelection;
+			boolean containsOnlySpans = true;
+			for (Object element : selection.toList()) {
+				if (!(element instanceof SSpan)) {
+					containsOnlySpans = false;
+					break;
+				}
+			}
+			if (selection.isEmpty()) {
+				// Clear editor
+				dynamicModelChildrenList.clear();
+				GraphPart graphPart = ((GraphPart) getGraphicalViewer().getRootEditPart().getContents());
+				graphPart.setDynamicModelChildrenList(dynamicModelChildrenList);
+				getGraphicalViewer().getRootEditPart().getContents().refresh();
+			}
+			else if (containsOnlySpans) {
+				dynamicModelChildrenList.clear();
+				for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
+					SSpan span = (SSpan) iterator.next();
+					dynamicModelChildrenList.addAll(SubGraphService.getSentenceGraph(span));
+				}
+				((GraphPart) getGraphicalViewer().getRootEditPart().getContents()).setDynamicModelChildrenList(dynamicModelChildrenList);
+				getGraphicalViewer().getRootEditPart().getContents().refresh();
+			}
 		}
 	};
 
@@ -107,6 +134,11 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	@Override
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
+		// Clear editor initially
+		dynamicModelChildrenList.clear();
+		((GraphPart) getGraphicalViewer().getRootEditPart().getContents()).setDynamicModelChildrenList(dynamicModelChildrenList);
+		getGraphicalViewer().getRootEditPart().getContents().refresh();
+		
 		SLayer sentenceLayer = getGraph().getSLayer(ModelRegistry.SENTENCE_LAYER_SID);
 		if (sentenceLayer == null || sentenceLayer.getNodes().isEmpty()) {
 			WizardDialog adHocSentenceDetectionsWizard = new WizardDialog(Display.getCurrent().getActiveShell(), new AdHocSentenceDetectionWizard(getGraph()));
