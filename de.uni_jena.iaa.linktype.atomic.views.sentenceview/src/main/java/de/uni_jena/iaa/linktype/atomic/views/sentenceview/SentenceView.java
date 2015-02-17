@@ -3,12 +3,8 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.sentenceview;
 
-import java.util.Arrays;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -29,23 +25,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 
 /**
  * @author Stephan Druskat
  * 
  */
-public class SentenceView extends ViewPart implements ISelectionProvider {
+public class SentenceView extends ViewPart implements ISelectionProvider, IPartListener2 {
 
 	private ListenerList listeners = new ListenerList();
 
@@ -57,6 +53,8 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 	public void createPartControl(Composite parent) {
 		graph = getInput();
 		getSite().setSelectionProvider(this);
+		final IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
+        workbenchWindow.getPartService().addPartListener(this);
 		parent.setLayout(new GridLayout(1, true));
 
 		addSelectionButtons(parent);
@@ -82,43 +80,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 		sentenceTableViewer.getTable().setLinesVisible(true);
 	}
 
-	/**
-	 * @param element
-	 * @return
-	 */
-	protected String retrieveSentenceFromSpan(SSpan span) {
-		EList<SToken> overlappedTokens = span.getSDocumentGraph().getOverlappedSTokens(span, new BasicEList<STYPE_NAME>(Arrays.asList(STYPE_NAME.SSPANNING_RELATION)));
-		EList<SToken> sortedTokens = span.getSDocumentGraph().getSortedSTokenByText(overlappedTokens);
-		int sentenceIndex = span.getSDocumentGraph().getSLayer(ModelRegistry.SENTENCE_LAYER_SID).getAllIncludedNodes().indexOf(span) + 1;
-		String sentence = "";
-		for (int i = 0; i < sortedTokens.size(); i++) {
-			String tokenText = getTokenText(sortedTokens.get(i));
-			if (i == 0) {
-				sentence = sentence + "[" + sentenceIndex + "] " + tokenText;
-			}
-			else {
-				sentence = sentence + " " + tokenText;
-			}
-		}
-		if (!sentence.isEmpty()) {
-			return sentence;
-		}
-		return null;
-	}
-
-	/**
-	 * @param sToken
-	 * @return
-	 */
-	private String getTokenText(SToken token) {
-		for (Edge edge : token.getSDocumentGraph().getOutEdges(token.getSId())) {
-			if (edge instanceof STextualRelation) {
-				STextualRelation textualRelation = (STextualRelation) edge;
-				return token.getSDocumentGraph().getSTextualDSs().get(0).getSText().substring(textualRelation.getSStart(), textualRelation.getSEnd());
-			}
-		}
-		return null;
-	}
 
 	/**
 	 * @return
@@ -256,5 +217,45 @@ public class SentenceView extends ViewPart implements ISelectionProvider {
 	public void setGraph(SDocumentGraph graph) {
 		this.graph = graph;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IPartListener2#partActivated(org.eclipse.ui.IWorkbenchPartReference)
+	 */
+	@Override
+	public void partActivated(IWorkbenchPartReference partRef) {
+		if (partRef.getPart(false) instanceof EditorPart) {
+			EditorPart editor = (EditorPart) partRef.getPart(false);
+			if (editor.getEditorInput() instanceof FileEditorInput) {
+				FileEditorInput input = (FileEditorInput) editor.getEditorInput(); 
+				if (input.getFile().getName().endsWith(SaltFactory.FILE_ENDING_SALT) && !input.getFile().getName().equals(SaltFactory.FILE_SALT_PROJECT)) {
+					if (sentenceTableViewer != null && !sentenceTableViewer.getControl().isDisposed()) {
+						sentenceTableViewer.setInput(getInput());
+						sentenceTableViewer.refresh();
+					   }
+				}
+			}
+		}
+	}
+
+	@Override
+	public void partBroughtToTop(IWorkbenchPartReference partRef) {}
+
+	@Override
+	public void partClosed(IWorkbenchPartReference partRef) {}
+
+	@Override
+	public void partDeactivated(IWorkbenchPartReference partRef) {}
+
+	@Override
+	public void partOpened(IWorkbenchPartReference partRef) {}
+
+	@Override
+	public void partHidden(IWorkbenchPartReference partRef) {}
+
+	@Override
+	public void partVisible(IWorkbenchPartReference partRef) {}
+
+	@Override
+	public void partInputChanged(IWorkbenchPartReference partRef) {}
 
 }
