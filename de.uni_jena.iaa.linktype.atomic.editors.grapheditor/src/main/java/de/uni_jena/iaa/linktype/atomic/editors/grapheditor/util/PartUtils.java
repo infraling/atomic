@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.sound.midi.SysexMessage;
+
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -46,67 +48,80 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 
 /**
  * @author Stephan Druskat
- *
+ * 
  */
 public class PartUtils {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(PartUtils.class);
 
 	public static final String SANS10BOLD = "sansserif 10pt bold";
 	public static final String SANS8 = "sansserif 8pt";
 	public static final String VERYLIGHTGREY = "very light grey colour";
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
-	private static final int margin = 50;  // FIXME Hard-coded margin (5), make settable in Prefs
-	
-//	public static String getVisualID(SNamedElement model) {
-//		if (model instanceof SToken) {
-//			int index = ((SToken) model).getSDocumentGraph().getSTokens().indexOf(model);
-//			return "T" + (index + 1);
-//		}
-//		else if (model instanceof SStructure) {
-//			int index = ((SStructure) model).getSDocumentGraph().getSStructures().indexOf(model);
-//			return "N" + (index + 1);
-//		}
-//		else if (model instanceof SSpan) {
-//			int index = ((SSpan) model).getSDocumentGraph().getSSpans().indexOf(model);
-//			return "S" + (index + 1);
-//		}
-//		else if (model instanceof SDominanceRelation) {
-//			int index = ((SDominanceRelation) model).getSDocumentGraph().getSDominanceRelations().indexOf(model);
-//			return "D" + (index + 1);
-//		}
-//		else if (model instanceof SSpanningRelation) {
-//			int index = ((SSpanningRelation) model).getSDocumentGraph().getSSpanningRelations().indexOf(model);
-//			return "R" + (index + 1);
-//		}
-//		else if (model instanceof SPointingRelation) {
-//			int index = ((SPointingRelation) model).getSDocumentGraph().getSPointingRelations().indexOf(model);
-//			return "P" + (index + 1);
-//		}
-//		else if (model instanceof SOrderRelation) {
-//			int index = ((SOrderRelation) model).getSDocumentGraph().getSOrderRelations().indexOf(model);
-//			return "O" + (index + 1);
-//		}
-//		return null;
-//	}
+	private static final int margin = 50; // FIXME Hard-coded margin (5), make
+											// settable in Prefs
+
+	// public static String getVisualID(SNamedElement model) {
+	// if (model instanceof SToken) {
+	// int index = ((SToken)
+	// model).getSDocumentGraph().getSTokens().indexOf(model);
+	// return "T" + (index + 1);
+	// }
+	// else if (model instanceof SStructure) {
+	// int index = ((SStructure)
+	// model).getSDocumentGraph().getSStructures().indexOf(model);
+	// return "N" + (index + 1);
+	// }
+	// else if (model instanceof SSpan) {
+	// int index = ((SSpan)
+	// model).getSDocumentGraph().getSSpans().indexOf(model);
+	// return "S" + (index + 1);
+	// }
+	// else if (model instanceof SDominanceRelation) {
+	// int index = ((SDominanceRelation)
+	// model).getSDocumentGraph().getSDominanceRelations().indexOf(model);
+	// return "D" + (index + 1);
+	// }
+	// else if (model instanceof SSpanningRelation) {
+	// int index = ((SSpanningRelation)
+	// model).getSDocumentGraph().getSSpanningRelations().indexOf(model);
+	// return "R" + (index + 1);
+	// }
+	// else if (model instanceof SPointingRelation) {
+	// int index = ((SPointingRelation)
+	// model).getSDocumentGraph().getSPointingRelations().indexOf(model);
+	// return "P" + (index + 1);
+	// }
+	// else if (model instanceof SOrderRelation) {
+	// int index = ((SOrderRelation)
+	// model).getSDocumentGraph().getSOrderRelations().indexOf(model);
+	// return "O" + (index + 1);
+	// }
+	// return null;
+	// }
 
 	public static int getTokenX(GraphPart graphPart, SToken model, IFigure iFigure) {
-		int tokenX = -1;
-		SDocumentGraph graph = graphPart.getModel();
-		int currentTokenIndex = graph.getSTokens().indexOf(model);
-		if (currentTokenIndex == 0) {
-			return margin;
-		}
-		EList<SToken> tokenList = graph.getSTokens();
-		SToken lastToken = tokenList.get(currentTokenIndex - 1);
-		for (Object part : graphPart.getChildren()) {
-			if (part instanceof TokenPart && ((TokenPart) part).getModel() == lastToken) {
-					IFigure lastFigure = ((TokenPart) part).getFigure();
-					int lastX = ((Rectangle) graphPart.getFigure().getLayoutManager().getConstraint(lastFigure)).x;
-					tokenX = lastX + lastFigure.getPreferredSize().width + margin;
+		if (!graphPart.getSortedTokens().isEmpty()) {
+			int currentTokenIndex = graphPart.getSortedTokens().indexOf(model);
+			if (currentTokenIndex == -1) {
+				return -1;
+			}
+			else if (currentTokenIndex == 0) {
+				return margin;
+			}
+			else {
+				SToken lastToken = graphPart.getSortedTokens().get(currentTokenIndex - 1);
+				for (Object part : graphPart.getChildren()) {
+					if (part instanceof TokenPart && ((TokenPart) part).getModel() == lastToken) {
+						IFigure lastFigure = ((TokenPart) part).getFigure();
+						int lastX = ((Rectangle) graphPart.getFigure().getLayoutManager().getConstraint(lastFigure)).x;
+						return lastX + lastFigure.getPreferredSize().width + margin;
+					}
+				}
 			}
 		}
-		return tokenX;	}
+		return -1;
+	}
 
 	public static void setFont(IFigure figure, String fontStyle) {
 		FontRegistry fontRegistry = JFaceResources.getFontRegistry();
@@ -123,12 +138,18 @@ public class PartUtils {
 	private static void addFontToFontRegistry(String fontStyle, FontRegistry fontRegistry) {
 		FontData[] fontDataArray = new FontData[1];
 		if (fontStyle.equals(SANS10BOLD))
-			fontDataArray[0] = new FontData("sansserif", 10, SWT.BOLD); // FIXME: Parameterize with Preferences
+			fontDataArray[0] = new FontData("sansserif", 10, SWT.BOLD); // FIXME:
+																		// Parameterize
+																		// with
+																		// Preferences
 		if (fontStyle.equals(SANS8))
-			fontDataArray[0] = new FontData("sansserif", 8, SWT.NORMAL); // FIXME: Parameterize with Preferences
+			fontDataArray[0] = new FontData("sansserif", 8, SWT.NORMAL); // FIXME:
+																			// Parameterize
+																			// with
+																			// Preferences
 		fontRegistry.put(fontStyle, fontDataArray);
 	}
-	
+
 	public static void setColor(Graphics graphics, String color, boolean isBackgroundColor) {
 		ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
 		if (!colorRegistry.hasValueFor(color)) {
@@ -139,7 +160,7 @@ public class PartUtils {
 		else
 			graphics.setForegroundColor(colorRegistry.get(color));
 	}
-	
+
 	public static Color getColor(String color) {
 		ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
 		if (!colorRegistry.hasValueFor(color)) {
@@ -159,7 +180,7 @@ public class PartUtils {
 		SingleLineDirectEditManager manager = new SingleLineDirectEditManager(editPart, TextCellEditor.class, new AtomicCellEditorLocator(editPart.getFigure()), editPart.getFigure());
 		manager.show();
 	}
-	
+
 	public static Rectangle calculateStructuredNodeLayout(AbstractGraphicalEditPart part, SStructuredNode model, Figure figure) {
 		int[] xY = calculateXY(model, part);
 		int width = figure.getPreferredSize().width;
@@ -184,13 +205,13 @@ public class PartUtils {
 		Node target = null;
 		List<Integer> xList = new ArrayList<Integer>();
 		List<Integer> yList = new ArrayList<Integer>();
-		for(Edge edge : graph.getOutEdges(model.getSId())) {
+		for (Edge edge : graph.getOutEdges(model.getSId())) {
 			target = edge.getTarget();
 			AbstractGraphicalEditPart targetEP = (AbstractGraphicalEditPart) part.getViewer().getEditPartRegistry().get(target);
 			SProcessingAnnotation coordsAnno = ((SNode) target).getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS");
 			if (targetEP == null && coordsAnno != null) {
 				int[] annoXY = (int[]) coordsAnno.getValue();
-				return new int[]{annoXY[0], annoXY[1]};
+				return new int[] { annoXY[0], annoXY[1] };
 			}
 			else if (targetEP != null) {
 				Rectangle targetConstraints;
@@ -225,7 +246,7 @@ public class PartUtils {
 			y = yList.get(0) - 100; // FIXME -100 is hardcoded
 		}
 		xY[1] = y;
-		model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{x, y, 1}, SDATATYPE.SOBJECT);
+		model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[] { x, y, 1 }, SDATATYPE.SOBJECT);
 		return xY;
 	}
 
@@ -234,7 +255,14 @@ public class PartUtils {
 		nodes.addAll(graph.getSStructures());
 		nodes.addAll(graph.getSSpans());
 		nodes.remove(sStructuredNode);
-		ArrayList<AbstractGraphicalEditPart> editPartsDefiniteList = new ArrayList<AbstractGraphicalEditPart>(); // FIXME: After refactoring, set arg to other type
+		ArrayList<AbstractGraphicalEditPart> editPartsDefiniteList = new ArrayList<AbstractGraphicalEditPart>(); // FIXME:
+																													// After
+																													// refactoring,
+																													// set
+																													// arg
+																													// to
+																													// other
+																													// type
 		for (SStructuredNode model : nodes) {
 			editPartsDefiniteList.add((AbstractGraphicalEditPart) editPartRegistry.get(model));
 		}
@@ -260,7 +288,8 @@ public class PartUtils {
 				}
 			}
 			i++;
-		} while (mustRepeat);
+		}
+		while (mustRepeat);
 		if (graph.getSProcessingAnnotation("ATOMIC::IS_LAYOUTED") != null) {
 			log.warn("Graph has already been layouted.");
 			// Should never be called!
@@ -274,15 +303,23 @@ public class PartUtils {
 		Rectangle layout = figure.getBounds();
 		Rectangle bounds = hit.getBounds();
 		layout = calculateNewLayout(layout, bounds);
-		((GraphPart) editPart.getParent()).setLayoutConstraint(editPart, editPart.getFigure(), layout); // FIXME: Fixed y coord (10). Make settable in Prefs?super.refreshVisuals();
+		((GraphPart) editPart.getParent()).setLayoutConstraint(editPart, editPart.getFigure(), layout); // FIXME:
+																										// Fixed
+																										// y
+																										// coord
+																										// (10).
+																										// Make
+																										// settable
+																										// in
+																										// Prefs?super.refreshVisuals();
 		editPart.getFigure().setBounds(layout);
 		SStructuredNode model = (SStructuredNode) editPart.getModel();
 		if (model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS") != null) {
 			int versionInt = ((int[]) model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").getValue())[2];
-			model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").setValue(new int[]{layout.x, layout.y, versionInt++});
+			model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").setValue(new int[] { layout.x, layout.y, versionInt++ });
 		}
 		else {
-			model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{layout.x, layout.y, 1}, SDATATYPE.SOBJECT);
+			model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[] { layout.x, layout.y, 1 }, SDATATYPE.SOBJECT);
 		}
 	}
 
@@ -301,24 +338,33 @@ public class PartUtils {
 
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		map.put(areaTopIntersectionWithIntersection, "top");
-		map.put(areaBottomIntersectionWithIntersection, "top"); // was "bottom", but some nodes will overlap tokens if moved down
+		map.put(areaBottomIntersectionWithIntersection, "top"); // was "bottom",
+																// but some
+																// nodes will
+																// overlap
+																// tokens if
+																// moved down
 		map.put(areaLeftIntersectionWithIntersection, "left");
 		map.put(areaRightIntersectionWithIntersection, "right");
 		int[] areas = { areaTopIntersectionWithIntersection, areaBottomIntersectionWithIntersection, areaLeftIntersectionWithIntersection, areaRightIntersectionWithIntersection };
 		Arrays.sort(areas);
 		String largestIntersectionAreaRectangleName = map.get(areas[3]);
 		if (areaTopIntersectionWithIntersection == 0 && areaBottomIntersectionWithIntersection == 0 && areaLeftIntersectionWithIntersection == 0 && areaRightIntersectionWithIntersection == 0) {
-			// Intersection is completely in uncovered center section -> move right
+			// Intersection is completely in uncovered center section -> move
+			// right
 			largestIntersectionAreaRectangleName = "right";
 		}
 
 		if (largestIntersectionAreaRectangleName.equals("top")) {
-			newLayout = new Rectangle(oldLayout.x, hitBounds.y 	- oldLayout.height - margin, oldLayout.width, oldLayout.height);
-		} else if (largestIntersectionAreaRectangleName.equals("bottom")) {
+			newLayout = new Rectangle(oldLayout.x, hitBounds.y - oldLayout.height - margin, oldLayout.width, oldLayout.height);
+		}
+		else if (largestIntersectionAreaRectangleName.equals("bottom")) {
 			newLayout = new Rectangle(oldLayout.x, hitBounds.y + hitBounds.height + margin, oldLayout.width, oldLayout.height);
-		} else if (largestIntersectionAreaRectangleName.equals("left")) {
+		}
+		else if (largestIntersectionAreaRectangleName.equals("left")) {
 			newLayout = new Rectangle(hitBounds.x - oldLayout.width - margin, oldLayout.y, oldLayout.width, oldLayout.height);
-		} else { // MOVE RIGHT
+		}
+		else { // MOVE RIGHT
 			newLayout = new Rectangle(hitBounds.x + hitBounds.width + margin, oldLayout.y, oldLayout.width, oldLayout.height);
 		}
 		return newLayout;

@@ -15,7 +15,10 @@ import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.NotificationImpl;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
@@ -41,12 +44,14 @@ import org.eclipse.ui.IWorkbenchPart;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphService;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.SubGraphService;
 import de.uni_jena.iaa.linktype.atomic.core.editors.AtomicGraphicalEditor;
 import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.GraphEditorPaletteFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AdHocSentenceDetectionWizard;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
 
@@ -55,8 +60,6 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalV
  * 
  */
 public class GraphEditor extends AtomicGraphicalEditor {
-	
-	private ArrayList<Object> dynamicModelChildrenList = new ArrayList<Object>();
 
 	ISelectionListener listener = new ISelectionListener() {
 		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
@@ -71,21 +74,22 @@ public class GraphEditor extends AtomicGraphicalEditor {
 					break;
 				}
 			}
+			GraphPart graphPart = ((GraphPart) getGraphicalViewer().getRootEditPart().getContents());
 			if (selection.isEmpty()) {
 				// Clear editor
-				dynamicModelChildrenList.clear();
-				GraphPart graphPart = ((GraphPart) getGraphicalViewer().getRootEditPart().getContents());
-				graphPart.setDynamicModelChildrenList(dynamicModelChildrenList);
+				graphPart.getSortedTokens().clear();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
 			}
 			else if (containsOnlySpans) {
-				dynamicModelChildrenList.clear();
-				for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
-					SSpan span = (SSpan) iterator.next();
-					dynamicModelChildrenList.addAll(SubGraphService.getSentenceGraph(span));
+				graphPart.getSortedTokens().clear();
+				graphPart.setSortedTokens(GraphService.getOrderedTokensForSentenceSpans(selection.toList()));
+				graphPart.refresh();
+				// Refresh all TokenParts, not just the ones that have changed!
+				for (Object child : graphPart.getChildren()) {
+					if (child instanceof TokenPart) {
+						((TokenPart) child).refresh();
+					}
 				}
-				((GraphPart) getGraphicalViewer().getRootEditPart().getContents()).setDynamicModelChildrenList(dynamicModelChildrenList);
-				getGraphicalViewer().getRootEditPart().getContents().refresh();
 			}
 		}
 	};
@@ -97,7 +101,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 		setEditDomain(new DefaultEditDomain(this));
 		getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
 	}
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
@@ -135,10 +139,10 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
 		// Clear editor initially
-		dynamicModelChildrenList.clear();
-		((GraphPart) getGraphicalViewer().getRootEditPart().getContents()).setDynamicModelChildrenList(dynamicModelChildrenList);
-		getGraphicalViewer().getRootEditPart().getContents().refresh();
-		
+//		dynamicModelChildrenList.clear();
+//		((GraphPart) getGraphicalViewer().getRootEditPart().getContents()).setDynamicModelChildrenList(dynamicModelChildrenList);
+//		getGraphicalViewer().getRootEditPart().getContents().refresh();
+
 		SLayer sentenceLayer = getGraph().getSLayer(ModelRegistry.SENTENCE_LAYER_SID);
 		if (sentenceLayer == null || sentenceLayer.getNodes().isEmpty()) {
 			WizardDialog adHocSentenceDetectionsWizard = new WizardDialog(Display.getCurrent().getActiveShell(), new AdHocSentenceDetectionWizard(getGraph()));
@@ -197,11 +201,11 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public DefaultEditDomain getDomain() {
 		return getEditDomain();
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
-        getSite().getPage().removeSelectionListener(listener);
-     }
+		getSite().getPage().removeSelectionListener(listener);
+	}
 
 }

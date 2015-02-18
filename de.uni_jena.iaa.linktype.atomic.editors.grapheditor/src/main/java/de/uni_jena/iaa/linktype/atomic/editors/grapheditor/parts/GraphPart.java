@@ -16,6 +16,8 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.gef.EditPolicy;
@@ -31,6 +33,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
 /**
@@ -44,6 +47,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	public Object removingObject;
 	private HashBiMap<String, EObject> visualIDMap = HashBiMap.create();
 	private List<Object> dynamicModelChildrenList;
+	private EList<SToken> sortedTokens = new BasicEList<SToken>();
 
 	public GraphPart(SDocumentGraph model) {
 		setModel(model);
@@ -94,7 +98,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 
 	@Override
 	protected List<Object> getModelChildren() {
-		// List<SNode> modelChildren = new ArrayList<SNode>();
+//		 List<SNode> modelChildren = new ArrayList<SNode>();
 		// for (SToken token : getModel().getSTokens()) {
 		// if (token.getSDocumentGraph() == getModel()) {
 		// modelChildren.add(token);
@@ -121,8 +125,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		// }
 		// addRelationIDsToVisualIDMap();
 		// return modelChildren;
-		if (getDynamicModelChildrenList() != null) {
-			return getDynamicModelChildrenList();
+		if (getSortedTokens() != null) {
+			return Arrays.asList(getSortedTokens().toArray());
 		}
 		else {
 			return Arrays.asList(getModel().getSTokens().toArray());
@@ -189,6 +193,9 @@ public class GraphPart extends AbstractGraphicalEditPart {
 				refreshChildren();
 				break;
 			case Notification.ADD:
+				refreshChildren();
+				break;
+			case Notification.SET:
 				refreshChildren();
 				break;
 
@@ -268,6 +275,20 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 */
 	public void setDynamicModelChildrenList(ArrayList<Object> dynamicModelChildrenList) {
 		this.dynamicModelChildrenList = dynamicModelChildrenList;
+	}
+
+	/**
+	 * @param tokens
+	 */
+	public void setSortedTokens(EList<SToken> tokens) {
+		this.sortedTokens = tokens;
+	}
+
+	/**
+	 * @return the sortedTokens
+	 */
+	public EList<SToken> getSortedTokens() {
+		return sortedTokens;
 	}
 
 }

@@ -29,9 +29,7 @@ public class SubGraphService {
 	 * @param span
 	 * @return
 	 */
-	public static List<Node> getSentenceGraph(SSpan span) {
-		EList<SToken> tokens = retrieveOverlappedTokensFromSpan(span);
-		System.err.println(tokens);
+	public static List<Node> getSentenceGraph(SSpan span, EList<SToken> tokens) {
 		ArrayList<Node> subGraph = new ArrayList<Node>();
 		subGraph.addAll(tokens);
 		SentenceGraphTraverser traverser = new SentenceGraphTraverser();
@@ -40,12 +38,6 @@ public class SubGraphService {
 		span.getSDocumentGraph().traverse(tokens, GRAPH_TRAVERSE_TYPE.BOTTOM_UP_BREADTH_FIRST, "subtree", traverser, false);
 //		subGraph.addAll(traverser.getIncludedNodes());
 		return subGraph;
-	}
-
-	private static EList<SToken> retrieveOverlappedTokensFromSpan(SSpan span) {
-		EList<SToken> overlappedTokens = span.getSDocumentGraph().getOverlappedSTokens(span, new BasicEList<STYPE_NAME>(Arrays.asList(STYPE_NAME.SSPANNING_RELATION)));
-		EList<SToken> sortedTokens = span.getSDocumentGraph().getSortedSTokenByText(overlappedTokens);
-		return sortedTokens;
 	}
 
 }
