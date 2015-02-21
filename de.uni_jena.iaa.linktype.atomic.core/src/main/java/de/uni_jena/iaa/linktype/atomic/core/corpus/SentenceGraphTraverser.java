@@ -27,6 +27,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	
 	private ArrayList<Node> nodeList = new ArrayList<Node>();
+	private HashSet<Node> nodeSet = new HashSet<Node>(); 
 	private HashSet<SToken> tokenSet;
 	private SDocumentGraph graph;
 
@@ -36,6 +37,7 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	@Override
 	public void nodeReached(GRAPH_TRAVERSE_TYPE traversalType, String traversalId, SNode currNode, SRelation sRelation, SNode fromNode, long order) {
 		nodeList.add(currNode);
+		nodeSet.add(currNode);
 	}
 
 	/* (non-Javadoc)
@@ -93,6 +95,20 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	 */
 	public HashSet<SToken> getTokenSet() {
 		return tokenSet;
+	}
+
+	/**
+	 * @return the nodeList
+	 */
+	public ArrayList<Node> getNodeList() {
+		return nodeList;
+	}
+
+	/**
+	 * @return the nodeSet
+	 */
+	public HashSet<Node> getNodeSet() {
+		return nodeSet;
 	}
 
 }

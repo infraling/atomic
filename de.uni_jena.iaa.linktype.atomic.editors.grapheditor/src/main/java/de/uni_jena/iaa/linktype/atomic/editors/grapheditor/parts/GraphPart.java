@@ -26,6 +26,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import com.google.common.collect.HashBiMap;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
@@ -130,6 +131,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			modelChildren.addAll(getSortedTokens());
 //			modelChildren.addAll(getDynamicModelChildrenList());
 			if (!getSortedTokens().isEmpty()) {
+				List<Node> others = SubGraphService.getSentenceGraph(getSortedTokens());
+				System.err.println("OTHERS: " + others);
 				modelChildren.addAll(SubGraphService.getSentenceGraph(getSortedTokens()));
 			}
 			return modelChildren;

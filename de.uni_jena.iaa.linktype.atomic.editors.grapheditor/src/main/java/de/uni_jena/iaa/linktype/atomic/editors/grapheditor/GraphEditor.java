@@ -89,7 +89,12 @@ public class GraphEditor extends AtomicGraphicalEditor {
 					if (child instanceof TokenPart) {
 						((TokenPart) child).refresh();
 					}
+					if (child instanceof EditPart) {
+						((EditPart) child).refresh();
+					}
 				}
+//				graphPart.refresh();
+//				graphPart.getModel().eNotify(new NotificationImpl(Notification.SET, false, true));
 			}
 		}
 	};

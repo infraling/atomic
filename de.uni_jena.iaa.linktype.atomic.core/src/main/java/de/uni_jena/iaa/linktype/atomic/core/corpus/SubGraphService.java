@@ -37,7 +37,8 @@ public class SubGraphService {
 		traverser.setTokenSet(new HashSet<SToken>(tokens));
 		traverser.setGraph(graph);
 		graph.traverse(tokens, GRAPH_TRAVERSE_TYPE.BOTTOM_UP_BREADTH_FIRST, "subtree", traverser, false);
-//		subGraph.addAll(traverser.getIncludedNodes());
+//		subGraph.addAll(traverser.getNodeList());
+		subGraph.addAll(traverser.getNodeSet());
 		return subGraph;
 	}
 
