@@ -33,5 +33,14 @@
          </command>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.file.closePart"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+W">
+      </key>
+   </extension>
 
 </plugin>
