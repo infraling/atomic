@@ -34,6 +34,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.SubGraphService;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
 /**
@@ -46,7 +47,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	private Map<SToken, String> tokenTextRegistry;
 	public Object removingObject;
 	private HashBiMap<String, EObject> visualIDMap = HashBiMap.create();
-	private List<Object> dynamicModelChildrenList;
+	private List<Object> dynamicModelChildrenList = new ArrayList<Object>();
 	private EList<SToken> sortedTokens = new BasicEList<SToken>();
 
 	public GraphPart(SDocumentGraph model) {
@@ -98,7 +99,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 
 	@Override
 	protected List<Object> getModelChildren() {
-//		 List<SNode> modelChildren = new ArrayList<SNode>();
+		 List<Object> modelChildren = new ArrayList<Object>();
 		// for (SToken token : getModel().getSTokens()) {
 		// if (token.getSDocumentGraph() == getModel()) {
 		// modelChildren.add(token);
@@ -126,11 +127,18 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		// addRelationIDsToVisualIDMap();
 		// return modelChildren;
 		if (getSortedTokens() != null) {
-			return Arrays.asList(getSortedTokens().toArray());
+			modelChildren.addAll(getSortedTokens());
+//			modelChildren.addAll(getDynamicModelChildrenList());
+			if (!getSortedTokens().isEmpty()) {
+				modelChildren.addAll(SubGraphService.getSentenceGraph(getSortedTokens()));
+			}
+			return modelChildren;
+//			return Arrays.asList(getSortedTokens().toArray());
 		}
-		else {
-			return Arrays.asList(getModel().getSTokens().toArray());
-		}
+		return null;
+//		else {
+//			return Arrays.asList(getModel().getSTokens().toArray());
+//		}
 	}
 
 	private void addRelationIDsToVisualIDMap() {
