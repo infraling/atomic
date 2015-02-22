@@ -27,8 +27,10 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SIdentifiableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.IDLabel;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.RelationFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart.AnnotationFigure;
@@ -63,7 +65,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		String visualID = ((GraphPart) getRoot().getContents()).getVisualIDMap().inverse().get(getModel());
+		String visualID = GraphElementRegistry.returnIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph());
 		switch (type) {
 		case DOMINANCE:
 			return new RelationFigure(visualID, RelationFigure.DOMINANCERELATION_MODEL);
@@ -86,7 +88,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 		RelationFigure figure = (RelationFigure) getFigure();
 		
 		if (((SRelation) getModel()).getLabel("saltCore", "STYPE") != null) {
-			figure.getLabel().setText(((GraphPart) getRoot().getContents()).getVisualIDMap().inverse().get(getModel()) + ":" + ((SRelation) getModel()).getLabel("saltCore", "STYPE").getValueString());
+			figure.getLabel().setText(GraphElementRegistry.returnIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph()) + ":" + ((SRelation) getModel()).getLabel("saltCore", "STYPE").getValueString());
 		}
 
 		// Reorder figure.getChildren() to avoid IndexOutOfBoundsException
@@ -149,6 +151,10 @@ public class RelationPart extends AbstractConnectionEditPart {
 		SAnnotatableElement model = (SAnnotatableElement) getModel();
 		childrenList.addAll(model.getSAnnotations());
 		return childrenList;
+	}
+	
+	private SDocumentGraph getSDocumentGraph() {
+		return (SDocumentGraph) ((SRelation) getModel()).getSGraph();
 	}
 	
 	/**

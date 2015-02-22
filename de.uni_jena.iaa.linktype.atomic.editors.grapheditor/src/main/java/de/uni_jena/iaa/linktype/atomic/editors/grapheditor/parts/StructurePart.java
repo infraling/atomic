@@ -29,6 +29,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.NodeComponentEditPolicy;
@@ -55,7 +56,7 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new NodeFigure(((GraphPart) getParent()).getVisualIDMap().inverse().get(getModel()), NodeFigure.STRUCTURE_MODEL);
+		return new NodeFigure(GraphElementRegistry.returnIDForElement(getModel(), getModel().getSDocumentGraph()), NodeFigure.STRUCTURE_MODEL);
 	}
 
 	@Override

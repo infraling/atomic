@@ -32,6 +32,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SIdentifiableElement;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.SubGraphService;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
@@ -44,7 +46,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	private GraphAdapter adapter;
 	private Map<SToken, String> tokenTextRegistry;
 	public Object removingObject;
-	private HashBiMap<String, EObject> visualIDMap = HashBiMap.create();
+//	private HashBiMap<String, EObject> visualIDMap = HashBiMap.create();
 	private List<Object> dynamicModelChildrenList = new ArrayList<Object>();
 	private EList<SToken> sortedTokens = new BasicEList<SToken>();
 
@@ -103,38 +105,42 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			if (!getSortedTokens().isEmpty()) {
 				modelChildren.addAll(SubGraphService.getSentenceGraph(getSortedTokens()));
 			}
+			for (Object object : modelChildren) {
+				System.err.println(GraphElementRegistry.returnIDForElement((SIdentifiableElement) object, getSortedTokens().get(0).getSDocumentGraph()));
+			}
+			// FIXME: get visual ids in parts, from ModelRegistry
 			return modelChildren;
 		}
 		return null;
 	}
 
-	private void addRelationIDsToVisualIDMap() {
-		for (SDominanceRelation dominanceRel : getModel().getSDominanceRelations()) {
-			if (dominanceRel.getSDocumentGraph() == getModel()) {
-				if (!getVisualIDMap().containsValue(dominanceRel))
-					getVisualIDMap().put("D" + (getModel().getSDominanceRelations().indexOf(dominanceRel) + 1), dominanceRel);
-			}
-		}
-		for (SSpanningRelation spanningRel : getModel().getSSpanningRelations()) {
-			if (spanningRel.getSDocumentGraph() == getModel()) {
-				if (!getVisualIDMap().containsValue(spanningRel))
-					getVisualIDMap().put("R" + (getModel().getSSpanningRelations().indexOf(spanningRel) + 1), spanningRel);
-			}
-		}
-		for (SOrderRelation orderRel : getModel().getSOrderRelations()) {
-			if (orderRel.getSDocumentGraph() == getModel()) {
-				if (!getVisualIDMap().containsValue(orderRel))
-					getVisualIDMap().put("O" + (getModel().getSOrderRelations().indexOf(orderRel) + 1), orderRel);
-			}
-		}
-		for (SPointingRelation pointingRel : getModel().getSPointingRelations()) {
-			if (pointingRel.getSDocumentGraph() == getModel()) {
-				if (!getVisualIDMap().containsValue(pointingRel))
-					getVisualIDMap().put("P" + (getModel().getSPointingRelations().indexOf(pointingRel) + 1), pointingRel);
-			}
-		}
-
-	}
+//	private void addRelationIDsToVisualIDMap() {
+//		for (SDominanceRelation dominanceRel : getModel().getSDominanceRelations()) {
+//			if (dominanceRel.getSDocumentGraph() == getModel()) {
+//				if (!getVisualIDMap().containsValue(dominanceRel))
+//					getVisualIDMap().put("D" + (getModel().getSDominanceRelations().indexOf(dominanceRel) + 1), dominanceRel);
+//			}
+//		}
+//		for (SSpanningRelation spanningRel : getModel().getSSpanningRelations()) {
+//			if (spanningRel.getSDocumentGraph() == getModel()) {
+//				if (!getVisualIDMap().containsValue(spanningRel))
+//					getVisualIDMap().put("R" + (getModel().getSSpanningRelations().indexOf(spanningRel) + 1), spanningRel);
+//			}
+//		}
+//		for (SOrderRelation orderRel : getModel().getSOrderRelations()) {
+//			if (orderRel.getSDocumentGraph() == getModel()) {
+//				if (!getVisualIDMap().containsValue(orderRel))
+//					getVisualIDMap().put("O" + (getModel().getSOrderRelations().indexOf(orderRel) + 1), orderRel);
+//			}
+//		}
+//		for (SPointingRelation pointingRel : getModel().getSPointingRelations()) {
+//			if (pointingRel.getSDocumentGraph() == getModel()) {
+//				if (!getVisualIDMap().containsValue(pointingRel))
+//					getVisualIDMap().put("P" + (getModel().getSPointingRelations().indexOf(pointingRel) + 1), pointingRel);
+//			}
+//		}
+//
+//	}
 
 	public SDocumentGraph getModel() {
 		return (SDocumentGraph) super.getModel();
@@ -222,20 +228,20 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		this.tokenTextRegistry = tokenTextRegistry;
 	}
 
-	/**
-	 * @return the visualIDMap
-	 */
-	public HashBiMap<String, EObject> getVisualIDMap() {
-		return visualIDMap;
-	}
-
-	/**
-	 * @param visualIDMap
-	 *            the visualIDMap to set
-	 */
-	public void setVisualIDMap(HashBiMap<String, EObject> visualIDMap) {
-		this.visualIDMap = visualIDMap;
-	}
+//	/**
+//	 * @return the visualIDMap
+//	 */
+//	public HashBiMap<String, EObject> getVisualIDMap() {
+//		return visualIDMap;
+//	}
+//
+//	/**
+//	 * @param visualIDMap
+//	 *            the visualIDMap to set
+//	 */
+//	public void setVisualIDMap(HashBiMap<String, EObject> visualIDMap) {
+//		this.visualIDMap = visualIDMap;
+//	}
 
 	/**
 	 * @return the dynamicModelChildrenList
