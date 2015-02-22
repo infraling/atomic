@@ -51,6 +51,8 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.GraphEditorPaletteFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AdHocSentenceDetectionWizard;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
@@ -84,13 +86,17 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				graphPart.getSortedTokens().clear();
 				graphPart.setSortedTokens(GraphService.getOrderedTokensForSentenceSpans(selection.toList()));
 				graphPart.refresh();
+				
 				// Refresh all TokenParts, not just the ones that have changed!
 				for (Object child : graphPart.getChildren()) {
 					if (child instanceof TokenPart) {
 						((TokenPart) child).refresh();
 					}
-					if (child instanceof EditPart) {
-						((EditPart) child).refresh();
+					if (child instanceof StructurePart) {
+						((StructurePart) child).refresh();
+					}
+					if (child instanceof SpanPart) {
+						((SpanPart) child).refresh();
 					}
 				}
 //				graphPart.refresh();

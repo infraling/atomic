@@ -22,26 +22,47 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 /**
  * @author Stephan Druskat
- *
+ * 
  */
 public class SentenceGraphTraverser implements SGraphTraverseHandler {
-	
+
 	private ArrayList<Node> nodeList = new ArrayList<Node>();
-	private HashSet<Node> nodeSet = new HashSet<Node>(); 
+	private HashSet<Node> nodeSet = new HashSet<Node>();
 	private HashSet<SToken> tokenSet;
 	private SDocumentGraph graph;
 
-	/* (non-Javadoc)
-	 * @see de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler#nodeReached(de.hu_berlin.german.korpling.saltnpepper.salt.graph.GRAPH_TRAVERSE_TYPE, java.lang.String, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler
+	 * #nodeReached(de.hu_berlin.german.korpling.saltnpepper.salt.graph.
+	 * GRAPH_TRAVERSE_TYPE, java.lang.String,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, long)
 	 */
 	@Override
 	public void nodeReached(GRAPH_TRAVERSE_TYPE traversalType, String traversalId, SNode currNode, SRelation sRelation, SNode fromNode, long order) {
-		nodeList.add(currNode);
-		nodeSet.add(currNode);
+		// nodeList.add(currNode);
+		if (currNode instanceof SToken) {
+			System.err.println("Skipping SToken ...");
+		}
+		else {
+			nodeSet.add(currNode);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler#nodeLeft(de.hu_berlin.german.korpling.saltnpepper.salt.graph.GRAPH_TRAVERSE_TYPE, java.lang.String, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler
+	 * #nodeLeft(de.hu_berlin.german.korpling.saltnpepper.salt.graph.
+	 * GRAPH_TRAVERSE_TYPE, java.lang.String,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, long)
 	 */
 	@Override
 	public void nodeLeft(GRAPH_TRAVERSE_TYPE traversalType, String traversalId, SNode currNode, SRelation edge, SNode fromNode, long order) {
@@ -49,8 +70,15 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler#checkConstraint(de.hu_berlin.german.korpling.saltnpepper.salt.graph.GRAPH_TRAVERSE_TYPE, java.lang.String, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation, de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler
+	 * #checkConstraint(de.hu_berlin.german.korpling.saltnpepper.salt.graph.
+	 * GRAPH_TRAVERSE_TYPE, java.lang.String,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation,
+	 * de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode, long)
 	 */
 	@Override
 	public boolean checkConstraint(GRAPH_TRAVERSE_TYPE traversalType, String traversalId, SRelation edge, SNode currNode, long order) {

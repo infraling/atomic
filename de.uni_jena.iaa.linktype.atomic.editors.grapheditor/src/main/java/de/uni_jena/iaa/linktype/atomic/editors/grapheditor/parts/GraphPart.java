@@ -131,8 +131,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			modelChildren.addAll(getSortedTokens());
 //			modelChildren.addAll(getDynamicModelChildrenList());
 			if (!getSortedTokens().isEmpty()) {
-				List<Node> others = SubGraphService.getSentenceGraph(getSortedTokens());
-				System.err.println("OTHERS: " + others);
+//				List<Node> others = SubGraphService.getSentenceGraph(getSortedTokens());
+//				System.err.println("OTHERS: " + others);
 				modelChildren.addAll(SubGraphService.getSentenceGraph(getSortedTokens()));
 			}
 			return modelChildren;
