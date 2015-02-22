@@ -3,7 +3,6 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.corpus;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -26,7 +25,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
  */
 public class SentenceGraphTraverser implements SGraphTraverseHandler {
 
-	private ArrayList<Node> nodeList = new ArrayList<Node>();
 	private HashSet<Node> nodeSet = new HashSet<Node>();
 	private HashSet<SToken> tokenSet;
 	private SDocumentGraph graph;
@@ -44,9 +42,8 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	 */
 	@Override
 	public void nodeReached(GRAPH_TRAVERSE_TYPE traversalType, String traversalId, SNode currNode, SRelation sRelation, SNode fromNode, long order) {
-		// nodeList.add(currNode);
 		if (currNode instanceof SToken) {
-			System.err.println("Skipping SToken ...");
+			// Skip STokens as we already have a **sorted** list of tokens!
 		}
 		else {
 			nodeSet.add(currNode);
@@ -123,13 +120,6 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	 */
 	public HashSet<SToken> getTokenSet() {
 		return tokenSet;
-	}
-
-	/**
-	 * @return the nodeList
-	 */
-	public ArrayList<Node> getNodeList() {
-		return nodeList;
 	}
 
 	/**

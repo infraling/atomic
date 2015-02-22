@@ -4,7 +4,6 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import com.google.common.collect.HashBiMap;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
@@ -34,7 +32,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.SubGraphService;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
@@ -101,47 +98,14 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	@Override
 	protected List<Object> getModelChildren() {
 		 List<Object> modelChildren = new ArrayList<Object>();
-		// for (SToken token : getModel().getSTokens()) {
-		// if (token.getSDocumentGraph() == getModel()) {
-		// modelChildren.add(token);
-		// if (!getVisualIDMap().containsValue(token))
-		// getVisualIDMap().put("T" + (getModel().getSTokens().indexOf(token) +
-		// 1), token);
-		// }
-		// }
-		// for (SStructure structure : getModel().getSStructures()) {
-		// if (structure.getSDocumentGraph() == getModel()) {
-		// modelChildren.add(structure);
-		// if (!getVisualIDMap().containsValue(structure))
-		// getVisualIDMap().put("N" +
-		// (getModel().getSStructures().indexOf(structure) + 1), structure);
-		// }
-		// }
-		// for (SSpan span : getModel().getSSpans()) {
-		// if (span.getSDocumentGraph() == getModel()) {
-		// modelChildren.add(span);
-		// if (!getVisualIDMap().containsValue(span))
-		// getVisualIDMap().put("S" + (getModel().getSSpans().indexOf(span) +
-		// 1), span);
-		// }
-		// }
-		// addRelationIDsToVisualIDMap();
-		// return modelChildren;
 		if (getSortedTokens() != null) {
 			modelChildren.addAll(getSortedTokens());
-//			modelChildren.addAll(getDynamicModelChildrenList());
 			if (!getSortedTokens().isEmpty()) {
-//				List<Node> others = SubGraphService.getSentenceGraph(getSortedTokens());
-//				System.err.println("OTHERS: " + others);
 				modelChildren.addAll(SubGraphService.getSentenceGraph(getSortedTokens()));
 			}
 			return modelChildren;
-//			return Arrays.asList(getSortedTokens().toArray());
 		}
 		return null;
-//		else {
-//			return Arrays.asList(getModel().getSTokens().toArray());
-//		}
 	}
 
 	private void addRelationIDsToVisualIDMap() {
