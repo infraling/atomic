@@ -34,7 +34,7 @@ public class GraphElementRegistry {
 	private static HashMap<SDocumentGraph, HashBiMap<String, EObject>> graphIDMap = new HashMap<SDocumentGraph, HashBiMap<String,EObject>>();
 	private static HashMap<SDocumentGraph, ArrayList<String>> typeOccurrenceMap = new HashMap<SDocumentGraph, ArrayList<String>>();
 
-	public static String returnIDForElement(SIdentifiableElement element, SDocumentGraph graph) {
+	public static String getIDForElement(SIdentifiableElement element, SDocumentGraph graph) {
 		ArrayList<String> typeOccurrences = null;
 		HashBiMap<String, EObject> idMap = null;
 		if (graphIDMap.get(graph) == null) {
@@ -58,4 +58,13 @@ public class GraphElementRegistry {
 		}
 	}
 
+	public static EObject getElementForID(String id, SDocumentGraph graph) {
+		if (graphIDMap.get(graph) != null) {
+			HashBiMap<String, EObject> idMap = graphIDMap.get(graph);
+			return idMap.get(id.toUpperCase());
+		}
+		return null;
+	}
+
+	
 }

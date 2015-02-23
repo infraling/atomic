@@ -40,13 +40,13 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 import de.uni_jena.iaa.linktype.atomic.atomical.parser.AtomicalAnnotationGraphParser;
 import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.AnnotationDeleteCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.ElementAnnotateCommand;
@@ -237,96 +237,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				ArrayList<String> elementIDs = (ArrayList<String>) atomicALParameters.get("elements");
 				ArrayList<SAnnotatableElement> elementsToAnnotate = new ArrayList<SAnnotatableElement>();
 				for (int i = 0; i < elementIDs.size(); i++) {
-					String iD = elementIDs.get(i).substring(1);
-					// Get respective EObject from elementID
-					switch (elementIDs.get(i).charAt(0)) {
-					case 'N':
-					case 'n': // SStructure
-						SStructure structure = getGraph().getSStructures().get(Integer.parseInt(iD) - 1); // -1
-																											// because
-																											// the
-																											// label
-																											// shows
-																											// id
-																											// index+1
-						elementsToAnnotate.add(structure);
-						break;
-
-					case 'T':
-					case 't': // SToken
-						SToken token = getGraph().getSTokens().get(Integer.parseInt(iD) - 1); // -1
-																								// because
-																								// the
-																								// label
-																								// shows
-																								// id
-																								// index+1
-						elementsToAnnotate.add(token);
-						break;
-
-					case 'S':
-					case 's': // SSpan
-						SSpan span = getGraph().getSSpans().get(Integer.parseInt(iD) - 1); // -1
-																							// because
-																							// the
-																							// label
-																							// shows
-																							// id
-																							// index+1
-						elementsToAnnotate.add(span);
-						break;
-
-					case 'P':
-					case 'p': // SPointingRelation
-						SPointingRelation pointingRelation = getGraph().getSPointingRelations().get(Integer.parseInt(iD) - 1); // -1
-																																// because
-																																// the
-																																// label
-																																// shows
-																																// id
-																																// index+1
-						elementsToAnnotate.add(pointingRelation);
-						break;
-
-					case 'D':
-					case 'd': // SDominanceRelation
-						SDominanceRelation dominanceRelation = getGraph().getSDominanceRelations().get(Integer.parseInt(iD) - 1); // -1
-																																	// because
-																																	// the
-																																	// label
-																																	// shows
-																																	// id
-																																	// index+1
-						elementsToAnnotate.add(dominanceRelation);
-						break;
-
-					case 'R':
-					case 'r': // SSpanningRelation
-						SSpanningRelation spanningRelation = getGraph().getSSpanningRelations().get(Integer.parseInt(iD) - 1); // -1
-																																// because
-																																// the
-																																// label
-																																// shows
-																																// id
-																																// index+1
-						elementsToAnnotate.add(spanningRelation);
-						break;
-
-					case 'O':
-					case 'o': // SOrderRelation
-						SOrderRelation orderRelation = getGraph().getSOrderRelations().get(Integer.parseInt(iD) - 1); // -1
-																														// because
-																														// the
-																														// label
-																														// shows
-																														// id
-																														// index+1
-						elementsToAnnotate.add(orderRelation);
-						break;
-
-					default:
-						break;
-					}
+					String id = elementIDs.get(i);
+					elementsToAnnotate.add((SAnnotatableElement) GraphElementRegistry.getElementForID(id, getGraph()));
 				}
 				for (final SAnnotatableElement element : elementsToAnnotate) {
 					Display.getDefault().asyncExec(new Runnable() {
@@ -384,7 +296,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				switch (elementIDs.get(i).charAt(0)) {
 				case 'n':
 				case 'N': // SStructure
-					SStructure structure = (SStructure) getGraphPart().getVisualIDMap().get("N" + iD);
+					SStructure structure = (SStructure) GraphElementRegistry.getElementForID("N" + iD, getGraph());
 					final NodeDeleteCommand nodeDeleteCommand = new NodeDeleteCommand();
 					nodeDeleteCommand.setModel(structure);
 					nodeDeleteCommand.setGraph(structure.getSGraph());
@@ -398,7 +310,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					break;
 				case 's':
 				case 'S': // SSpan
-					SSpan span = (SSpan) getGraphPart().getVisualIDMap().get("S" + iD);
+					SSpan span = (SSpan) GraphElementRegistry.getElementForID("S" + iD, getGraph());
 					final NodeDeleteCommand spanDeleteCommand = new NodeDeleteCommand();
 					spanDeleteCommand.setModel(span);
 					spanDeleteCommand.setGraph(span.getSGraph());
@@ -416,7 +328,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					break;
 				case 'p':
 				case 'P': // SPointingRelation
-					SPointingRelation pointingRelation = (SPointingRelation) getGraphPart().getVisualIDMap().get("P" + iD);
+					SPointingRelation pointingRelation = (SPointingRelation) GraphElementRegistry.getElementForID("P" + iD, getGraph());
 					final RelationDeleteCommand pointingRelDeleteCommand = new RelationDeleteCommand();
 					pointingRelDeleteCommand.setRelation(pointingRelation);
 					Display.getDefault().syncExec(new Runnable() {
@@ -428,7 +340,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					break;
 				case 'd':
 				case 'D': // SDominanceRelation
-					SDominanceRelation dominanceRelation = (SDominanceRelation) getGraphPart().getVisualIDMap().get("D" + iD);
+					SDominanceRelation dominanceRelation = (SDominanceRelation) GraphElementRegistry.getElementForID("D" + iD, getGraph());
 					final RelationDeleteCommand dominanceRelDeleteCommand = new RelationDeleteCommand();
 					dominanceRelDeleteCommand.setRelation(dominanceRelation);
 					Display.getDefault().syncExec(new Runnable() {
@@ -440,7 +352,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					break;
 				case 'o':
 				case 'O': // SDominanceRelation
-					SOrderRelation orderRelation = (SOrderRelation) getGraphPart().getVisualIDMap().get("O" + iD);
+					SOrderRelation orderRelation = (SOrderRelation) GraphElementRegistry.getElementForID("O" + iD, getGraph());
 					final RelationDeleteCommand orderRelDeleteCommand = new RelationDeleteCommand();
 					orderRelDeleteCommand.setRelation(orderRelation);
 					Display.getDefault().syncExec(new Runnable() {
@@ -452,7 +364,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					break;
 				case 'r':
 				case 'R': // SSpanningRelation
-					SSpanningRelation spanningRelation = (SSpanningRelation) getGraphPart().getVisualIDMap().get("R" + iD);
+					SSpanningRelation spanningRelation = (SSpanningRelation) GraphElementRegistry.getElementForID("R" + iD, getGraph());
 					final RelationDeleteCommand spanningRelDeleteCommand = new RelationDeleteCommand();
 					spanningRelDeleteCommand.setRelation(spanningRelation);
 					Display.getDefault().syncExec(new Runnable() {
@@ -492,54 +404,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			ArrayList<String> childElementIDs = (ArrayList<String>) atomicALParameters.get("elements");
 			ArrayList<SNode> children = new ArrayList<SNode>();
 			for (int i = 0; i < childElementIDs.size(); i++) {
-				String iD = childElementIDs.get(i).substring(1);
-				switch (childElementIDs.get(i).charAt(0)) {
-				case 'N':
-				case 'n': // SStructure
-					if (commandChar == 's') { // SSpans can not be parents of
-												// SStructures
-						break;
-					}
-					SStructure structure = getGraph().getSStructures().get(Integer.parseInt(iD) - 1); // -1
-																										// because
-																										// the
-																										// label
-																										// shows
-																										// id
-																										// index+1
-					children.add(structure);
-					break;
-
-				case 'T':
-				case 't': // SToken
-					SToken token = getGraph().getSTokens().get(Integer.parseInt(iD) - 1); // -1
-																							// because
-																							// the
-																							// label
-																							// shows
-																							// id
-																							// index+1
-					children.add(token);
-					break;
-
-				case 'S':
-				case 's': // SSpan
-					if (commandChar == 's') { // SSpans cannot be parents of
-												// SSpans
-						break;
-					}
-					SSpan span = getGraph().getSSpans().get(Integer.parseInt(iD) - 1); // -1
-																						// because
-																						// the
-																						// label
-																						// shows
-																						// id
-																						// index+1
-					children.add(span);
-					break;
-				default:
-					break;
-				}
+				String id = childElementIDs.get(i);
+				children.add((SNode) GraphElementRegistry.getElementForID(id, getGraph()));
 			}
 			Map registry = getGraphPart().getViewer().getEditPartRegistry();
 			List<EditPart> childrenEPs = new ArrayList<EditPart>();
@@ -571,7 +437,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 																							// Add
 																							// check
 			key = key.toUpperCase();
-			target = (SNode) getGraphPart().getVisualIDMap().get(key);
+			target = (SNode) GraphElementRegistry.getElementForID(key, getGraph());
 			return target;
 		}
 		return target;
@@ -582,7 +448,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		if (atomicALParameters.get("all_nodes") != null) {
 			String key = ((ArrayList<String>) atomicALParameters.get("all_nodes")).get(0);
 			key = key.toUpperCase();
-			source = (SNode) getGraphPart().getVisualIDMap().get(key);
+			source = (SNode) GraphElementRegistry.getElementForID(key, getGraph());
 		}
 		return source;
 	}
