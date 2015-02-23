@@ -54,7 +54,7 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new NodeFigure(GraphElementRegistry.returnIDForElement(getModel(), getModel().getSDocumentGraph()), NodeFigure.TOKEN_MODEL);
+		return new NodeFigure(GraphElementRegistry.getIDForElement(getModel(), getModel().getSDocumentGraph()), NodeFigure.TOKEN_MODEL);
 	}
 	
 	@Override

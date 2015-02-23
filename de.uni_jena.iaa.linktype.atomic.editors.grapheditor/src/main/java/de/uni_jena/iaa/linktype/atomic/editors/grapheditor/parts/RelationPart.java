@@ -65,7 +65,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		String visualID = GraphElementRegistry.returnIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph());
+		String visualID = GraphElementRegistry.getIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph());
 		switch (type) {
 		case DOMINANCE:
 			return new RelationFigure(visualID, RelationFigure.DOMINANCERELATION_MODEL);
@@ -88,7 +88,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 		RelationFigure figure = (RelationFigure) getFigure();
 		
 		if (((SRelation) getModel()).getLabel("saltCore", "STYPE") != null) {
-			figure.getLabel().setText(GraphElementRegistry.returnIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph()) + ":" + ((SRelation) getModel()).getLabel("saltCore", "STYPE").getValueString());
+			figure.getLabel().setText(GraphElementRegistry.getIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph()) + ":" + ((SRelation) getModel()).getLabel("saltCore", "STYPE").getValueString());
 		}
 
 		// Reorder figure.getChildren() to avoid IndexOutOfBoundsException
