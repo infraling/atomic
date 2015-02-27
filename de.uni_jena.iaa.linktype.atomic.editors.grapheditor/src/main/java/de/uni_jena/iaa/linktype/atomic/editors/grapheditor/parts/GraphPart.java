@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +98,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			return modelChildren;
 		}
 		return null;
+	}
 
 	public SDocumentGraph getModel() {
 		return (SDocumentGraph) super.getModel();
@@ -185,20 +186,20 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		this.tokenTextRegistry = tokenTextRegistry;
 	}
 
-//	/**
-//	 * @return the visualIDMap
-//	 */
-//	public HashBiMap<String, EObject> getVisualIDMap() {
-//		return visualIDMap;
-//	}
-//
-//	/**
-//	 * @param visualIDMap
-//	 *            the visualIDMap to set
-//	 */
-//	public void setVisualIDMap(HashBiMap<String, EObject> visualIDMap) {
-//		this.visualIDMap = visualIDMap;
-//	}
+	// /**
+	// * @return the visualIDMap
+	// */
+	// public HashBiMap<String, EObject> getVisualIDMap() {
+	// return visualIDMap;
+	// }
+	//
+	// /**
+	// * @param visualIDMap
+	// * the visualIDMap to set
+	// */
+	// public void setVisualIDMap(HashBiMap<String, EObject> visualIDMap) {
+	// this.visualIDMap = visualIDMap;
+	// }
 
 	/**
 	 * @return the dynamicModelChildrenList
