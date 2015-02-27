@@ -7,7 +7,11 @@ import java.util.Arrays;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
@@ -20,7 +24,16 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
  * @author Stephan Druskat
  *
  */
-public class SentenceLabelProvider extends LabelProvider {
+public class SentenceLabelProvider extends LabelProvider implements ITableColorProvider {
+	
+	private SentenceView sentenceView;
+
+	/**
+	 * @param sentenceView
+	 */
+	public SentenceLabelProvider(SentenceView sentenceView) {
+		this.sentenceView = sentenceView;
+	}
 	
 	@Override
 	public String getText(Object element) {
@@ -55,6 +68,28 @@ public class SentenceLabelProvider extends LabelProvider {
 				STextualRelation textualRelation = (STextualRelation) edge;
 				return token.getSDocumentGraph().getSTextualDSs().get(0).getSText().substring(textualRelation.getSStart(), textualRelation.getSEnd());
 			}
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITableColorProvider#getForeground(java.lang.Object, int)
+	 */
+	@Override
+	public Color getForeground(Object element, int columnIndex) {
+//		if (sentenceView.getLinkedSentences().contains(element)) {
+//			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+//		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
+	 */
+	@Override
+	public Color getBackground(Object element, int columnIndex) {
+		if (sentenceView.getLinkedSentences().contains(element)) {
+			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
 		}
 		return null;
 	}

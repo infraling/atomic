@@ -3,19 +3,22 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.corpus;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.GRAPH_TRAVERSE_TYPE;
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDominanceRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SGraphTraverseHandler;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
@@ -23,11 +26,10 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
  * @author Stephan Druskat
  * 
  */
-public class SentenceGraphTraverser implements SGraphTraverseHandler {
+public class LinkedSentencesTraverser implements SGraphTraverseHandler {
 
-	private HashSet<Node> nodeSet = new HashSet<Node>();
 	private HashSet<SToken> tokenSet;
-	private SDocumentGraph graph;
+	private HashSet<SSpan> linkedSentences = new HashSet<SSpan>();
 
 	/*
 	 * (non-Javadoc)
@@ -42,12 +44,24 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	 */
 	@Override
 	public void nodeReached(GRAPH_TRAVERSE_TYPE traversalType, String traversalId, SNode currNode, SRelation sRelation, SNode fromNode, long order) {
-		if (currNode instanceof SToken) {
-			// Skip STokens as we already have a **sorted** list of tokens!
+		SDocumentGraph graph = (SDocumentGraph) currNode.getSGraph();
+		BasicEList<STYPE_NAME> relationTypes = new BasicEList<STYPE_NAME>(Arrays.asList(STYPE_NAME.SDOMINANCE_RELATION, STYPE_NAME.SSPANNING_RELATION, STYPE_NAME.SORDER_RELATION, STYPE_NAME.SPOINTING_RELATION));
+		for (Edge edge : graph.getOutEdges(currNode.getSId())) {
+			for (SToken token : graph.getOverlappedSTokens((SNode) edge.getTarget(), relationTypes)) {
+				if (!getTokenSet().contains(token)) {
+					for (Edge tokenEdge : graph.getInEdges(token.getSId())) {
+						if (tokenEdge instanceof SSpanningRelation) {
+							for (SLayer layer : ((SSpanningRelation) tokenEdge).getSSpan().getSLayers()) {
+								if (layer.getSId().equals("ATOMIC::SENTENCES")) {
+									getLinkedSentences().add(((SSpanningRelation) tokenEdge).getSSpan());
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		else {
-			nodeSet.add(currNode);
-		}
+
 	}
 
 	/*
@@ -83,7 +97,7 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 			EList<STYPE_NAME> edgeList = new BasicEList<STYPE_NAME>();
 			edgeList.add(STYPE_NAME.SDOMINANCE_RELATION);
 			edgeList.add(STYPE_NAME.SSPANNING_RELATION);
-			EList<SToken> overlappedTokens = getGraph().getOverlappedSTokens((SNode) edge.getSource(), edgeList);
+			EList<SToken> overlappedTokens = ((SDocumentGraph) currNode.getSGraph()).getOverlappedSTokens((SNode) edge.getSource(), edgeList);
 			for (SToken token : overlappedTokens) {
 				if (getTokenSet().contains(token)) {
 					return true;
@@ -95,27 +109,6 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	}
 
 	/**
-	 * @param hashSet
-	 */
-	public void setTokenSet(HashSet<SToken> tokenSet) {
-		this.tokenSet = tokenSet;
-	}
-
-	/**
-	 * @param sDocumentGraph
-	 */
-	public void setGraph(SDocumentGraph sDocumentGraph) {
-		this.graph = sDocumentGraph;
-	}
-
-	/**
-	 * @return the graph
-	 */
-	public SDocumentGraph getGraph() {
-		return graph;
-	}
-
-	/**
 	 * @return the tokenSet
 	 */
 	public HashSet<SToken> getTokenSet() {
@@ -123,10 +116,18 @@ public class SentenceGraphTraverser implements SGraphTraverseHandler {
 	}
 
 	/**
-	 * @return the nodeSet
+	 * @param tokenSet
+	 *            the tokenSet to set
 	 */
-	public HashSet<Node> getNodeSet() {
-		return nodeSet;
+	public void setTokenSet(HashSet<SToken> tokenSet) {
+		this.tokenSet = tokenSet;
+	}
+
+	/**
+	 * @return the linkedSentences
+	 */
+	public HashSet<SSpan> getLinkedSentences() {
+		return linkedSentences;
 	}
 
 }

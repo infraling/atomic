@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.uni_jena.iaa.linktype.atomic.core.corpus.SubGraphService;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphService;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
 /**
@@ -89,16 +89,15 @@ public class GraphPart extends AbstractGraphicalEditPart {
 
 	@Override
 	protected List<Object> getModelChildren() {
-		 List<Object> modelChildren = new ArrayList<Object>();
+		List<Object> modelChildren = new ArrayList<Object>();
 		if (getSortedTokens() != null) {
 			modelChildren.addAll(getSortedTokens());
 			if (!getSortedTokens().isEmpty()) {
-				modelChildren.addAll(SubGraphService.getSentenceGraph(getSortedTokens()));
+				modelChildren.addAll(GraphService.getSentenceGraph(getSortedTokens()));
 			}
 			return modelChildren;
 		}
 		return null;
-	}
 
 	public SDocumentGraph getModel() {
 		return (SDocumentGraph) super.getModel();

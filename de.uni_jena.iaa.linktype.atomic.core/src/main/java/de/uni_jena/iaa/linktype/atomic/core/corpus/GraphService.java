@@ -4,11 +4,13 @@
 package de.uni_jena.iaa.linktype.atomic.core.corpus;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.GRAPH_TRAVERSE_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
@@ -46,6 +48,18 @@ public class GraphService {
 			unorderedTokens.addAll(getOverlappedTokens(span));
 		}
 		return ((SSpan) sentenceSpanList.get(0)).getSDocumentGraph().getSortedSTokenByText(unorderedTokens);
+	}
+	
+	/**
+	 * @param checkedElement
+	 * @return
+	 */
+	public static HashSet<SSpan> getLinkedSentences(SSpan checkedSentence) {
+		EList<SToken> tokens = GraphService.getOverlappedTokens(checkedSentence);
+		LinkedSentencesTraverser traverser = new LinkedSentencesTraverser();
+		traverser.setTokenSet(new HashSet<SToken>(tokens));
+		checkedSentence.getSDocumentGraph().traverse(tokens, GRAPH_TRAVERSE_TYPE.BOTTOM_UP_BREADTH_FIRST, "linkedSentences", traverser, false);
+		return traverser.getLinkedSentences();
 	}
 
 }

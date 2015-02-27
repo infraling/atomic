@@ -3,6 +3,8 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.sentenceview;
 
+import java.util.ArrayList; 
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,6 +28,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -35,19 +39,23 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
+import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphService;
 import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 
 /**
  * @author Stephan Druskat
  * 
  */
-public class SentenceView extends ViewPart implements ISelectionProvider, IPartListener2 {
+public class SentenceView extends ViewPart implements ISelectionProvider, IPartListener2, ISelectionListener {
 
 	private ListenerList listeners = new ListenerList();
 
 	private CheckboxTableViewer sentenceTableViewer;
 
 	private SDocumentGraph graph;
+	
+	private ArrayList<SSpan> linkedSentences;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -62,7 +70,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		sentenceTableViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		sentenceTableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		sentenceTableViewer.setContentProvider(new SentenceContentProvider());
-		sentenceTableViewer.setLabelProvider(new SentenceLabelProvider());
+		sentenceTableViewer.setLabelProvider(new SentenceLabelProvider(this));
 		sentenceTableViewer.setInput(getGraph());
 
 		TableColumn column = new TableColumn(sentenceTableViewer.getTable(), SWT.FILL);
@@ -148,6 +156,22 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		GridData data = new GridData(style);
 		button.setLayoutData(data);
 		return button;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		setLinkedSentences(new ArrayList<SSpan>());
+		for (Object checkedElement : sentenceTableViewer.getCheckedElements()) {
+			getLinkedSentences().addAll(GraphService.getLinkedSentences((SSpan) checkedElement));
+		}
+		for (SSpan span : getLinkedSentences()) {
+			System.err.println(span);
+			((SentenceLabelProvider) sentenceTableViewer.getLabelProvider()).getForeground(span, 0);
+			sentenceTableViewer.refresh();
+		}
 	}
 
 	@Override
@@ -257,5 +281,21 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 
 	@Override
 	public void partInputChanged(IWorkbenchPartReference partRef) {}
+
+
+	/**
+	 * @return the linkedSentences
+	 */
+	public ArrayList<SSpan> getLinkedSentences() {
+		return linkedSentences;
+	}
+
+
+	/**
+	 * @param linkedSentences the linkedSentences to set
+	 */
+	public void setLinkedSentences(ArrayList<SSpan> linkedSentences) {
+		this.linkedSentences = linkedSentences;
+	}
 
 }
