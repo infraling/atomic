@@ -47,7 +47,7 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
  * @author Stephan Druskat
  * 
  */
-public class SentenceView extends ViewPart implements ISelectionProvider, IPartListener2, ISelectionListener {
+public class SentenceView extends ViewPart implements ISelectionProvider, IPartListener2 {
 
 	private ListenerList listeners = new ListenerList();
 
@@ -55,7 +55,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 
 	private SDocumentGraph graph;
 	
-	private ArrayList<SSpan> linkedSentences;
+	private ArrayList<SSpan> linkedSentences = new ArrayList<SSpan>();
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -80,6 +80,11 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		sentenceTableViewer.addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
+				getLinkedSentences().clear();
+				for (Object checkedElement : sentenceTableViewer.getCheckedElements()) {
+					getLinkedSentences().addAll(GraphService.getLinkedSentences((SSpan) checkedElement));
+				}
+				sentenceTableViewer.refresh();
 				notifySelectionListeners();
 			}
 		});
@@ -123,11 +128,13 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 				if (getGraph().getSTokens().size() > 500) {
 					if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Show whole graph?", "WARNING: Rendering all sentences at once is an expensive operation, which may take long, and in some cases result in an application crash.\nDo you want to proceed?")) {
 						sentenceTableViewer.setAllChecked(true);
+						sentenceTableViewer.refresh();
 						notifySelectionListeners();
 					}
 				}
 				else {
 					sentenceTableViewer.setAllChecked(true);
+					sentenceTableViewer.refresh();
 					notifySelectionListeners();
 				}
 			}
@@ -138,6 +145,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				sentenceTableViewer.setAllChecked(false);
+				sentenceTableViewer.refresh();
 				notifySelectionListeners();
 			}
 		};
@@ -158,22 +166,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		return button;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-	 */
-	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		setLinkedSentences(new ArrayList<SSpan>());
-		for (Object checkedElement : sentenceTableViewer.getCheckedElements()) {
-			getLinkedSentences().addAll(GraphService.getLinkedSentences((SSpan) checkedElement));
-		}
-		for (SSpan span : getLinkedSentences()) {
-			System.err.println(span);
-			((SentenceLabelProvider) sentenceTableViewer.getLabelProvider()).getForeground(span, 0);
-			sentenceTableViewer.refresh();
-		}
-	}
-
 	@Override
 	public void setFocus() {
 	}

@@ -77,10 +77,12 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 	 */
 	@Override
 	public Color getForeground(Object element, int columnIndex) {
-//		if (sentenceView.getLinkedSentences().contains(element)) {
-//			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-//		}
-		return null;
+		if (sentenceView.getLinkedSentences().contains(element)) {
+			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+		}
+		else {
+			return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -88,9 +90,6 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 	 */
 	@Override
 	public Color getBackground(Object element, int columnIndex) {
-		if (sentenceView.getLinkedSentences().contains(element)) {
-			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-		}
 		return null;
 	}
 
