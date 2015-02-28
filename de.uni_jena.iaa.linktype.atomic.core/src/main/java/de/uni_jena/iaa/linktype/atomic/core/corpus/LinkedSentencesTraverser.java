@@ -61,6 +61,21 @@ public class LinkedSentencesTraverser implements SGraphTraverseHandler {
 				}
 			}
 		}
+		for (Edge edge : graph.getInEdges(currNode.getSId())) {
+			for (SToken token : graph.getOverlappedSTokens((SNode) edge.getSource(), relationTypes)) {
+				if (!getTokenSet().contains(token)) {
+					for (Edge tokenEdge : graph.getInEdges(token.getSId())) {
+						if (tokenEdge instanceof SSpanningRelation) {
+							for (SLayer layer : ((SSpanningRelation) tokenEdge).getSSpan().getSLayers()) {
+								if (layer.getSId().equals("ATOMIC::SENTENCES")) {
+									getLinkedSentences().add(((SSpanningRelation) tokenEdge).getSSpan());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
 	}
 

@@ -186,21 +186,6 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		this.tokenTextRegistry = tokenTextRegistry;
 	}
 
-	// /**
-	// * @return the visualIDMap
-	// */
-	// public HashBiMap<String, EObject> getVisualIDMap() {
-	// return visualIDMap;
-	// }
-	//
-	// /**
-	// * @param visualIDMap
-	// * the visualIDMap to set
-	// */
-	// public void setVisualIDMap(HashBiMap<String, EObject> visualIDMap) {
-	// this.visualIDMap = visualIDMap;
-	// }
-
 	/**
 	 * @return the dynamicModelChildrenList
 	 */
