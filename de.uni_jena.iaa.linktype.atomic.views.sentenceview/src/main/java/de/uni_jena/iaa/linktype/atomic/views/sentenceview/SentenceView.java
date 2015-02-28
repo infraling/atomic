@@ -3,7 +3,9 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.sentenceview;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
@@ -28,8 +30,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -54,45 +54,55 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	private CheckboxTableViewer sentenceTableViewer;
 
 	private SDocumentGraph graph;
-	
+
 	private ArrayList<SSpan> linkedSentences = new ArrayList<SSpan>();
+	private HashMap<SSpan, SSpan> linkedSentencesForSentence = new HashMap<SSpan, SSpan>();
+	private HashSet<SSpan> linkSourceSentences = new HashSet<SSpan>();
 
 	@Override
 	public void createPartControl(Composite parent) {
 		graph = getInput();
 		getSite().setSelectionProvider(this);
 		final IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
-        workbenchWindow.getPartService().addPartListener(this);
+		workbenchWindow.getPartService().addPartListener(this);
 		parent.setLayout(new GridLayout(1, true));
 
 		addSelectionButtons(parent);
 
-		sentenceTableViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		sentenceTableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
-		sentenceTableViewer.setContentProvider(new SentenceContentProvider());
-		sentenceTableViewer.setLabelProvider(new SentenceLabelProvider(this));
-		sentenceTableViewer.setInput(getGraph());
+		setSentenceTableViewer(CheckboxTableViewer.newCheckList(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL));
+		getSentenceTableViewer().getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+		getSentenceTableViewer().setContentProvider(new SentenceContentProvider());
+		getSentenceTableViewer().setLabelProvider(new SentenceLabelProvider(this));
+		getSentenceTableViewer().setInput(getGraph());
 
-		TableColumn column = new TableColumn(sentenceTableViewer.getTable(), SWT.FILL);
+		TableColumn column = new TableColumn(getSentenceTableViewer().getTable(), SWT.FILL);
 		column.setText("Sentences");
 		column.pack();
 
-		sentenceTableViewer.addCheckStateListener(new ICheckStateListener() {
+		getSentenceTableViewer().addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
+				getLinkSourceSentences().clear();
+				getLinkedSentencesForSentence().clear();
 				getLinkedSentences().clear();
-				for (Object checkedElement : sentenceTableViewer.getCheckedElements()) {
-					getLinkedSentences().addAll(GraphService.getLinkedSentences((SSpan) checkedElement));
+				for (Object checkedElement : getSentenceTableViewer().getCheckedElements()) {
+					HashSet<SSpan> linkedSentencesForCurrentElement = GraphService.getLinkedSentences((SSpan) checkedElement);
+					if (!linkedSentencesForCurrentElement.isEmpty()) {
+						getLinkSourceSentences().add((SSpan) checkedElement);
+					}
+					for (SSpan span : linkedSentencesForCurrentElement) {
+						getLinkedSentencesForSentence().put(span, (SSpan) checkedElement);
+					}
+					getLinkedSentences().addAll(linkedSentencesForCurrentElement);
 				}
-				sentenceTableViewer.refresh();
+				getSentenceTableViewer().refresh();
 				notifySelectionListeners();
 			}
 		});
 
-		sentenceTableViewer.getTable().setHeaderVisible(true);
-		sentenceTableViewer.getTable().setLinesVisible(true);
+		getSentenceTableViewer().getTable().setHeaderVisible(true);
+		getSentenceTableViewer().getTable().setLinesVisible(true);
 	}
-
 
 	/**
 	 * @return
@@ -111,7 +121,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	 */
 	private void notifySelectionListeners() {
 		for (int i = 0; i < listeners.getListeners().length; i++) {
-			((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(SentenceView.this, new StructuredSelection(sentenceTableViewer.getCheckedElements())));
+			((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(SentenceView.this, new StructuredSelection(getSentenceTableViewer().getCheckedElements())));
 		}
 	}
 
@@ -127,14 +137,14 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 			public void widgetSelected(SelectionEvent e) {
 				if (getGraph().getSTokens().size() > 500) {
 					if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Show whole graph?", "WARNING: Rendering all sentences at once is an expensive operation, which may take long, and in some cases result in an application crash.\nDo you want to proceed?")) {
-						sentenceTableViewer.setAllChecked(true);
-						sentenceTableViewer.refresh();
+						getSentenceTableViewer().setAllChecked(true);
+						getSentenceTableViewer().refresh();
 						notifySelectionListeners();
 					}
 				}
 				else {
-					sentenceTableViewer.setAllChecked(true);
-					sentenceTableViewer.refresh();
+					getSentenceTableViewer().setAllChecked(true);
+					getSentenceTableViewer().refresh();
 					notifySelectionListeners();
 				}
 			}
@@ -144,9 +154,13 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		Button deselectButton = createButton(buttonComposite, "Deselect all", GridData.HORIZONTAL_ALIGN_FILL);
 		listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				sentenceTableViewer.setAllChecked(false);
-				sentenceTableViewer.refresh();
+				getSentenceTableViewer().setAllChecked(false);
+				getLinkedSentences().clear();
+				getLinkedSentencesForSentence().clear();
+				getLinkSourceSentences().clear();
 				notifySelectionListeners();
+				getSentenceTableViewer().refresh();
+
 			}
 		};
 		deselectButton.addSelectionListener(listener);
@@ -165,7 +179,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		button.setLayoutData(data);
 		return button;
 	}
-	
+
 	@Override
 	public void setFocus() {
 	}
@@ -189,7 +203,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	 */
 	@Override
 	public ISelection getSelection() {
-		return new StructuredSelection(sentenceTableViewer.getCheckedElements());
+		return new StructuredSelection(getSentenceTableViewer().getCheckedElements());
 	}
 
 	/*
@@ -215,7 +229,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	public void setSelection(ISelection selection) {
 		Object[] list = listeners.getListeners();
 		for (int i = 0; i < list.length; i++) {
-			((ISelectionChangedListener) list[i]).selectionChanged(new SelectionChangedEvent(this, new StructuredSelection(sentenceTableViewer.getCheckedElements())));
+			((ISelectionChangedListener) list[i]).selectionChanged(new SelectionChangedEvent(this, new StructuredSelection(getSentenceTableViewer().getCheckedElements())));
 		}
 	}
 
@@ -234,46 +248,55 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		this.graph = graph;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IPartListener2#partActivated(org.eclipse.ui.IWorkbenchPartReference)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partActivated(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 		if (partRef.getPart(false) instanceof EditorPart) {
 			EditorPart editor = (EditorPart) partRef.getPart(false);
 			if (editor.getEditorInput() instanceof FileEditorInput) {
-				FileEditorInput input = (FileEditorInput) editor.getEditorInput(); 
+				FileEditorInput input = (FileEditorInput) editor.getEditorInput();
 				if (input.getFile().getName().endsWith(SaltFactory.FILE_ENDING_SALT) && !input.getFile().getName().equals(SaltFactory.FILE_SALT_PROJECT)) {
-					if (sentenceTableViewer != null && !sentenceTableViewer.getControl().isDisposed()) {
-						sentenceTableViewer.setInput(getInput());
-						sentenceTableViewer.refresh();
-					   }
+					if (getSentenceTableViewer() != null && !getSentenceTableViewer().getControl().isDisposed()) {
+						getSentenceTableViewer().setInput(getInput());
+						getSentenceTableViewer().refresh();
+					}
 				}
 			}
 		}
 	}
 
 	@Override
-	public void partBroughtToTop(IWorkbenchPartReference partRef) {}
+	public void partBroughtToTop(IWorkbenchPartReference partRef) {
+	}
 
 	@Override
-	public void partClosed(IWorkbenchPartReference partRef) {}
+	public void partClosed(IWorkbenchPartReference partRef) {
+	}
 
 	@Override
-	public void partDeactivated(IWorkbenchPartReference partRef) {}
+	public void partDeactivated(IWorkbenchPartReference partRef) {
+	}
 
 	@Override
-	public void partOpened(IWorkbenchPartReference partRef) {}
+	public void partOpened(IWorkbenchPartReference partRef) {
+	}
 
 	@Override
-	public void partHidden(IWorkbenchPartReference partRef) {}
+	public void partHidden(IWorkbenchPartReference partRef) {
+	}
 
 	@Override
-	public void partVisible(IWorkbenchPartReference partRef) {}
+	public void partVisible(IWorkbenchPartReference partRef) {
+	}
 
 	@Override
-	public void partInputChanged(IWorkbenchPartReference partRef) {}
-
+	public void partInputChanged(IWorkbenchPartReference partRef) {
+	}
 
 	/**
 	 * @return the linkedSentences
@@ -282,12 +305,56 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		return linkedSentences;
 	}
 
-
 	/**
-	 * @param linkedSentences the linkedSentences to set
+	 * @param linkedSentences
+	 *            the linkedSentences to set
 	 */
 	public void setLinkedSentences(ArrayList<SSpan> linkedSentences) {
 		this.linkedSentences = linkedSentences;
+	}
+
+	/**
+	 * @return the linkedSentencesForSentence
+	 */
+	public HashMap<SSpan, SSpan> getLinkedSentencesForSentence() {
+		return linkedSentencesForSentence;
+	}
+
+	/**
+	 * @param linkedSentencesForSentence
+	 *            the linkedSentencesForSentence to set
+	 */
+	public void setLinkedSentencesForSentence(HashMap<SSpan, SSpan> linkedSentencesForSentence) {
+		this.linkedSentencesForSentence = linkedSentencesForSentence;
+	}
+
+	/**
+	 * @return the sentenceTableViewer
+	 */
+	public CheckboxTableViewer getSentenceTableViewer() {
+		return sentenceTableViewer;
+	}
+
+	/**
+	 * @param sentenceTableViewer
+	 *            the sentenceTableViewer to set
+	 */
+	public void setSentenceTableViewer(CheckboxTableViewer sentenceTableViewer) {
+		this.sentenceTableViewer = sentenceTableViewer;
+	}
+
+	/**
+	 * @return the linkSourceSentences
+	 */
+	public HashSet<SSpan> getLinkSourceSentences() {
+		return linkSourceSentences;
+	}
+
+	/**
+	 * @param linkSourceSentences the linkSourceSentences to set
+	 */
+	public void setLinkSourceSentences(HashSet<SSpan> linkSourceSentences) {
+		this.linkSourceSentences = linkSourceSentences;
 	}
 
 }

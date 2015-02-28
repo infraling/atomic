@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
@@ -22,10 +23,10 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 
 /**
  * @author Stephan Druskat
- *
+ * 
  */
 public class SentenceLabelProvider extends LabelProvider implements ITableColorProvider {
-	
+
 	private SentenceView sentenceView;
 
 	/**
@@ -34,12 +35,26 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 	public SentenceLabelProvider(SentenceView sentenceView) {
 		this.sentenceView = sentenceView;
 	}
-	
+
 	@Override
 	public String getText(Object element) {
-		return retrieveSentenceFromSpan((SSpan) element);
+		String text = "";
+		if (sentenceView.getLinkedSentences().contains(element)) {
+			text = text + "\u2194 ";
+			final TableItem[] items = sentenceView.getSentenceTableViewer().getTable().getItems();
+			for (int i = 0; i < items.length; ++i) {
+				if (items[i].getData().equals(sentenceView.getLinkedSentencesForSentence().get(element))) {
+					text = text + i + " ";
+				}
+			}
+		}
+		else if (sentenceView.getLinkSourceSentences().contains(element)){
+			text = text +"\u2194 ";
+		}
+		text = text + retrieveSentenceFromSpan((SSpan) element);
+		return text;
 	}
-	
+
 	protected String retrieveSentenceFromSpan(SSpan span) {
 		EList<SToken> overlappedTokens = span.getSDocumentGraph().getOverlappedSTokens(span, new BasicEList<STYPE_NAME>(Arrays.asList(STYPE_NAME.SSPANNING_RELATION)));
 		EList<SToken> sortedTokens = span.getSDocumentGraph().getSortedSTokenByText(overlappedTokens);
@@ -55,13 +70,14 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 			}
 		}
 		if (!sentence.isEmpty()) {
-			// Add whitespace at the end to make sure the whole sentence is displayed
+			// Add whitespace at the end to make sure the whole sentence is
+			// displayed
 			// and not cut off by table border
 			return sentence + " ";
 		}
 		return null;
 	}
-	
+
 	private String getTokenText(SToken token) {
 		for (Edge edge : token.getSDocumentGraph().getOutEdges(token.getSId())) {
 			if (edge instanceof STextualRelation) {
@@ -72,8 +88,12 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITableColorProvider#getForeground(java.lang.Object, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.jface.viewers.ITableColorProvider#getForeground(java.lang
+	 * .Object, int)
 	 */
 	@Override
 	public Color getForeground(Object element, int columnIndex) {
@@ -85,8 +105,12 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang
+	 * .Object, int)
 	 */
 	@Override
 	public Color getBackground(Object element, int columnIndex) {
