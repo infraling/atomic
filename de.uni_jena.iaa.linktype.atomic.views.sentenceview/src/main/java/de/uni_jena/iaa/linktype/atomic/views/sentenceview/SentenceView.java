@@ -132,7 +132,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		Composite buttonComposite = new Composite(parent, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(2, false));
 		buttonComposite.setData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		Button selectButton = createButton(buttonComposite, "Select all", GridData.HORIZONTAL_ALIGN_FILL);
+		Button selectButton = createButton(buttonComposite, "&Select all", GridData.HORIZONTAL_ALIGN_FILL);
 		SelectionListener listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (getGraph().getSTokens().size() > 500) {
@@ -151,7 +151,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		};
 		selectButton.addSelectionListener(listener);
 
-		Button deselectButton = createButton(buttonComposite, "Deselect all", GridData.HORIZONTAL_ALIGN_FILL);
+		Button deselectButton = createButton(buttonComposite, "&Deselect all", GridData.HORIZONTAL_ALIGN_FILL);
 		listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getSentenceTableViewer().setAllChecked(false);
