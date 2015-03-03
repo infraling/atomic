@@ -108,6 +108,16 @@
                id="de.uni_jena.iaa.linktype.atomic.menus.viewMenu"
                label="View"
                mnemonic="V">
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  label="Navigation View"
+                  mnemonic="N"
+                  style="push">
+               <parameter
+                     name="org.eclipse.ui.views.showView.viewId"
+                     value="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view">
+               </parameter>
+            </command>
          </menu>
          <menu
                id="de.uni_jena.iaa.linktype.atomic.menus.helpMenu"
