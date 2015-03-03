@@ -24,13 +24,15 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="de.uni_jena.iaa.linktype.atomic.core.perspective">
+            targetID="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective">
          <view
+               closeable="true"
                id="org.eclipse.ui.console.ConsoleView"
+               moveable="true"
                ratio="0.8f"
                relationship="bottom"
                relative="org.eclipse.ui.editorss"
-               visible="false">
+               visible="true">
          </view>
       </perspectiveExtension>
    </extension>
@@ -38,7 +40,7 @@
          point="org.eclipse.ui.console.consoleFactories">
       <consoleFactory
             class="de.uni_jena.iaa.linktype.atomic.atomical.console.AtomicalConsoleFactory"
-            label="AtomicAL Console Factory">
+            label="New AtomicAL Console">
       </consoleFactory>
    </extension>
    <extension

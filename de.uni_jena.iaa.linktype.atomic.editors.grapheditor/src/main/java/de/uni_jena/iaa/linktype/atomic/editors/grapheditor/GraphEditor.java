@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
@@ -81,7 +83,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				graphPart.getSortedTokens().clear();
 				graphPart.setSortedTokens(GraphService.getOrderedTokensForSentenceSpans(selection.toList()));
 				graphPart.refresh();
-				
+
 				// Refresh all TokenParts, not just the ones that have changed!
 				for (Object child : graphPart.getChildren()) {
 					if (child instanceof TokenPart || child instanceof SpanPart || child instanceof StructurePart) {
@@ -105,6 +107,12 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		getSite().getPage().addSelectionListener(listener);
+		try {
+			PlatformUI.getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		}
+		catch (WorkbenchException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -200,6 +208,12 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public void dispose() {
 		super.dispose();
 		getSite().getPage().removeSelectionListener(listener);
+		try {
+			getSite().getWorkbenchWindow().getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.core.perspective", getSite().getWorkbenchWindow());
+		}
+		catch (WorkbenchException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -210,7 +224,8 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	}
 
 	/**
-	 * @param viewer the viewer to set
+	 * @param viewer
+	 *            the viewer to set
 	 */
 	public void setViewer(GraphicalViewer viewer) {
 		this.viewer = viewer;

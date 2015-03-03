@@ -42,5 +42,21 @@
             sequence="M1+W">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective">
+         <view
+               closeable="true"
+               id="de.uni_jena.iaa.linktype.atomic.views.sentenceview"
+               minimized="false"
+               ratio="0.2f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
