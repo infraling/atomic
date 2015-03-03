@@ -9,9 +9,11 @@ import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
@@ -30,11 +32,11 @@ public class StructuredNodeChangeConstraintsCommand extends Command {
 			int[] xy = (int[]) anno.getValue();
 			setOldConstraint(new Rectangle(xy[0], xy[1], -1, -1));
 			int versionInt = ((int[]) anno.getValue())[2];
-			anno.setValue(new int[]{getNewConstraint().x, getNewConstraint().y, versionInt++});
+			anno.setValue(new int[]{PartUtils.getRelativeX((SDocumentGraph) getModel().getSGraph(), getModel(), getNewConstraint().x), getNewConstraint().y, versionInt++});
 			getModel().eNotify(new NotificationImpl(Notification.SET, anno, anno));
 		}
 		else {
-			getModel().createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{getNewConstraint().x,  getNewConstraint().y, 1}, SDATATYPE.SOBJECT);
+			getModel().createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{PartUtils.getRelativeX((SDocumentGraph) getModel().getSGraph(), getModel(), getNewConstraint().x),  getNewConstraint().y, 1}, SDATATYPE.SOBJECT);
 		}
 	}
 	

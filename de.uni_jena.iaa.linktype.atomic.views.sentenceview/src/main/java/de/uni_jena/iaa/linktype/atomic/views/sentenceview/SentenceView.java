@@ -61,7 +61,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 
 	@Override
 	public void createPartControl(Composite parent) {
-		graph = getInput();
 		getSite().setSelectionProvider(this);
 		final IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
 		workbenchWindow.getPartService().addPartListener(this);

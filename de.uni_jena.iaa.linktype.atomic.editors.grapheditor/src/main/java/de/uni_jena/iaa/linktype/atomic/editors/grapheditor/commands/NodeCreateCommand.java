@@ -19,14 +19,16 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
- *
+ * 
  */
 public class NodeCreateCommand extends Command {
-	
+
 	private SDocumentGraph graph;
 	private SStructuredNode model;
 	private Point location;
@@ -35,23 +37,32 @@ public class NodeCreateCommand extends Command {
 	@Override
 	public void execute() {
 		getModel().setGraph(getGraph());
-		if (getLocation() != null) {
-			getModel().createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{getLocation().x, getLocation().y, 1}, SDATATYPE.SOBJECT);
-		}
 		if (getSelectedEditParts() != null && !getSelectedEditParts().isEmpty()) {
 			createRelations();
 		}
+		if (getLocation() != null) {
+			SProcessingAnnotation anno = getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS");
+			if (anno != null) {
+				int[] xy = (int[]) anno.getValue();
+				int versionInt = xy[2];
+				anno.setValue(new int[] { PartUtils.getRelativeX((SDocumentGraph) getModel().getSGraph(), getModel(), getLocation().x), getLocation().y, versionInt++ });
+			}
+			else {
+				getModel().createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[] { PartUtils.getRelativeX(graph, model, getLocation().x), getLocation().y, 1 }, SDATATYPE.SOBJECT);
+			}
+		}
 	}
-	
+
 	private void createRelations() {
 		if (getModel() instanceof SStructure) {
 			for (EditPart editPart : getSelectedEditParts()) {
 				Object ePModel = editPart.getModel();
 				SRelation relation = null;
 				if (ePModel instanceof SStructure || ePModel instanceof SToken || ePModel instanceof SSpan) {
-					//FIXME either or
-					//getGraph().createSRelation(getModel(), (SNode)ePModel, STYPE_NAME.SDOMINANCE_RELATION, null);
-					
+					// FIXME either or
+					// getGraph().createSRelation(getModel(), (SNode)ePModel,
+					// STYPE_NAME.SDOMINANCE_RELATION, null);
+
 					relation = SaltFactory.eINSTANCE.createSDominanceRelation();
 					relation.setSSource(getModel());
 					relation.setSTarget((SNode) ePModel);
@@ -75,7 +86,7 @@ public class NodeCreateCommand extends Command {
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -86,7 +97,7 @@ public class NodeCreateCommand extends Command {
 	public void setGraph(SDocumentGraph graph) {
 		this.graph = graph;
 	}
-	
+
 	/**
 	 * @return the graph
 	 */
@@ -95,7 +106,7 @@ public class NodeCreateCommand extends Command {
 	}
 
 	public void setModel(SStructuredNode node) {
-		this.model = node;	
+		this.model = node;
 	}
 
 	/**

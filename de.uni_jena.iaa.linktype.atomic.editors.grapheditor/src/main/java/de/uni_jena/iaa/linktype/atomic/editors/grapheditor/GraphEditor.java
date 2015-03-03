@@ -20,6 +20,7 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
@@ -35,6 +36,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
@@ -45,6 +48,8 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.GraphEditorPaletteFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AdHocSentenceDetectionWizard;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
@@ -78,16 +83,17 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				graphPart.getSortedTokens().clear();
 				graphPart.setSortedTokens(GraphService.getOrderedTokensForSentenceSpans(selection.toList()));
 				graphPart.refresh();
-				
+
 				// Refresh all TokenParts, not just the ones that have changed!
 				for (Object child : graphPart.getChildren()) {
-					if (child instanceof TokenPart) {
-						((TokenPart) child).refresh();
+					if (child instanceof TokenPart || child instanceof SpanPart || child instanceof StructurePart) {
+						((AbstractGraphicalEditPart) child).refresh();
 					}
 				}
 			}
 		}
 	};
+	private GraphicalViewer viewer;
 
 	/**
 	 * 
@@ -101,18 +107,24 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		getSite().getPage().addSelectionListener(listener);
+		try {
+			PlatformUI.getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		}
+		catch (WorkbenchException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
-		GraphicalViewer viewer = getGraphicalViewer();
-		viewer.setEditPartFactory(new AtomicEditPartFactory());
-		viewer.setRootEditPart(new ScalableFreeformRootEditPart());
-		viewer.setKeyHandler(new AtomicGraphicalViewerKeyHandler(viewer));
+		setViewer(getGraphicalViewer());
+		getViewer().setEditPartFactory(new AtomicEditPartFactory());
+		getViewer().setRootEditPart(new ScalableFreeformRootEditPart());
+		getViewer().setKeyHandler(new AtomicGraphicalViewerKeyHandler(getViewer()));
 		getGraphicalViewer().addDropTargetListener(new TemplateTransferDropTargetListener(getGraphicalViewer()));
 		getEditDomain().getPaletteViewer().addDragSourceListener(new TemplateTransferDragSourceListener(getEditDomain().getPaletteViewer()));
-		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) viewer.getRootEditPart();
+		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getViewer().getRootEditPart();
 		ZoomManager zoomManager = root.getZoomManager();
 		root.getZoomManager().setZoomLevels(new double[] { 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0 });
 		List<String> zoomContributions = Arrays.asList(new String[] { ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH });
@@ -196,6 +208,27 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public void dispose() {
 		super.dispose();
 		getSite().getPage().removeSelectionListener(listener);
+		try {
+			getSite().getWorkbenchWindow().getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.core.perspective", getSite().getWorkbenchWindow());
+		}
+		catch (WorkbenchException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return the viewer
+	 */
+	public GraphicalViewer getViewer() {
+		return viewer;
+	}
+
+	/**
+	 * @param viewer
+	 *            the viewer to set
+	 */
+	public void setViewer(GraphicalViewer viewer) {
+		this.viewer = viewer;
 	}
 
 }

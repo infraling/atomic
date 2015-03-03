@@ -12,5 +12,13 @@
             name="Annotation Graph Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditingPerspective"
+            id="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective"
+            name="Annotation Graph Perspective">
+      </perspective>
+   </extension>
 
 </plugin>

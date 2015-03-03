@@ -15,7 +15,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Default Perspective"
+            name="Navigation Perspective"
             class="de.uni_jena.iaa.linktype.atomic.core.Perspective"
             id="de.uni_jena.iaa.linktype.atomic.core.perspective">
       </perspective>
