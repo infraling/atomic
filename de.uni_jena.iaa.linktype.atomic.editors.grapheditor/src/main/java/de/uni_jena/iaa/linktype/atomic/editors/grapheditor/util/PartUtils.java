@@ -16,9 +16,13 @@ import javax.sound.midi.SysexMessage;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -27,6 +31,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +41,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STYPE_NAME;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditor;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
@@ -60,45 +67,6 @@ public class PartUtils {
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
 	private static final int margin = 50; // FIXME Hard-coded margin (5), make
 											// settable in Prefs
-
-	// public static String getVisualID(SNamedElement model) {
-	// if (model instanceof SToken) {
-	// int index = ((SToken)
-	// model).getSDocumentGraph().getSTokens().indexOf(model);
-	// return "T" + (index + 1);
-	// }
-	// else if (model instanceof SStructure) {
-	// int index = ((SStructure)
-	// model).getSDocumentGraph().getSStructures().indexOf(model);
-	// return "N" + (index + 1);
-	// }
-	// else if (model instanceof SSpan) {
-	// int index = ((SSpan)
-	// model).getSDocumentGraph().getSSpans().indexOf(model);
-	// return "S" + (index + 1);
-	// }
-	// else if (model instanceof SDominanceRelation) {
-	// int index = ((SDominanceRelation)
-	// model).getSDocumentGraph().getSDominanceRelations().indexOf(model);
-	// return "D" + (index + 1);
-	// }
-	// else if (model instanceof SSpanningRelation) {
-	// int index = ((SSpanningRelation)
-	// model).getSDocumentGraph().getSSpanningRelations().indexOf(model);
-	// return "R" + (index + 1);
-	// }
-	// else if (model instanceof SPointingRelation) {
-	// int index = ((SPointingRelation)
-	// model).getSDocumentGraph().getSPointingRelations().indexOf(model);
-	// return "P" + (index + 1);
-	// }
-	// else if (model instanceof SOrderRelation) {
-	// int index = ((SOrderRelation)
-	// model).getSDocumentGraph().getSOrderRelations().indexOf(model);
-	// return "O" + (index + 1);
-	// }
-	// return null;
-	// }
 
 	public static int getTokenX(GraphPart graphPart, SToken model, IFigure iFigure) {
 		if (!graphPart.getSortedTokens().isEmpty()) {
@@ -203,7 +171,6 @@ public class PartUtils {
 			throw new UnsupportedOperationException("An error has occurred. Model is neither SStructure nor SSpan! Please report this error!");
 		}
 		Node target = null;
-		List<Integer> xList = new ArrayList<Integer>();
 		List<Integer> yList = new ArrayList<Integer>();
 		for (Edge edge : graph.getOutEdges(model.getSId())) {
 			target = edge.getTarget();
@@ -221,33 +188,66 @@ public class PartUtils {
 				else {
 					targetConstraints = (Rectangle) part.getFigure().getLayoutManager().getConstraint(targetEP.getFigure());
 				}
-				xList.add(targetConstraints.x + (targetConstraints.width / 2));
 				yList.add(targetConstraints.y);
 			}
 			else {
 				// Do nothing
 			}
 		}
-		Collections.sort(xList);
 		Collections.sort(yList);
 		// Calculate x
 		int x = 100; // Default value
-		for (Iterator<Integer> iterator = xList.iterator(); iterator.hasNext();) {
-			Integer integer = (Integer) iterator.next();
-			x = x + integer.intValue();
+		EList<SToken> overlappedTokens = graph.getOverlappedSTokens(model, new BasicEList<STYPE_NAME>(Arrays.asList(STYPE_NAME.SDOMINANCE_RELATION, STYPE_NAME.SSPANNING_RELATION, STYPE_NAME.SORDER_RELATION, STYPE_NAME.SPOINTING_RELATION)));
+		EList<SToken> sortedTokens = graph.getSortedSTokenByText(overlappedTokens);
+		Map registry = part.getViewer().getEditPartRegistry();
+		int firstTokenX = 0;
+		for (int i = 0; i < sortedTokens.size(); i++) {
+			if (registry.get(sortedTokens.get(i)) != null) {
+				Rectangle constraint = ((Rectangle) ((AbstractGraphicalEditPart) part.getParent()).getFigure().getLayoutManager().getConstraint(((AbstractGraphicalEditPart) registry.get(sortedTokens.get(i))).getFigure()));
+				x = (x + constraint.x);
+				if (i == 0) {
+					firstTokenX = x;
+				}
+				else if (i == (sortedTokens.size() - 1)) {
+					x = (x + constraint.width);
+				}
+			}
 		}
-		if (xList.size() > 0) {
-			x = x / xList.size();
-		}
+		x = ((x / sortedTokens.size()) - (part.getFigure().getPreferredSize().width / 2));
 		xY[0] = x;
+		int relativeX = x - firstTokenX;
 		// Calculate y
 		int y = 100; // Default value
 		if (yList.size() > 0) {
 			y = yList.get(0) - 100; // FIXME -100 is hardcoded
 		}
 		xY[1] = y;
-		model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[] { x, y, 1 }, SDATATYPE.SOBJECT);
+		model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[] { relativeX, y, 1 }, SDATATYPE.SOBJECT);
 		return xY;
+	}
+
+	public static int getRelativeX(SDocumentGraph graph, SStructuredNode model, int givenX) {
+		int firstTokenX = getFirstTokenX(graph, model);
+		return givenX - firstTokenX;
+	}
+
+	/**
+	 * @param graph
+	 * @param model
+	 * @return
+	 */
+	public static int getFirstTokenX(SDocumentGraph graph, SStructuredNode model) {
+		EList<SToken> overlappedTokens = graph.getOverlappedSTokens(model, new BasicEList<STYPE_NAME>(Arrays.asList(STYPE_NAME.SDOMINANCE_RELATION, STYPE_NAME.SSPANNING_RELATION, STYPE_NAME.SORDER_RELATION, STYPE_NAME.SPOINTING_RELATION)));
+		EList<SToken> sortedTokens = graph.getSortedSTokenByText(overlappedTokens);
+		Map registry = ((GraphEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).getViewer().getEditPartRegistry();
+		LayoutManager layoutManager = ((AbstractGraphicalEditPart) registry.get(graph)).getFigure().getLayoutManager();
+		int firstTokenX = 0;
+		if (registry.get(sortedTokens.get(0)) != null) {
+			System.err.println("registry has key");
+			Rectangle constraint = ((Rectangle) layoutManager.getConstraint(((AbstractGraphicalEditPart) registry.get(sortedTokens.get(0))).getFigure()));
+			firstTokenX = constraint.x;
+		}
+		return firstTokenX;
 	}
 
 	public static void doOneTimeReLayout(Map<?, ?> editPartRegistry, SDocumentGraph graph, SStructuredNode sStructuredNode) {
@@ -316,10 +316,11 @@ public class PartUtils {
 		SStructuredNode model = (SStructuredNode) editPart.getModel();
 		if (model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS") != null) {
 			int versionInt = ((int[]) model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").getValue())[2];
-			model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").setValue(new int[] { layout.x, layout.y, versionInt++ });
+			model.getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").setValue(new int[] { getRelativeX((SDocumentGraph) model.getSGraph(), model, layout.x), layout.y, versionInt++ });
 		}
 		else {
-			model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[] { layout.x, layout.y, 1 }, SDATATYPE.SOBJECT);
+			int relativeX = getRelativeX((SDocumentGraph) model.getSGraph(), model, layout.x);
+			model.createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[] { relativeX, layout.y, 1 }, SDATATYPE.SOBJECT);
 		}
 	}
 

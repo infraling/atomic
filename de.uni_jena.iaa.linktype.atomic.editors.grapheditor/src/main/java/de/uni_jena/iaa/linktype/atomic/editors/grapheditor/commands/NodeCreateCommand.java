@@ -20,6 +20,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
@@ -36,7 +37,7 @@ public class NodeCreateCommand extends Command {
 	public void execute() {
 		getModel().setGraph(getGraph());
 		if (getLocation() != null) {
-			getModel().createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{getLocation().x, getLocation().y, 1}, SDATATYPE.SOBJECT);
+			getModel().createSProcessingAnnotation("ATOMIC", "GRAPHEDITOR_COORDS", new int[]{PartUtils.getRelativeX(graph, model, getLocation().x), getLocation().y, 1}, SDATATYPE.SOBJECT);
 		}
 		if (getSelectedEditParts() != null && !getSelectedEditParts().isEmpty()) {
 			createRelations();

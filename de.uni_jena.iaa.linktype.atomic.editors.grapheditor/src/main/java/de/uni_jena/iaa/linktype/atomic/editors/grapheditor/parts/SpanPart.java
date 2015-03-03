@@ -76,7 +76,11 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 		if (getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS") != null) {
 			Dimension prefSize = getFigure().getPreferredSize();
 			int[] xy = (int[]) getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").getValue();
-			layout = new Rectangle(xy[0], xy[1], prefSize.width, prefSize.height);
+			System.err.println("xy[0] value: " + xy[0]);
+			int absoluteX = PartUtils.getFirstTokenX(graph, getModel()) + xy[0];
+			System.err.println("absoluteX value: " + absoluteX);
+			System.err.println(PartUtils.getFirstTokenX(graph, getModel()) + " > " + xy[0]);
+			layout = new Rectangle(absoluteX, xy[1], prefSize.width, prefSize.height);
 		}
 		else if (graph != null) {
 			if (!graph.getInEdges(getModel().getSId()).isEmpty() || !graph.getOutEdges(getModel().getSId()).isEmpty()) {
