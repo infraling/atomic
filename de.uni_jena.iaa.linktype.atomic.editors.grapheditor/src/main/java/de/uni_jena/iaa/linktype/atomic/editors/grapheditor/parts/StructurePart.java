@@ -75,7 +75,7 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 		if (getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS") != null) {
 			Dimension prefSize = getFigure().getPreferredSize();
 			int[] xy = (int[]) getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS").getValue();
-			int absoluteX = PartUtils.getFirstTokenX(graph, getModel()) + xy[0];
+			int absoluteX = PartUtils.getFirstTokenX(graph, getModel()) + xy[0] + PartUtils.margin;
 			layout = new Rectangle(absoluteX, xy[1], prefSize.width, prefSize.height);
 		}
 		else if (graph != null) { 

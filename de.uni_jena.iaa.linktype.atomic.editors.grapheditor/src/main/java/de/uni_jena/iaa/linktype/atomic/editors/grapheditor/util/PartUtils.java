@@ -65,7 +65,7 @@ public class PartUtils {
 	public static final String SANS8 = "sansserif 8pt";
 	public static final String VERYLIGHTGREY = "very light grey colour";
 	public static final String MEDIUMLIGHTGREY = "medium light grey colour";
-	private static final int margin = 50; // FIXME Hard-coded margin (5), make
+	public static final int margin = 50; // FIXME Hard-coded margin (5), make
 											// settable in Prefs
 
 	public static int getTokenX(GraphPart graphPart, SToken model, IFigure iFigure) {
@@ -243,7 +243,6 @@ public class PartUtils {
 		LayoutManager layoutManager = ((AbstractGraphicalEditPart) registry.get(graph)).getFigure().getLayoutManager();
 		int firstTokenX = 0;
 		if (registry.get(sortedTokens.get(0)) != null) {
-			System.err.println("registry has key");
 			Rectangle constraint = ((Rectangle) layoutManager.getConstraint(((AbstractGraphicalEditPart) registry.get(sortedTokens.get(0))).getFigure()));
 			firstTokenX = constraint.x;
 		}
