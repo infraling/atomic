@@ -34,8 +34,10 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
@@ -59,6 +61,67 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalV
  * 
  */
 public class GraphEditor extends AtomicGraphicalEditor {
+	
+	IPartListener2 partListener = new IPartListener2() {
+		
+		@Override
+		public void partVisible(IWorkbenchPartReference partRef) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void partOpened(IWorkbenchPartReference partRef) {
+			try {
+				PlatformUI.getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+			}
+			catch (WorkbenchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+		public void partInputChanged(IWorkbenchPartReference partRef) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void partHidden(IWorkbenchPartReference partRef) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void partDeactivated(IWorkbenchPartReference partRef) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void partClosed(IWorkbenchPartReference partRef) {
+			try {
+				getSite().getWorkbenchWindow().getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.core.perspective", getSite().getWorkbenchWindow());
+			}
+			catch (WorkbenchException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		@Override
+		public void partBroughtToTop(IWorkbenchPartReference partRef) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void partActivated(IWorkbenchPartReference partRef) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 
 	ISelectionListener listener = new ISelectionListener() {
 		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
@@ -107,12 +170,13 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		getSite().getPage().addSelectionListener(listener);
-		try {
-			PlatformUI.getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		}
-		catch (WorkbenchException e) {
-			e.printStackTrace();
-		}
+		getSite().getPage().addPartListener(partListener);
+//		try {
+//			PlatformUI.getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		}
+//		catch (WorkbenchException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -208,12 +272,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	public void dispose() {
 		super.dispose();
 		getSite().getPage().removeSelectionListener(listener);
-		try {
-			getSite().getWorkbenchWindow().getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.core.perspective", getSite().getWorkbenchWindow());
-		}
-		catch (WorkbenchException e) {
-			e.printStackTrace();
-		}
+		getSite().getPage().removePartListener(partListener);
 	}
 
 	/**
