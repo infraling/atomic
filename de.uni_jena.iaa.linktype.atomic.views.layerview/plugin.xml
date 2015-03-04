@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="de.uni_jena.iaa.linktype.atomic.views.layerview.LayerView"
+            id="de.uni_jena.iaa.linktype.atomic.views.layerview"
+            name="Layer View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:de.uni_jena.iaa.linktype.atomic.menus.viewMenu">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               label="Layer View"
+               mnemonic="L"
+               style="push"
+               tooltip="Opens the Layer View">
+               <parameter name="org.eclipse.ui.views.showView.viewId"
+					value="de.uni_jena.iaa.linktype.atomic.views.layerview"/>
+					<visibleWhen>
+            <with variable="activeEditorId">
+                     <equals
+                           value="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.editor">
+                     </equals>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective">
+         <view
+               closeable="true"
+               id="de.uni_jena.iaa.linktype.atomic.views.layerview"
+               minimized="false"
+               relationship="stack"
+               relative="de.uni_jena.iaa.linktype.atomic.views.sentenceview"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>

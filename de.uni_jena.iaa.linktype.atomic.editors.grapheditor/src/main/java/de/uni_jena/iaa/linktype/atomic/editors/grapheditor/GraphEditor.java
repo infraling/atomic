@@ -61,15 +61,15 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalV
  * 
  */
 public class GraphEditor extends AtomicGraphicalEditor {
-	
+
 	IPartListener2 partListener = new IPartListener2() {
-		
+
 		@Override
 		public void partVisible(IWorkbenchPartReference partRef) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void partOpened(IWorkbenchPartReference partRef) {
 			try {
@@ -80,46 +80,48 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				e.printStackTrace();
 			}
 		}
-		
+
 		@Override
 		public void partInputChanged(IWorkbenchPartReference partRef) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void partHidden(IWorkbenchPartReference partRef) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void partDeactivated(IWorkbenchPartReference partRef) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void partClosed(IWorkbenchPartReference partRef) {
-			try {
-				getSite().getWorkbenchWindow().getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.core.perspective", getSite().getWorkbenchWindow());
+			if (partRef.getPart(false).getClass() == GraphEditor.class) {
+				try {
+					getSite().getWorkbenchWindow().getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.core.perspective", getSite().getWorkbenchWindow());
+				}
+				catch (WorkbenchException e) {
+					e.printStackTrace();
+				}
 			}
-			catch (WorkbenchException e) {
-				e.printStackTrace();
-			}
-			
+
 		}
-		
+
 		@Override
 		public void partBroughtToTop(IWorkbenchPartReference partRef) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 		@Override
 		public void partActivated(IWorkbenchPartReference partRef) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	};
 
@@ -171,12 +173,13 @@ public class GraphEditor extends AtomicGraphicalEditor {
 		super.createPartControl(parent);
 		getSite().getPage().addSelectionListener(listener);
 		getSite().getPage().addPartListener(partListener);
-//		try {
-//			PlatformUI.getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-//		}
-//		catch (WorkbenchException e) {
-//			e.printStackTrace();
-//		}
+		// try {
+		// PlatformUI.getWorkbench().showPerspective("de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective",
+		// PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		// }
+		// catch (WorkbenchException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	@Override
