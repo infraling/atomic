@@ -20,6 +20,7 @@
   <module>../de.uni_jena.iaa.linktype.atomic.repository</module>
   <module>../de.uni_jena.iaa.linktype.atomic.logging</module>
   <module>../de.uni_jena.iaa.linktype.atomic.views.sentenceview</module>
+  <module>../de.uni_jena.iaa.linktype.atomic.views.layerview</module>
   </modules>
   
   <properties>
