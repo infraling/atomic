@@ -134,7 +134,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		Button selectButton = createButton(buttonComposite, "&Select all", GridData.HORIZONTAL_ALIGN_FILL);
 		SelectionListener listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if (getGraph().getSTokens().size() > 500) {
+				if (getInput().getSTokens().size() > 50) {
 					if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Show whole graph?", "WARNING: Rendering all sentences at once is an expensive operation, which may take long, and in some cases result in an application crash.\nDo you want to proceed?")) {
 						getSentenceTableViewer().setAllChecked(true);
 						getSentenceTableViewer().refresh();

@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -38,10 +38,10 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
- *
+ * 
  */
 public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart {
-	
+
 	private TokenAdapter adapter;
 
 	public TokenPart() {
@@ -49,27 +49,40 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 		setAdapter(new TokenAdapter());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
 	protected IFigure createFigure() {
 		return new NodeFigure(GraphElementRegistry.getIDForElement(getModel(), getModel().getSDocumentGraph()), NodeFigure.TOKEN_MODEL);
 	}
-	
+
 	@Override
 	protected void refreshVisuals() {
 		// FIXME: Bug fix
-		// Sometimes, for n = getModelChildren().size(), n+1 children get added, which leads to a blank line
+		// Sometimes, for n = getModelChildren().size(), n+1 children get added,
+		// which leads to a blank line
 		if (getFigure().getChildren().size() > getModelChildren().size())
 			getFigure().getChildren().remove(getFigure().getChildren().size() - 1);
-		
+
 		int x = PartUtils.getTokenX((GraphPart) getParent(), getModel(), getFigure());
-		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 600, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME: Fixed y coord (10). Make settable in Prefs?
+		((GraphPart) getParent()).setLayoutConstraint(this, getFigure(), new Rectangle(x, 600, getFigure().getPreferredSize().width, getFigure().getPreferredSize().height)); // FIXME:
+																																												// Fixed
+																																												// y
+																																												// coord
+																																												// (10).
+																																												// Make
+																																												// settable
+																																												// in
+																																												// Prefs?
 		super.refreshVisuals();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
@@ -80,26 +93,33 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, selectionPolicy);
 		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeGraphicalNodeEditPolicy());
 	}
-	
-	@Override 
+
+	@Override
 	protected List<Object> getModelChildren() {
 		List<Object> childrenList = new ArrayList<Object>();
 		childrenList.add(((GraphPart) getParent()).getTokenTextRegistry().get(getModel()));
 		childrenList.addAll(getModel().getSAnnotations());
 		return childrenList;
 	}
-	
-	@Override 
+
+	@Override
 	public void performRequest(Request req) {
-		if(req.getType() == RequestConstants.REQ_DIRECT_EDIT) { // TODO Parametrize for preferences sheet
+		if (req.getType() == RequestConstants.REQ_DIRECT_EDIT) { // TODO
+																	// Parametrize
+																	// for
+																	// preferences
+																	// sheet
 			performDirectEditing();
-			getParent().setFocus(true); // So that graph can be saved directly with CTRL + S
+			getParent().setFocus(true); // So that graph can be saved directly
+										// with CTRL + S
 		}
-		if(req.getType() == RequestConstants.REQ_OPEN) { // TODO Parametrize for preferences sheet
-			System.out.println("requested double-click."); 
-	    }
+		if (req.getType() == RequestConstants.REQ_OPEN) { // TODO Parametrize
+															// for preferences
+															// sheet
+			System.out.println("requested double-click.");
+		}
 	}
-	
+
 	private void performDirectEditing() {
 		MultiLineDirectEditManager manager = new MultiLineDirectEditManager(this, TextCellEditor.class, new AtomicCellEditorLocator(getFigure()));
 		manager.show();
@@ -117,19 +137,21 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 	}
 
 	/**
-	 * @param adapter the adapter to set
+	 * @param adapter
+	 *            the adapter to set
 	 */
 	public void setAdapter(TokenAdapter adapter) {
 		this.adapter = adapter;
 	}
-	
+
 	/**
 	 * @author Stephan Druskat
-	 *
+	 * 
 	 */
 	public class TokenAdapter extends EContentAdapter {
 
-		@Override public void notifyChanged(Notification n) {
+		@Override
+		public void notifyChanged(Notification n) {
 			refresh();
 			switch (n.getEventType()) {
 			case Notification.REMOVE:
@@ -141,35 +163,37 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 			default:
 				break;
 			}
-	    }
-	 
-		@Override public Notifier getTarget() {
-	    	return getModel();
-	    }
-	 
-	    @Override public boolean isAdapterForType(Object type) {
-	    	return type.equals(SToken.class);
-	    }
+		}
+
+		@Override
+		public Notifier getTarget() {
+			return getModel();
+		}
+
+		@Override
+		public boolean isAdapterForType(Object type) {
+			return type.equals(SToken.class);
+		}
 
 	}
-	
-	@Override 
+
+	@Override
 	public void activate() {
-		if(!isActive()) {
+		if (!isActive()) {
 			getModel().eAdapters().add(getAdapter());
-	    }
+		}
 		super.activate();
 	}
-	 
-	@Override 
+
+	@Override
 	public void deactivate() {
-		if(isActive()) {
+		if (isActive()) {
 			getModel().eAdapters().remove(getAdapter());
 		}
 		super.deactivate();
 	}
 
-	@Override 
+	@Override
 	protected List<Edge> getModelSourceConnections() {
 		SToken model = getModel();
 		SDocumentGraph graph = model.getSDocumentGraph();
@@ -178,14 +202,16 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 		if (graph != null) {
 			for (Edge edge : graph.getOutEdges(sId)) {
 				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
-					sourceList.add(edge);
+					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getTarget())) {
+						sourceList.add(edge);
+					}
 				}
 			}
 		}
 		return sourceList;
 	}
-	 
-	@Override 
+
+	@Override
 	protected List<Edge> getModelTargetConnections() {
 		SToken model = getModel();
 		SDocumentGraph graph = model.getSDocumentGraph();
@@ -194,13 +220,15 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 		if (graph != null) {
 			for (Edge edge : graph.getInEdges(sId)) {
 				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
-					targetList.add(edge);
+					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getSource())) {
+						targetList.add(edge);
+					}
 				}
 			}
 		}
 		return targetList;
 	}
-	
+
 	@Override
 	public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
 		return ((NodeFigure) getFigure()).getConnectionAnchor();

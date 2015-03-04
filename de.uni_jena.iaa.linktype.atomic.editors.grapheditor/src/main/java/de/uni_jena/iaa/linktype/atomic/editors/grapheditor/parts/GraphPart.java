@@ -95,6 +95,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			if (!getSortedTokens().isEmpty()) {
 				modelChildren.addAll(GraphService.getSentenceGraph(getSortedTokens()));
 			}
+			getDynamicModelChildrenList().clear();
+			getDynamicModelChildrenList().addAll(modelChildren);
 			return modelChildren;
 		}
 		return null;
