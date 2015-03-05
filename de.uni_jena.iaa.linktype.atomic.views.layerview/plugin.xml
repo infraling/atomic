@@ -41,7 +41,7 @@
                closeable="true"
                id="de.uni_jena.iaa.linktype.atomic.views.layerview"
                minimized="false"
-               ratio="0.85f"
+               ratio="0.8f"
                relationship="right"
                relative="org.eclipse.ui.editorss"
                showTitle="true"

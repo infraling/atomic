@@ -13,6 +13,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
@@ -29,6 +30,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SPointingRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
@@ -242,6 +244,12 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getTarget())) {
 						sourceList.add(edge);
 					}
+					// Needs to be manually refreshed because STokens are
+					// always
+					// rendered before SSpans!
+					if (edge.getTarget() instanceof SToken) {
+						edge.getTarget().eNotify(new NotificationImpl(NotificationImpl.SET, true, true));
+					}
 				}
 			}
 		}
@@ -259,6 +267,12 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
 					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getSource())) {
 						targetList.add(edge);
+					}
+					// Needs to be manually refreshed because STokens are
+					// always
+					// rendered before SSpans!
+					if (edge.getSource() instanceof SToken) {
+						edge.getSource().eNotify(new NotificationImpl(NotificationImpl.SET, true, true));
 					}
 				}
 			}

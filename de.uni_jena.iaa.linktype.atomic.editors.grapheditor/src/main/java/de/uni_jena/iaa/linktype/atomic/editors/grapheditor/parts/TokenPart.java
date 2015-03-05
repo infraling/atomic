@@ -161,6 +161,10 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 			case Notification.ADD:
 				refreshChildren();
 				break;
+			case Notification.SET:
+				refresh();
+				refreshChildren();
+				break;
 			default:
 				break;
 			}
