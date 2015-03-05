@@ -5,6 +5,7 @@ package de.uni_jena.iaa.linktype.atomic.views.layerview;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -14,6 +15,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -82,6 +84,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		getLayerTableViewer().addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
+				System.err.println("CHECKSTATECHANGED");
 				// getLinkSourceSentences().clear();
 				// getLinkedSentencesForSentence().clear();
 				// getLinkedSentences().clear();
@@ -127,6 +130,22 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		Button button = new Button(buttonComposite, SWT.PUSH);
 		button.setText("[+] Add new level");
 		button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		button.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				String layerName = null;
+				if (getGraph() != null) {
+					SLayer layer = SaltFactory.eINSTANCE.createSLayer();
+					InputDialog createLayerDialog = new InputDialog(Display.getCurrent().getActiveShell(), "Create new level", "Please enter a name for the new level.", "", null);
+					if (createLayerDialog.open() == Window.OK) {
+						layerName = createLayerDialog.getValue();
+						layer.setSName(createLayerDialog.getValue());
+					}
+					getGraph().addSLayer(layer);
+				}
+				getLayerTableViewer().refresh();
+				getLayerCombo().add(layerName, (getLayerCombo().getItemCount() - 1));
+			}
+		});
 
 	}
 

@@ -41,8 +41,9 @@
                closeable="true"
                id="de.uni_jena.iaa.linktype.atomic.views.layerview"
                minimized="false"
-               relationship="stack"
-               relative="de.uni_jena.iaa.linktype.atomic.views.sentenceview"
+               ratio="0.85f"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
                showTitle="true"
                visible="true">
          </view>

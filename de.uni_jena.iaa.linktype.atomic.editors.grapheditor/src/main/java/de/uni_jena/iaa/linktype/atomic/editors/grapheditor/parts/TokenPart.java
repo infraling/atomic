@@ -203,7 +203,7 @@ public class TokenPart extends AbstractGraphicalEditPart implements NodeEditPart
 		if (graph != null) {
 			for (Edge edge : graph.getOutEdges(sId)) {
 				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
-					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getTarget())) {
+					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getTarget()) ) {
 						sourceList.add(edge);
 					}
 				}

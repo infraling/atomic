@@ -109,7 +109,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			if (!getSortedTokens().isEmpty() && !getLayers().isEmpty()) {
 				for (Node node : GraphService.getSentenceGraph(getSortedTokens())) {
 					if (node.getLayers().isEmpty()) {
-						System.err.println("Found node without layers: " + node);
+						// FIXME
+//						System.err.println("Found node without layers: " + node);
 					}
 				}
 				for (Node node : GraphService.getSentenceGraph(getSortedTokens())) {

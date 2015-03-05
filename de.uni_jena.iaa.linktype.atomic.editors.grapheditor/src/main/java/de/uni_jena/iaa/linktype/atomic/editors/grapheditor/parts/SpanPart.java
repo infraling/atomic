@@ -240,7 +240,8 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 		if (graph != null) {
 			for (Edge edge : graph.getOutEdges(sId)) {
 				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
-					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getTarget())) {
+					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getTarget()) ||
+							((GraphPart) getParent()).getSortedTokens().contains(edge.getTarget())) {
 						sourceList.add(edge);
 					}
 				}
@@ -258,7 +259,8 @@ public class SpanPart extends AbstractGraphicalEditPart implements NodeEditPart 
 		if (graph != null) {
 			for (Edge edge : graph.getInEdges(sId)) {
 				if (edge instanceof SDominanceRelation || edge instanceof SSpanningRelation || edge instanceof SPointingRelation || edge instanceof SOrderRelation) {
-					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getSource())) {
+					if (((GraphPart) getParent()).getDynamicModelChildrenList().contains(edge.getSource()) ||
+							((GraphPart) getParent()).getSortedTokens().contains(edge.getSource())) {
 						targetList.add(edge);
 					}
 				}

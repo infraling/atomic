@@ -122,8 +122,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 
 		@Override
 		public void partActivated(IWorkbenchPartReference partRef) {
-			// TODO Auto-generated method stub
-
+			GraphPart part = (GraphPart) getGraphicalViewer().getRootEditPart().getContents();
 		}
 	};
 
@@ -133,6 +132,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				return;
 			}
 			IStructuredSelection selection = (IStructuredSelection) incomingSelection;
+			System.err.println("---> " + selection);
 			for (Object element : selection.toList()) {
 				// Check if we need to perform an operation at all, i.e.
 				// if the selection is interesting
@@ -156,13 +156,15 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			}
 			GraphPart graphPart = ((GraphPart) getGraphicalViewer().getRootEditPart().getContents());
 			if (selection.isEmpty()) {
-				return;
+				graphPart.getLayers().clear();
+				graphPart.getSortedTokens().clear();
+				graphPart.refresh();
 			}
 			else if (selection.getFirstElement().equals(ModelRegistry.NO_LAYERS_SELECTED)) {
 				graphPart.getLayers().clear();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
 			}
-			else if (selection.getFirstElement().equals(ModelRegistry.NO_LAYERS_SELECTED)) {
+			else if (selection.getFirstElement().equals(ModelRegistry.NO_SENTENCES_SELECTED)) {
 				graphPart.getSortedTokens().clear();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
 			}
@@ -179,7 +181,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			else if (containsOnlyLayers) {
 				graphPart.getLayers().clear();
 				graphPart.setLayers(new HashSet<SLayer>(selection.toList()));
-				graphPart.refresh();
+				getGraphicalViewer().getRootEditPart().getContents().refresh();
 				for (Object child : graphPart.getChildren()) {
 					if (child instanceof TokenPart || child instanceof SpanPart || child instanceof StructurePart) {
 						((AbstractGraphicalEditPart) child).refresh();
