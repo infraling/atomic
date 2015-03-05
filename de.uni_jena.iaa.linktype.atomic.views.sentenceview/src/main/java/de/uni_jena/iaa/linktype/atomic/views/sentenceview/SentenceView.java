@@ -61,6 +61,9 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 
 	@Override
 	public void createPartControl(Composite parent) {
+		while (getSite().getPage().getActiveEditor() == null) {
+			System.err.println("...");
+		}
 		getSite().setSelectionProvider(this);
 		final IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
 		workbenchWindow.getPartService().addPartListener(this);
@@ -72,7 +75,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		getSentenceTableViewer().getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		getSentenceTableViewer().setContentProvider(new SentenceContentProvider());
 		getSentenceTableViewer().setLabelProvider(new SentenceLabelProvider(this));
-		getSentenceTableViewer().setInput(getGraph());
 
 		TableColumn column = new TableColumn(getSentenceTableViewer().getTable(), SWT.FILL);
 		column.setText("Sentences");
@@ -95,7 +97,12 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 					getLinkedSentences().addAll(linkedSentencesForCurrentElement);
 				}
 				getSentenceTableViewer().refresh();
-				notifySelectionListeners();
+				if (getSentenceTableViewer().getCheckedElements().length == 0) {
+					notifySelectionListeners(ModelRegistry.NO_SENTENCES_SELECTED);
+				}
+				else {
+					notifySelectionListeners();
+				}
 			}
 		});
 
@@ -107,12 +114,14 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	 * @return
 	 */
 	private SDocumentGraph getInput() {
-		IEditorInput editorInput = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
-		if (editorInput instanceof FileEditorInput) {
-			IFile file = ((FileEditorInput) editorInput).getFile();
-			return ModelRegistry.getModel(file);
+		if (getGraph() == null) {
+			IEditorInput editorInput = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
+			if (editorInput instanceof FileEditorInput) {
+				IFile file = ((FileEditorInput) editorInput).getFile();
+				setGraph(ModelRegistry.getModel(file));
+			}
 		}
-		return null;
+		return getGraph();
 	}
 
 	/**
@@ -121,6 +130,15 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	private void notifySelectionListeners() {
 		for (int i = 0; i < listeners.getListeners().length; i++) {
 			((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(SentenceView.this, new StructuredSelection(getSentenceTableViewer().getCheckedElements())));
+		}
+	}
+
+	/**
+	 * @param noSentencesSelected
+	 */
+	protected void notifySelectionListeners(String emptySelectionType) {
+		for (int i = 0; i < listeners.getListeners().length; i++) {
+			((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(SentenceView.this, new StructuredSelection(emptySelectionType)));
 		}
 	}
 
@@ -134,7 +152,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		Button selectButton = createButton(buttonComposite, "&Select all", GridData.HORIZONTAL_ALIGN_FILL);
 		SelectionListener listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if (getInput().getSTokens().size() > 50) {
+				if (getGraph() != null && getGraph().getSTokens().size() > 50) {
 					if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Show whole graph?", "WARNING: Rendering all sentences at once is an expensive operation, which may take long, and in some cases result in an application crash.\nDo you want to proceed?")) {
 						getSentenceTableViewer().setAllChecked(true);
 						getSentenceTableViewer().refresh();
@@ -157,7 +175,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 				getLinkedSentences().clear();
 				getLinkedSentencesForSentence().clear();
 				getLinkSourceSentences().clear();
-				notifySelectionListeners();
+				notifySelectionListeners(ModelRegistry.NO_SENTENCES_SELECTED);
 				getSentenceTableViewer().refresh();
 
 			}
@@ -239,14 +257,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		return graph;
 	}
 
-	/**
-	 * @param graph
-	 *            the graph to set
-	 */
-	public void setGraph(SDocumentGraph graph) {
-		this.graph = graph;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -256,15 +266,26 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 		if (partRef.getPart(false) instanceof EditorPart) {
-			EditorPart editor = (EditorPart) partRef.getPart(false);
-			if (editor.getEditorInput() instanceof FileEditorInput) {
-				FileEditorInput input = (FileEditorInput) editor.getEditorInput();
-				if (input.getFile().getName().endsWith(SaltFactory.FILE_ENDING_SALT) && !input.getFile().getName().equals(SaltFactory.FILE_SALT_PROJECT)) {
-					if (getSentenceTableViewer() != null && !getSentenceTableViewer().getControl().isDisposed()) {
-						getSentenceTableViewer().setInput(getInput());
-						getSentenceTableViewer().refresh();
-					}
-				}
+			setGraph(null);
+			// EditorPart editor = (EditorPart) partRef.getPart(false);
+			// if (editor.getEditorInput() instanceof FileEditorInput) {
+			// FileEditorInput input = (FileEditorInput)
+			// editor.getEditorInput();
+			// if
+			// (input.getFile().getName().endsWith(SaltFactory.FILE_ENDING_SALT)
+			// &&
+			// !input.getFile().getName().equals(SaltFactory.FILE_SALT_PROJECT))
+			// {
+			// if (getLayerTableViewer() != null &&
+			// !getLayerTableViewer().getControl().isDisposed()) {
+			// getLayerTableViewer().setInput(getInput());
+			// getLayerTableViewer().refresh();
+			// }
+			// }
+			// }
+			if (getSentenceTableViewer() != null && !getSentenceTableViewer().getControl().isDisposed()) {
+				getSentenceTableViewer().setInput(getInput());
+				getSentenceTableViewer().refresh();
 			}
 		}
 	}
@@ -350,10 +371,19 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	}
 
 	/**
-	 * @param linkSourceSentences the linkSourceSentences to set
+	 * @param linkSourceSentences
+	 *            the linkSourceSentences to set
 	 */
 	public void setLinkSourceSentences(HashSet<SSpan> linkSourceSentences) {
 		this.linkSourceSentences = linkSourceSentences;
+	}
+
+	/**
+	 * @param graph
+	 *            the graph to set
+	 */
+	public void setGraph(SDocumentGraph graph) {
+		this.graph = graph;
 	}
 
 }

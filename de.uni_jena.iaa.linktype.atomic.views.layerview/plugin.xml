@@ -6,7 +6,7 @@
       <view
             class="de.uni_jena.iaa.linktype.atomic.views.layerview.LayerView"
             id="de.uni_jena.iaa.linktype.atomic.views.layerview"
-            name="Layer View"
+            name="Level View"
             restorable="true">
       </view>
    </extension>
@@ -17,10 +17,10 @@
             locationURI="menu:de.uni_jena.iaa.linktype.atomic.menus.viewMenu">
          <command
                commandId="org.eclipse.ui.views.showView"
-               label="Layer View"
+               label="Level View"
                mnemonic="L"
                style="push"
-               tooltip="Opens the Layer View">
+               tooltip="Opens the Level View">
                <parameter name="org.eclipse.ui.views.showView.viewId"
 					value="de.uni_jena.iaa.linktype.atomic.views.layerview"/>
 					<visibleWhen>

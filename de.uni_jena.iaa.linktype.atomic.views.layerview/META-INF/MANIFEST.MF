@@ -5,6 +5,13 @@ Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.views.layerview;singleton:=
 Bundle-Version: 0.1.10.qualifier
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.views.layerview.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ de.hu_berlin.german.korpling.saltnpepper.salt-graph,
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon,
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources,
+ de.uni_jena.iaa.linktype.atomic.core;bundle-version="0.1.9",
+ org.eclipse.emf.ecore
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

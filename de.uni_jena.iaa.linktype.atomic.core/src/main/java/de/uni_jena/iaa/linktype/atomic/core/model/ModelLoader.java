@@ -109,6 +109,7 @@ public class ModelLoader {
 	 * @return the {@link SDocumentGraph} that has been identified via the {@link IFile}, or null
 	 */
 	public static SDocumentGraph loadDocumentGraphFromDocumentIFile(IFile documentIFile, SaltProject saltProject) {
+		System.err.println("ACTUALLY LOADING SDOCUMENTGRAPH FROM FILE!");
 		log.info("Attempting to load SDocumentGraph with the help of the IFile {} and the SaltProject {}.", documentIFile, saltProject);
 		String documentFileName = documentIFile.getName();
 		if (documentFileName.contains("." + SaltFactory.FILE_ENDING_SALT)) {

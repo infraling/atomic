@@ -5,8 +5,10 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
@@ -22,9 +24,13 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Layer;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphService;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayoutEditPolicy;
 
@@ -39,6 +45,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	public Object removingObject;
 	private List<Object> dynamicModelChildrenList = new ArrayList<Object>();
 	private EList<SToken> sortedTokens = new BasicEList<SToken>();
+	private HashSet<SLayer> layers = new HashSet<SLayer>();
 
 	public GraphPart(SDocumentGraph model) {
 		setModel(model);
@@ -91,9 +98,34 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	protected List<Object> getModelChildren() {
 		List<Object> modelChildren = new ArrayList<Object>();
 		if (getSortedTokens() != null) {
+			// for (SToken sortedToken : getSortedTokens()) {
+			// for (SLayer layer : sortedToken.getSLayers()) {
+			// if (getLayers().contains(layer)) {
+			// modelChildren.add(sortedToken);
+			// }
+			// }
+			// }
 			modelChildren.addAll(getSortedTokens());
-			if (!getSortedTokens().isEmpty()) {
-				modelChildren.addAll(GraphService.getSentenceGraph(getSortedTokens()));
+			if (!getSortedTokens().isEmpty() && !getLayers().isEmpty()) {
+				for (Node node : GraphService.getSentenceGraph(getSortedTokens())) {
+					if (node.getLayers().isEmpty()) {
+						System.err.println("Found node without layers: " + node);
+					}
+				}
+				for (Node node : GraphService.getSentenceGraph(getSortedTokens())) {
+					SNode sNode = (SNode) node;
+					for (SLayer layer : sNode.getSLayers()) {
+						for (SLayer selectedLayer : getLayers()) {
+							if (layer.getSId().equals(selectedLayer.getSId())) {
+								modelChildren.add(sNode);
+							}
+						}
+//						else {
+//							System.err.println("Found Layer that's not in SLayers: " + layer);
+//						}
+					}
+				}
+				// modelChildren.addAll(GraphService.getSentenceGraph(getSortedTokens()));
 			}
 			getDynamicModelChildrenList().clear();
 			getDynamicModelChildrenList().addAll(modelChildren);
@@ -215,6 +247,21 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 */
 	public EList<SToken> getSortedTokens() {
 		return sortedTokens;
+	}
+
+	/**
+	 * @return the layers
+	 */
+	public HashSet<SLayer> getLayers() {
+		return layers;
+	}
+
+	/**
+	 * @param layers
+	 *            the layers to set
+	 */
+	public void setLayers(HashSet<SLayer> layers) {
+		this.layers = layers;
 	}
 
 }

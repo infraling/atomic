@@ -3,8 +3,10 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventObject;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.draw2d.AutomaticRouter;
@@ -131,16 +133,37 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				return;
 			}
 			IStructuredSelection selection = (IStructuredSelection) incomingSelection;
+			for (Object element : selection.toList()) {
+				// Check if we need to perform an operation at all, i.e.
+				// if the selection is interesting
+				if (!(element instanceof SSpan || element instanceof SLayer || (element instanceof String && (element.equals(ModelRegistry.NO_LAYERS_SELECTED) || element.equals(ModelRegistry.NO_SENTENCES_SELECTED))))) {
+					return;
+				}
+			}
 			boolean containsOnlySpans = true;
+			boolean containsOnlyLayers = true;
 			for (Object element : selection.toList()) {
 				if (!(element instanceof SSpan)) {
 					containsOnlySpans = false;
 					break;
 				}
 			}
+			for (Object element : selection.toList()) {
+				if (!(element instanceof SLayer)) {
+					containsOnlyLayers = false;
+					break;
+				}
+			}
 			GraphPart graphPart = ((GraphPart) getGraphicalViewer().getRootEditPart().getContents());
 			if (selection.isEmpty()) {
-				// Clear editor
+				System.err.println("EMPTY? " + selection.isEmpty());
+				return;	
+			}
+			if (selection.getFirstElement().equals(ModelRegistry.NO_LAYERS_SELECTED)) {
+				graphPart.getLayers().clear();
+				getGraphicalViewer().getRootEditPart().getContents().refresh();
+			}
+			else if (selection.getFirstElement().equals(ModelRegistry.NO_LAYERS_SELECTED)) {
 				graphPart.getSortedTokens().clear();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
 			}
@@ -148,8 +171,16 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				graphPart.getSortedTokens().clear();
 				graphPart.setSortedTokens(GraphService.getOrderedTokensForSentenceSpans(selection.toList()));
 				graphPart.refresh();
-
-				// Refresh all TokenParts, not just the ones that have changed!
+				for (Object child : graphPart.getChildren()) {
+					if (child instanceof TokenPart || child instanceof SpanPart || child instanceof StructurePart) {
+						((AbstractGraphicalEditPart) child).refresh();
+					}
+				}
+			}
+			else if (containsOnlyLayers) {
+				graphPart.getLayers().clear();
+				graphPart.setLayers(new HashSet<SLayer>(selection.toList()));
+				graphPart.refresh();
 				for (Object child : graphPart.getChildren()) {
 					if (child instanceof TokenPart || child instanceof SpanPart || child instanceof StructurePart) {
 						((AbstractGraphicalEditPart) child).refresh();

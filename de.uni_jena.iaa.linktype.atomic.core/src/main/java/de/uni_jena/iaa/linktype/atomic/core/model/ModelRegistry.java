@@ -36,6 +36,8 @@ public class ModelRegistry {
 
 	public static final String SENTENCE_LAYER_SID = "ATOMIC::SENTENCES";
 	public static final String SENTENCE_LAYER_SNAME = "Sentences (detected)";
+	public static final String NO_LAYERS_SELECTED = "No layers selected!";
+	public static final String NO_SENTENCES_SELECTED = "No sentences selected!";
 
 	/**
 	 * Returns an {@link SDocumentGraph} that has been loaded from an
@@ -49,6 +51,10 @@ public class ModelRegistry {
 	 * @return the resolved {@link SDocumentGraph}
 	 */
 	public static SDocumentGraph getModel(IFile iFile) {
+		if (documentGraphs.get(iFile) != null) {
+			// Graph exists, so simply return it!
+			return documentGraphs.get(iFile);
+		}
 		log.info("Getting model for IFile {}.", iFile);
 		SDocumentGraph documentGraph = null;
 		IFile documentIFile;
@@ -90,9 +96,11 @@ public class ModelRegistry {
 			log.info("Document to open: {}.", documentIFile);
 			documentGraph = documentGraphs.get(documentIFile);
 			if (documentGraph == null) {
+				log.info("Document not loaded yet, loading now.");
 				documentGraph = loadAndRegisterSDocumentGraph(saltProject, documentIFile);
 			}
 			else {
+				log.info("Document already loaded.");
 				increaseEditorCountForSDocument(documentIFile);
 			}
 		}
