@@ -156,10 +156,9 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			}
 			GraphPart graphPart = ((GraphPart) getGraphicalViewer().getRootEditPart().getContents());
 			if (selection.isEmpty()) {
-				System.err.println("EMPTY? " + selection.isEmpty());
-				return;	
+				return;
 			}
-			if (selection.getFirstElement().equals(ModelRegistry.NO_LAYERS_SELECTED)) {
+			else if (selection.getFirstElement().equals(ModelRegistry.NO_LAYERS_SELECTED)) {
 				graphPart.getLayers().clear();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
 			}
