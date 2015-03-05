@@ -41,6 +41,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.GraphXYLayou
 public class GraphPart extends AbstractGraphicalEditPart {
 
 	private GraphAdapter adapter;
+	private SLayer activeLayer;
 	private Map<SToken, String> tokenTextRegistry;
 	public Object removingObject;
 	private List<Object> dynamicModelChildrenList = new ArrayList<Object>();
@@ -263,6 +264,20 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 */
 	public void setLayers(HashSet<SLayer> layers) {
 		this.layers = layers;
+	}
+
+	/**
+	 * @return the activeLayer
+	 */
+	public SLayer getActiveLayer() {
+		return activeLayer;
+	}
+
+	/**
+	 * @param activeLayer the activeLayer to set
+	 */
+	public void setActiveLayer(SLayer activeLayer) {
+		this.activeLayer = activeLayer;
 	}
 
 }

@@ -15,3 +15,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Export-Package: de.uni_jena.iaa.linktype.atomic.views.layerview.util

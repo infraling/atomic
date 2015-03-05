@@ -40,6 +40,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
+import de.uni_jena.iaa.linktype.atomic.views.layerview.util.NewLayer;
 
 /**
  * @author Stephan Druskat
@@ -129,12 +130,14 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 
 		Button button = new Button(buttonComposite, SWT.PUSH);
 		button.setText("[+] Add new level");
-		button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+//		button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String layerName = null;
+				SLayer layer = null;
 				if (getGraph() != null) {
-					SLayer layer = SaltFactory.eINSTANCE.createSLayer();
+					layer = SaltFactory.eINSTANCE.createSLayer();
 					InputDialog createLayerDialog = new InputDialog(Display.getCurrent().getActiveShell(), "Create new level", "Please enter a name for the new level.", "", null);
 					if (createLayerDialog.open() == Window.OK) {
 						layerName = createLayerDialog.getValue();
@@ -144,6 +147,9 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 				}
 				getLayerTableViewer().refresh();
 				getLayerCombo().add(layerName, (getLayerCombo().getItemCount() - 1));
+				for (int i = 0; i < listeners.getListeners().length; i++) {
+					((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(layer))));
+				}
 			}
 		});
 
@@ -211,7 +217,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	 */
 	private void createLayerCombo(Composite parent) {
 		setLayerCombo(new Combo(parent, SWT.NONE | SWT.READ_ONLY));
-		getLayerCombo().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		getLayerCombo().setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		addLayersToCombo(getLayerCombo());
 		getLayerCombo().add("-- Set active level --", 0);
 		getLayerCombo().select(0);
@@ -293,6 +299,11 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 			if (getLayerTableViewer() != null && !getLayerTableViewer().getControl().isDisposed()) {
 				getLayerTableViewer().setInput(getInput());
 				getLayerTableViewer().refresh();
+				getLayerCombo().removeAll();
+				addLayersToCombo(getLayerCombo());
+				getLayerCombo().add("-- Set active level --", 0);
+				getLayerCombo().select(0);
+				
 			}
 		}
 	}

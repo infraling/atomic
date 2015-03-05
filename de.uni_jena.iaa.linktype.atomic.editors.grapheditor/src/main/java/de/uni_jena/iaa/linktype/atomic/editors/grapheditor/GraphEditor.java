@@ -57,6 +57,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AdHocSentenceDetectionWizard;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicGraphicalViewerKeyHandler;
+import de.uni_jena.iaa.linktype.atomic.views.layerview.util.NewLayer;
 
 /**
  * @author Stephan Druskat
@@ -187,6 +188,9 @@ public class GraphEditor extends AtomicGraphicalEditor {
 						((AbstractGraphicalEditPart) child).refresh();
 					}
 				}
+			}
+			else if (selection.getFirstElement() instanceof NewLayer) {
+				graphPart.setActiveLayer(((NewLayer) selection.getFirstElement()).getNewLayer());
 			}
 		}
 	};
