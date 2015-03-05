@@ -277,6 +277,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 * @param activeLayer the activeLayer to set
 	 */
 	public void setActiveLayer(SLayer activeLayer) {
+		System.err.println("---- setting active layer");
 		this.activeLayer = activeLayer;
 	}
 

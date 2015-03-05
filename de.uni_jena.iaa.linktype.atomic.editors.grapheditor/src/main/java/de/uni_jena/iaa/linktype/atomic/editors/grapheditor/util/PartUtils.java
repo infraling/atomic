@@ -242,7 +242,7 @@ public class PartUtils {
 		Map registry = ((GraphEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).getViewer().getEditPartRegistry();
 		LayoutManager layoutManager = ((AbstractGraphicalEditPart) registry.get(graph)).getFigure().getLayoutManager();
 		int firstTokenX = 0;
-		if (registry.get(sortedTokens.get(0)) != null) {
+		if (registry.get(sortedTokens.get(0)) != null && !sortedTokens.isEmpty()) {
 			Rectangle constraint = ((Rectangle) layoutManager.getConstraint(((AbstractGraphicalEditPart) registry.get(sortedTokens.get(0))).getFigure()));
 			firstTokenX = constraint.x;
 		}

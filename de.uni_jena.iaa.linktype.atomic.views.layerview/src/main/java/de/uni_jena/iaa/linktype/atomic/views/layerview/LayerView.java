@@ -5,6 +5,7 @@ package de.uni_jena.iaa.linktype.atomic.views.layerview;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -224,8 +225,14 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		SelectionListener listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (e.widget.equals(getLayerCombo())) {
+					if (getGraph() != null) {
+						EList<SLayer> layerToActivate = getGraph().getSLayerByName(getLayerCombo().getText());
+						System.err.println("asdasd" + layerToActivate.get(0));
+						for (int i = 0; i < listeners.getListeners().length; i++) {
+							((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(layerToActivate.get(0)))));
+						}
+					}
 					System.err.println("NEW SELECTION " + getLayerCombo().getText());
-					// TODO Notify selectionadapters
 				}
 			}
 		};
@@ -299,11 +306,10 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 			if (getLayerTableViewer() != null && !getLayerTableViewer().getControl().isDisposed()) {
 				getLayerTableViewer().setInput(getInput());
 				getLayerTableViewer().refresh();
-				getLayerCombo().removeAll();
-				addLayersToCombo(getLayerCombo());
-				getLayerCombo().add("-- Set active level --", 0);
-				getLayerCombo().select(0);
-				
+//				getLayerCombo().removeAll();
+//				addLayersToCombo(getLayerCombo());
+//				getLayerCombo().add("-- Set active level --", 0);
+//				getLayerCombo().select(0);
 			}
 		}
 	}

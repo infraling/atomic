@@ -137,9 +137,12 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			for (Object element : selection.toList()) {
 				// Check if we need to perform an operation at all, i.e.
 				// if the selection is interesting
-				if (!(element instanceof SSpan || element instanceof SLayer || (element instanceof String && (element.equals(ModelRegistry.NO_LAYERS_SELECTED) || element.equals(ModelRegistry.NO_SENTENCES_SELECTED))))) {
+				if (!(element instanceof SSpan || element instanceof SLayer || (element instanceof String && (element.equals(ModelRegistry.NO_LAYERS_SELECTED) || element.equals(ModelRegistry.NO_SENTENCES_SELECTED))) || element instanceof NewLayer)) {
 					return;
 				}
+			}
+			if (selection.toArray()[0] instanceof NewLayer) {
+				System.err.println("NEW LAYER!");
 			}
 			boolean containsOnlySpans = true;
 			boolean containsOnlyLayers = true;
@@ -169,6 +172,10 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				graphPart.getSortedTokens().clear();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
 			}
+			else if (selection.toList().get(0) instanceof NewLayer) {
+				System.err.println("SETTING ACTIVE LAYER");
+				graphPart.setActiveLayer(((NewLayer) selection.getFirstElement()).getNewLayer());
+			}
 			else if (containsOnlySpans) {
 				graphPart.getSortedTokens().clear();
 				graphPart.setSortedTokens(GraphService.getOrderedTokensForSentenceSpans(selection.toList()));
@@ -188,9 +195,6 @@ public class GraphEditor extends AtomicGraphicalEditor {
 						((AbstractGraphicalEditPart) child).refresh();
 					}
 				}
-			}
-			else if (selection.getFirstElement() instanceof NewLayer) {
-				graphPart.setActiveLayer(((NewLayer) selection.getFirstElement()).getNewLayer());
 			}
 		}
 	};

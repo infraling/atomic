@@ -10,6 +10,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.ui.PlatformUI;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
@@ -18,9 +19,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SDATATYPE;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SProcessingAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.GraphEditor;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
@@ -37,6 +41,11 @@ public class NodeCreateCommand extends Command {
 	@Override
 	public void execute() {
 		getModel().setGraph(getGraph());
+		SLayer activeLayer = ((GraphPart) ((GraphEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).getEditPartViewer().getContents()).getActiveLayer();
+		if (activeLayer != null) {
+			System.err.println("ADD NODES TO LAYER " + activeLayer);
+			activeLayer.getSNodes().add(getModel());
+		}
 		if (getSelectedEditParts() != null && !getSelectedEditParts().isEmpty()) {
 			createRelations();
 		}
@@ -54,10 +63,10 @@ public class NodeCreateCommand extends Command {
 	}
 
 	private void createRelations() {
+		SRelation relation = null;
 		if (getModel() instanceof SStructure) {
 			for (EditPart editPart : getSelectedEditParts()) {
 				Object ePModel = editPart.getModel();
-				SRelation relation = null;
 				if (ePModel instanceof SStructure || ePModel instanceof SToken || ePModel instanceof SSpan) {
 					// FIXME either or
 					// getGraph().createSRelation(getModel(), (SNode)ePModel,
@@ -75,7 +84,6 @@ public class NodeCreateCommand extends Command {
 		else if (getModel() instanceof SSpan) {
 			for (EditPart editPart : getSelectedEditParts()) {
 				Object ePModel = editPart.getModel();
-				SRelation relation = null;
 				if (ePModel instanceof SToken) {
 					relation = SaltFactory.eINSTANCE.createSSpanningRelation();
 					relation.setSSource(getModel());
@@ -86,7 +94,11 @@ public class NodeCreateCommand extends Command {
 				}
 			}
 		}
-
+		SLayer activeLayer = ((GraphPart) ((GraphEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).getEditPartViewer().getContents()).getActiveLayer();
+		if (activeLayer != null) {
+			System.err.println("ADDING RELATIONS");
+			activeLayer.getSRelations().add(relation);
+		}
 	}
 
 	@Override
