@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="de.uni_jena.iaa.linktype.atomic.target_platform" sequenceNumber="26">
+<?pde version="3.8"?><target name="de.uni_jena.iaa.linktype.atomic.target_platform" sequenceNumber="28">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.7.2.v20110927-2020-7G7W77A5WNgIRPdWXDIbNTSQPdQL"/>
@@ -33,495 +33,508 @@
 <unit id="de.hu_berlin.german.korpling.saltnpepper.pepper.core.source.feature.group" version="1.2.0.201403061037"/>
 <repository location="http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/1.1.8-SNAPSHOT/"/>
 </location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.opennlp.tools" version="1.5.3"/>
+<repository location="file:/home/stephan/git/deps-p2/target/repository/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.jbenchx.eclipse.feature.group" version="0.3.0.201110301613"/>
+<repository location="http://iquadrat.github.com/jbenchx/updates/"/>
+</location>
 </locations>
 <includeBundles>
-<plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
-<plugin id="org.eclipse.jdt.compiler.tool.source"/>
-<plugin id="org.mortbay.jetty.util.source"/>
-<plugin id="org.eclipse.equinox.p2.console"/>
-<plugin id="org.eclipse.equinox.p2.ql"/>
-<plugin id="org.eclipse.compare.core"/>
-<plugin id="org.eclipse.equinox.jsp.jasper"/>
-<plugin id="org.eclipse.equinox.concurrent.source"/>
-<plugin id="org.eclipse.equinox.http.servlet.source"/>
-<plugin id="org.eclipse.equinox.p2.publisher.eclipse"/>
-<plugin id="org.eclipse.jdt.launching"/>
-<plugin id="org.eclipse.search"/>
-<plugin id="org.eclipse.swt.win32.win32.x86_64.source"/>
-<plugin id="javax.servlet.source"/>
-<plugin id="javax.servlet.jsp.source"/>
-<plugin id="org.apache.commons.el"/>
-<plugin id="org.eclipse.text.source"/>
-<plugin id="org.eclipse.equinox.p2.core"/>
-<plugin id="org.eclipse.team.ui"/>
-<plugin id="org.eclipse.team.core"/>
-<plugin id="org.eclipse.emf.common" version="2.7.0.v20120127-1122"/>
-<plugin id="org.eclipse.draw2d.source"/>
-<plugin id="org.eclipse.ui.navigator.source"/>
-<plugin id="org.apache.commons.lang.source"/>
-<plugin id="org.eclipse.gef"/>
-<plugin id="org.eclipse.emf.importer.source"/>
-<plugin id="org.apache.lucene.core.source"/>
-<plugin id="org.eclipse.emf.importer.java"/>
-<plugin id="org.apache.commons.logging.source"/>
-<plugin id="org.eclipse.core.runtime.compatibility.auth" version="3.2.200.v20110110"/>
-<plugin id="org.apache.commons.lang3.source"/>
-<plugin id="org.eclipse.jsch.core.source"/>
-<plugin id="org.eclipse.core.databinding.beans"/>
-<plugin id="org.eclipse.draw2d.doc.isv"/>
-<plugin id="org.eclipse.help.base.source"/>
-<plugin id="org.eclipse.ui.navigator.resources.source"/>
-<plugin id="org.eclipse.emf.ecore.edit.source"/>
-<plugin id="org.eclipse.emf.mapping.ecore"/>
-<plugin id="org.eclipse.equinox.p2.extensionlocation.source"/>
-<plugin id="org.eclipse.jdt.apt.pluggable.core"/>
-<plugin id="org.eclipse.core.databinding.source"/>
-<plugin id="org.apache.commons.httpclient"/>
-<plugin id="org.eclipse.update.configurator"/>
-<plugin id="org.eclipse.swt.win32.win32.x86_64"/>
-<plugin id="com.ibm.icu"/>
-<plugin id="org.eclipse.ant.ui"/>
-<plugin id="org.eclipse.equinox.concurrent"/>
-<plugin id="slf4j.api" version="1.7.7"/>
-<plugin id="org.eclipse.ui.win32"/>
-<plugin id="org.sat4j.pb"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient"/>
-<plugin id="org.eclipse.ltk.core.refactoring"/>
-<plugin id="org.slf4j.log4j.source"/>
-<plugin id="org.eclipse.equinox.p2.updatechecker"/>
-<plugin id="org.eclipse.core.net.linux.x86_64"/>
-<plugin id="org.eclipse.core.databinding"/>
-<plugin id="org.eclipse.emf.common.source" version="2.7.0.v20120127-1122"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore.edit.source"/>
-<plugin id="org.eclipse.core.filesystem" version="1.3.100.v20110423-0524"/>
-<plugin id="org.eclipse.ui.forms"/>
-<plugin id="org.eclipse.ecf"/>
-<plugin id="org.eclipse.osgi.util.source"/>
-<plugin id="org.apache.lucene.source"/>
-<plugin id="org.eclipse.ecf.source"/>
-<plugin id="org.eclipse.emf.common.ui"/>
-<plugin id="org.eclipse.jsch.core"/>
-<plugin id="org.slf4j.api.source"/>
-<plugin id="org.eclipse.equinox.p2.reconciler.dropins.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework.source"/>
-<plugin id="org.eclipse.ui.intro.universal.source"/>
-<plugin id="org.eclipse.ui.intro.source"/>
-<plugin id="org.apache.ant"/>
-<plugin id="org.eclipse.equinox.security.ui.source"/>
-<plugin id="org.eclipse.emf.mapping.ui"/>
-<plugin id="org.eclipse.core.runtime.compatibility"/>
-<plugin id="org.eclipse.platform.source"/>
-<plugin id="org.eclipse.jdt.junit4.runtime"/>
-<plugin id="org.eclipse.debug.ui.source"/>
-<plugin id="org.eclipse.draw2d"/>
-<plugin id="org.eclipse.equinox.frameworkadmin.equinox.source"/>
-<plugin id="org.eclipse.equinox.p2.operations.source"/>
-<plugin id="org.eclipse.platform.doc.user"/>
-<plugin id="org.eclipse.ant.launching"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-logReader"/>
-<plugin id="org.eclipse.update.core"/>
-<plugin id="org.mortbay.jetty.server.source"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TreetaggerModules"/>
-<plugin id="org.eclipse.emf.exporter.source"/>
-<plugin id="org.eclipse.core.expressions" version="3.4.300.v20110228"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-RidgesModules"/>
-<plugin id="org.eclipse.core.filebuffers"/>
-<plugin id="org.eclipse.core.contenttype.source" version="3.4.100.v20110423-0524"/>
-<plugin id="org.eclipse.equinox.ds.source"/>
-<plugin id="org.eclipse.equinox.p2.artifact.repository"/>
-<plugin id="org.eclipse.jdt.apt.ui"/>
-<plugin id="org.eclipse.compare.win32.source"/>
-<plugin id="org.eclipse.update.core.win32"/>
-<plugin id="org.eclipse.equinox.p2.garbagecollector.source"/>
-<plugin id="org.eclipse.jface.databinding.source"/>
-<plugin id="org.eclipse.equinox.p2.publisher.eclipse.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TueBaDZModules"/>
-<plugin id="org.eclipse.core.databinding.observable"/>
-<plugin id="org.eclipse.emf.exporter"/>
-<plugin id="org.junit.source" version="4.8.2.v4_8_2_v20110321-1705"/>
-<plugin id="org.eclipse.equinox.p2.publisher.source"/>
-<plugin id="org.eclipse.ui.intro.universal"/>
-<plugin id="org.eclipse.search.source"/>
-<plugin id="org.eclipse.core.net"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TigerModules"/>
-<plugin id="org.eclipse.core.resources" version="3.7.101.v20120125-1505"/>
-<plugin id="org.eclipse.osgi.services.source" version="3.3.0.v20110513"/>
-<plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
-<plugin id="org.eclipse.equinox.frameworkadmin"/>
-<plugin id="org.eclipse.jdt.debug"/>
-<plugin id="org.eclipse.equinox.http.servlet"/>
-<plugin id="org.eclipse.emf.importer.rose.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-exceptions"/>
-<plugin id="org.eclipse.update.scheduler"/>
-<plugin id="org.eclipse.jdt.apt.pluggable.core.source"/>
-<plugin id="com.jcraft.jsch"/>
-<plugin id="org.eclipse.ui.net.source"/>
-<plugin id="org.eclipse.ui.externaltools.source"/>
-<plugin id="org.eclipse.gef.doc.isv"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer.ssl.source"/>
-<plugin id="org.eclipse.equinox.p2.jarprocessor.source"/>
-<plugin id="org.eclipse.emf.codegen.source"/>
-<plugin id="org.eclipse.equinox.p2.metadata"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-MMAX2Modules"/>
-<plugin id="org.eclipse.equinox.p2.transport.ecf"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl.source"/>
-<plugin id="org.eclipse.core.runtime.compatibility.registry.source"/>
-<plugin id="org.eclipse.emf.mapping"/>
-<plugin id="org.eclipse.emf.ecore.editor"/>
-<plugin id="org.eclipse.jdt.junit4.runtime.source"/>
-<plugin id="org.eclipse.ui"/>
-<plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
-<plugin id="org.eclipse.core.commands"/>
-<plugin id="org.eclipse.equinox.p2.repository.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-EXMARaLDAModules"/>
-<plugin id="org.eclipse.epp.mpc.ui"/>
-<plugin id="org.eclipse.ui.forms.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-PAULAModules.source"/>
-<plugin id="org.eclipse.ecf.identity.source"/>
-<plugin id="org.apache.commons.lang3"/>
-<plugin id="org.eclipse.emf.mapping.ecore2xml.ui"/>
-<plugin id="org.eclipse.equinox.p2.ui"/>
-<plugin id="org.eclipse.osgi.util"/>
-<plugin id="org.eclipse.ui.cheatsheets"/>
-<plugin id="org.eclipse.ui.views"/>
-<plugin id="org.eclipse.core.filebuffers.source"/>
-<plugin id="org.eclipse.osgi" version="3.7.2.v20120110-1415"/>
-<plugin id="org.eclipse.equinox.security.win32.x86_64.source"/>
-<plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64"/>
-<plugin id="org.eclipse.help.appserver.source"/>
-<plugin id="org.eclipse.equinox.p2.publisher"/>
-<plugin id="org.eclipse.equinox.p2.repository.tools.source"/>
-<plugin id="org.eclipse.ui.editors"/>
-<plugin id="org.eclipse.equinox.p2.ui.sdk"/>
-<plugin id="org.eclipse.ui.externaltools"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore.edit"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer.ssl"/>
-<plugin id="org.eclipse.equinox.p2.ui.sdk.scheduler"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-UAMModules"/>
-<plugin id="org.junit4"/>
-<plugin id="org.eclipse.equinox.p2.directorywatcher"/>
-<plugin id="org.eclipse.equinox.jsp.jasper.registry.source"/>
-<plugin id="org.eclipse.jdt.source"/>
-<plugin id="org.eclipse.platform.doc.isv"/>
-<plugin id="org.slf4j.api"/>
-<plugin id="org.eclipse.core.databinding.property.source"/>
-<plugin id="org.eclipse.jface.databinding"/>
-<plugin id="org.eclipse.ui.console"/>
-<plugin id="org.eclipse.emf.databinding.source"/>
-<plugin id="org.eclipse.ui.workbench.compatibility"/>
-<plugin id="org.eclipse.core.jobs.source" version="3.5.101.v20120113-1953"/>
-<plugin id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
-<plugin id="org.eclipse.jdt.ui.source"/>
-<plugin id="org.eclipse.compare.core.source"/>
-<plugin id="org.eclipse.core.commands.source"/>
-<plugin id="org.eclipse.emf.converter"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DotModules"/>
-<plugin id="org.eclipse.equinox.p2.directorywatcher.source"/>
-<plugin id="org.eclipse.core.filesystem.win32.x86_64"/>
-<plugin id="org.eclipse.equinox.preferences" version="3.4.2.v20120111-2020"/>
-<plugin id="org.eclipse.help.webapp.source"/>
-<plugin id="org.eclipse.gef.source"/>
-<plugin id="org.eclipse.emf.importer.java.source"/>
-<plugin id="org.apache.commons.collections.source"/>
-<plugin id="log4j" version="1.2.17"/>
-<plugin id="org.eclipse.ecf.filetransfer.source"/>
-<plugin id="org.eclipse.emf.databinding.edit"/>
-<plugin id="org.eclipse.emf.edit" version="2.7.2.v20120130-0943"/>
-<plugin id="org.eclipse.debug.ui"/>
-<plugin id="org.eclipse.jsch.ui"/>
-<plugin id="org.eclipse.emf.cheatsheets"/>
-<plugin id="org.eclipse.ui.views.source"/>
-<plugin id="org.eclipse.core.runtime.compatibility.registry"/>
-<plugin id="org.eclipse.core.net.source"/>
-<plugin id="org.eclipse.ui.ide.application"/>
-<plugin id="org.eclipse.ui.presentations.r21"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer.source"/>
-<plugin id="org.sat4j.core"/>
-<plugin id="org.eclipse.equinox.p2.jarprocessor"/>
-<plugin id="org.eclipse.update.ui.source"/>
-<plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
-<plugin id="org.eclipse.ui.editors.source"/>
-<plugin id="org.eclipse.ecf.filetransfer"/>
-<plugin id="org.eclipse.update.core.source"/>
-<plugin id="org.eclipse.equinox.p2.updatesite.source"/>
-<plugin id="org.eclipse.ui.views.properties.tabbed.source"/>
-<plugin id="org.eclipse.emf.mapping.ecore2xml"/>
-<plugin id="org.junit.source" version="3.8.2.v3_8_2_v20100427-1100"/>
-<plugin id="org.apache.lucene.analysis"/>
-<plugin id="org.junit" version="3.8.2.v3_8_2_v20100427-1100"/>
-<plugin id="org.eclipse.jdt"/>
-<plugin id="org.eclipse.emf.doc"/>
-<plugin id="org.eclipse.equinox.p2.updatechecker.source"/>
-<plugin id="org.eclipse.equinox.p2.metadata.source"/>
-<plugin id="org.eclipse.core.externaltools.source"/>
-<plugin id="org.eclipse.core.jobs" version="3.5.101.v20120113-1953"/>
-<plugin id="org.eclipse.equinox.p2.touchpoint.eclipse.source"/>
-<plugin id="org.apache.ant.source"/>
-<plugin id="org.eclipse.equinox.p2.garbagecollector"/>
-<plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
-<plugin id="org.eclipse.update.ui"/>
-<plugin id="org.apache.commons.codec"/>
-<plugin id="org.eclipse.equinox.p2.ql.source"/>
-<plugin id="org.eclipse.equinox.p2.ui.sdk.source"/>
-<plugin id="org.eclipse.epp.mpc.core.source"/>
-<plugin id="org.eclipse.ltk.ui.refactoring"/>
-<plugin id="org.eclipse.emf.cheatsheets.source"/>
-<plugin id="org.eclipse.equinox.jsp.jasper.source"/>
-<plugin id="org.eclipse.core.databinding.property"/>
-<plugin id="org.eclipse.jdt.compiler.tool"/>
-<plugin id="javax.servlet"/>
-<plugin id="org.eclipse.ui.ide"/>
-<plugin id="org.eclipse.ui.views.properties.tabbed"/>
-<plugin id="org.apache.jasper"/>
-<plugin id="org.eclipse.equinox.p2.ui.importexport.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon.edit"/>
-<plugin id="org.eclipse.ui.navigator.resources"/>
-<plugin id="org.eclipse.ltk.ui.refactoring.source"/>
-<plugin id="org.eclipse.emf.mapping.ecore2ecore.editor.source"/>
-<plugin id="org.eclipse.help"/>
-<plugin id="org.eclipse.epp.mpc.core"/>
-<plugin id="org.hamcrest.core.source"/>
-<plugin id="org.eclipse.emf.mapping.ecore.editor"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DoNothingModules"/>
-<plugin id="org.apache.logging.log4j.slf4j-impl" version="2.1.0"/>
-<plugin id="org.eclipse.emf.codegen.ecore.ui"/>
-<plugin id="org.eclipse.equinox.p2.touchpoint.natives.source"/>
-<plugin id="org.eclipse.equinox.frameworkadmin.source"/>
-<plugin id="org.eclipse.osgi.services" version="3.3.0.v20110513"/>
-<plugin id="org.eclipse.platform"/>
-<plugin id="org.eclipse.emf.databinding"/>
-<plugin id="org.eclipse.ui.navigator"/>
-<plugin id="org.eclipse.ui.console.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-exceptions.source"/>
-<plugin id="org.apache.commons.lang"/>
-<plugin id="org.eclipse.emf.ecore.xmi" version="2.7.0.v20120127-1122"/>
-<plugin id="org.eclipse.equinox.p2.repository"/>
-<plugin id="org.eclipse.emf.converter.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore"/>
-<plugin id="org.eclipse.equinox.p2.director.source"/>
-<plugin id="org.hamcrest.core"/>
-<plugin id="org.eclipse.jdt.doc.user"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-workflow.source"/>
-<plugin id="org.eclipse.emf.importer.ecore"/>
-<plugin id="org.eclipse.jdt.debug.source"/>
-<plugin id="org.eclipse.jdt.junit.runtime.source"/>
-<plugin id="org.eclipse.emf.mapping.ui.source"/>
-<plugin id="org.eclipse.update.configurator.source"/>
-<plugin id="org.eclipse.compare.win32"/>
-<plugin id="org.eclipse.emf.edit.ui"/>
-<plugin id="org.eclipse.emf.ant.source"/>
-<plugin id="org.eclipse.ecf.provider.filetransfer"/>
-<plugin id="org.eclipse.emf.edit.source" version="2.7.2.v20120130-0943"/>
-<plugin id="org.eclipse.core.net.win32.x86_64"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph.source"/>
-<plugin id="org.eclipse.jdt.compiler.apt"/>
-<plugin id="org.eclipse.equinox.launcher"/>
-<plugin id="org.eclipse.equinox.p2.engine.source"/>
-<plugin id="org.eclipse.help.ui"/>
-<plugin id="org.eclipse.equinox.p2.metadata.repository.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph.edit.source"/>
-<plugin id="org.eclipse.core.boot"/>
-<plugin id="org.eclipse.emf.edit.ui.source"/>
-<plugin id="org.eclipse.emf.ecore.change.edit.source"/>
-<plugin id="org.eclipse.epp.mpc.ui.source"/>
-<plugin id="org.eclipse.emf.codegen.ui.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph"/>
-<plugin id="org.eclipse.swt"/>
-<plugin id="org.eclipse.ui.workbench.texteditor"/>
-<plugin id="org.eclipse.core.runtime.source" version="3.7.0.v20110110"/>
-<plugin id="org.apache.logging.log4j.api" version="2.1.0"/>
-<plugin id="org.eclipse.equinox.ds"/>
-<plugin id="org.eclipse.ui.workbench.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-modules"/>
-<plugin id="org.eclipse.update.scheduler.source"/>
-<plugin id="org.eclipse.equinox.http.registry"/>
-<plugin id="org.eclipse.emf"/>
-<plugin id="org.eclipse.emf.databinding.edit.source"/>
-<plugin id="org.eclipse.jdt.junit.core"/>
-<plugin id="org.eclipse.gef.examples.ui.pde"/>
-<plugin id="org.eclipse.emf.ecore.change.source" version="2.7.1.v20120127-1122"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-logReader.source"/>
-<plugin id="org.eclipse.core.databinding.beans.source"/>
-<plugin id="org.eclipse.jdt.debug.ui"/>
-<plugin id="org.eclipse.equinox.event.source"/>
-<plugin id="org.eclipse.equinox.p2.operations"/>
-<plugin id="org.eclipse.jdt.ui"/>
-<plugin id="com.ibm.icu.source"/>
-<plugin id="org.eclipse.jdt.compiler.apt.source"/>
-<plugin id="org.eclipse.equinox.registry.source" version="3.5.101.R37x_v20110810-1611"/>
-<plugin id="org.eclipse.jdt.junit"/>
-<plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
-<plugin id="org.eclipse.jface.text.source"/>
-<plugin id="org.eclipse.equinox.launcher.source"/>
-<plugin id="org.eclipse.emf.ecore.change.edit"/>
-<plugin id="org.eclipse.ui.net"/>
-<plugin id="org.eclipse.ant.launching.source"/>
-<plugin id="org.eclipse.team.ui.source"/>
 <plugin id="org.eclipse.equinox.p2.artifact.repository.source"/>
-<plugin id="org.eclipse.emf.ecore.source" version="2.7.0.v20120127-1122"/>
-<plugin id="org.eclipse.compare.source"/>
-<plugin id="org.eclipse.equinox.security.ui"/>
-<plugin id="org.eclipse.jdt.apt.core"/>
-<plugin id="org.eclipse.equinox.p2.discovery"/>
-<plugin id="org.eclipse.emf.codegen.ecore.ui.source"/>
-<plugin id="org.eclipse.jdt.apt.core.source"/>
-<plugin id="org.apache.lucene.core"/>
-<plugin id="org.eclipse.jdt.launching.source"/>
-<plugin id="org.eclipse.core.runtime" version="3.7.0.v20110110"/>
-<plugin id="org.eclipse.emf.mapping.ecore2ecore"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-RelANNISModel"/>
-<plugin id="org.eclipse.ecf.ssl.source"/>
-<plugin id="org.eclipse.emf.importer.rose"/>
-<plugin id="org.eclipse.jdt.debug.ui.source"/>
-<plugin id="org.eclipse.help.source"/>
-<plugin id="edu.tufts.perseus.pepperModules-PerseusModules"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework"/>
-<plugin id="org.eclipse.equinox.p2.updatesite"/>
-<plugin id="com.jcraft.jsch.source"/>
-<plugin id="org.apache.commons.httpclient.source"/>
-<plugin id="org.eclipse.equinox.util.source"/>
-<plugin id="com.google.guava"/>
-<plugin id="org.eclipse.equinox.simpleconfigurator"/>
-<plugin id="org.eclipse.equinox.http.registry.source"/>
-<plugin id="org.eclipse.ui.workbench"/>
-<plugin id="org.eclipse.jdt.core.source"/>
-<plugin id="org.eclipse.core.expressions.source" version="3.4.300.v20110228"/>
-<plugin id="org.eclipse.debug.core.source"/>
-<plugin id="org.eclipse.equinox.simpleconfigurator.source"/>
-<plugin id="org.apache.lucene"/>
-<plugin id="org.eclipse.emf.ecore" version="2.7.0.v20120127-1122"/>
-<plugin id="org.eclipse.equinox.p2.discovery.compatibility"/>
-<plugin id="org.eclipse.equinox.preferences.source" version="3.4.2.v20120111-2020"/>
-<plugin id="org.eclipse.core.resources.source" version="3.7.101.v20120125-1505"/>
-<plugin id="org.eclipse.team.core.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-TreetaggerModel"/>
-<plugin id="org.eclipse.equinox.p2.director.app.source"/>
-<plugin id="org.eclipse.equinox.util"/>
-<plugin id="org.apache.jasper.source"/>
-<plugin id="org.eclipse.ui.browser.source"/>
-<plugin id="org.eclipse.equinox.p2.console.source"/>
-<plugin id="org.eclipse.equinox.p2.ui.sdk.scheduler.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon.edit.source"/>
-<plugin id="org.apache.logging.log4j.core"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-ElanModules"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-RelANNISModules"/>
-<plugin id="org.eclipse.ui.presentations.r21.source"/>
-<plugin id="org.apache.commons.el.source"/>
-<plugin id="org.slf4j.log4j"/>
-<plugin id="org.eclipse.emf.importer"/>
-<plugin id="org.eclipse.swt.gtk.linux.x86_64.source"/>
-<plugin id="org.eclipse.equinox.p2.metadata.repository"/>
-<plugin id="org.eclipse.ui.ide.application.source"/>
-<plugin id="de.hu_berlin.german.korpling.tiger2-api"/>
-<plugin id="org.apache.log4j.source"/>
-<plugin id="org.eclipse.equinox.p2.director.app"/>
-<plugin id="org.eclipse.jdt.core.manipulation.source"/>
-<plugin id="org.eclipse.jdt.junit.core.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-EXMARaLDAModel"/>
-<plugin id="org.eclipse.equinox.p2.engine"/>
-<plugin id="org.eclipse.equinox.security.source"/>
-<plugin id="org.eclipse.ui.win32.source"/>
-<plugin id="org.eclipse.equinox.common.source" version="3.6.0.v20110523"/>
-<plugin id="org.eclipse.debug.core"/>
-<plugin id="org.eclipse.jdt.apt.ui.source"/>
-<plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64"/>
-<plugin id="org.eclipse.core.runtime.compatibility.auth.source" version="3.2.200.v20110110"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon.source"/>
-<plugin id="org.eclipse.equinox.p2.director"/>
-<plugin id="org.eclipse.emf.codegen.ecore.source"/>
-<plugin id="org.eclipse.equinox.app" version="1.3.100.v20110321"/>
-<plugin id="org.eclipse.ecf.ssl"/>
-<plugin id="org.eclipse.emf.example.installer"/>
-<plugin id="org.eclipse.jdt.core.manipulation"/>
-<plugin id="org.eclipse.emf.codegen.ecore"/>
-<plugin id="org.eclipse.ui.intro"/>
-<plugin id="org.eclipse.help.ui.source"/>
-<plugin id="org.eclipse.core.externaltools"/>
-<plugin id="org.eclipse.update.core.win32.source"/>
-<plugin id="org.apache.commons.logging"/>
-<plugin id="org.eclipse.rcp"/>
-<plugin id="org.eclipse.help.base"/>
-<plugin id="org.eclipse.equinox.http.jetty.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-FALKOModules"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-SaltXMLModules"/>
-<plugin id="org.eclipse.emf.mapping.ecore2ecore.editor"/>
-<plugin id="org.eclipse.core.variables.source" version="3.2.500.v20110928-1503"/>
-<plugin id="org.eclipse.equinox.p2.extensionlocation"/>
-<plugin id="org.eclipse.equinox.p2.ui.source"/>
-<plugin id="org.eclipse.ecf.identity"/>
-<plugin id="org.eclipse.equinox.simpleconfigurator.manipulator.source"/>
-<plugin id="org.eclipse.ui.browser"/>
-<plugin id="org.eclipse.equinox.http.jetty"/>
-<plugin id="org.eclipse.ant.core" version="3.2.302.v20120110-1739"/>
-<plugin id="org.eclipse.emf.ant"/>
-<plugin id="org.eclipse.equinox.app.source" version="1.3.100.v20110321"/>
-<plugin id="org.eclipse.equinox.p2.core.source"/>
-<plugin id="org.eclipse.jface.source"/>
-<plugin id="org.eclipse.ant.core.source" version="3.2.302.v20120110-1739"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-PAULAModules"/>
-<plugin id="javax.servlet.jsp"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-modules.source"/>
-<plugin id="org.eclipse.ui.ide.source"/>
+<plugin id="org.eclipse.emf.codegen.ecore.ui"/>
+<plugin id="org.eclipse.equinox.p2.updatesite.source"/>
 <plugin id="org.eclipse.equinox.p2.ui.discovery"/>
-<plugin id="org.eclipse.jface"/>
-<plugin id="org.eclipse.ui.cheatsheets.source"/>
-<plugin id="org.apache.log4j"/>
-<plugin id="org.eclipse.help.appserver"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-TupleConnector"/>
-<plugin id="org.eclipse.equinox.p2.ui.importexport"/>
-<plugin id="org.eclipse.emf.mapping.source"/>
-<plugin id="org.eclipse.emf.ecore.change" version="2.7.1.v20120127-1122"/>
-<plugin id="org.eclipse.osgi.source" version="3.7.2.v20120110-1415"/>
-<plugin id="org.eclipse.ltk.core.refactoring.source"/>
-<plugin id="org.mortbay.jetty.util"/>
-<plugin id="org.eclipse.equinox.event"/>
-<plugin id="org.eclipse.emf.mapping.ecore2ecore.source"/>
-<plugin id="org.eclipse.jdt.core"/>
-<plugin id="org.eclipse.equinox.security"/>
-<plugin id="org.eclipse.core.variables" version="3.2.500.v20110928-1503"/>
-<plugin id="org.eclipse.equinox.security.win32.x86_64"/>
-<plugin id="org.eclipse.jsch.ui.source"/>
-<plugin id="org.eclipse.rcp.source"/>
-<plugin id="org.eclipse.jdt.junit.source"/>
-<plugin id="org.eclipse.equinox.registry" version="3.5.101.R37x_v20110810-1611"/>
-<plugin id="org.eclipse.emf.common.ui.source"/>
-<plugin id="org.eclipse.emf.mapping.ecore2xml.source"/>
-<plugin id="org.eclipse.emf.ecore.xmi.source" version="2.7.0.v20120127-1122"/>
-<plugin id="org.eclipse.equinox.p2.reconciler.dropins"/>
-<plugin id="org.eclipse.ui.workbench.compatibility.source"/>
-<plugin id="org.eclipse.equinox.common" version="3.6.0.v20110523"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon"/>
-<plugin id="org.eclipse.ui.source"/>
-<plugin id="org.apache.commons.collections"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph.edit"/>
-<plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-CoNLLModules"/>
-<plugin id="org.mortbay.jetty.server"/>
-<plugin id="org.eclipse.jface.text"/>
-<plugin id="org.eclipse.compare"/>
-<plugin id="org.eclipse.help.webapp"/>
-<plugin id="org.eclipse.core.contenttype" version="3.4.100.v20110423-0524"/>
-<plugin id="org.eclipse.ant.ui.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-workflow"/>
-<plugin id="org.eclipse.emf.mapping.ecore2xml.ui.source"/>
-<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-nlpModules"/>
-<plugin id="org.eclipse.text"/>
+<plugin id="org.eclipse.ui.forms.source" version="3.5.101.v20111011-1919"/>
+<plugin id="org.eclipse.compare.core.source" version="3.5.200.I20110208-0800"/>
+<plugin id="org.eclipse.equinox.frameworkadmin.equinox.source"/>
+<plugin id="org.eclipse.emf.codegen.ui.source"/>
+<plugin id="javax.servlet.source" version="2.5.0.v201103041518"/>
+<plugin id="org.eclipse.emf.example.installer"/>
+<plugin id="org.eclipse.gef.doc.isv"/>
+<plugin id="org.mortbay.jetty.server.source" version="6.1.23.v201012071420"/>
+<plugin id="org.apache.commons.lang.source"/>
+<plugin id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
+<plugin id="org.eclipse.equinox.p2.operations"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-PAULAModules"/>
 <plugin id="org.eclipse.jdt.junit.runtime"/>
-<plugin id="org.eclipse.equinox.p2.transport.ecf.source"/>
-<plugin id="org.eclipse.emf.codegen"/>
-<plugin id="org.eclipse.emf.codegen.ui"/>
-<plugin id="org.eclipse.emf.ecore.edit"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph.edit.source"/>
+<plugin id="org.eclipse.equinox.util"/>
+<plugin id="org.eclipse.ui.workbench.texteditor" version="3.7.0.v20110928-1504"/>
+<plugin id="org.eclipse.swt.win32.win32.x86_64.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-workflow"/>
 <plugin id="org.apache.commons.codec.source"/>
-<plugin id="org.eclipse.ui.workbench.texteditor.source"/>
+<plugin id="org.eclipse.jface.text.source" version="3.7.2.v20111213-1208"/>
+<plugin id="org.eclipse.equinox.p2.directorywatcher.source"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator.manipulator.source"/>
+<plugin id="org.eclipse.ui.presentations.r21"/>
+<plugin id="org.eclipse.gef.source"/>
+<plugin id="org.eclipse.equinox.p2.updatechecker"/>
+<plugin id="org.eclipse.jdt.junit4.runtime"/>
+<plugin id="org.eclipse.text.source" version="3.5.101.v20110928-1504"/>
+<plugin id="org.eclipse.jdt.launching" version="3.6.1.v20111006_r372"/>
+<plugin id="org.apache.commons.logging"/>
+<plugin id="org.apache.logging.log4j.slf4j-impl" version="2.1.0"/>
+<plugin id="org.eclipse.jface.source" version="3.7.0.v20110928-1505"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore.edit"/>
+<plugin id="org.apache.commons.el"/>
+<plugin id="org.eclipse.emf.codegen"/>
+<plugin id="org.eclipse.emf.converter"/>
+<plugin id="org.eclipse.core.variables" version="3.2.500.v20110928-1503"/>
+<plugin id="org.eclipse.core.filebuffers.source" version="3.5.200.v20110928-1504"/>
+<plugin id="org.eclipse.equinox.security.ui"/>
+<plugin id="org.eclipse.emf.mapping.ecore2ecore.source"/>
+<plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+<plugin id="org.eclipse.emf.ecore.source" version="2.7.0.v20120127-1122"/>
+<plugin id="org.eclipse.emf.mapping.source"/>
+<plugin id="org.eclipse.ant.core.source" version="3.2.302.v20120110-1739"/>
+<plugin id="org.eclipse.debug.ui" version="3.7.102.v20111129-1423_r372"/>
+<plugin id="org.eclipse.ui.net.source"/>
+<plugin id="org.eclipse.equinox.p2.updatechecker.source"/>
+<plugin id="org.eclipse.core.expressions" version="3.4.300.v20110228"/>
+<plugin id="org.eclipse.equinox.p2.touchpoint.natives.source"/>
+<plugin id="org.eclipse.swt.win32.win32.x86_64"/>
+<plugin id="org.eclipse.platform"/>
+<plugin id="org.eclipse.gef.examples.ui.pde"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.ssl"/>
+<plugin id="org.eclipse.core.databinding" version="1.4.0.I20110111-0800"/>
+<plugin id="org.eclipse.equinox.preferences" version="3.4.2.v20120111-2020"/>
+<plugin id="org.eclipse.emf.codegen.ecore.ui.source"/>
+<plugin id="org.mortbay.jetty.server" version="6.1.23.v201012071420"/>
+<plugin id="org.eclipse.help.ui.source" version="3.5.101.r37_20110819"/>
+<plugin id="org.eclipse.emf.ecore.change.source" version="2.7.1.v20120127-1122"/>
+<plugin id="org.eclipse.ui.externaltools.source"/>
+<plugin id="org.eclipse.ui.win32"/>
+<plugin id="org.eclipse.emf.exporter"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-SaltXMLModules"/>
+<plugin id="org.eclipse.core.commands.source" version="3.6.0.I20110111-0800"/>
+<plugin id="org.slf4j.log4j.source"/>
+<plugin id="org.eclipse.equinox.p2.ui.source"/>
+<plugin id="org.eclipse.equinox.p2.reconciler.dropins"/>
+<plugin id="org.eclipse.osgi.services.source" version="3.3.0.v20110513"/>
+<plugin id="org.eclipse.equinox.p2.ui.sdk"/>
+<plugin id="org.eclipse.emf.cheatsheets"/>
+<plugin id="org.jbenchx.libs_external"/>
+<plugin id="org.eclipse.equinox.p2.transport.ecf.source"/>
+<plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64"/>
+<plugin id="org.eclipse.core.runtime.source" version="3.7.0.v20110110"/>
+<plugin id="org.eclipse.emf.databinding.source"/>
+<plugin id="org.eclipse.jdt.debug.ui.source" version="3.6.1.v20111006_r372"/>
+<plugin id="org.eclipse.jsch.core"/>
+<plugin id="org.eclipse.ui.browser"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.source"/>
+<plugin id="org.eclipse.ui.navigator.resources.source" version="3.4.300.v20110928-1505"/>
+<plugin id="org.eclipse.core.resources.source" version="3.7.101.v20120125-1505"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-EXMARaLDAModules"/>
+<plugin id="org.slf4j.api.source"/>
+<plugin id="org.eclipse.osgi.source" version="3.7.2.v20120110-1415"/>
+<plugin id="org.eclipse.equinox.concurrent"/>
+<plugin id="org.eclipse.jdt.ui" version="3.7.2.v20120109-1427"/>
+<plugin id="org.eclipse.jdt.junit.core"/>
+<plugin id="org.eclipse.core.databinding.property" version="1.4.0.I20110222-0800"/>
+<plugin id="org.eclipse.equinox.p2.ql.source"/>
+<plugin id="org.eclipse.jdt.core.manipulation.source" version="1.4.0.v20110928-1453"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-EXMARaLDAModel"/>
+<plugin id="org.eclipse.ui.console" version="3.5.100.v20111007_r372"/>
+<plugin id="org.eclipse.ltk.core.refactoring" version="3.5.201.r372_v20111101-0700"/>
+<plugin id="org.eclipse.emf.mapping.ecore2ecore.editor"/>
+<plugin id="org.eclipse.equinox.jsp.jasper.source"/>
+<plugin id="org.eclipse.equinox.p2.publisher.eclipse.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-PAULAModules.source"/>
+<plugin id="org.eclipse.ui.intro.source" version="3.4.100.v20110425"/>
+<plugin id="org.eclipse.update.scheduler.source"/>
+<plugin id="org.eclipse.rcp"/>
+<plugin id="org.eclipse.debug.core.source" version="3.7.1.v20111129-2031"/>
+<plugin id="org.eclipse.ui.intro" version="3.4.100.v20110425"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-MMAX2Modules"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator"/>
+<plugin id="org.eclipse.ui.workbench" version="3.7.1.v20120104-1859"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-CoNLLModules"/>
+<plugin id="org.eclipse.jdt.junit.runtime.source"/>
+<plugin id="org.eclipse.equinox.p2.metadata.repository" version="1.2.0.v20110815-1419"/>
+<plugin id="org.eclipse.compare.win32.source"/>
+<plugin id="org.eclipse.core.runtime.compatibility.auth" version="3.2.200.v20110110"/>
+<plugin id="org.eclipse.equinox.p2.ui.sdk.source"/>
+<plugin id="org.eclipse.update.core.win32"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph.source"/>
+<plugin id="org.eclipse.equinox.common.source" version="3.6.0.v20110523"/>
+<plugin id="org.mortbay.jetty.util.source" version="6.1.23.v201012071420"/>
+<plugin id="org.eclipse.jdt.compiler.apt.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-modules"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-exceptions"/>
+<plugin id="org.eclipse.equinox.jsp.jasper.registry.source"/>
+<plugin id="org.eclipse.equinox.app" version="1.3.100.v20110321"/>
+<plugin id="org.eclipse.jdt.ui.source" version="3.7.2.v20120109-1427"/>
+<plugin id="org.eclipse.emf.ecore.change.edit"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TigerModules"/>
+<plugin id="org.apache.lucene.core.source" version="2.9.1.v201101211721"/>
+<plugin id="org.apache.ant"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework"/>
+<plugin id="org.eclipse.equinox.p2.metadata" version="2.1.0.v20110815-1419"/>
+<plugin id="org.eclipse.equinox.p2.metadata.source" version="2.1.0.v20110815-1419"/>
+<plugin id="org.eclipse.emf"/>
+<plugin id="org.eclipse.platform.doc.isv"/>
+<plugin id="org.eclipse.emf.mapping.ecore2xml.ui"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-FALKOModules"/>
+<plugin id="org.eclipse.emf.ant"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-ElanModules"/>
+<plugin id="org.eclipse.compare.source" version="3.5.202.R37x_v20111109-0800"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-workflow.source"/>
+<plugin id="org.eclipse.emf.mapping.ecore2ecore"/>
+<plugin id="org.eclipse.update.core.source"/>
+<plugin id="org.apache.logging.log4j.core"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon"/>
+<plugin id="org.eclipse.ui.workbench.source" version="3.7.1.v20120104-1859"/>
+<plugin id="org.eclipse.jdt.core.manipulation" version="1.4.0.v20110928-1453"/>
+<plugin id="org.eclipse.jdt.compiler.tool"/>
+<plugin id="org.eclipse.jsch.ui.source"/>
+<plugin id="org.eclipse.equinox.p2.jarprocessor"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore.source"/>
+<plugin id="org.eclipse.emf.exporter.source"/>
+<plugin id="org.eclipse.emf.codegen.ecore.source"/>
+<plugin id="org.eclipse.emf.databinding"/>
+<plugin id="org.eclipse.emf.databinding.edit.source"/>
+<plugin id="org.eclipse.equinox.p2.director"/>
+<plugin id="org.eclipse.update.configurator.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore.edit.source"/>
+<plugin id="org.junit.source" version="3.8.2.v3_8_2_v20100427-1100"/>
+<plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+<plugin id="org.eclipse.jdt.doc.user"/>
+<plugin id="org.eclipse.debug.ui.source" version="3.7.102.v20111129-1423_r372"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DoNothingModules"/>
+<plugin id="org.eclipse.core.variables.source" version="3.2.500.v20110928-1503"/>
+<plugin id="org.eclipse.equinox.security" version="1.1.1.R37x_v20110822-1018"/>
+<plugin id="org.eclipse.emf.mapping"/>
+<plugin id="org.eclipse.emf.mapping.ui.source"/>
+<plugin id="org.eclipse.ecf.filetransfer.source"/>
+<plugin id="org.eclipse.core.boot"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon.source"/>
 <plugin id="org.eclipse.core.filesystem.source" version="1.3.100.v20110423-0524"/>
-<plugin id="org.eclipse.equinox.p2.repository.tools"/>
+<plugin id="org.eclipse.emf.edit.ui.source"/>
+<plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
+<plugin id="org.eclipse.core.externaltools.source"/>
+<plugin id="org.eclipse.equinox.jsp.jasper"/>
+<plugin id="org.eclipse.jdt.compiler.tool.source"/>
+<plugin id="org.eclipse.equinox.p2.ui"/>
+<plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64"/>
+<plugin id="org.eclipse.equinox.security.win32.x86_64.source"/>
+<plugin id="org.eclipse.jdt.junit.core.source"/>
+<plugin id="org.eclipse.equinox.registry" version="3.5.101.R37x_v20110810-1611"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TreetaggerModules"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+<plugin id="org.apache.commons.logging.source"/>
+<plugin id="org.eclipse.team.core.source" version="3.6.0.I20110525-0800"/>
+<plugin id="org.apache.commons.lang3"/>
+<plugin id="org.eclipse.ui.navigator.resources" version="3.4.300.v20110928-1505"/>
+<plugin id="org.eclipse.equinox.p2.metadata.repository.source" version="1.2.0.v20110815-1419"/>
+<plugin id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
+<plugin id="org.eclipse.osgi" version="3.7.2.v20120110-1415"/>
+<plugin id="org.eclipse.equinox.p2.repository.source" version="2.1.1.v20120113-1346"/>
+<plugin id="org.slf4j.api"/>
 <plugin id="org.eclipse.emf.importer.ecore.source"/>
-<plugin id="org.eclipse.emf.ecore.editor.source"/>
+<plugin id="org.eclipse.epp.mpc.core"/>
+<plugin id="org.apache.jasper"/>
+<plugin id="org.eclipse.help.appserver"/>
+<plugin id="org.eclipse.equinox.p2.jarprocessor.source"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.source"/>
+<plugin id="org.eclipse.emf.mapping.ecore2xml.ui.source"/>
+<plugin id="org.apache.commons.lang"/>
+<plugin id="org.eclipse.ui.editors" version="3.7.0.v20110928-1504"/>
+<plugin id="org.eclipse.equinox.p2.core.source" version="2.1.1.v20120113-1346"/>
+<plugin id="org.eclipse.equinox.p2.publisher"/>
+<plugin id="org.eclipse.core.filesystem.win32.x86_64"/>
+<plugin id="org.eclipse.platform.source"/>
+<plugin id="org.eclipse.osgi.util"/>
+<plugin id="org.eclipse.equinox.app.source" version="1.3.100.v20110321"/>
+<plugin id="com.ibm.icu.source" version="4.4.2.v20110823"/>
+<plugin id="org.eclipse.equinox.p2.core" version="2.1.1.v20120113-1346"/>
+<plugin id="org.apache.commons.collections.source"/>
+<plugin id="org.eclipse.emf.cheatsheets.source"/>
+<plugin id="org.eclipse.debug.core" version="3.7.1.v20111129-2031"/>
+<plugin id="org.eclipse.equinox.p2.discovery"/>
+<plugin id="org.eclipse.emf.mapping.ecore2xml.source"/>
+<plugin id="org.eclipse.ui.console.source" version="3.5.100.v20111007_r372"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon.edit"/>
+<plugin id="org.eclipse.update.core"/>
+<plugin id="org.eclipse.ui.ide.application"/>
+<plugin id="org.eclipse.equinox.p2.director.app"/>
+<plugin id="org.eclipse.equinox.http.servlet" version="1.1.200.v20110502"/>
+<plugin id="org.eclipse.jdt.compiler.apt"/>
+<plugin id="org.eclipse.equinox.http.registry"/>
+<plugin id="org.eclipse.equinox.p2.directorywatcher"/>
+<plugin id="org.eclipse.core.contenttype" version="3.4.100.v20110423-0524"/>
+<plugin id="org.eclipse.equinox.frameworkadmin"/>
+<plugin id="org.eclipse.equinox.event"/>
+<plugin id="org.eclipse.ui.cheatsheets.source" version="3.4.100.v20110425"/>
+<plugin id="org.eclipse.equinox.http.jetty" version="2.0.100.v20110502"/>
+<plugin id="org.eclipse.ui.workbench.texteditor.source" version="3.7.0.v20110928-1504"/>
+<plugin id="org.apache.ant.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-DotModules"/>
+<plugin id="org.eclipse.ant.launching.source"/>
+<plugin id="org.eclipse.emf.ecore.xmi" version="2.7.0.v20120127-1122"/>
+<plugin id="org.eclipse.emf.mapping.ecore2ecore.editor.source"/>
+<plugin id="org.eclipse.ui.ide" version="3.7.0.v20110928-1505"/>
+<plugin id="org.eclipse.ecf.identity.source"/>
+<plugin id="org.eclipse.jdt.apt.pluggable.core"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl"/>
+<plugin id="org.eclipse.core.runtime.compatibility"/>
+<plugin id="org.eclipse.emf.common.ui"/>
+<plugin id="org.junit.source" version="4.8.2.v4_8_2_v20110321-1705"/>
+<plugin id="org.eclipse.jdt.debug.ui" version="3.6.1.v20111006_r372"/>
+<plugin id="org.eclipse.core.runtime.compatibility.registry"/>
+<plugin id="com.jcraft.jsch"/>
+<plugin id="org.junit4"/>
+<plugin id="org.eclipse.emf.ecore.editor"/>
+<plugin id="org.eclipse.equinox.security.ui.source"/>
+<plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
+<plugin id="org.eclipse.equinox.p2.garbagecollector.source"/>
+<plugin id="org.eclipse.jface.databinding" version="1.5.0.I20100907-0800"/>
+<plugin id="org.eclipse.jdt.launching.source" version="3.6.1.v20111006_r372"/>
+<plugin id="org.eclipse.epp.mpc.ui.source"/>
+<plugin id="org.eclipse.equinox.ds.source"/>
+<plugin id="org.eclipse.equinox.http.jetty.source" version="2.0.100.v20110502"/>
+<plugin id="org.eclipse.core.expressions.source" version="3.4.300.v20110228"/>
+<plugin id="org.eclipse.emf.importer.java.source"/>
+<plugin id="org.eclipse.core.jobs.source" version="3.5.101.v20120113-1953"/>
+<plugin id="org.eclipse.equinox.simpleconfigurator.source"/>
+<plugin id="org.eclipse.emf.importer"/>
+<plugin id="org.eclipse.core.contenttype.source" version="3.4.100.v20110423-0524"/>
+<plugin id="org.eclipse.update.ui"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-UAMModules"/>
+<plugin id="org.eclipse.emf.ant.source"/>
+<plugin id="org.eclipse.ui.externaltools"/>
+<plugin id="org.eclipse.jdt.junit4.runtime.source"/>
+<plugin id="javax.servlet.jsp"/>
+<plugin id="org.eclipse.jdt.junit"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-TreetaggerModel"/>
+<plugin id="org.eclipse.jdt.debug" version="3.7.1.v20111006_r372"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon.edit.source"/>
+<plugin id="org.eclipse.emf.codegen.source"/>
+<plugin id="org.eclipse.epp.mpc.core.source"/>
+<plugin id="org.eclipse.emf.mapping.ecore"/>
+<plugin id="org.eclipse.core.filebuffers" version="3.5.200.v20110928-1504"/>
+<plugin id="org.eclipse.ecf"/>
+<plugin id="org.eclipse.emf.ecore.edit.source"/>
+<plugin id="org.eclipse.jdt.source" version="3.7.2.v201202080800"/>
+<plugin id="org.eclipse.ui.workbench.compatibility.source"/>
+<plugin id="org.jbenchx.ui.eclipse"/>
+<plugin id="org.eclipse.emf.ecore.change" version="2.7.1.v20120127-1122"/>
+<plugin id="org.junit" version="3.8.2.v3_8_2_v20100427-1100"/>
+<plugin id="org.eclipse.help.source" version="3.5.100.v20110426"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-exceptions.source"/>
+<plugin id="org.eclipse.equinox.p2.director.source"/>
+<plugin id="org.eclipse.emf.ecore.edit"/>
+<plugin id="org.eclipse.compare.win32"/>
+<plugin id="org.eclipse.swt" version="3.7.2.v3740f"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-logReader.source"/>
+<plugin id="org.eclipse.ui" version="3.7.0.v20110928-1505"/>
+<plugin id="org.eclipse.equinox.frameworkadmin.source"/>
+<plugin id="org.eclipse.core.net.win32.x86_64"/>
+<plugin id="org.apache.jasper.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-RelANNISModules"/>
+<plugin id="org.eclipse.draw2d.source"/>
+<plugin id="javax.servlet.jsp.source"/>
+<plugin id="org.eclipse.osgi.util.source"/>
+<plugin id="org.eclipse.ui.presentations.r21.source"/>
+<plugin id="org.eclipse.emf.edit.ui"/>
+<plugin id="org.eclipse.jdt.apt.ui.source"/>
+<plugin id="org.eclipse.emf.common.source" version="2.7.0.v20120127-1122"/>
+<plugin id="org.eclipse.emf.importer.rose.source"/>
+<plugin id="org.eclipse.equinox.concurrent.source"/>
+<plugin id="org.eclipse.jsch.core.source"/>
+<plugin id="org.eclipse.search" version="3.7.0.v20110928-1504"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-nlpModules"/>
+<plugin id="org.eclipse.team.ui.source" version="3.6.101.R37x_v20111109-0800"/>
+<plugin id="org.eclipse.ecf.ssl"/>
+<plugin id="org.sat4j.core"/>
+<plugin id="org.eclipse.swt.gtk.linux.x86_64.source"/>
+<plugin id="com.jcraft.jsch.source"/>
+<plugin id="org.eclipse.equinox.p2.artifact.repository"/>
+<plugin id="org.eclipse.compare.core" version="3.5.200.I20110208-0800"/>
+<plugin id="org.eclipse.draw2d.doc.isv"/>
+<plugin id="javax.servlet" version="2.5.0.v201103041518"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-TueBaDZModules"/>
+<plugin id="org.apache.opennlp.maxent"/>
+<plugin id="org.eclipse.help.ui" version="3.5.101.r37_20110819"/>
+<plugin id="org.eclipse.core.jobs" version="3.5.101.v20120113-1953"/>
+<plugin id="org.sat4j.pb"/>
+<plugin id="org.eclipse.equinox.p2.engine" version="2.1.1.R37x_v20111003"/>
+<plugin id="org.eclipse.help.appserver.source"/>
+<plugin id="org.eclipse.core.databinding.source" version="1.4.0.I20110111-0800"/>
+<plugin id="org.eclipse.emf.converter.source"/>
+<plugin id="org.eclipse.emf.importer.java"/>
+<plugin id="org.eclipse.search.source" version="3.7.0.v20110928-1504"/>
+<plugin id="org.eclipse.emf.doc"/>
+<plugin id="org.eclipse.ecf.identity"/>
+<plugin id="org.eclipse.core.net.source"/>
+<plugin id="org.eclipse.help.webapp"/>
+<plugin id="org.eclipse.core.net"/>
+<plugin id="org.eclipse.equinox.p2.console"/>
+<plugin id="org.jbenchx"/>
+<plugin id="org.eclipse.equinox.p2.ql"/>
+<plugin id="org.eclipse.ant.ui"/>
+<plugin id="org.apache.logging.log4j.api" version="2.1.0"/>
+<plugin id="org.eclipse.ui.source" version="3.7.0.v20110928-1505"/>
+<plugin id="org.eclipse.ant.launching"/>
+<plugin id="org.apache.commons.httpclient.source"/>
+<plugin id="org.eclipse.ui.ide.application.source"/>
+<plugin id="org.eclipse.ant.ui.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-RelANNISModel"/>
+<plugin id="org.eclipse.equinox.p2.touchpoint.eclipse.source"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient"/>
+<plugin id="org.eclipse.ui.views.source" version="3.6.0.v20110928-1505"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.misc-TupleConnector"/>
+<plugin id="org.eclipse.ui.views" version="3.6.0.v20110928-1505"/>
+<plugin id="org.eclipse.equinox.p2.discovery.compatibility"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer"/>
+<plugin id="org.eclipse.jdt.debug.source" version="3.7.1.v20111006_r372"/>
+<plugin id="org.eclipse.equinox.util.source"/>
+<plugin id="org.eclipse.ui.browser.source"/>
+<plugin id="org.eclipse.core.databinding.observable.source" version="1.4.0.I20110222-0800"/>
+<plugin id="org.eclipse.core.databinding.beans.source"/>
+<plugin id="org.eclipse.jsch.ui"/>
+<plugin id="org.eclipse.equinox.p2.updatesite"/>
+<plugin id="org.eclipse.core.externaltools"/>
+<plugin id="org.eclipse.emf.edit" version="2.7.2.v20120130-0943"/>
+<plugin id="org.eclipse.jdt.apt.pluggable.core.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore"/>
+<plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+<plugin id="org.apache.commons.lang3.source"/>
+<plugin id="org.eclipse.equinox.p2.operations.source"/>
+<plugin id="org.eclipse.core.filesystem" version="1.3.100.v20110423-0524"/>
+<plugin id="org.eclipse.emf.mapping.ui"/>
+<plugin id="org.eclipse.ui.intro.universal.source"/>
+<plugin id="org.eclipse.emf.edit.source" version="2.7.2.v20120130-0943"/>
+<plugin id="log4j" version="1.2.17"/>
+<plugin id="org.eclipse.emf.importer.source"/>
+<plugin id="org.eclipse.help.base.source" version="3.6.2.v201202080800"/>
+<plugin id="org.eclipse.ui.workbench.compatibility"/>
+<plugin id="org.eclipse.text" version="3.5.101.v20110928-1504"/>
+<plugin id="org.eclipse.core.resources" version="3.7.101.v20120125-1505"/>
+<plugin id="org.eclipse.emf.codegen.ecore"/>
+<plugin id="org.eclipse.rcp.source"/>
+<plugin id="org.eclipse.epp.mpc.ui"/>
+<plugin id="org.eclipse.equinox.p2.ui.importexport"/>
+<plugin id="org.eclipse.equinox.p2.engine.source" version="2.1.1.R37x_v20111003"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepperModules-RidgesModules"/>
+<plugin id="org.eclipse.equinox.p2.extensionlocation.source"/>
+<plugin id="org.eclipse.jface" version="3.7.0.v20110928-1505"/>
+<plugin id="org.apache.lucene.analysis.source" version="2.9.1.v201101211721"/>
+<plugin id="org.eclipse.equinox.p2.ui.importexport.source"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework.source"/>
+<plugin id="org.slf4j.log4j"/>
+<plugin id="org.eclipse.jdt.apt.core"/>
 <plugin id="org.eclipse.core.runtime.compatibility.source"/>
-<plugin id="org.eclipse.core.databinding.observable.source"/>
-<plugin id="org.apache.lucene.analysis.source"/>
+<plugin id="org.eclipse.ui.navigator.source" version="3.5.101.v20120106-1355"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-modules.source"/>
+<plugin id="org.eclipse.team.core" version="3.6.0.I20110525-0800"/>
+<plugin id="org.eclipse.ui.intro.universal"/>
+<plugin id="org.eclipse.jface.text" version="3.7.2.v20111213-1208"/>
+<plugin id="de.hu_berlin.german.korpling.tiger2-api"/>
+<plugin id="org.eclipse.equinox.p2.transport.ecf"/>
+<plugin id="org.apache.log4j.source"/>
+<plugin id="org.eclipse.equinox.registry.source" version="3.5.101.R37x_v20110810-1611"/>
+<plugin id="org.eclipse.emf.common.ui.source"/>
+<plugin id="org.apache.commons.httpclient"/>
+<plugin id="org.eclipse.ui.forms" version="3.5.101.v20111011-1919"/>
+<plugin id="org.apache.lucene.source" version="2.9.1.v201101211721"/>
+<plugin id="org.eclipse.ui.views.properties.tabbed" version="3.5.200.v20110928-1505"/>
+<plugin id="org.eclipse.emf.mapping.ecore.editor"/>
+<plugin id="org.eclipse.ui.ide.source" version="3.7.0.v20110928-1505"/>
+<plugin id="edu.tufts.perseus.pepperModules-PerseusModules"/>
+<plugin id="org.eclipse.emf.databinding.edit"/>
+<plugin id="org.eclipse.core.databinding.beans"/>
+<plugin id="org.eclipse.ui.win32.source"/>
+<plugin id="org.eclipse.ui.views.properties.tabbed.source" version="3.5.200.v20110928-1505"/>
+<plugin id="org.eclipse.equinox.ds"/>
+<plugin id="org.eclipse.core.commands" version="3.6.0.I20110111-0800"/>
+<plugin id="org.eclipse.equinox.p2.repository" version="2.1.1.v20120113-1346"/>
+<plugin id="org.eclipse.jdt.core" version="3.7.3.v20120119-1537"/>
+<plugin id="org.eclipse.ltk.ui.refactoring.source" version="3.6.0.v20110928-1453"/>
+<plugin id="org.eclipse.emf.mapping.ecore2xml"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.pepper-logReader"/>
+<plugin id="org.hamcrest.core.source"/>
+<plugin id="org.eclipse.equinox.common" version="3.6.0.v20110523"/>
+<plugin id="org.eclipse.update.core.win32.source"/>
+<plugin id="org.eclipse.draw2d"/>
+<plugin id="org.eclipse.emf.codegen.ui"/>
+<plugin id="org.eclipse.equinox.p2.console.source"/>
+<plugin id="com.google.guava"/>
+<plugin id="org.eclipse.core.runtime" version="3.7.0.v20110110"/>
+<plugin id="org.eclipse.platform.doc.user"/>
+<plugin id="org.eclipse.emf.importer.ecore"/>
+<plugin id="org.eclipse.update.scheduler"/>
+<plugin id="org.eclipse.compare" version="3.5.202.R37x_v20111109-0800"/>
+<plugin id="org.eclipse.equinox.p2.extensionlocation"/>
+<plugin id="org.apache.opennlp.tools"/>
+<plugin id="org.eclipse.update.ui.source"/>
+<plugin id="org.eclipse.equinox.launcher.source"/>
+<plugin id="org.eclipse.core.net.linux.x86_64"/>
+<plugin id="org.eclipse.jface.databinding.source" version="1.5.0.I20100907-0800"/>
+<plugin id="org.eclipse.ltk.ui.refactoring" version="3.6.0.v20110928-1453"/>
+<plugin id="org.apache.log4j"/>
+<plugin id="org.eclipse.help.base" version="3.6.2.v201202080800"/>
+<plugin id="org.eclipse.core.databinding.property.source" version="1.4.0.I20110222-0800"/>
+<plugin id="org.eclipse.equinox.p2.publisher.eclipse"/>
+<plugin id="org.eclipse.emf.ecore" version="2.7.0.v20120127-1122"/>
+<plugin id="org.eclipse.equinox.p2.repository.tools"/>
+<plugin id="org.eclipse.ui.net"/>
+<plugin id="org.eclipse.core.runtime.compatibility.registry.source"/>
+<plugin id="org.eclipse.ecf.filetransfer"/>
+<plugin id="org.eclipse.emf.ecore.editor.source"/>
+<plugin id="org.eclipse.ecf.source"/>
+<plugin id="org.eclipse.equinox.security.win32.x86_64"/>
+<plugin id="org.eclipse.equinox.p2.ui.sdk.scheduler"/>
+<plugin id="org.eclipse.ui.cheatsheets" version="3.4.100.v20110425"/>
+<plugin id="org.apache.lucene.core" version="2.9.1.v201101211721"/>
+<plugin id="org.eclipse.core.databinding.observable" version="1.4.0.I20110222-0800"/>
+<plugin id="org.eclipse.equinox.http.servlet.source" version="1.1.200.v20110502"/>
+<plugin id="org.eclipse.jdt.apt.core.source"/>
+<plugin id="slf4j.api" version="1.7.7"/>
+<plugin id="org.eclipse.ant.core" version="3.2.302.v20120110-1739"/>
+<plugin id="org.eclipse.equinox.launcher"/>
+<plugin id="org.eclipse.emf.ecore.change.edit.source"/>
+<plugin id="org.eclipse.ui.editors.source" version="3.7.0.v20110928-1504"/>
+<plugin id="org.eclipse.equinox.p2.publisher.source"/>
+<plugin id="org.eclipse.emf.ecore.xmi.source" version="2.7.0.v20120127-1122"/>
+<plugin id="org.eclipse.team.ui" version="3.6.101.R37x_v20111109-0800"/>
+<plugin id="org.eclipse.ui.navigator" version="3.5.101.v20120106-1355"/>
+<plugin id="org.apache.commons.collections"/>
+<plugin id="org.eclipse.update.configurator"/>
+<plugin id="org.eclipse.ecf.ssl.source"/>
+<plugin id="org.eclipse.equinox.preferences.source" version="3.4.2.v20120111-2020"/>
+<plugin id="de.hu_berlin.german.korpling.saltnpepper.salt-graph.edit"/>
+<plugin id="org.eclipse.emf.importer.rose"/>
+<plugin id="org.eclipse.equinox.http.registry.source"/>
+<plugin id="org.hamcrest.core"/>
+<plugin id="com.ibm.icu" version="4.4.2.v20110823"/>
+<plugin id="org.eclipse.ltk.core.refactoring.source" version="3.5.201.r372_v20111101-0700"/>
+<plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
+<plugin id="org.eclipse.jdt.junit.source"/>
+<plugin id="org.eclipse.equinox.p2.reconciler.dropins.source"/>
+<plugin id="org.eclipse.osgi.services" version="3.3.0.v20110513"/>
+<plugin id="org.eclipse.core.runtime.compatibility.auth.source" version="3.2.200.v20110110"/>
+<plugin id="org.eclipse.equinox.security.source" version="1.1.1.R37x_v20110822-1018"/>
+<plugin id="org.eclipse.jdt.apt.ui"/>
+<plugin id="org.eclipse.jdt" version="3.7.2.v201202080800"/>
+<plugin id="org.apache.commons.codec"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.ssl.source"/>
+<plugin id="org.eclipse.help.webapp.source"/>
+<plugin id="org.eclipse.equinox.p2.director.app.source"/>
+<plugin id="org.eclipse.equinox.p2.ui.sdk.scheduler.source"/>
+<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl.source"/>
+<plugin id="org.apache.lucene" version="2.9.1.v201101211721"/>
+<plugin id="org.eclipse.equinox.event.source"/>
+<plugin id="org.apache.lucene.analysis" version="2.9.1.v201101211721"/>
+<plugin id="org.eclipse.equinox.p2.repository.tools.source"/>
+<plugin id="org.eclipse.emf.common" version="2.7.0.v20120127-1122"/>
+<plugin id="org.eclipse.jdt.core.source" version="3.7.3.v20120119-1537"/>
+<plugin id="org.eclipse.help" version="3.5.100.v20110426"/>
+<plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+<plugin id="org.apache.commons.el.source"/>
+<plugin id="org.eclipse.gef"/>
 </includeBundles>
 </target>

@@ -6,6 +6,8 @@ package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LayoutListener;
 import org.eclipse.draw2d.ToolbarLayout;
 
 /**
@@ -25,6 +27,38 @@ public class NodeFigure extends Figure {
 		annotationLayout.setSpacing(1);
 		setLayoutManager(annotationLayout);
 		setBorder(new NodeFigureBorder(visualID, modelType));
+		addLayoutListener(new LayoutListener() {
+			
+			@Override
+			public void setConstraint(IFigure child, Object constraint) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void remove(IFigure child) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void postLayout(IFigure container) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean layout(IFigure container) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void invalidate(IFigure container) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	public ConnectionAnchor getConnectionAnchor() {
