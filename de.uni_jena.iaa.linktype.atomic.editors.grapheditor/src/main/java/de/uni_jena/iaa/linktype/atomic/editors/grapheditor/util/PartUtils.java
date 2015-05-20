@@ -188,7 +188,8 @@ public class PartUtils {
 				else {
 					targetConstraints = (Rectangle) part.getFigure().getLayoutManager().getConstraint(targetEP.getFigure());
 				}
-				yList.add(targetConstraints.y);
+//				yList.add(targetConstraints.y);
+				yList.add(100);
 			}
 			else {
 				// Do nothing

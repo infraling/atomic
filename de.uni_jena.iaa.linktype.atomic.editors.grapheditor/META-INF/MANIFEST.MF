@@ -17,7 +17,11 @@ Require-Bundle: org.eclipse.ui,
  com.google.guava;bundle-version="14.0.1",
  de.uni_jena.iaa.linktype.atomic.logging;bundle-version="0.1.8",
  de.uni_jena.iaa.linktype.atomic.core,
- de.uni_jena.iaa.linktype.atomic.views.layerview
+ de.uni_jena.iaa.linktype.atomic.views.layerview,
+ org.jbenchx;bundle-version="0.3.0",
+ org.jbenchx.libs_external;bundle-version="0.3.0",
+ org.jbenchx.ui.eclipse;bundle-version="0.3.0",
+ org.eclipse.draw2d
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: de.uni_jena.iaa.linktype.atomic.editors.grapheditor,

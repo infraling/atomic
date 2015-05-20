@@ -188,7 +188,10 @@ public class RelationPart extends AbstractConnectionEditPart {
 				refreshChildren();
 				break;
 			case Notification.REMOVING_ADAPTER:
+				long a = System.nanoTime();
 				getParent().refresh();
+				long b = System.nanoTime();
+				System.err.println("9: " + ((b-a) / 1000000000) + "s");
 				if (getFigure().isVisible()) {
 					getFigure().setVisible(false);
 					deactivate();

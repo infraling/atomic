@@ -14,12 +14,14 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LayoutListener;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
@@ -47,6 +49,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	private List<Object> dynamicModelChildrenList = new ArrayList<Object>();
 	private EList<SToken> sortedTokens = new BasicEList<SToken>();
 	private HashSet<SLayer> layers = new HashSet<SLayer>();
+	private FreeformLayer graphFigure;
 
 	public GraphPart(SDocumentGraph model) {
 		setModel(model);
@@ -74,10 +77,17 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		Figure figure = new FreeformLayer();
-		figure.setBorder(new MarginBorder(3)); // FIXME: Remove
-		figure.setLayoutManager(new FreeformLayout());
-		return figure;
+		graphFigure = new FreeformLayer();
+		graphFigure.setBorder(new MarginBorder(3)); // FIXME: Remove
+		graphFigure.setLayoutManager(new FreeformLayout());
+		graphFigure.addLayoutListener(new LayoutListener.Stub() {
+			
+			@Override
+			public void postLayout(IFigure host) {
+				System.err.println("############ POST LAYOUT ##############");
+			}
+		});
+		return graphFigure;
 	}
 
 	@Override
@@ -97,6 +107,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 
 	@Override
 	protected List<Object> getModelChildren() {
+		long a = System.nanoTime();
+		long endTime = 0, startTime = 0;
 		List<Object> modelChildren = new ArrayList<Object>();
 		if (getSortedTokens() != null) {
 			// for (SToken sortedToken : getSortedTokens()) {
@@ -108,13 +120,18 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			// }
 			modelChildren.addAll(getSortedTokens());
 			if (!getSortedTokens().isEmpty() && !getLayers().isEmpty()) {
-				for (Node node : GraphService.getSentenceGraph(getSortedTokens())) {
+				startTime = System.nanoTime();
+				List<Node> sentenceGraph = GraphService.getSentenceGraph(getSortedTokens());
+				endTime = System.nanoTime();
+//				System.err.println("Getting sentenceGraph took " + ((endTime - startTime) / 1000000) + "ms");
+				for (Node node : sentenceGraph) {
 					if (node.getLayers().isEmpty()) {
 						// FIXME
 //						System.err.println("Found node without layers: " + node);
 					}
 				}
-				for (Node node : GraphService.getSentenceGraph(getSortedTokens())) {
+				long timerStart = System.nanoTime();
+				for (Node node : sentenceGraph) {
 					SNode sNode = (SNode) node;
 					for (SLayer layer : sNode.getSLayers()) {
 						for (SLayer selectedLayer : getLayers()) {
@@ -127,10 +144,14 @@ public class GraphPart extends AbstractGraphicalEditPart {
 //						}
 					}
 				}
+				long timerEnd = System.nanoTime();
+				System.err.println("Checking for layered nodes took " + ((timerEnd - timerStart) / 1000000) + "ms to complete (" + ((timerEnd - timerStart) / 1000000000) + "s).");
+				
 				// modelChildren.addAll(GraphService.getSentenceGraph(getSortedTokens()));
 			}
 			getDynamicModelChildrenList().clear();
 			getDynamicModelChildrenList().addAll(modelChildren);
+			System.err.println("Getting model children took " + (System.nanoTime() - a) / 1000000 + "ms vs " + ((endTime - startTime) / 1000000) + "ms for getting the sentence graph");
 			return modelChildren;
 		}
 		return null;
@@ -165,14 +186,26 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		public void notifyChanged(Notification n) {
 			switch (n.getEventType()) {
 			case Notification.REMOVE:
+				long a = System.nanoTime();
 				refreshChildren();
+				long b = System.nanoTime();
+				System.err.println("II: " + ((b-a) / 1000000000) + "s");
 				break;
-			case Notification.ADD:
-				refreshChildren();
-				break;
-			case Notification.SET:
-				refreshChildren();
-				break;
+//			case Notification.ADD:
+//				long c = System.nanoTime();
+////				refreshChildren();
+//				long d = System.nanoTime();
+//				System.err.println("III: " + ((d-c) / 1000000) + "ms");
+//	
+//				break;
+				// TODO: KANN WOHL RAUS!
+//			case Notification.SET:
+//				long e = System.nanoTime();
+////				refreshChildren();
+//				long f = System.nanoTime();
+//				System.err.println(n.getOldValue() + ">" + n.getNewValue() + " IV: " + ((f-e) / 1000000000) + "s");
+	
+//				break;
 
 			default:
 				break;
@@ -197,6 +230,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			((SDocumentGraph) getModel()).eAdapters().add(getAdapter());
 		}
 		super.activate();
+		System.err.println("======== GRAPH PART ACTIVATED! ========");
 	}
 
 	@Override

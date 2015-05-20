@@ -10,12 +10,12 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="true"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/de.uni_jena.iaa.linktype.atomic.product.JRebel"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/de.uni_jena.iaa.linktype.atomic.product.JRebel JVISUALVM"/>
 <booleanAttribute key="default" value="false"/>
 <booleanAttribute key="includeOptional" value="true"/>
 <stringAttribute key="location" value="${workspace_loc}/../runtime-de.uni_jena.iaa.linktype.atomic.product"/>
 <mapAttribute key="org.eclipse.debug.core.preferred_launchers">
-<mapEntry key="[run]" value="org.eclipse.pde.ui.RuntimeWorkbench"/>
+<mapEntry key="[run]" value="org.eclipse.visualvm.launcher.pde"/>
 </mapAttribute>
 <listAttribute key="org.eclipse.jdt.launching.CLASSPATH">
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;runtimeClasspathEntry containerPath=&quot;org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6&quot; path=&quot;1&quot; type=&quot;4&quot;/&gt;&#10;"/>
@@ -24,7 +24,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -data @noDefault -console"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="${jrebel_args} -Drebel.log=true -Dosgi.startLevel=7 -Dorg.eclipse.swt.browser.DefaultType=mozilla"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.startLevel=7 -Dorg.eclipse.swt.browser.DefaultType=mozilla"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="de.uni_jena.iaa.linktype.atomic.core.product"/>
 <stringAttribute key="productFile" value="/de.uni_jena.iaa.linktype.atomic.repository/de.uni_jena.iaa.linktype.atomic.product"/>
