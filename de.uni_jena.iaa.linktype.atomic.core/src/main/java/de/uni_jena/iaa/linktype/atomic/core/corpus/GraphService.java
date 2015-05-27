@@ -54,21 +54,6 @@ public class GraphService {
 	}
 	
 	/**
-	 * @param checkedElement
-	 * @return
-	 */
-	public static HashSet<SSpan> getLinkedSentences(SSpan checkedSentence) {
-		long a = System.nanoTime();
-		EList<SToken> tokens = GraphService.getOverlappedTokens(checkedSentence);
-		LinkedSentencesTraverser traverser = new LinkedSentencesTraverser();
-		traverser.setTokenSet(new HashSet<SToken>(tokens));
-		checkedSentence.getSDocumentGraph().traverse(tokens, GRAPH_TRAVERSE_TYPE.BOTTOM_UP_BREADTH_FIRST, "linkedSentences", traverser, false);
-		long b = System.nanoTime();
-		System.err.println("11: getting linked sentences took " + ((b - a) / 1000000 + "ms (" + ((b - a) / 1000000000) + "s) ("));
-		return traverser.getLinkedSentences();
-	}
-	
-	/**
 	 * @return
 	 */
 	public static List<Node> getSentenceGraph(EList<SToken> tokens) {

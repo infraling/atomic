@@ -54,9 +54,9 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 
 	private SDocumentGraph graph;
 
-	private ArrayList<SSpan> linkedSentences = new ArrayList<SSpan>();
-	private HashMap<SSpan, SSpan> linkedSentencesForSentence = new HashMap<SSpan, SSpan>();
-	private HashSet<SSpan> linkSourceSentences = new HashSet<SSpan>();
+//	private ArrayList<SSpan> linkedSentences = new ArrayList<SSpan>();
+//	private HashMap<SSpan, SSpan> linkedSentencesForSentence = new HashMap<SSpan, SSpan>();
+//	private HashSet<SSpan> linkSourceSentences = new HashSet<SSpan>();
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -82,22 +82,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		getSentenceTableViewer().addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
-//				System.err.println("linkstart");
-//				getLinkSourceSentences().clear();
-//				getLinkedSentencesForSentence().clear();
-//				getLinkedSentences().clear();
-//				for (Object checkedElement : getSentenceTableViewer().getCheckedElements()) {
-//					HashSet<SSpan> linkedSentencesForCurrentElement = GraphService.getLinkedSentences((SSpan) checkedElement);
-//					if (!linkedSentencesForCurrentElement.isEmpty()) {
-//						getLinkSourceSentences().add((SSpan) checkedElement);
-//					}
-//					for (SSpan span : linkedSentencesForCurrentElement) {
-//						getLinkedSentencesForSentence().put(span, (SSpan) checkedElement);
-//					}
-//					getLinkedSentences().addAll(linkedSentencesForCurrentElement);
-//				}
-//				getSentenceTableViewer().refresh();
-//				System.err.println("linkend");
 				if (getSentenceTableViewer().getCheckedElements().length == 0) {
 					notifySelectionListeners(ModelRegistry.NO_SENTENCES_SELECTED);
 				}
@@ -173,9 +157,9 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getSentenceTableViewer().setAllChecked(false);
-				getLinkedSentences().clear();
-				getLinkedSentencesForSentence().clear();
-				getLinkSourceSentences().clear();
+//				getLinkedSentences().clear();
+//				getLinkedSentencesForSentence().clear();
+//				getLinkSourceSentences().clear();
 				notifySelectionListeners(ModelRegistry.NO_SENTENCES_SELECTED);
 				getSentenceTableViewer().refresh();
 
@@ -319,35 +303,35 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	public void partInputChanged(IWorkbenchPartReference partRef) {
 	}
 
-	/**
-	 * @return the linkedSentences
-	 */
-	public ArrayList<SSpan> getLinkedSentences() {
-		return linkedSentences;
-	}
-
-	/**
-	 * @param linkedSentences
-	 *            the linkedSentences to set
-	 */
-	public void setLinkedSentences(ArrayList<SSpan> linkedSentences) {
-		this.linkedSentences = linkedSentences;
-	}
-
-	/**
-	 * @return the linkedSentencesForSentence
-	 */
-	public HashMap<SSpan, SSpan> getLinkedSentencesForSentence() {
-		return linkedSentencesForSentence;
-	}
-
-	/**
-	 * @param linkedSentencesForSentence
-	 *            the linkedSentencesForSentence to set
-	 */
-	public void setLinkedSentencesForSentence(HashMap<SSpan, SSpan> linkedSentencesForSentence) {
-		this.linkedSentencesForSentence = linkedSentencesForSentence;
-	}
+//	/**
+//	 * @return the linkedSentences
+//	 */
+//	public ArrayList<SSpan> getLinkedSentences() {
+//		return linkedSentences;
+//	}
+//
+//	/**
+//	 * @param linkedSentences
+//	 *            the linkedSentences to set
+//	 */
+//	public void setLinkedSentences(ArrayList<SSpan> linkedSentences) {
+//		this.linkedSentences = linkedSentences;
+//	}
+//
+//	/**
+//	 * @return the linkedSentencesForSentence
+//	 */
+//	public HashMap<SSpan, SSpan> getLinkedSentencesForSentence() {
+//		return linkedSentencesForSentence;
+//	}
+//
+//	/**
+//	 * @param linkedSentencesForSentence
+//	 *            the linkedSentencesForSentence to set
+//	 */
+//	public void setLinkedSentencesForSentence(HashMap<SSpan, SSpan> linkedSentencesForSentence) {
+//		this.linkedSentencesForSentence = linkedSentencesForSentence;
+//	}
 
 	/**
 	 * @return the sentenceTableViewer
@@ -364,20 +348,20 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		this.sentenceTableViewer = sentenceTableViewer;
 	}
 
-	/**
-	 * @return the linkSourceSentences
-	 */
-	public HashSet<SSpan> getLinkSourceSentences() {
-		return linkSourceSentences;
-	}
-
-	/**
-	 * @param linkSourceSentences
-	 *            the linkSourceSentences to set
-	 */
-	public void setLinkSourceSentences(HashSet<SSpan> linkSourceSentences) {
-		this.linkSourceSentences = linkSourceSentences;
-	}
+//	/**
+//	 * @return the linkSourceSentences
+//	 */
+//	public HashSet<SSpan> getLinkSourceSentences() {
+//		return linkSourceSentences;
+//	}
+//
+//	/**
+//	 * @param linkSourceSentences
+//	 *            the linkSourceSentences to set
+//	 */
+//	public void setLinkSourceSentences(HashSet<SSpan> linkSourceSentences) {
+//		this.linkSourceSentences = linkSourceSentences;
+//	}
 
 	/**
 	 * @param graph
