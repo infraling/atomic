@@ -25,7 +25,7 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
  * @author Stephan Druskat
  * 
  */
-public class SentenceLabelProvider extends LabelProvider implements ITableColorProvider {
+public class SentenceLabelProvider extends LabelProvider {
 
 	private SentenceView sentenceView;
 
@@ -38,21 +38,22 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 
 	@Override
 	public String getText(Object element) {
-		String text = "";
-		if (sentenceView.getLinkedSentences().contains(element)) {
-			text = text + "\u2194 ";
-			final TableItem[] items = sentenceView.getSentenceTableViewer().getTable().getItems();
-			for (int i = 0; i < items.length; ++i) {
-				if (items[i].getData().equals(sentenceView.getLinkedSentencesForSentence().get(element))) {
-					text = text + i + " ";
-				}
-			}
-		}
-		else if (sentenceView.getLinkSourceSentences().contains(element)){
-			text = text +"\u2194 ";
-		}
-		text = text + retrieveSentenceFromSpan((SSpan) element);
-		return text;
+//		String text = "";
+//		if (sentenceView.getLinkedSentences().contains(element)) {
+//			text = text + "\u2194 ";
+//			final TableItem[] items = sentenceView.getSentenceTableViewer().getTable().getItems();
+//			for (int i = 0; i < items.length; ++i) {
+//				if (items[i].getData().equals(sentenceView.getLinkedSentencesForSentence().get(element))) {
+//					text = text + i + " ";
+//				}
+//			}
+//		}
+//		else if (sentenceView.getLinkSourceSentences().contains(element)){
+//			text = text +"\u2194 ";
+//		}
+//		text = text + 
+		return retrieveSentenceFromSpan((SSpan) element);
+//		return text;
 	}
 
 	protected String retrieveSentenceFromSpan(SSpan span) {
@@ -85,35 +86,6 @@ public class SentenceLabelProvider extends LabelProvider implements ITableColorP
 				return token.getSDocumentGraph().getSTextualDSs().get(0).getSText().substring(textualRelation.getSStart(), textualRelation.getSEnd());
 			}
 		}
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ITableColorProvider#getForeground(java.lang
-	 * .Object, int)
-	 */
-	@Override
-	public Color getForeground(Object element, int columnIndex) {
-		if (sentenceView.getLinkedSentences().contains(element)) {
-			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-		}
-		else {
-			return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang
-	 * .Object, int)
-	 */
-	@Override
-	public Color getBackground(Object element, int columnIndex) {
 		return null;
 	}
 
