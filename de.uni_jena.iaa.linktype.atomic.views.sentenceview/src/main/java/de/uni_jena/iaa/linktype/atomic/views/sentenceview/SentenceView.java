@@ -75,10 +75,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		getSentenceTableViewer().setContentProvider(new SentenceContentProvider());
 		getSentenceTableViewer().setLabelProvider(new SentenceLabelProvider(this));
 
-		TableColumn column = new TableColumn(getSentenceTableViewer().getTable(), SWT.FILL);
-		column.setText("Sentences");
-		column.pack();
-
 		getSentenceTableViewer().addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
