@@ -50,7 +50,7 @@
                closeable="true"
                id="de.uni_jena.iaa.linktype.atomic.views.sentenceview"
                minimized="false"
-               ratio="0.2f"
+               ratio="0.22f"
                relationship="left"
                relative="org.eclipse.ui.editorss"
                showTitle="true"

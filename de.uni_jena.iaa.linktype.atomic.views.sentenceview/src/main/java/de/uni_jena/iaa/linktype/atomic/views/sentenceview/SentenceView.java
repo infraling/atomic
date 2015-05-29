@@ -87,7 +87,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 			}
 		});
 
-		getSentenceTableViewer().getTable().setHeaderVisible(true);
+//		getSentenceTableViewer().getTable().setHeaderVisible(true);
 		getSentenceTableViewer().getTable().setLinesVisible(true);
 	}
 
