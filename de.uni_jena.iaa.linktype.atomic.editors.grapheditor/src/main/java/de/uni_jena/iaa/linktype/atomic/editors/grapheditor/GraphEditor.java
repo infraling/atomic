@@ -154,6 +154,10 @@ public class GraphEditor extends AtomicGraphicalEditor {
 					return;
 				}
 			}
+			if (selection.toArray().length == 0) {
+				// A selection of type <empty selection>
+				return;
+			}
 			if (selection.toArray()[0] instanceof NewLayer) {
 				System.err.println("NEW LAYER!");
 			}
