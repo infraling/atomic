@@ -3,10 +3,6 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.sentenceview;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -27,7 +23,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -38,8 +33,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
-import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphService;
 import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 
 /**
@@ -166,9 +159,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 		listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getSentenceTableViewer().setAllChecked(false);
-//				getLinkedSentences().clear();
-//				getLinkedSentencesForSentence().clear();
-//				getLinkSourceSentences().clear();
 				notifySelectionListeners(ModelRegistry.NO_SENTENCES_SELECTED);
 				getSentenceTableViewer().refresh();
 
@@ -356,21 +346,6 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	public void setSentenceTableViewer(CheckboxTableViewer sentenceTableViewer) {
 		this.sentenceTableViewer = sentenceTableViewer;
 	}
-
-//	/**
-//	 * @return the linkSourceSentences
-//	 */
-//	public HashSet<SSpan> getLinkSourceSentences() {
-//		return linkSourceSentences;
-//	}
-//
-//	/**
-//	 * @param linkSourceSentences
-//	 *            the linkSourceSentences to set
-//	 */
-//	public void setLinkSourceSentences(HashSet<SSpan> linkSourceSentences) {
-//		this.linkSourceSentences = linkSourceSentences;
-//	}
 
 	/**
 	 * @param graph
