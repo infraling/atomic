@@ -86,6 +86,19 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 				}
 			}
 		});
+		
+		getSentenceTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+			// Notifies selection listeners of the selected element (=SSpan) in the viewer.
+			// Note that only one sentence can be selected at a time
+			// To be used, e.g., by the Linked Sentences View
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				for (int i = 0; i < listeners.getListeners().length; i++) {
+					((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(SentenceView.this, new StructuredSelection(event.getSelection())));
+				}
+			}
+		});
+
 
 //		getSentenceTableViewer().getTable().setHeaderVisible(true);
 		getSentenceTableViewer().getTable().setLinesVisible(true);
