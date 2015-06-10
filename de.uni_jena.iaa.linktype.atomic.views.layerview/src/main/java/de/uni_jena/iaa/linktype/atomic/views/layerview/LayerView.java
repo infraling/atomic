@@ -246,7 +246,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 					}
 					System.err.println("NEW SELECTION " + getLayerCombo().getText());
 					lastActiveLayerMap.put(oldPartRef, getLayerCombo().getText());
-					
+
 				}
 			}
 		};
@@ -319,15 +319,19 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 						if (getLayerCombo().getItem(itemCount).equals(lastActiveLayerMap.get(partRef))) {
 							getLayerCombo().select(itemCount);
 							System.err.println(">>>>>>>>>>>>>>>>>>>>> ");
-							if (!getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
-							for (int i = 0; i < listeners.getListeners().length; i++) {
-								System.err.println(getLayerCombo().getItem(itemCount));
-								((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(getGraph().getSLayerByName(getLayerCombo().getItem(itemCount)).get(0)))));
-							}}
-							else {
+							if (getLayerCombo().getText().equals("-- Set active level --")) {
+								// Do nothing, this is no level
+							}
+							else  if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
 								for (int i = 0; i < listeners.getListeners().length; i++) {
 									System.err.println(getLayerCombo().getItem(itemCount));
 									((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
+								}
+							}
+							else {
+								for (int i = 0; i < listeners.getListeners().length; i++) {
+									System.err.println(getLayerCombo().getItem(itemCount));
+									((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(getGraph().getSLayerByName(getLayerCombo().getItem(itemCount)).get(0)))));
 								}
 							}
 						}
