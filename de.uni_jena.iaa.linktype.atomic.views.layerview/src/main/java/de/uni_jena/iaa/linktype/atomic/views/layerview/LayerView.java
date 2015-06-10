@@ -86,7 +86,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		getLayerTableViewer().addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
-				System.err.println("CHECKSTATECHANGED");
+//				System.err.println("CHECKSTATECHANGED");
 				// getLinkSourceSentences().clear();
 				// getLinkedSentencesForSentence().clear();
 				// getLinkedSentences().clear();
@@ -306,10 +306,10 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 			if (getLayerTableViewer() != null && !getLayerTableViewer().getControl().isDisposed()) {
 				getLayerTableViewer().setInput(getInput());
 				getLayerTableViewer().refresh();
-//				getLayerCombo().removeAll();
-//				addLayersToCombo(getLayerCombo());
-//				getLayerCombo().add("-- Set active level --", 0);
-//				getLayerCombo().select(0);
+				getLayerCombo().removeAll();
+				addLayersToCombo(getLayerCombo());
+				getLayerCombo().add("-- Set active level --", 0);
+				getLayerCombo().select(0);
 			}
 		}
 	}
