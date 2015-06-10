@@ -3,6 +3,9 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.layerview;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.emf.common.util.EList;
@@ -54,6 +57,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	private ListenerList listeners = new ListenerList();
 	private SDocumentGraph graph;
 	private IWorkbenchPartReference oldPartRef;
+	private Map<IWorkbenchPartReference, String> lastActiveLayerMap = new HashMap<IWorkbenchPartReference, String>();
 
 	/*
 	 * (non-Javadoc)
@@ -241,6 +245,8 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 						}
 					}
 					System.err.println("NEW SELECTION " + getLayerCombo().getText());
+					lastActiveLayerMap.put(oldPartRef, getLayerCombo().getText());
+					
 				}
 			}
 		};
@@ -304,9 +310,29 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 				// Do nothing, as the editor hasn't changed.
 			}
 			else {
-				// Re-initiate view, as another editor has been opened
+				// Re-initiate view, as another editor has been opened/activated
+				lastActiveLayerMap.put(oldPartRef, getLayerCombo().getText());
 				oldPartRef = partRef;
 				initializeView();
+				if (lastActiveLayerMap.get(partRef) != null) {
+					for (int itemCount = 0; itemCount < getLayerCombo().getItemCount(); itemCount++) {
+						if (getLayerCombo().getItem(itemCount).equals(lastActiveLayerMap.get(partRef))) {
+							getLayerCombo().select(itemCount);
+							System.err.println(">>>>>>>>>>>>>>>>>>>>> ");
+							if (!getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
+							for (int i = 0; i < listeners.getListeners().length; i++) {
+								System.err.println(getLayerCombo().getItem(itemCount));
+								((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(getGraph().getSLayerByName(getLayerCombo().getItem(itemCount)).get(0)))));
+							}}
+							else {
+								for (int i = 0; i < listeners.getListeners().length; i++) {
+									System.err.println(getLayerCombo().getItem(itemCount));
+									((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
