@@ -153,7 +153,7 @@ public class PartUtils {
 		int[] xY = calculateXY(model, part);
 		int width = figure.getPreferredSize().width;
 		int height = figure.getPreferredSize().height;
-		int x = xY[0] - (width / 2);
+		int x = xY[0];
 		int y = xY[1] - height;
 		return new Rectangle(x, y, width, height);
 	}
@@ -188,8 +188,8 @@ public class PartUtils {
 				else {
 					targetConstraints = (Rectangle) part.getFigure().getLayoutManager().getConstraint(targetEP.getFigure());
 				}
-//				yList.add(targetConstraints.y);
-				yList.add(100);
+				yList.add(targetConstraints.y);
+//				yList.add(1200);
 			}
 			else {
 				// Do nothing

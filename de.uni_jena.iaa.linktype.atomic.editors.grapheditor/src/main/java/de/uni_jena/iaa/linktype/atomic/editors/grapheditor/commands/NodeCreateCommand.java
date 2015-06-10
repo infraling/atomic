@@ -49,6 +49,8 @@ public class NodeCreateCommand extends Command {
 		if (getSelectedEditParts() != null && !getSelectedEditParts().isEmpty()) {
 			createRelations();
 		}
+		// getLocation() returns click location, i.e., the following code is executed when the node is created via 
+		// the palette rather than the console
 		if (getLocation() != null) {
 			SProcessingAnnotation anno = getModel().getSProcessingAnnotation("ATOMIC::GRAPHEDITOR_COORDS");
 			if (anno != null) {
