@@ -56,7 +56,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	@Override
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(1000, 800));
+//		configurer.setInitialSize(new Point(1000, 800));
 		configurer.setShowMenuBar(true);
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
@@ -89,6 +89,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		ServiceReference<IProvisioningAgent> serviceReference = bundleContext.getServiceReference(IProvisioningAgent.class);
 		AtomicAutoUpdateJob job = new AtomicAutoUpdateJob(agent, prefStore, JUSTUPDATED);
 		job.schedule();
+		
+		// Maximize application window
+		getWindowConfigurer().getWindow().getShell().setMaximized(true);
 	}
 
 	private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
