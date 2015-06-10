@@ -53,6 +53,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	private CheckboxTableViewer layerTableViewer;
 	private ListenerList listeners = new ListenerList();
 	private SDocumentGraph graph;
+	private IWorkbenchPartReference oldPartRef;
 
 	/*
 	 * (non-Javadoc)
@@ -86,7 +87,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		getLayerTableViewer().addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
-//				System.err.println("CHECKSTATECHANGED");
+				// System.err.println("CHECKSTATECHANGED");
 				// getLinkSourceSentences().clear();
 				// getLinkedSentencesForSentence().clear();
 				// getLinkedSentences().clear();
@@ -131,7 +132,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 
 		Button button = new Button(buttonComposite, SWT.PUSH);
 		button.setText("[+] Add new level");
-//		button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		// button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -227,9 +228,16 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 				if (e.widget.equals(getLayerCombo())) {
 					if (getGraph() != null) {
 						EList<SLayer> layerToActivate = getGraph().getSLayerByName(getLayerCombo().getText());
-						System.err.println("asdasd" + layerToActivate.get(0));
-						for (int i = 0; i < listeners.getListeners().length; i++) {
-							((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(layerToActivate.get(0)))));
+						if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
+							System.err.println("NO ACTIVE LAYER selected");
+							for (int i = 0; i < listeners.getListeners().length; i++) {
+								((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
+							}
+						}
+						else {
+							for (int i = 0; i < listeners.getListeners().length; i++) {
+								((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(layerToActivate.get(0)))));
+							}
 						}
 					}
 					System.err.println("NEW SELECTION " + getLayerCombo().getText());
@@ -247,8 +255,9 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		for (SLayer layer : graph.getSLayers()) {
 			layerCombo.add(layer.getSName());
 		}
-		layerCombo.add("-- NO ACTIVE LAYER --");
-
+		layerCombo.add("\u269B NO ACTIVE LAYER \u269B");
+		getLayerCombo().add("-- Set active level --", 0);
+		getLayerCombo().select(0);
 	}
 
 	/**
@@ -286,31 +295,48 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 		if (partRef.getPart(false) instanceof EditorPart) {
-			setGraph(null);
-			// EditorPart editor = (EditorPart) partRef.getPart(false);
-			// if (editor.getEditorInput() instanceof FileEditorInput) {
-			// FileEditorInput input = (FileEditorInput)
-			// editor.getEditorInput();
-			// if
-			// (input.getFile().getName().endsWith(SaltFactory.FILE_ENDING_SALT)
-			// &&
-			// !input.getFile().getName().equals(SaltFactory.FILE_SALT_PROJECT))
-			// {
-			// if (getLayerTableViewer() != null &&
-			// !getLayerTableViewer().getControl().isDisposed()) {
-			// getLayerTableViewer().setInput(getInput());
-			// getLayerTableViewer().refresh();
-			// }
-			// }
-			// }
-			if (getLayerTableViewer() != null && !getLayerTableViewer().getControl().isDisposed()) {
-				getLayerTableViewer().setInput(getInput());
-				getLayerTableViewer().refresh();
-				getLayerCombo().removeAll();
-				addLayersToCombo(getLayerCombo());
-				getLayerCombo().add("-- Set active level --", 0);
-				getLayerCombo().select(0);
+			if (oldPartRef == null) {
+				// Initiate view, as editor has been opened for the first time
+				oldPartRef = partRef;
+				initializeView();
 			}
+			else if (partRef == oldPartRef) {
+				// Do nothing, as the editor hasn't changed.
+			}
+			else {
+				// Re-initiate view, as another editor has been opened
+				oldPartRef = partRef;
+				initializeView();
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeView() {
+		setGraph(null);
+		// EditorPart editor = (EditorPart) partRef.getPart(false);
+		// if (editor.getEditorInput() instanceof FileEditorInput) {
+		// FileEditorInput input = (FileEditorInput)
+		// editor.getEditorInput();
+		// if
+		// (input.getFile().getName().endsWith(SaltFactory.FILE_ENDING_SALT)
+		// &&
+		// !input.getFile().getName().equals(SaltFactory.FILE_SALT_PROJECT))
+		// {
+		// if (getLayerTableViewer() != null &&
+		// !getLayerTableViewer().getControl().isDisposed()) {
+		// getLayerTableViewer().setInput(getInput());
+		// getLayerTableViewer().refresh();
+		// }
+		// }
+		// }
+		if (getLayerTableViewer() != null && !getLayerTableViewer().getControl().isDisposed()) {
+			getLayerTableViewer().setInput(getInput());
+			getLayerTableViewer().refresh();
+			getLayerCombo().removeAll();
+			addLayersToCombo(getLayerCombo());
 		}
 	}
 
