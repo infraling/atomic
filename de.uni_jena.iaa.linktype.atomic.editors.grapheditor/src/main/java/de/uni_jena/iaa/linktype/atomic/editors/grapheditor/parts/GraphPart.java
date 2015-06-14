@@ -119,7 +119,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			// }
 			// }
 			modelChildren.addAll(getSortedTokens());
-			if (!getSortedTokens().isEmpty() && !getLayers().isEmpty()) {
+			if (!getSortedTokens().isEmpty()/* && !getLayers().isEmpty()*/) {
 				startTime = System.nanoTime();
 				List<Node> sentenceGraph = GraphService.getSentenceGraph(getSortedTokens());
 				endTime = System.nanoTime();
@@ -127,7 +127,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 				for (Node node : sentenceGraph) {
 					if (node.getLayers().isEmpty()) {
 						// FIXME
-//						System.err.println("Found node without layers: " + node);
+						System.err.println("Found node without layers: " + node);
 					}
 				}
 				long timerStart = System.nanoTime();
@@ -191,13 +191,14 @@ public class GraphPart extends AbstractGraphicalEditPart {
 				long b = System.nanoTime();
 				System.err.println("II: " + ((b-a) / 1000000000) + "s");
 				break;
-//			case Notification.ADD:
-//				long c = System.nanoTime();
-////				refreshChildren();
-//				long d = System.nanoTime();
-//				System.err.println("III: " + ((d-c) / 1000000) + "ms");
-//	
-//				break;
+			case Notification.ADD:
+				System.err.println("GRAPH PART CALLS ADD");
+				long c = System.nanoTime();
+				refreshChildren();
+				long d = System.nanoTime();
+				System.err.println("III: " + ((d-c) / 1000000) + "ms");
+	
+				break;
 				// TODO: KANN WOHL RAUS!
 //			case Notification.SET:
 //				long e = System.nanoTime();
