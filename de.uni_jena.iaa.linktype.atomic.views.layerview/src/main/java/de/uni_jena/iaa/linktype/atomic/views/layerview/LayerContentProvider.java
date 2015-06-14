@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
+import de.uni_jena.iaa.linktype.atomic.views.layerview.util.NewLayer;
 
 /**
  * @author Stephan Druskat
@@ -41,11 +42,12 @@ public class LayerContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		ArrayList<SLayer> layers = new ArrayList<SLayer>();
+		ArrayList<String> layers = new ArrayList<String>();
 		if (inputElement instanceof SDocumentGraph) {
 			for (SLayer layer : ((SDocumentGraph) inputElement).getSLayers()) {
-				layers.add(layer);
+				layers.add(layer.getSName());
 			}
+			layers.add("\u269B NO ASSIGNED LAYER \u269B");
 			return layers.toArray();
 		}
 		return null;

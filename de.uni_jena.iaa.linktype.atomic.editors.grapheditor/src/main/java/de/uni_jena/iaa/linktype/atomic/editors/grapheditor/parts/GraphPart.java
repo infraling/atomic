@@ -48,7 +48,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	public Object removingObject;
 	private List<Object> dynamicModelChildrenList = new ArrayList<Object>();
 	private EList<SToken> sortedTokens = new BasicEList<SToken>();
-	private HashSet<SLayer> layers = new HashSet<SLayer>();
+	private HashSet<String> layers = new HashSet<String>();
 	private FreeformLayer graphFigure;
 
 	public GraphPart(SDocumentGraph model) {
@@ -81,7 +81,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		graphFigure.setBorder(new MarginBorder(3)); // FIXME: Remove
 		graphFigure.setLayoutManager(new FreeformLayout());
 		graphFigure.addLayoutListener(new LayoutListener.Stub() {
-			
+
 			@Override
 			public void postLayout(IFigure host) {
 				System.err.println("############ POST LAYOUT ##############");
@@ -119,34 +119,55 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			// }
 			// }
 			modelChildren.addAll(getSortedTokens());
-			if (!getSortedTokens().isEmpty()/* && !getLayers().isEmpty()*/) {
+			if (!getSortedTokens().isEmpty()/* && !getLayers().isEmpty() */) {
 				startTime = System.nanoTime();
 				List<Node> sentenceGraph = GraphService.getSentenceGraph(getSortedTokens());
 				endTime = System.nanoTime();
-//				System.err.println("Getting sentenceGraph took " + ((endTime - startTime) / 1000000) + "ms");
-				for (Node node : sentenceGraph) {
-					if (node.getLayers().isEmpty()) {
-						// FIXME
-						System.err.println("Found node without layers: " + node);
-					}
-				}
+				// System.err.println("Getting sentenceGraph took " + ((endTime
+				// - startTime) / 1000000) + "ms");
+				// for (Node node : sentenceGraph) {
+				// if (node.getLayers().isEmpty()) {
+				// // FIXME
+				// System.err.println("Found node without layers: " + node);
+				// }
+				// }
 				long timerStart = System.nanoTime();
 				for (Node node : sentenceGraph) {
 					SNode sNode = (SNode) node;
+					System.out.println("LAYERS EMPTY: " + sNode.getSLayers().isEmpty());
+
+					System.out.println("IN ELSE");
 					for (SLayer layer : sNode.getSLayers()) {
-						for (SLayer selectedLayer : getLayers()) {
-							if (layer.getSId().equals(selectedLayer.getSId())) {
+						for (String selectedLayer : getLayers()) {
+							if (layer.getSName().equals((selectedLayer))) {
 								modelChildren.add(sNode);
 							}
 						}
-//						else {
-//							System.err.println("Found Layer that's not in SLayers: " + layer);
-//						}
+						// else {
+						// System.err.println("Found Layer that's not in SLayers: "
+						// + layer);
+						// }
+						
 					}
+					if (sNode.getSLayers().isEmpty() && getLayers().contains("\u269B NO ASSIGNED LAYER \u269B")) { // FIXME
+						// Externalize
+						// here
+						// and
+						// in
+						// layer
+						// view
+						// +
+						// write
+						// unit
+						// test!
+						System.err.println("CHILD IS LAYERLESS NODE!");
+						modelChildren.add(sNode);
+					}
+
 				}
 				long timerEnd = System.nanoTime();
 				System.err.println("Checking for layered nodes took " + ((timerEnd - timerStart) / 1000000) + "ms to complete (" + ((timerEnd - timerStart) / 1000000000) + "s).");
-				
+
 				// modelChildren.addAll(GraphService.getSentenceGraph(getSortedTokens()));
 			}
 			getDynamicModelChildrenList().clear();
@@ -189,24 +210,25 @@ public class GraphPart extends AbstractGraphicalEditPart {
 				long a = System.nanoTime();
 				refreshChildren();
 				long b = System.nanoTime();
-				System.err.println("II: " + ((b-a) / 1000000000) + "s");
+				System.err.println("II: " + ((b - a) / 1000000000) + "s");
 				break;
 			case Notification.ADD:
 				System.err.println("GRAPH PART CALLS ADD");
 				long c = System.nanoTime();
 				refreshChildren();
 				long d = System.nanoTime();
-				System.err.println("III: " + ((d-c) / 1000000) + "ms");
-	
+				System.err.println("III: " + ((d - c) / 1000000) + "ms");
+
 				break;
-				// TODO: KANN WOHL RAUS!
-//			case Notification.SET:
-//				long e = System.nanoTime();
-////				refreshChildren();
-//				long f = System.nanoTime();
-//				System.err.println(n.getOldValue() + ">" + n.getNewValue() + " IV: " + ((f-e) / 1000000000) + "s");
-	
-//				break;
+			// TODO: KANN WOHL RAUS!
+			// case Notification.SET:
+			// long e = System.nanoTime();
+			// // refreshChildren();
+			// long f = System.nanoTime();
+			// System.err.println(n.getOldValue() + ">" + n.getNewValue() +
+			// " IV: " + ((f-e) / 1000000000) + "s");
+
+			// break;
 
 			default:
 				break;
@@ -289,7 +311,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	/**
 	 * @return the layers
 	 */
-	public HashSet<SLayer> getLayers() {
+	public HashSet<String> getLayers() {
 		return layers;
 	}
 
@@ -297,7 +319,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 * @param layers
 	 *            the layers to set
 	 */
-	public void setLayers(HashSet<SLayer> layers) {
+	public void setLayers(HashSet<String> layers) {
 		this.layers = layers;
 	}
 
@@ -309,7 +331,8 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	}
 
 	/**
-	 * @param activeLayer the activeLayer to set
+	 * @param activeLayer
+	 *            the activeLayer to set
 	 */
 	public void setActiveLayer(SLayer activeLayer) {
 		System.err.println("---- setting active layer");

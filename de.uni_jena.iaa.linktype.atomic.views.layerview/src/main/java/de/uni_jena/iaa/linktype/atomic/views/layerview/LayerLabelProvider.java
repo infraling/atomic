@@ -3,13 +3,9 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.layerview;
 
-import org.eclipse.jface.viewers.IBaseLabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
  * @author Stephan Druskat
@@ -17,12 +13,10 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
  */
 public class LayerLabelProvider extends LabelProvider implements ITableColorProvider {
 
-	private LayerView layerView;
-	
 	@Override
 	public String getText(Object element) {
-		if (element instanceof SLayer) {
-			return ((SLayer) element).getSName();
+		if (element instanceof String) {
+			return (String) element;
 		}
 		return null;
 	}
@@ -31,7 +25,6 @@ public class LayerLabelProvider extends LabelProvider implements ITableColorProv
 	 * @param layerView
 	 */
 	public LayerLabelProvider(LayerView layerView) {
-		this.layerView = layerView;
 	}
 
 	/* (non-Javadoc)

@@ -10,6 +10,7 @@ import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -147,10 +148,13 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			}
 			IStructuredSelection selection = (IStructuredSelection) incomingSelection;
 			System.err.println("---> " + selection);
+			System.err.println("LAYER NAMES: " + getLayerNames());
+			System.err.println("ELEMENT IN LAYERNAMES? " + getLayerNames().contains(selection.getFirstElement()));
 			for (Object element : selection.toList()) {
 				// Check if we need to perform an operation at all, i.e.
 				// if the selection is interesting
-				if (!(element instanceof SSpan || element instanceof SLayer || (element instanceof String && (element.equals(ModelRegistry.NO_LAYERS_SELECTED) || element.equals(ModelRegistry.NO_SENTENCES_SELECTED))) || element instanceof NewLayer)) {
+				if (!(element instanceof SSpan || element instanceof SLayer || (element instanceof String && (element.equals(ModelRegistry.NO_LAYERS_SELECTED) || element.equals(ModelRegistry.NO_SENTENCES_SELECTED))) || element instanceof NewLayer || getLayerNames().contains(element))) {
+					System.err.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA RETURN!");
 					return;
 				}
 			}
@@ -170,9 +174,11 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				}
 			}
 			for (Object element : selection.toList()) {
-				if (!(element instanceof SLayer)) {
-					containsOnlyLayers = false;
-					break;
+				if (!(element instanceof String)) {
+					if (!(getLayerNames().contains(element))) {
+						containsOnlyLayers = false;
+						break;
+					}
 				}
 			}
 			GraphPart graphPart = ((GraphPart) getGraphicalViewer().getRootEditPart().getContents());
@@ -216,8 +222,9 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				}
 			}
 			else if (containsOnlyLayers) {
+				System.err.println("CONTAINS ONLY LAYERS >>>>>>>>>>>>>>>>>>");
 				graphPart.getLayers().clear();
-				graphPart.setLayers(new HashSet<SLayer>(selection.toList()));
+				graphPart.setLayers(new HashSet<String>(selection.toList()));
 				long a = System.nanoTime();
 				// TODO: Next refresh is needed!
 				try {
@@ -356,6 +363,8 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	};
 	private GraphicalViewer viewer;
 
+	private Set<String> layerNames;
+
 	/**
 	 * 
 	 */
@@ -432,6 +441,19 @@ public class GraphEditor extends AtomicGraphicalEditor {
 		shortestPathConnectionRouter.setSpacing(15);
 		router.setNextRouter(shortestPathConnectionRouter);
 		connLayer.setConnectionRouter(router);
+		setLayerNames(populateLayerNames());
+	}
+
+	/**
+	 * @return
+	 */
+	private Set<String> populateLayerNames() {
+		Set<String> layerNames = new HashSet<String>();
+		for (SLayer layer : getGraph().getSLayers()) {
+			layerNames.add(layer.getSName());
+		}
+		layerNames.add("\u269B NO ASSIGNED LAYER \u269B");
+		return layerNames;
 	}
 
 	/*
@@ -487,6 +509,21 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	 */
 	public void setViewer(GraphicalViewer viewer) {
 		this.viewer = viewer;
+	}
+
+	/**
+	 * @return the layerNames
+	 */
+	public Set<String> getLayerNames() {
+		return layerNames;
+	}
+
+	/**
+	 * @param layerNames
+	 *            the layerNames to set
+	 */
+	public void setLayerNames(Set<String> layerNames) {
+		this.layerNames = layerNames;
 	}
 
 	class RefreshEditorJob extends Job {
