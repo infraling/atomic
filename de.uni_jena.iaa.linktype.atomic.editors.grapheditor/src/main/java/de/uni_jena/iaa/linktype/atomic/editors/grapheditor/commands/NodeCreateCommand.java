@@ -40,11 +40,19 @@ public class NodeCreateCommand extends Command {
 
 	@Override
 	public void execute() {
+		System.err.println("IN EXECUTE");
 		getModel().setGraph(getGraph());
 		SLayer activeLayer = ((GraphPart) ((GraphEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).getEditPartViewer().getContents()).getActiveLayer();
+		System.err.println("++++++++++++++++++++++ ACTIVE LAYER " + activeLayer);
 		if (activeLayer != null) {
 			System.err.println("ADD NODES TO LAYER " + activeLayer);
 			activeLayer.getSNodes().add(getModel());
+		}
+		else {
+			// Add a node without a layer
+			System.err.println("\u269B\u269B\u269B\u269B\u269B\u269B\u269B node without layer");
+//			getGraph().addSNode(getModel());//getSNodes().add(getModel());
+//			getGraph().eNotify(new NotificationImpl(Notification.ADD, null, getModel()));
 		}
 		if (getSelectedEditParts() != null && !getSelectedEditParts().isEmpty()) {
 			createRelations();
