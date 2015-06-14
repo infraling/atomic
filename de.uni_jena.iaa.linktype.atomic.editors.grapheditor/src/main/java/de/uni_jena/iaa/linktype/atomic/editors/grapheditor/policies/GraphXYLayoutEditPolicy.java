@@ -38,6 +38,7 @@ public class GraphXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	    	command.setGraph((SDocumentGraph) (getHost().getModel()));
 	    	command.setModel((SStructuredNode) request.getNewObject());
 	    	command.setSelectedEditParts(getHost().getViewer().getSelectedEditParts());
+	    	// FIXME TODO Set SLayer here as well!
 	    	return command;
 		}
 		return null;
