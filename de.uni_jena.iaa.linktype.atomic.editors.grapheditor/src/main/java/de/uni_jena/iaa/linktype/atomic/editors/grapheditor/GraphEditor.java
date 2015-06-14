@@ -199,7 +199,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				System.err.println("2: " + ((b - a) / 1000000000) + "s");
 			}
 			else if (selection.toList().get(0) instanceof NewLayer) {
-				System.err.println("SETTING ACTIVE LAYER");
+				System.err.println("SETTING ACTIVE LAYER TO " + ((NewLayer) selection.getFirstElement()).getNewLayer());
 				graphPart.setActiveLayer(((NewLayer) selection.getFirstElement()).getNewLayer());
 			}
 			else if (containsOnlySpans) {
@@ -221,15 +221,12 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				long a = System.nanoTime();
 				// TODO: Next refresh is needed!
 				try {
-					new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, true, new IRunnableWithProgress() {
-
+					new ProgressMonitorDialog(Display.getDefault().getActiveShell()).run(true, true, new IRunnableWithProgress() {
 						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 							monitor.beginTask("Please wait while the annotation graph is rendered.", IProgressMonitor.UNKNOWN);
 							Display.getDefault().syncExec(new Runnable() {
 								public void run() {
-										getGraphicalViewer().getRootEditPart().getContents().refresh();
-
-									
+									getGraphicalViewer().getRootEditPart().getContents().refresh();
 								}
 							});
 							monitor.done();
