@@ -47,7 +47,7 @@ public class LayerContentProvider implements IStructuredContentProvider {
 			for (SLayer layer : ((SDocumentGraph) inputElement).getSLayers()) {
 				layers.add(layer.getSName());
 			}
-			layers.add("\u269B NO ASSIGNED LAYER \u269B");
+			layers.add("\u269B NO ASSIGNED LEVEL \u269B");
 			return layers.toArray();
 		}
 		return null;

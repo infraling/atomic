@@ -452,7 +452,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 		for (SLayer layer : getGraph().getSLayers()) {
 			layerNames.add(layer.getSName());
 		}
-		layerNames.add("\u269B NO ASSIGNED LAYER \u269B");
+		layerNames.add("\u269B NO ASSIGNED LEVEL \u269B");
 		return layerNames;
 	}
 

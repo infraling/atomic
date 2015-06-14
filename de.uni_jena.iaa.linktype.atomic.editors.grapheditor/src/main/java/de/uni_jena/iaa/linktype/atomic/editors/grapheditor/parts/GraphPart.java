@@ -149,7 +149,7 @@ public class GraphPart extends AbstractGraphicalEditPart {
 						// }
 						
 					}
-					if (sNode.getSLayers().isEmpty() && getLayers().contains("\u269B NO ASSIGNED LAYER \u269B")) { // FIXME
+					if (sNode.getSLayers().isEmpty() && getLayers().contains("\u269B NO ASSIGNED LEVEL \u269B")) { // FIXME
 						// Externalize
 						// here
 						// and
