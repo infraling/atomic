@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -58,7 +59,15 @@ public class LinkedSentencesView extends ViewPart {
 							@Override
 							public void run() {
 								setLinkedSentences(traverseSpanForLinkedSentences(getSentenceSpan()));
-								getSentenceSpanText().setText(retrieveSentenceFromSpan(getSentenceSpan()) + "\n is linked to\n" + getLinkedSentences());
+								String text = "Sentence [" + getSentenceIndex(getSentenceSpan()) + "] is linked to:\n";
+								for (SSpan span : getLinkedSentences()) {
+									text = text + "[" + getSentenceIndex(span) + "]\n";
+								}
+								getSentenceSpanText().setText(text);
+							}
+
+							private String getSentenceIndex(SSpan sentenceSpan) {
+								return Integer.toString(sentenceSpan.getSDocumentGraph().getSLayer(ModelRegistry.SENTENCE_LAYER_SID).getAllIncludedNodes().indexOf(sentenceSpan));
 							}
 						});
 					}
@@ -84,8 +93,9 @@ public class LinkedSentencesView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		getSite().getPage().addSelectionListener(listener);
-		setSentenceSpanText(new Text(parent, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP));
+		setSentenceSpanText(new Text(parent, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL));
 		getSentenceSpanText().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		parent.setLayout(new FillLayout());
 
 		// l = new Label(parent, SWT.NONE);
 		// l.setText("Nothing to do");

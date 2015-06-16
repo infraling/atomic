@@ -41,6 +41,7 @@
                closeable="true"
                id="de.uni_jena.iaa.linktype.atomic.views.linkedsentences"
                minimized="false"
+               ratio="0.65f"
                relationship="bottom"
                relative="de.uni_jena.iaa.linktype.atomic.views.layerview"
                showTitle="true"
