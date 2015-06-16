@@ -5,6 +5,9 @@ Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.views.linkedsentences;singl
 Bundle-Version: 0.1.9
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.views.linkedsentences.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ de.hu_berlin.german.korpling.saltnpepper.salt-graph,
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon,
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

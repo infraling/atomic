@@ -86,6 +86,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 			// To be used, e.g., by the Linked Sentences View
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
+				System.err.println("SENTENCE TABLE VIEWER FIRING SELECTION CHANGED EVENT");
 				for (int i = 0; i < listeners.getListeners().length; i++) {
 					((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(SentenceView.this, new StructuredSelection(event.getSelection())));
 				}
@@ -204,7 +205,8 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	 */
 	@Override
 	public ISelection getSelection() {
-		return new StructuredSelection(getSentenceTableViewer().getCheckedElements());
+//		return new StructuredSelection(getSentenceTableViewer().getCheckedElements());
+		return null;
 	}
 
 	/*

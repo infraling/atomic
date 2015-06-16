@@ -61,28 +61,28 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	private IWorkbenchPartReference oldPartRef;
 	private Map<IWorkbenchPartReference, String> lastActiveLayerMap = new HashMap<IWorkbenchPartReference, String>();
 	
-	ISelectionListener listener = new ISelectionListener() { // To listen to changes in active layer
-		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
-			String selectString = null;
-			IStructuredSelection selection = null;
-			if (incomingSelection instanceof IStructuredSelection) {
-				selection = (IStructuredSelection) incomingSelection;
-				if (selection.getFirstElement() instanceof Object[]) {
-					if (((Object[]) selection.getFirstElement())[0].equals(ModelRegistry.ACTIVE_LAYER_HAS_CHANGED)) {
-						if (((Object[]) selection.getFirstElement())[1] instanceof SLayer) {
-							selectString = ((SLayer) ((Object[]) selection.getFirstElement())[1]).getSName();
-						}
-						else if (((Object[]) selection.getFirstElement())[1] == null) {
-							selectString = "";
-						}
-						else {
-							throw new UnsupportedOperationException("Active layer is not valid!");
-						}
-					}
-				}
-			}
-		}
-	};
+//	ISelectionListener listener = new ISelectionListener() { // To listen to changes in active layer
+//		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
+//			String selectString = null;
+//			IStructuredSelection selection = null;
+//			if (incomingSelection instanceof IStructuredSelection) {
+//				selection = (IStructuredSelection) incomingSelection;
+//				if (selection.getFirstElement() instanceof Object[]) {
+//					if (((Object[]) selection.getFirstElement())[0].equals(ModelRegistry.ACTIVE_LAYER_HAS_CHANGED)) {
+//						if (((Object[]) selection.getFirstElement())[1] instanceof SLayer) {
+//							selectString = ((SLayer) ((Object[]) selection.getFirstElement())[1]).getSName();
+//						}
+//						else if (((Object[]) selection.getFirstElement())[1] == null) {
+//							selectString = "";
+//						}
+//						else {
+//							throw new UnsupportedOperationException("Active layer is not valid!");
+//						}
+//					}
+//				}
+//			}
+//		}
+//	};
 
 	/*
 	 * (non-Javadoc)

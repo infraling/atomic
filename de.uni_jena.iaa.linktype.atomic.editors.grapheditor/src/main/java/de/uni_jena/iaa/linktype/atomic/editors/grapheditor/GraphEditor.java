@@ -136,7 +136,6 @@ public class GraphEditor extends AtomicGraphicalEditor {
 
 	ISelectionListener listener = new ISelectionListener() {
 		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
-			long startTime = System.nanoTime();
 			if (!(incomingSelection instanceof IStructuredSelection)) {
 				return;
 			}
