@@ -186,10 +186,12 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 					// NO ASSIGNED LEVEL is to be activated
 					// getGraphPart().setActiveLayer("\u269B NO ASSIGNED LEVEL \u269B");
 					getGraphPart().setActiveLayer(null);
+					out.write("Active layer is now \"\u269B NO ASSIGNED LEVEL \u269B\".\r\n");
 				}
 				else {
 					SLayer layer = getGraph().getSLayers().get(Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0)));
 					getGraphPart().setActiveLayer(layer);
+					out.write("Active layer is now \"" + layer.getSName() + "\".\r\n");
 				}
 			}
 			break;
