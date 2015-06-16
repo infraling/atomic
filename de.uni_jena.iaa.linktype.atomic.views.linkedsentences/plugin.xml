@@ -41,9 +41,8 @@
                closeable="true"
                id="de.uni_jena.iaa.linktype.atomic.views.linkedsentences"
                minimized="false"
-               ratio="0.8f"
                relationship="bottom"
-               relative="org.eclipse.ui.editorss"
+               relative="de.uni_jena.iaa.linktype.atomic.views.layerview"
                showTitle="true"
                visible="true">
          </view>
