@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
@@ -60,6 +61,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	private SDocumentGraph graph;
 	private IWorkbenchPartReference oldPartRef;
 	private Map<IWorkbenchPartReference, String> lastActiveLayerMap = new HashMap<IWorkbenchPartReference, String>();
+	private ICheckStateListener checkStateListener;
 	
 //	ISelectionListener listener = new ISelectionListener() { // To listen to changes in active layer
 //		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
@@ -117,7 +119,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		column.setText("Level name");
 		column.pack();
 
-		getLayerTableViewer().addCheckStateListener(new ICheckStateListener() {
+		checkStateListener = new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				getLayerTableViewer().refresh();
@@ -128,7 +130,8 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 					notifySelectionListeners();
 				}
 			}
-		});
+		}; 
+		getLayerTableViewer().addCheckStateListener(checkStateListener);
 
 		getLayerTableViewer().getTable().setHeaderVisible(true);
 		getLayerTableViewer().getTable().setLinesVisible(true);
@@ -163,8 +166,14 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 					}
 					getGraph().addSLayer(layer);
 				}
-				getLayerTableViewer().refresh();
 				getLayerCombo().add(layerName, (getLayerCombo().getItemCount() - 1));
+				getLayerTableViewer().refresh();
+				for (TableItem item : getLayerTableViewer().getTable().getItems()) {
+					if (item.getData().equals(layer.getSName())) {
+						item.setChecked(true);
+						notifySelectionListeners();
+					}
+				}
 				for (int i = 0; i < listeners.getListeners().length; i++) {
 					((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(layer))));
 				}
@@ -225,6 +234,10 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	 * 
 	 */
 	protected void notifySelectionListeners() {
+		System.err.println("motifying sel listener ");
+		for (Object element : getLayerTableViewer().getCheckedElements()) {
+			System.err.println(element.getClass() + " " + element.toString());
+		}
 		for (int i = 0; i < listeners.getListeners().length; i++) {
 			((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(getLayerTableViewer().getCheckedElements())));
 		}

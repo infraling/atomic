@@ -136,11 +136,13 @@ public class GraphEditor extends AtomicGraphicalEditor {
 
 	ISelectionListener listener = new ISelectionListener() {
 		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
+			setLayerNames(populateLayerNames());
 			if (!(incomingSelection instanceof IStructuredSelection)) {
 				return;
 			}
 			IStructuredSelection selection = (IStructuredSelection) incomingSelection;
 			for (Object element : selection.toList()) {
+				System.err.println("EKK " + element.getClass() + " " + element.toString() + " -- " + getLayerNames().contains(element));
 				// Check if we need to perform an operation at all, i.e.
 				// if the selection is interesting
 				if (!(element instanceof SSpan || element instanceof SLayer || (element instanceof String && (element.equals(ModelRegistry.NO_LAYERS_SELECTED) || element.equals(ModelRegistry.NO_SENTENCES_SELECTED))) || element instanceof NewLayer || getLayerNames().contains(element))) {
