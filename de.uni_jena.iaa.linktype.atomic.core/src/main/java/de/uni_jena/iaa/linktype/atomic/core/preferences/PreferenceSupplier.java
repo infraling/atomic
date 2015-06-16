@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.preferences;
 
-import java.util.HashMap; 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;

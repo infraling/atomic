@@ -16,8 +16,7 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Display; 
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;

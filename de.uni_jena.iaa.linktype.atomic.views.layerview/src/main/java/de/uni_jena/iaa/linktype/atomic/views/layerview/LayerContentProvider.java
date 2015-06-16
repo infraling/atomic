@@ -10,7 +10,6 @@ import org.eclipse.jface.viewers.Viewer;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
-import de.uni_jena.iaa.linktype.atomic.views.layerview.util.NewLayer;
 
 /**
  * @author Stephan Druskat

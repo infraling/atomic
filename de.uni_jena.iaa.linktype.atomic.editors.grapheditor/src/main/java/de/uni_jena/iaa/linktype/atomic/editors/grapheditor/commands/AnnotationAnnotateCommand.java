@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.commands.Command;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Label;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.LabelableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;

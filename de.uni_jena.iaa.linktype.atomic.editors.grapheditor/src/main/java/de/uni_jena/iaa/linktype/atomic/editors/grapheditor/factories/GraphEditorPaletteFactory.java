@@ -3,9 +3,6 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories;
 
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.Activator;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.SaltElementsFactory.ElementType;
-
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.CreationToolEntry;
@@ -21,6 +18,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.Activator;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.SaltElementsFactory.ElementType;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.CreationAndDirectEditTool;
 
 /**

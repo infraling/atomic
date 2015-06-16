@@ -8,25 +8,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LayoutListener;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EContentAdapter;
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Layer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
@@ -80,13 +75,6 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		graphFigure = new FreeformLayer();
 		graphFigure.setBorder(new MarginBorder(3)); // FIXME: Remove
 		graphFigure.setLayoutManager(new FreeformLayout());
-		graphFigure.addLayoutListener(new LayoutListener.Stub() {
-
-			@Override
-			public void postLayout(IFigure host) {
-				System.err.println("############ POST LAYOUT ##############");
-			}
-		});
 		return graphFigure;
 	}
 
@@ -111,43 +99,17 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		long endTime = 0, startTime = 0;
 		List<Object> modelChildren = new ArrayList<Object>();
 		if (getSortedTokens() != null) {
-			// for (SToken sortedToken : getSortedTokens()) {
-			// for (SLayer layer : sortedToken.getSLayers()) {
-			// if (getLayers().contains(layer)) {
-			// modelChildren.add(sortedToken);
-			// }
-			// }
-			// }
 			modelChildren.addAll(getSortedTokens());
 			if (!getSortedTokens().isEmpty()/* && !getLayers().isEmpty() */) {
-				startTime = System.nanoTime();
 				List<Node> sentenceGraph = GraphService.getSentenceGraph(getSortedTokens());
-				endTime = System.nanoTime();
-				// System.err.println("Getting sentenceGraph took " + ((endTime
-				// - startTime) / 1000000) + "ms");
-				// for (Node node : sentenceGraph) {
-				// if (node.getLayers().isEmpty()) {
-				// // FIXME
-				// System.err.println("Found node without layers: " + node);
-				// }
-				// }
-				long timerStart = System.nanoTime();
 				for (Node node : sentenceGraph) {
 					SNode sNode = (SNode) node;
-					System.out.println("LAYERS EMPTY: " + sNode.getSLayers().isEmpty());
-
-					System.out.println("IN ELSE");
 					for (SLayer layer : sNode.getSLayers()) {
 						for (String selectedLayer : getLayers()) {
 							if (layer.getSName().equals((selectedLayer))) {
 								modelChildren.add(sNode);
 							}
 						}
-						// else {
-						// System.err.println("Found Layer that's not in SLayers: "
-						// + layer);
-						// }
-						
 					}
 					if (sNode.getSLayers().isEmpty() && getLayers().contains("\u269B NO ASSIGNED LEVEL \u269B")) { // FIXME
 						// Externalize
@@ -160,19 +122,13 @@ public class GraphPart extends AbstractGraphicalEditPart {
 						// write
 						// unit
 						// test!
-						System.err.println("CHILD IS LAYERLESS NODE!");
 						modelChildren.add(sNode);
 					}
 
 				}
-				long timerEnd = System.nanoTime();
-				System.err.println("Checking for layered nodes took " + ((timerEnd - timerStart) / 1000000) + "ms to complete (" + ((timerEnd - timerStart) / 1000000000) + "s).");
-
-				// modelChildren.addAll(GraphService.getSentenceGraph(getSortedTokens()));
 			}
 			getDynamicModelChildrenList().clear();
 			getDynamicModelChildrenList().addAll(modelChildren);
-			System.err.println("Getting model children took " + (System.nanoTime() - a) / 1000000 + "ms vs " + ((endTime - startTime) / 1000000) + "ms for getting the sentence graph");
 			return modelChildren;
 		}
 		return null;
@@ -207,28 +163,12 @@ public class GraphPart extends AbstractGraphicalEditPart {
 		public void notifyChanged(Notification n) {
 			switch (n.getEventType()) {
 			case Notification.REMOVE:
-				long a = System.nanoTime();
 				refreshChildren();
-				long b = System.nanoTime();
-				System.err.println("II: " + ((b - a) / 1000000000) + "s");
 				break;
 			case Notification.ADD:
-				System.err.println("GRAPH PART CALLS ADD");
-				long c = System.nanoTime();
 				refreshChildren();
-				long d = System.nanoTime();
-				System.err.println("III: " + ((d - c) / 1000000) + "ms");
-
+				
 				break;
-			// TODO: KANN WOHL RAUS!
-			// case Notification.SET:
-			// long e = System.nanoTime();
-			// // refreshChildren();
-			// long f = System.nanoTime();
-			// System.err.println(n.getOldValue() + ">" + n.getNewValue() +
-			// " IV: " + ((f-e) / 1000000000) + "s");
-
-			// break;
 
 			default:
 				break;
@@ -253,7 +193,6 @@ public class GraphPart extends AbstractGraphicalEditPart {
 			((SDocumentGraph) getModel()).eAdapters().add(getAdapter());
 		}
 		super.activate();
-		System.err.println("======== GRAPH PART ACTIVATED! ========");
 	}
 
 	@Override
@@ -335,7 +274,6 @@ public class GraphPart extends AbstractGraphicalEditPart {
 	 *            the activeLayer to set
 	 */
 	public void setActiveLayer(SLayer activeLayer) {
-		System.err.println("---- setting active layer");
 		this.activeLayer = activeLayer;
 	}
 

@@ -41,7 +41,8 @@ public class AtomicalAnnotationGraphParser {
 	public static HashMap<Object, Object> parseParameters(String rawParameters) { // FIXME Change Object to String and TEST
 		HashMap<Object, Object> hash = new HashMap<Object, Object>();
 		hash.put("attributes".intern(), new LinkedHashMap<Object, Object>()); // Attributes
-		hash.put("switch", new ArrayList<String>(1));
+		hash.put("switch", new ArrayList<String>(1)); // edge switches
+		hash.put("integer", new ArrayList<String>(1)); // integer, used for level and sentence IDs
 		hash.put("keys".intern(), new ArrayList<Object>()); // Valueless keys, used for deleting parameters
 		hash.put("elements".intern(), new ArrayList<String>()); // All nodes and edges from the String
 		hash.put("words".intern(), new ArrayList<String>()); // All Strings that are not attributes
@@ -129,6 +130,9 @@ public class AtomicalAnnotationGraphParser {
 				}
 				else if (word.matches("-[drop]")) {// edge switch
 					((ArrayList<String>) hash.get("switch")).add(word.substring(1));
+				}
+				else  if (word.matches("[0-9]+")) {// integer
+					((ArrayList<String>) hash.get("integer")).add(word);
 				}
 				else if (word.matches("^([DNPTRSOdnptrso]\\d+)\\.\\.([DNPTRSOdnptrso]\\d+)")) {
 					char typeDefiningFirstChar = word.charAt(0);

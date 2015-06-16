@@ -4,12 +4,10 @@
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,9 +49,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
-import org.jbenchx.annotations.Bench;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
@@ -63,7 +59,6 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.AtomicEditPartFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.factories.GraphEditorPaletteFactory;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.RelationPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.SpanPart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.StructurePart;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
@@ -142,19 +137,14 @@ public class GraphEditor extends AtomicGraphicalEditor {
 	ISelectionListener listener = new ISelectionListener() {
 		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
 			long startTime = System.nanoTime();
-			System.err.println("selectionChanged() START");
 			if (!(incomingSelection instanceof IStructuredSelection)) {
 				return;
 			}
 			IStructuredSelection selection = (IStructuredSelection) incomingSelection;
-			System.err.println("---> " + selection);
-			System.err.println("LAYER NAMES: " + getLayerNames());
-			System.err.println("ELEMENT IN LAYERNAMES? " + getLayerNames().contains(selection.getFirstElement()));
 			for (Object element : selection.toList()) {
 				// Check if we need to perform an operation at all, i.e.
 				// if the selection is interesting
 				if (!(element instanceof SSpan || element instanceof SLayer || (element instanceof String && (element.equals(ModelRegistry.NO_LAYERS_SELECTED) || element.equals(ModelRegistry.NO_SENTENCES_SELECTED))) || element instanceof NewLayer || getLayerNames().contains(element))) {
-					System.err.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA RETURN!");
 					return;
 				}
 			}
@@ -163,7 +153,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				return;
 			}
 			if (selection.toArray()[0] instanceof NewLayer) {
-				System.err.println("NEW LAYER!");
+				// New layer
 			}
 			boolean containsOnlySpans = true;
 			boolean containsOnlyLayers = true;
@@ -185,36 +175,23 @@ public class GraphEditor extends AtomicGraphicalEditor {
 			if (selection.isEmpty()) {
 				graphPart.getLayers().clear();
 				graphPart.getSortedTokens().clear();
-				long a = System.nanoTime();
 				graphPart.refresh();
-				long b = System.nanoTime();
-				System.err.println("5: " + ((b - a) / 1000000000) + "s");
 			}
 			else if (selection.getFirstElement().equals(ModelRegistry.NO_LAYERS_SELECTED)) {
 				graphPart.getLayers().clear();
-				long a = System.nanoTime();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
-				long b = System.nanoTime();
-				System.err.println("1: " + ((b - a) / 1000000000) + "s");
 			}
 			else if (selection.getFirstElement().equals(ModelRegistry.NO_SENTENCES_SELECTED)) {
 				graphPart.getSortedTokens().clear();
-				long a = System.nanoTime();
 				getGraphicalViewer().getRootEditPart().getContents().refresh();
-				long b = System.nanoTime();
-				System.err.println("2: " + ((b - a) / 1000000000) + "s");
 			}
 			else if (selection.toList().get(0) instanceof NewLayer) {
-				System.err.println("SETTING ACTIVE LAYER TO " + ((NewLayer) selection.getFirstElement()).getNewLayer());
 				graphPart.setActiveLayer(((NewLayer) selection.getFirstElement()).getNewLayer());
 			}
 			else if (containsOnlySpans) {
 				graphPart.getSortedTokens().clear();
 				graphPart.setSortedTokens(GraphService.getOrderedTokensForSentenceSpans(selection.toList()));
-				long a = System.nanoTime();
 				graphPart.refresh();
-				long b = System.nanoTime();
-				System.err.println("4: " + ((b - a) / 1000000000) + "s");
 				for (Object child : graphPart.getChildren()) {
 					if (child instanceof TokenPart || child instanceof SpanPart || child instanceof StructurePart) {
 						((AbstractGraphicalEditPart) child).refresh();
@@ -222,10 +199,8 @@ public class GraphEditor extends AtomicGraphicalEditor {
 				}
 			}
 			else if (containsOnlyLayers) {
-				System.err.println("CONTAINS ONLY LAYERS >>>>>>>>>>>>>>>>>>");
 				graphPart.getLayers().clear();
 				graphPart.setLayers(new HashSet<String>(selection.toList()));
-				long a = System.nanoTime();
 				// TODO: Next refresh is needed!
 				try {
 					new ProgressMonitorDialog(Display.getDefault().getActiveShell()).run(true, true, new IRunnableWithProgress() {
@@ -247,118 +222,7 @@ public class GraphEditor extends AtomicGraphicalEditor {
 					e.printStackTrace();
 				}
 
-				// Job myJob = new RefreshEditorJob();
-				// myJob.schedule();
-				// ProgressMonitorDialog pd = new
-				// ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-				// try {
-				// pd.run(true /* fork */, true /* cancelable */, new
-				// IRunnableWithProgress() {
-				// public void run(IProgressMonitor monitor) throws
-				// InvocationTargetException, InterruptedException {
-				// monitor.beginTask("Long running action", 1);
-				// if (monitor.isCanceled()) {
-				// return;}
-				// // monitor.subTask("working on step ");
-				// Display.getDefault().syncExec(new Runnable() {
-				// public void run() {
-				// getGraphicalViewer().getRootEditPart().getContents().refresh();
-				// }
-				// });
-				// monitor.worked(1);
-				// monitor.done();
-				// }
-				// });
-				// }
-				// catch (InvocationTargetException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				// catch (InterruptedException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-
-				long b = System.nanoTime();
-				System.err.println("3: " + ((b - a) / 1000000000) + "s");
-				// Map registry = getGraphicalViewer().getEditPartRegistry();
-				// for (Object child : graphPart.getChildren()) {
-				// // Fixes bug where some relations are not shown after level
-				// // has been switched off and on again:
-				// if (child instanceof TokenPart) {
-				// ((TokenPart) child).refresh();
-				// for (Edge outEdge :
-				// graphPart.getModel().getOutEdges(((TokenPart)
-				// child).getModel().getSId())) {
-				// Object edgePart = registry.get(outEdge);
-				// if (edgePart != null && edgePart instanceof RelationPart) {
-				// if (!((RelationPart) edgePart).getFigure().isShowing()) {
-				// ((RelationPart) edgePart).getFigure().setVisible(true);
-				// }
-				// }
-				// }
-				// for (Edge inEdge :
-				// graphPart.getModel().getInEdges(((TokenPart)
-				// child).getModel().getSId())) {
-				// Object edgePart = registry.get(inEdge);
-				// if (edgePart != null && edgePart instanceof RelationPart) {
-				// if (!((RelationPart) edgePart).getFigure().isShowing()) {
-				// ((RelationPart) edgePart).getFigure().setVisible(true);
-				// }
-				// }
-				// }
-				// }
-				// else if (child instanceof SpanPart) {
-				// ((SpanPart) child).refresh();
-				// ((SpanPart) child).refresh();
-				// for (Edge outEdge :
-				// graphPart.getModel().getOutEdges(((SpanPart)
-				// child).getModel().getSId())) {
-				// Object edgePart = registry.get(outEdge);
-				// if (edgePart != null && edgePart instanceof RelationPart) {
-				// if (!((RelationPart) edgePart).getFigure().isShowing()) {
-				// ((RelationPart) edgePart).getFigure().setVisible(true);
-				// }
-				// }
-				// }
-				// for (Edge inEdge :
-				// graphPart.getModel().getInEdges(((SpanPart)
-				// child).getModel().getSId())) {
-				// Object edgePart = registry.get(inEdge);
-				// if (edgePart != null && edgePart instanceof RelationPart) {
-				// if (!((RelationPart) edgePart).getFigure().isShowing()) {
-				// ((RelationPart) edgePart).getFigure().setVisible(true);
-				// }
-				// }
-				// }
-				// }
-				// else if (child instanceof StructurePart) {
-				// ((StructurePart) child).refresh();
-				// for (Edge outEdge :
-				// graphPart.getModel().getOutEdges(((StructurePart)
-				// child).getModel().getSId())) {
-				// Object edgePart = registry.get(outEdge);
-				// if (edgePart != null && edgePart instanceof RelationPart) {
-				// if (!((RelationPart) edgePart).getFigure().isShowing()) {
-				// ((RelationPart) edgePart).getFigure().setVisible(true);
-				// }
-				// }
-				// }
-				// for (Edge inEdge :
-				// graphPart.getModel().getInEdges(((StructurePart)
-				// child).getModel().getSId())) {
-				// Object edgePart = registry.get(inEdge);
-				// if (edgePart != null && edgePart instanceof RelationPart) {
-				// if (!((RelationPart) edgePart).getFigure().isShowing()) {
-				// ((RelationPart) edgePart).getFigure().setVisible(true);
-				// }
-				// }
-				// }
-				// }
-				// }
 			}
-			long endTime = System.nanoTime();
-			System.err.println("selectionChanged() END\nselectionChanged() in " + ((endTime - startTime) / 1000000000) + "s");
 		}
 	};
 	private GraphicalViewer viewer;

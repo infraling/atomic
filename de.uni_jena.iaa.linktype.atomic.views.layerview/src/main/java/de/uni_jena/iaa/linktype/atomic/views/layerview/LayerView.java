@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.layerview;
 
-import java.util.HashMap; 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -32,6 +33,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -57,6 +60,29 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	private SDocumentGraph graph;
 	private IWorkbenchPartReference oldPartRef;
 	private Map<IWorkbenchPartReference, String> lastActiveLayerMap = new HashMap<IWorkbenchPartReference, String>();
+	
+	ISelectionListener listener = new ISelectionListener() { // To listen to changes in active layer
+		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
+			String selectString = null;
+			IStructuredSelection selection = null;
+			if (incomingSelection instanceof IStructuredSelection) {
+				selection = (IStructuredSelection) incomingSelection;
+				if (selection.getFirstElement() instanceof Object[]) {
+					if (((Object[]) selection.getFirstElement())[0].equals(ModelRegistry.ACTIVE_LAYER_HAS_CHANGED)) {
+						if (((Object[]) selection.getFirstElement())[1] instanceof SLayer) {
+							selectString = ((SLayer) ((Object[]) selection.getFirstElement())[1]).getSName();
+						}
+						else if (((Object[]) selection.getFirstElement())[1] == null) {
+							selectString = "";
+						}
+						else {
+							throw new UnsupportedOperationException("Active layer is not valid!");
+						}
+					}
+				}
+			}
+		}
+	};
 
 	/*
 	 * (non-Javadoc)
@@ -94,23 +120,6 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		getLayerTableViewer().addCheckStateListener(new ICheckStateListener() {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
-				// System.err.println("CHECKSTATECHANGED");
-				// getLinkSourceSentences().clear();
-				// getLinkedSentencesForSentence().clear();
-				// getLinkedSentences().clear();
-				// for (Object checkedElement :
-				// getLayerTableViewer().getCheckedElements()) {
-				// HashSet<SSpan> linkedSentencesForCurrentElement =
-				// GraphService.getLinkedSentences((SSpan) checkedElement);
-				// if (!linkedSentencesForCurrentElement.isEmpty()) {
-				// getLinkSourceSentences().add((SSpan) checkedElement);
-				// }
-				// for (SSpan span : linkedSentencesForCurrentElement) {
-				// getLinkedSentencesForSentence().put(span, (SSpan)
-				// checkedElement);
-				// }
-				// getLinkedSentences().addAll(linkedSentencesForCurrentElement);
-				// }
 				getLayerTableViewer().refresh();
 				if (getLayerTableViewer().getCheckedElements().length == 0) {
 					notifySelectionListeners(ModelRegistry.NO_LAYERS_SELECTED);
@@ -236,7 +245,6 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 					if (getGraph() != null) {
 						EList<SLayer> layerToActivate = getGraph().getSLayerByName(getLayerCombo().getText());
 						if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
-							System.err.println("NO ACTIVE LAYER selected");
 							for (int i = 0; i < listeners.getListeners().length; i++) {
 								((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
 							}
@@ -247,9 +255,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 							}
 						}
 					}
-					System.err.println("NEW SELECTION " + getLayerCombo().getText());
 					lastActiveLayerMap.put(oldPartRef, getLayerCombo().getText());
-
 				}
 			}
 		};
@@ -277,7 +283,6 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 			IEditorInput editorInput = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
 			if (editorInput instanceof FileEditorInput) {
 				IFile file = ((FileEditorInput) editorInput).getFile();
-				System.err.println("LAYER VIEW calling ModelRegistry.getModel()");
 				setGraph(ModelRegistry.getModel(file));
 			}
 		}
@@ -321,19 +326,16 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 					for (int itemCount = 0; itemCount < getLayerCombo().getItemCount(); itemCount++) {
 						if (getLayerCombo().getItem(itemCount).equals(lastActiveLayerMap.get(partRef))) {
 							getLayerCombo().select(itemCount);
-							System.err.println(">>>>>>>>>>>>>>>>>>>>> ");
 							if (getLayerCombo().getText().equals("-- Set active level --")) {
 								// Do nothing, this is no level
 							}
 							else  if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
 								for (int i = 0; i < listeners.getListeners().length; i++) {
-									System.err.println(getLayerCombo().getItem(itemCount));
 									((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
 								}
 							}
 							else {
 								for (int i = 0; i < listeners.getListeners().length; i++) {
-									System.err.println(getLayerCombo().getItem(itemCount));
 									((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(getGraph().getSLayerByName(getLayerCombo().getItem(itemCount)).get(0)))));
 								}
 							}

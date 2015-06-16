@@ -3,12 +3,12 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.preferences;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.StringFieldEditor;
 
 import de.uni_jena.iaa.linktype.atomic.core.Activator;
 import de.uni_jena.iaa.linktype.atomic.core.projects.properties.FieldEditorOverlayPage;

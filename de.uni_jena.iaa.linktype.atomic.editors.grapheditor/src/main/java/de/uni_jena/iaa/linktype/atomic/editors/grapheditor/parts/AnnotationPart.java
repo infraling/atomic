@@ -19,8 +19,8 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AnnotationDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AnnotationComponentEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.AnnotationDirectEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**

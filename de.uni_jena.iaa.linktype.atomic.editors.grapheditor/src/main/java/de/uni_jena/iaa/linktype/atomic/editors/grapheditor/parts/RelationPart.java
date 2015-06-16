@@ -28,17 +28,15 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SIdentifiableElement;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNamedElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.IDLabel;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.RelationFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.AnnotationPart.AnnotationFigure;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.RelationConnectionEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
+import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.RelationConnectionEditPolicy;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.AtomicCellEditorLocator;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.MultiLineDirectEditManager;
-import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util.PartUtils;
 
 /**
  * @author Stephan Druskat
@@ -188,10 +186,7 @@ public class RelationPart extends AbstractConnectionEditPart {
 				refreshChildren();
 				break;
 			case Notification.REMOVING_ADAPTER:
-				long a = System.nanoTime();
 				getParent().refresh();
-				long b = System.nanoTime();
-				System.err.println("9: " + ((b-a) / 1000000000) + "s");
 				if (getFigure().isVisible()) {
 					getFigure().setVisible(false);
 					deactivate();

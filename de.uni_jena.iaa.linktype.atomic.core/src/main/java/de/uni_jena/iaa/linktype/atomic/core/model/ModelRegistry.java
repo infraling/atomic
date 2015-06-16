@@ -39,6 +39,8 @@ public class ModelRegistry {
 	public static final String NO_LAYERS_SELECTED = "No layers selected!";
 	public static final String NO_SENTENCES_SELECTED = "No sentences selected!";
 
+	public static final String ACTIVE_LAYER_HAS_CHANGED = "Active layer has changed, update accordingly!";
+
 	/**
 	 * Returns an {@link SDocumentGraph} that has been loaded from an
 	 * {@link IFile}. The {@link SDocumentGraph} is either loaded on-the-fly if

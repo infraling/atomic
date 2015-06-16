@@ -54,7 +54,7 @@ public class SentenceView extends ViewPart implements ISelectionProvider, IPartL
 	@Override
 	public void createPartControl(Composite parent) {
 		while (getSite().getPage().getActiveEditor() == null) {
-			System.err.println("...");
+			// Wait
 		}
 		getSite().setSelectionProvider(this);
 		final IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();

@@ -14,12 +14,16 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
@@ -42,6 +46,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructuredNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 import de.uni_jena.iaa.linktype.atomic.atomical.parser.AtomicalAnnotationGraphParser;
@@ -60,7 +65,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
  * @author Stephan Druskat
  * 
  */
-public class AtomicalConsole extends IOConsole implements Runnable {
+public class AtomicalConsole extends IOConsole implements Runnable, ISelectionProvider {
 
 	private IOConsoleOutputStream out;
 	private SDocumentGraph graph;
@@ -68,6 +73,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	private GraphPart graphPart;
 	private String edgeSwitch;
 	private IOConsoleOutputStream err;
+	private ListenerList listeners = new ListenerList();
 
 	public AtomicalConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
@@ -82,7 +88,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	public void run() {
 		try {
 			out.write("To display a list of available commands, type \"help\".\n");
-		} catch (IOException e1) {
+		}
+		catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -99,10 +106,12 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				String input = br.readLine();
 				if (input == null) {
 					break;
-				} else {
+				}
+				else {
 					processInput(input);
 				}
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				// Assume that the console has been closed
 				break;
 			}
@@ -123,30 +132,33 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			clearConsole();
 			return;
 		}
-		
+
 		try {
 			editor = getEditor();
-		} catch (NullPointerException e) {
+		}
+		catch (NullPointerException e) {
 			out.write("No active editor. Command will be ignored.\n");
 		}
 		if (editor != null) {
 			final CommandStack commandStack = ((GraphEditor) editor).getDomain().getCommandStack();
-//			boolean canExecute = validateInput(atomicALCommand, atomicALParameters);
-//			if (canExecute) {
-				try {
-					executeCommand(commandStack, atomicALCommand, atomicALParameters);	
-				} catch (Exception e) {
-					e.printStackTrace();
-					err.write("Command could not be executed due to an error in the syntax.\n");
-				}
-//			}
-//			else {
-//				err.write("Command could not be executed due to an error in the syntax.\n");
-//			}
+			// boolean canExecute = validateInput(atomicALCommand,
+			// atomicALParameters);
+			// if (canExecute) {
+			try {
+				executeCommand(commandStack, atomicALCommand, atomicALParameters);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				err.write("Command could not be executed due to an error in the syntax.\n");
+			}
+			// }
+			// else {
+			// err.write("Command could not be executed due to an error in the syntax.\n");
+			// }
 		}
 	}
 
-	private boolean validateInput(String atomicALCommand, HashMap<Object,Object> atomicALParameters) {
+	private boolean validateInput(String atomicALCommand, HashMap<Object, Object> atomicALParameters) {
 		// FIXME: Implement
 		return true;
 	}
@@ -157,14 +169,31 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		char commandChar = 0;
 		try {
 			commandChar = atomicALCommand.charAt(0);
-		} catch (StringIndexOutOfBoundsException e) { // Thrown when only return
-														// is pressed in the
-														// console
+		}
+		catch (StringIndexOutOfBoundsException e) { // Thrown when only return
+													// is pressed in the
+													// console
 			return;
-		} catch (Exception e1) {
+		}
+		catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		switch (commandChar) {
+		case 'l': // Switch levels
+			if (((ArrayList<String>) atomicALParameters.get("integer")).size() > 0) {
+				int layerInt = Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0));
+				if (getGraph().getSLayers().size() == layerInt) {
+					// NO ASSIGNED LEVEL is to be activated
+					// getGraphPart().setActiveLayer("\u269B NO ASSIGNED LEVEL \u269B");
+					getGraphPart().setActiveLayer(null);
+				}
+				else {
+					SLayer layer = getGraph().getSLayers().get(Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0)));
+					getGraphPart().setActiveLayer(layer);
+				}
+			}
+			break;
+
 		case 'n': // Create SStructure with or without annotations
 			final NodeCreateCommand createNodeCommand = new NodeCreateCommand();
 			createNodeCommand.setGraph(graph);
@@ -204,11 +233,14 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			command.setTarget(getRelationTarget(atomicALParameters));
 			if (getEdgeSwitch().equals("d")) {
 				relation = sf.createSDominanceRelation();
-			} else if (getEdgeSwitch().equals("r")) {
+			}
+			else if (getEdgeSwitch().equals("r")) {
 				relation = sf.createSSpanningRelation();
-			} else if (getEdgeSwitch().equals("p")) {
+			}
+			else if (getEdgeSwitch().equals("p")) {
 				relation = sf.createSPointingRelation();
-			} else if (getEdgeSwitch().equals("o")) {
+			}
+			else if (getEdgeSwitch().equals("o")) {
 				relation = sf.createSOrderRelation();
 			}
 			command.setRelation(relation);
@@ -385,7 +417,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			createParentNodeCommand.setGraph(getGraph());
 			if (commandChar == 'p') {
 				parent = SaltFactory.eINSTANCE.createSStructure();
-			} else {
+			}
+			else {
 				parent = SaltFactory.eINSTANCE.createSSpan();
 			}
 			// FIXME: Do the following properly
@@ -458,27 +491,22 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			out.write("Command                           Arguments                               Syntax example\n" + "n (New structure node)" + /***/
 			"            [key]:[value]                           n pos:np\n" + "s (New span node)" + /***/
 			"                 [element] [element] [key]:[val]         s t1 t2 type:np\n" + "e (New edge)                      -[type] [source] [target] [key]:[value] e -d n1 n2 r:coref\n" + "a (Annotate)" + /***/
-			"                      [element] [key]:[val] / [key]:          a n1 pos:np\n" + "d (Delete element)                [element] [element]                     d t1 n2\n" + 
-			"p (Group under new parent)        [element] [element] [key]:[val]         p t1 t2 pos:np\n"+
-			"help (Displays this command overview)\n"+
-			"clear (Clears the console)\n"
+			"                      [element] [key]:[val] / [key]:          a n1 pos:np\n" + "d (Delete element)                [element] [element]                     d t1 n2\n" + "p (Group under new parent)        [element] [element] [key]:[val]         p t1 t2 pos:np\n" + "help (Displays this command overview)\n" + "clear (Clears the console)\n"
 			/*
-																			 * +
-																			 * "c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"
-																			 * +
-																			 * "t (Append new token)              [string]                        t Foobar\n"
-																			 * +
-																			 * "l (Switch annotation level)*      [level]                         l -s\n"
-																			 * +
-																			 * "j (Jump to sentence)              [0-9]*                          j 1234\n"
-																			 * +
-																			 * "x (Set corpus excerpt to display) [[0-9]*]|[[0-9]*]               x 2|1\n"
-																			 * +
-																			 * "\n"
-																			 * +
-																			 * "*Level switches can be used with this command."
-																			 */);
-		} catch (IOException e) {
+			 * +
+			 * "c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"
+			 * +
+			 * "t (Append new token)              [string]                        t Foobar\n"
+			 * +
+			 * "l (Switch annotation level)*      [level]                         l -s\n"
+			 * +
+			 * "j (Jump to sentence)              [0-9]*                          j 1234\n"
+			 * +
+			 * "x (Set corpus excerpt to display) [[0-9]*]|[[0-9]*]               x 2|1\n"
+			 * + "\n" + "*Level switches can be used with this command."
+			 */);
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -510,19 +538,23 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					String text = getGraph().getSTextualDSs().get(0).getSText();
 					if (text.length() >= 50) {
 						excerpt = getGraph().getSTextualDSs().get(0).getSText().substring(0, 49) + "...";
-					} else {
+					}
+					else {
 						excerpt = text;
 					}
 					try {
 						console.out.write("Working on " + editor.getEditorInput().getName() + " (\"" + excerpt + "\").\n");
-					} catch (IOException e) {
+					}
+					catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				} else if (part instanceof IEditorPart) {
+				}
+				else if (part instanceof IEditorPart) {
 					try {
 						console.out.write("AtomicAL is not (yet) available for this editor type.\n");
-					} catch (IOException e) {
+					}
+					catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -538,7 +570,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				try {
 					activePage.hideView(activePage.findView(IConsoleConstants.ID_CONSOLE_VIEW));
-				} catch (NullPointerException e) {
+				}
+				catch (NullPointerException e) {
 					// Do nothing. Will throw an NPE when exiting the
 					// application with the Console View open, as
 					// activePage will be null.
@@ -621,6 +654,41 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	 */
 	public IOConsoleOutputStream getOut() {
 		return out;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	@Override
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public void setSelection(ISelection selection) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
