@@ -59,29 +59,34 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	private IWorkbenchPartReference oldPartRef;
 	private Map<IWorkbenchPartReference, String> lastActiveLayerMap = new HashMap<IWorkbenchPartReference, String>();
 	private ICheckStateListener checkStateListener;
-	
-//	ISelectionListener listener = new ISelectionListener() { // To listen to changes in active layer
-//		public void selectionChanged(IWorkbenchPart part, ISelection incomingSelection) {
-//			String selectString = null;
-//			IStructuredSelection selection = null;
-//			if (incomingSelection instanceof IStructuredSelection) {
-//				selection = (IStructuredSelection) incomingSelection;
-//				if (selection.getFirstElement() instanceof Object[]) {
-//					if (((Object[]) selection.getFirstElement())[0].equals(ModelRegistry.ACTIVE_LAYER_HAS_CHANGED)) {
-//						if (((Object[]) selection.getFirstElement())[1] instanceof SLayer) {
-//							selectString = ((SLayer) ((Object[]) selection.getFirstElement())[1]).getSName();
-//						}
-//						else if (((Object[]) selection.getFirstElement())[1] == null) {
-//							selectString = "";
-//						}
-//						else {
-//							throw new UnsupportedOperationException("Active layer is not valid!");
-//						}
-//					}
-//				}
-//			}
-//		}
-//	};
+
+	// ISelectionListener listener = new ISelectionListener() { // To listen to
+	// changes in active layer
+	// public void selectionChanged(IWorkbenchPart part, ISelection
+	// incomingSelection) {
+	// String selectString = null;
+	// IStructuredSelection selection = null;
+	// if (incomingSelection instanceof IStructuredSelection) {
+	// selection = (IStructuredSelection) incomingSelection;
+	// if (selection.getFirstElement() instanceof Object[]) {
+	// if (((Object[])
+	// selection.getFirstElement())[0].equals(ModelRegistry.ACTIVE_LAYER_HAS_CHANGED))
+	// {
+	// if (((Object[]) selection.getFirstElement())[1] instanceof SLayer) {
+	// selectString = ((SLayer) ((Object[])
+	// selection.getFirstElement())[1]).getSName();
+	// }
+	// else if (((Object[]) selection.getFirstElement())[1] == null) {
+	// selectString = "";
+	// }
+	// else {
+	// throw new UnsupportedOperationException("Active layer is not valid!");
+	// }
+	// }
+	// }
+	// }
+	// }
+	// };
 
 	/*
 	 * (non-Javadoc)
@@ -127,7 +132,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 					notifySelectionListeners();
 				}
 			}
-		}; 
+		};
 		getLayerTableViewer().addCheckStateListener(checkStateListener);
 
 		getLayerTableViewer().getTable().setHeaderVisible(true);
@@ -169,6 +174,11 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 					if (item.getData().equals(layer.getSName())) {
 						item.setChecked(true);
 						notifySelectionListeners();
+						for (int i = 0; i < getLayerCombo().getItems().length; i++) {
+							if (getLayerCombo().getItems()[i].equals(layer.getSName())) {
+								getLayerCombo().select(i);
+							}
+						}
 					}
 				}
 				for (int i = 0; i < listeners.getListeners().length; i++) {
@@ -335,7 +345,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 							if (getLayerCombo().getText().equals("-- Set active level --")) {
 								// Do nothing, this is no level
 							}
-							else  if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
+							else if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
 								for (int i = 0; i < listeners.getListeners().length; i++) {
 									((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
 								}
