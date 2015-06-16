@@ -8,6 +8,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  de.hu_berlin.german.korpling.saltnpepper.salt-graph,
  de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon,
- de.hu_berlin.german.korpling.saltnpepper.salt-saltCore
+ de.hu_berlin.german.korpling.saltnpepper.salt-saltCore,
+ org.eclipse.emf.common,
+ de.uni_jena.iaa.linktype.atomic.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
