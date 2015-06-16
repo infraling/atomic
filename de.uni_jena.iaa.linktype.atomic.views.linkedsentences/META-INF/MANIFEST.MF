@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Linked Sentences View
-Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.views.linkedsentences
-Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.views.linkedsentences;singleton:=true
+Bundle-Version: 0.1.9
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.views.linkedsentences.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
