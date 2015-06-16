@@ -16,7 +16,6 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -34,8 +33,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -234,10 +231,6 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	 * 
 	 */
 	protected void notifySelectionListeners() {
-		System.err.println("motifying sel listener ");
-		for (Object element : getLayerTableViewer().getCheckedElements()) {
-			System.err.println(element.getClass() + " " + element.toString());
-		}
 		for (int i = 0; i < listeners.getListeners().length; i++) {
 			((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(getLayerTableViewer().getCheckedElements())));
 		}
