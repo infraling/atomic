@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IViewPart;
@@ -192,43 +193,13 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 					// getGraphPart().setActiveLayer("\u269B NO ASSIGNED LEVEL \u269B");
 					getGraphPart().setActiveLayer(null);
 					out.write("Active layer is now \"\u269B NO ASSIGNED LEVEL \u269B\".\r\n");
-					// FIXME Breaks loose coupling BIG TIME!
-					IViewPart layerView = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().findView("de.uni_jena.iaa.linktype.atomic.views.layerview");
-					if (layerView instanceof LayerView) {
-						combo = ((LayerView) layerView).getLayerCombo();
-						Display.getDefault().syncExec(new Runnable() {
-							
-							@Override
-							public void run() {
-								for (int i = 0; i < combo.getItems().length; i++) {
-									if (combo.getItems()[i].equals("\u269B NO ACTIVE LEVEL \u269B")) {
-										combo.select(i);
-									}
-								}
-							}
-						});
-					}
+					updateLayerView("\u269B NO ACTIVE LEVEL \u269B");
 				}
 				else {
 					layer = getGraph().getSLayers().get(Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0)));
 					getGraphPart().setActiveLayer(layer);
 					out.write("Active layer is now \"" + layer.getSName() + "\".\r\n");
-					// FIXME Breaks loose coupling BIG TIME!
-					IViewPart layerView = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().findView("de.uni_jena.iaa.linktype.atomic.views.layerview");
-					if (layerView instanceof LayerView) {
-						combo = ((LayerView) layerView).getLayerCombo();
-						Display.getDefault().syncExec(new Runnable() {
-							
-							@Override
-							public void run() {
-								for (int i = 0; i < combo.getItems().length; i++) {
-									if (combo.getItems()[i].equals(layer.getSName())) {
-										combo.select(i);
-									}
-								}
-							}
-						});
-					}
+					updateLayerView(layer.getSName());
 				}
 			}
 			break;
@@ -499,6 +470,34 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 		default:
 			err.write("Unknown command. Please type \"help\" to see a list of the available commands.\n");
 			break;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void updateLayerView(final String layerName) {
+		// FIXME Breaks loose coupling BIG TIME!
+		IViewPart layerView = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().findView("de.uni_jena.iaa.linktype.atomic.views.layerview");
+		if (layerView instanceof LayerView) {
+			final LayerView lv = (LayerView) layerView;
+			combo = lv.getLayerCombo();
+			Display.getDefault().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					for (int i = 0; i < combo.getItems().length; i++) {
+						if (combo.getItems()[i].equals(layerName)) {
+							combo.select(i);
+						}
+					}
+					for (TableItem item : lv.getLayerTableViewer().getTable().getItems()) {
+						if (item.getData().equals(layer.getSName())) {
+							item.setChecked(true);
+							lv.notifySelectionListeners();
+						}
+					}
+				}
+			});
 		}
 	}
 

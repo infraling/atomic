@@ -240,7 +240,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 	/**
 	 * 
 	 */
-	protected void notifySelectionListeners() {
+	public void notifySelectionListeners() {
 		for (int i = 0; i < listeners.getListeners().length; i++) {
 			((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(getLayerTableViewer().getCheckedElements())));
 		}
