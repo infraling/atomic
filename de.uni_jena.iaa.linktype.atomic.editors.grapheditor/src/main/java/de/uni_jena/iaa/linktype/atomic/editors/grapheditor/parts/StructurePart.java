@@ -31,6 +31,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpanningRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SStructure;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.NodeFigure;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.policies.ElementDirectEditPolicy;
@@ -65,6 +66,17 @@ public class StructurePart extends AbstractGraphicalEditPart implements NodeEdit
 
 	@Override
 	protected void refreshVisuals() {
+		// Show layers in tooltip
+		if (!getModel().getSLayers().isEmpty()) {
+			String tooltipText = "Levels:\n";
+			for (SLayer layer : getModel().getSLayers()) {
+				tooltipText = tooltipText + layer.getSName() + "\n";
+			}
+			((NodeFigure) getFigure()).setTooltipText(tooltipText);
+		}
+		else {
+			((NodeFigure) getFigure()).setTooltipText("\u269BNo assigned level\u269B");
+		}
 		boolean isGraphLayouted = false;
 		// Check if the graph has been auto-layouted
 		if (getParent() != null) {

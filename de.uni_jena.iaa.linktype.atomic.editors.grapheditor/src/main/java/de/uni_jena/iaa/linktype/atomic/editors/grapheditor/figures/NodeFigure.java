@@ -20,6 +20,7 @@ public class NodeFigure extends Figure {
 	public static final int STRUCTURE_MODEL = 2;
 	public static final int SPAN_MODEL = 3;
 	private ConnectionAnchor connectionAnchor;
+	private LevelTooltipFigure tooltipFigure;
 
 	public NodeFigure(String visualID, int modelType) {
 		setOpaque(false);
@@ -27,6 +28,8 @@ public class NodeFigure extends Figure {
 		annotationLayout.setSpacing(1);
 		setLayoutManager(annotationLayout);
 		setBorder(new NodeFigureBorder(visualID, modelType));
+		tooltipFigure = new LevelTooltipFigure();
+		setToolTip(tooltipFigure);
 		addLayoutListener(new LayoutListener() {
 			
 			@Override
@@ -67,5 +70,9 @@ public class NodeFigure extends Figure {
 		}
 		return connectionAnchor;
 	}
+	
+	public void setTooltipText(String tooltipText) {
+        tooltipFigure.setMessage(tooltipText);
+    }
 
 }

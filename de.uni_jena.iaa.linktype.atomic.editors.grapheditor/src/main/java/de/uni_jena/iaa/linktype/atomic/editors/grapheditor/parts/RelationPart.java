@@ -28,6 +28,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotatableElement;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SIdentifiableElement;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.GraphElementRegistry;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.figures.IDLabel;
@@ -83,6 +84,18 @@ public class RelationPart extends AbstractConnectionEditPart {
 	
 	@Override
 	protected void refreshVisuals() { // FIXME TODO Refactor
+		// Show layers in tooltip
+		if (!((SRelation) getModel()).getLayers().isEmpty()) {
+			String tooltipText = "Levels:\n";
+			for (SLayer layer : ((SRelation)getModel()).getSLayers()) {
+				tooltipText = tooltipText + layer.getSName() + "\n";
+			}
+			((RelationFigure) getFigure()).setTooltipText(tooltipText);
+		}
+		else {
+			((RelationFigure) getFigure()).setTooltipText("\u269BNo assigned level\u269B");
+		}
+
 		RelationFigure figure = (RelationFigure) getFigure();
 		
 		if (((SRelation) getModel()).getLabel("saltCore", "STYPE") != null) {

@@ -21,6 +21,7 @@ public class RelationFigure extends PolylineConnection {
 	public static final int POINTINGRELATION_MODEL = 6;
 	public static final int ORDERRELATION_MODEL = 7;
 	private IDLabel label;
+	private LevelTooltipFigure tooltipFigure;
 
 	public RelationFigure(String visualID, int modelType) {
 		PolygonDecoration decoration = new PolygonDecoration();
@@ -46,6 +47,8 @@ public class RelationFigure extends PolylineConnection {
 		label = new IDLabel(visualID);
 		PartUtils.setFont(label, PartUtils.SANS8);
 		add(getLabel(), new ConnectionLocator(this, ConnectionLocator.MIDDLE));
+		tooltipFigure = new LevelTooltipFigure();
+		setToolTip(tooltipFigure);
 	}
 
 	/**
@@ -54,5 +57,9 @@ public class RelationFigure extends PolylineConnection {
 	public IDLabel getLabel() {
 		return label;
 	}
+	
+	public void setTooltipText(String tooltipText) {
+        tooltipFigure.setMessage(tooltipText);
+    }
 
 }
