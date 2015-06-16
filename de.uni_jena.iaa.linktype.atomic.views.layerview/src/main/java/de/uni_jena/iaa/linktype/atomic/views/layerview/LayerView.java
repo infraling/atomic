@@ -3,14 +3,13 @@
  */
 package de.uni_jena.iaa.linktype.atomic.views.layerview;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -84,8 +83,12 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		getLayerTableViewer().setLabelProvider(new LayerLabelProvider(this));
 		getLayerTableViewer().setInput(getInput());
 
+		TableColumn indexColumn = new TableColumn(getLayerTableViewer().getTable(), SWT.FILL);
+		indexColumn.setText("      #   ");
+		indexColumn.pack();
+
 		TableColumn column = new TableColumn(getLayerTableViewer().getTable(), SWT.FILL);
-		column.setText("Levels");
+		column.setText("Level name");
 		column.pack();
 
 		getLayerTableViewer().addCheckStateListener(new ICheckStateListener() {
