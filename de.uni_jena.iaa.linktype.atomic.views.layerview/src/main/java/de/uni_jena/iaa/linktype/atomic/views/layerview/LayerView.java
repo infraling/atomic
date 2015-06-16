@@ -260,7 +260,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 				if (e.widget.equals(getLayerCombo())) {
 					if (getGraph() != null) {
 						EList<SLayer> layerToActivate = getGraph().getSLayerByName(getLayerCombo().getText());
-						if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
+						if (getLayerCombo().getText().equals("\u269B NO ACTIVE LEVEL \u269B")) {
 							for (int i = 0; i < listeners.getListeners().length; i++) {
 								((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
 							}
@@ -286,7 +286,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 		for (SLayer layer : graph.getSLayers()) {
 			layerCombo.add(layer.getSName());
 		}
-		layerCombo.add("\u269B NO ACTIVE LAYER \u269B");
+		layerCombo.add("\u269B NO ACTIVE LEVEL \u269B");
 		getLayerCombo().add("-- Set active level --", 0);
 		getLayerCombo().select(0);
 	}
@@ -345,7 +345,7 @@ public class LayerView extends ViewPart implements ISelectionProvider, IPartList
 							if (getLayerCombo().getText().equals("-- Set active level --")) {
 								// Do nothing, this is no level
 							}
-							else if (getLayerCombo().getText().equals("\u269B NO ACTIVE LAYER \u269B")) {
+							else if (getLayerCombo().getText().equals("\u269B NO ACTIVE LEVEL \u269B")) {
 								for (int i = 0; i < listeners.getListeners().length; i++) {
 									((ISelectionChangedListener) listeners.getListeners()[i]).selectionChanged(new SelectionChangedEvent(LayerView.this, new StructuredSelection(new NewLayer(null))));
 								}

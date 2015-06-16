@@ -24,9 +24,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -60,6 +62,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.NodeDeleteCo
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.RelationCreateCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands.RelationDeleteCommand;
 import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
+import de.uni_jena.iaa.linktype.atomic.views.layerview.LayerView;
 
 /**
  * @author Stephan Druskat
@@ -74,6 +77,8 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 	private String edgeSwitch;
 	private IOConsoleOutputStream err;
 	private ListenerList listeners = new ListenerList();
+	private Combo combo;
+	private SLayer layer;
 
 	public AtomicalConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
@@ -187,11 +192,43 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 					// getGraphPart().setActiveLayer("\u269B NO ASSIGNED LEVEL \u269B");
 					getGraphPart().setActiveLayer(null);
 					out.write("Active layer is now \"\u269B NO ASSIGNED LEVEL \u269B\".\r\n");
+					// FIXME Breaks loose coupling BIG TIME!
+					IViewPart layerView = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().findView("de.uni_jena.iaa.linktype.atomic.views.layerview");
+					if (layerView instanceof LayerView) {
+						combo = ((LayerView) layerView).getLayerCombo();
+						Display.getDefault().syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								for (int i = 0; i < combo.getItems().length; i++) {
+									if (combo.getItems()[i].equals("\u269B NO ACTIVE LEVEL \u269B")) {
+										combo.select(i);
+									}
+								}
+							}
+						});
+					}
 				}
 				else {
-					SLayer layer = getGraph().getSLayers().get(Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0)));
+					layer = getGraph().getSLayers().get(Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0)));
 					getGraphPart().setActiveLayer(layer);
 					out.write("Active layer is now \"" + layer.getSName() + "\".\r\n");
+					// FIXME Breaks loose coupling BIG TIME!
+					IViewPart layerView = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().findView("de.uni_jena.iaa.linktype.atomic.views.layerview");
+					if (layerView instanceof LayerView) {
+						combo = ((LayerView) layerView).getLayerCombo();
+						Display.getDefault().syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								for (int i = 0; i < combo.getItems().length; i++) {
+									if (combo.getItems()[i].equals(layer.getSName())) {
+										combo.select(i);
+									}
+								}
+							}
+						});
+					}
 				}
 			}
 			break;
