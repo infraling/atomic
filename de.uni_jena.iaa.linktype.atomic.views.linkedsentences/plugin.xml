@@ -18,7 +18,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                label="Linked Sentences View"
-               mnemonic="I"
+               mnemonic="i"
                style="push"
                tooltip="Opens the Linked Sentences View">
                <parameter name="org.eclipse.ui.views.showView.viewId"
