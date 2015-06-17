@@ -66,5 +66,16 @@ public class GraphService {
 		subGraph.addAll(traverser.getNodeSet());
 		return subGraph;
 	}
+	
+	/* @param checkedElement
+	 * @return
+	 */
+	public static HashSet<SSpan> getLinkedSentences(SSpan checkedSentence) {
+		EList<SToken> tokens = GraphService.getOverlappedTokens(checkedSentence);
+		LinkedSentencesTraverser traverser = new LinkedSentencesTraverser();
+		traverser.setTokenSet(new HashSet<SToken>(tokens));
+		checkedSentence.getSDocumentGraph().traverse(tokens, GRAPH_TRAVERSE_TYPE.BOTTOM_UP_BREADTH_FIRST, "linkedSentences", traverser, false);
+		return traverser.getLinkedSentences();
+	}
 
 }
