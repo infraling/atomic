@@ -2,7 +2,7 @@
 <article xml:lang="en" xmlns="http://docbook.org/ns/docbook"
 	version="5.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xl="http://www.w3.org/1999/xlink">
 	<info>
-		<title>Atomic User Guide v0.1.9</title>
+		<title>Atomic User Guide v0.1.10</title>
 		<author>
 			<personname>Stephan Druskat</personname>
 		</author>
@@ -10,7 +10,7 @@
 			<orgname>Friedrich Schiller University Jena</orgname>
 		</author>
 		<copyright>
-			<year>2014</year>
+			<year>2015</year>
 			<holder>
 				Friedrich Schiller University Jena
 			</holder>
@@ -180,8 +180,7 @@
 				<menuchoice>
 					<guimenu>Open With</guimenu>
 					<guisubmenu>Annotation Graph Editor</guisubmenu>
-				</menuchoice> from the pop-up menu. When opening a newly created document, the
-				editing area will show the tokenized corpus text.
+				</menuchoice> from the pop-up menu.
 				<figure xml:id="figure_annotation_graph_editor">
 					<title>Atomic application window with Annotation Graph Editor.
 					</title>
@@ -196,6 +195,27 @@
 						</textobject>
 					</mediaobject>
 				</figure>
+			</para>
+			<para>Opening a corpus document file with the Annotation Graph Editor will also open a new perspective, the <emphasis>Annotation Graph Perspective</emphasis>.
+			Perspectives consist of a number of GUI elements (views or editors), which are ordered in a specific way, optimized for a specific task.
+			The Annotation Graph Perspective consists of the Annotation Graph Editor (6), which is accompanied by three automatically opened views:
+			<itemizedlist>
+			<listitem>
+			(2) <emphasis>The Sentence View:</emphasis> Displays a numbered list of sentences making up the corpus document. You can select sentences for display in the editor by checking the checkbox next to it. Multiple sentences can be displayed. However, rendering large annotation graphs is an expensive operation and consequently may slow down Atomic. Therefore, be cautious about how many sentences you want to display at any one time.
+			</listitem>
+			<listitem>
+			(3) <emphasis>The Level View:</emphasis> Displays a) a combo box where the active level can be set, b) a button to create a new level, c) a numbered list of existing levels, and additionally the option "NO ASSIGNED LEVEL". When an existing level is selected in the combo box, all newly created annotation graph elements are assigned to this level. When clicking the "[+] Add new level" button, you can enter a name for the level. Newly created levels are automatically set active, and set visible in the Annotation Graph Editor. Checking an existing level in the level list makes its elements visible in the Annotation Graph Editor. Again, be cautious that trying to display large numbers of levels over large numbers of sentences may significantly slow down Atomic. The levels for an element are displayed in a pop-up when hovering over the element figure in the Annotation Graph Editor.
+			</listitem>
+			<listitem>
+			(4) <emphasis>The Linked Sentences View:</emphasis> Displays a list of sentences the currently selected (i.e., highlighted) sentence in the Sentence View is linked to. "Linked" in this case means that there exist annotation graph elements which are linked to one or more other sentences via a chain of one or more edges. In order to display linked sentences alongside the selected sentence, simply check them in the Sentence View. <emphasis>Please note:</emphasis> Annotation graph elements which are part of a link chain between sentences are <emphasis>only</emphasis> displayed if all linked sentences are also displayed. E.g., an edge between a node exclusively dominating sentence X and a node exclusively dominating sentence Y will only be displayed when both sentence X and sentence Y are also displayed. 
+			</listitem>
+			</itemizedlist>
+			Additionally, the Annotation Graph Perspective reserves space for the Atomical Console (5). <xref linkend="atomical_annotation_elements">Cf. the section about annotating with AtomicAL.</xref> All views can be closed. They can be re-opened via <menuchoice>
+						<guimenu>View</guimenu>
+					</menuchoice> menu.  
+			</para>
+			<para>
+			You can switch between perspectives via the <emphasis>Perspective Bar (1)</emphasis>. The <emphasis>Navigation Perspective</emphasis> contains the <emphasis>Navigation View</emphasis>, which you can use to navigate through projects.
 			</para>
 			<sect3>
 				<title>Tool-based annotation</title>
@@ -353,7 +373,7 @@ the element with focus.
 					</para>
 				</sect4>
 			</sect3>
-			<sect3>
+			<sect3 xml:id="atomical_annotation">
 				<title>Command-line-based annotation with AtomicAL</title>
 				<para>Atomic provides the native annotation language Atomic
 					Annotation Language (AtomicAL) for rapid command-line annotation.
@@ -697,6 +717,19 @@ the element with focus.
 								<sbr />
 								p n1..n8 cat:NP
 							</entry>
+						</row>
+						<row>
+							<entry>l (Set active level)</entry>
+							<entry>
+								l [level index]<footnote>
+									<para>
+										The level index is the number the level is assigned to in the <emphasis>Level View</emphasis>.
+									</para>
+								</footnote>
+							</entry>
+							<entry>
+								l 13
+							</entry> 
 						</row>
 					</tbody>
 				</tgroup>

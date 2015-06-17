@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<toc label="Atomic User Guide v0.1.9" topic="index.html">
+<toc label="Atomic User Guide v0.1.10" topic="index.html">
    <topic label="Getting started" href="index.html#d0e16">
       <topic label="Resources" href="index.html#d0e21"/>
       <topic label="The workspace" href="index.html#d0e52"/>
@@ -8,28 +8,28 @@
          <topic label="Import an existing corpus" href="index.html#import_corpus"/>
       </topic>
       <topic label="Annotation with the Annotation Graph Editor" href="index.html#d0e143">
-         <topic label="Tool-based annotation" href="index.html#d0e164">
-            <topic label="Keyboard navigation" href="index.html#d0e169"/>
-            <topic label="Creating nodes" href="index.html#d0e215"/>
-            <topic label="Creating edges" href="index.html#d0e245"/>
+         <topic label="Tool-based annotation" href="index.html#d0e210">
+            <topic label="Keyboard navigation" href="index.html#d0e215"/>
+            <topic label="Creating nodes" href="index.html#d0e261"/>
+            <topic label="Creating edges" href="index.html#d0e291"/>
             <topic label="Annotation of elements" href="index.html#annotation_elements"/>
-            <topic label="Deleting elements and annotations" href="index.html#d0e305"/>
+            <topic label="Deleting elements and annotations" href="index.html#d0e351"/>
          </topic>
-         <topic label="Command-line-based annotation with AtomicAL" href="index.html#d0e313">
-            <topic label="Creating nodes" href="index.html#d0e337"/>
-            <topic label="Creating edges" href="index.html#d0e372"/>
+         <topic label="Command-line-based annotation with AtomicAL" href="index.html#atomical_annotation">
+            <topic label="Creating nodes" href="index.html#d0e383"/>
+            <topic label="Creating edges" href="index.html#d0e418"/>
             <topic label="Annotation of elements" href="index.html#atomical_annotation_elements"/>
-            <topic label="Deleting elements and annotations" href="index.html#d0e426"/>
+            <topic label="Deleting elements and annotations" href="index.html#d0e472"/>
          </topic>
       </topic>
-      <topic label="Updates" href="index.html#d0e446"/>
+      <topic label="Updates" href="index.html#d0e492"/>
    </topic>
    <topic label="Reference" href="ar01s02.html">
       <topic label="Reserved keys" href="ar01s02.html#reference_reserved_words"/>
       <topic label="AtomicAL" href="ar01s02.html#reference_atomical"/>
       <topic label="Install new plugins" href="ar01s02.html#reference_install_new_plugins">
          <topic label="Install new plugins via the Eclipse Marketplace" href="ar01s02.html#reference_marketplace">
-            <topic label="Example: Install XML editing support in Atomic" href="ar01s02.html#d0e733"/>
+            <topic label="Example: Install XML editing support in Atomic" href="ar01s02.html#d0e793"/>
          </topic>
          <topic label="Install new plugins from a p2 repository" href="ar01s02.html#reference_p2">
             <topic label="Example: Install Git support in Atomic" href="ar01s02.html#ex_p2"/>
