@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Atomic User Guide v0.1.9</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Atomic User Guide v0.1.9"><link rel="next" href="ar01s02.html" title="Reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="en" class="article"><div class="titlepage"><div><div><h1 class="title"><a name="d0e1"></a>Atomic User Guide v0.1.9</h1></div><div><div class="author"><h3 class="author">Stephan Druskat</h3></div></div><div><div class="author"><h3 class="author"><span class="orgname">Friedrich Schiller University Jena</span></h3></div></div><div><p class="copyright">Copyright &copy; 2014 
+   <title>Atomic User Guide v0.1.10</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Atomic User Guide v0.1.10"><link rel="next" href="ar01s02.html" title="Reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="en" class="article"><div class="titlepage"><div><div><h1 class="title"><a name="d0e1"></a>Atomic User Guide v0.1.10</h1></div><div><div class="author"><h3 class="author">Stephan Druskat</h3></div></div><div><div class="author"><h3 class="author"><span class="orgname">Friedrich Schiller University Jena</span></h3></div></div><div><p class="copyright">Copyright &copy; 2015 
 				Friedrich Schiller University Jena
 			</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="index.html#d0e16">Getting started</a></span></dt><dt><span class="sect1"><a href="ar01s02.html">Reference</a></span></dt></dl></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e16"></a>Getting started</h2></div></div></div><p>This guide gives a workflow example for annotating a corpus with
 			Atomic.
@@ -96,15 +96,27 @@
 				with another editor before, Atomic will have remembered the editor
 				the file was opened with last. In this case, right-click onto the
 				file, and choose
-				<span class="guimenu">Open With</span> &#8594; <span class="guisubmenu">Annotation Graph Editor</span> from the pop-up menu. When opening a newly created document, the
-				editing area will show the tokenized corpus text.
+				<span class="guimenu">Open With</span> &#8594; <span class="guisubmenu">Annotation Graph Editor</span> from the pop-up menu.
 				</p><div class="figure"><a name="figure_annotation_graph_editor"></a><p class="title"><b>Figure&nbsp;2.&nbsp;Atomic application window with Annotation Graph Editor.
 					</b></p><div class="figure-contents"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="100%"><tr><td><img src="resources/app_window.png" height="360" alt="Atomic application window with Annotation Graph Editor."></td></tr></table></div></div></div><p><br class="figure-break">
-			</p><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="d0e164"></a>Tool-based annotation</h4></div></div></div><p>The Annotation Graph Editor includes a tools palette which can
+			</p><p>Opening a corpus document file with the Annotation Graph Editor will also open a new perspective, the <span class="emphasis"><em>Annotation Graph Perspective</em></span>.
+			Perspectives consist of a number of GUI elements (views or editors), which are ordered in a specific way, optimized for a specific task.
+			The Annotation Graph Perspective consists of the Annotation Graph Editor (6), which is accompanied by three automatically opened views:
+			</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+			(2) <span class="emphasis"><em>The Sentence View:</em></span> Displays a numbered list of sentences making up the corpus document. You can select sentences for display in the editor by checking the checkbox next to it. Multiple sentences can be displayed. However, rendering large annotation graphs is an expensive operation and consequently may slow down Atomic. Therefore, be cautious about how many sentences you want to display at any one time.
+			</li><li class="listitem">
+			(3) <span class="emphasis"><em>The Level View:</em></span> Displays a) a combo box where the active level can be set, b) a button to create a new level, c) a numbered list of existing levels, and additionally the option "NO ASSIGNED LEVEL". When an existing level is selected in the combo box, all newly created annotation graph elements are assigned to this level. When clicking the "[+] Add new level" button, you can enter a name for the level. Newly created levels are automatically set active, and set visible in the Annotation Graph Editor. Checking an existing level in the level list makes its elements visible in the Annotation Graph Editor. Again, be cautious that trying to display large numbers of levels over large numbers of sentences may significantly slow down Atomic. The levels for an element are displayed in a pop-up when hovering over the element figure in the Annotation Graph Editor.
+			</li><li class="listitem">
+			(4) <span class="emphasis"><em>The Linked Sentences View:</em></span> Displays a list of sentences the currently selected (i.e., highlighted) sentence in the Sentence View is linked to. "Linked" in this case means that there exist annotation graph elements which are linked to one or more other sentences via a chain of one or more edges. In order to display linked sentences alongside the selected sentence, simply check them in the Sentence View. <span class="emphasis"><em>Please note:</em></span> Annotation graph elements which are part of a link chain between sentences are <span class="emphasis"><em>only</em></span> displayed if all linked sentences are also displayed. E.g., an edge between a node exclusively dominating sentence X and a node exclusively dominating sentence Y will only be displayed when both sentence X and sentence Y are also displayed. 
+			</li></ul></div><p>
+			Additionally, the Annotation Graph Perspective reserves space for the Atomical Console (5). <a class="xref" href="index.html#atomical_annotation_elements" title="Annotation of elements">the section called &#8220;Annotation of elements&#8221;</a> All views can be closed. They can be re-opened via <span class="guimenu">View</span> menu.  
+			</p><p>
+			You can switch between perspectives via the <span class="emphasis"><em>Perspective Bar (1)</em></span>. The <span class="emphasis"><em>Navigation Perspective</em></span> contains the <span class="emphasis"><em>Navigation View</em></span>, which you can use to navigate through projects.
+			</p><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="d0e210"></a>Tool-based annotation</h4></div></div></div><p>The Annotation Graph Editor includes a tools palette which can
 					be used for tool-based annotation. The following paragraphs
 					describe how to use the tools in the palette to create an
 					annotation graph for the corpus document.
-				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e169"></a>Keyboard navigation</h5></div></div></div><p>The Annotation Graph Editor can be navigated via the keyboard using the following keys.</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="emphasis"><em>Arrows (Left, Right, Up, Down)</em></span>: Change the currently selected element.</p></li><li class="listitem"><p><span class="emphasis"><em>Shift-Arrows</em></span>: Extend the currently selected element to include the elements to the left, the right, above, or below.</p></li><li class="listitem"><p><span class="emphasis"><em>Ctrl-Arrows</em></span>: Move focus to a different element without changing the
+				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e215"></a>Keyboard navigation</h5></div></div></div><p>The Annotation Graph Editor can be navigated via the keyboard using the following keys.</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="emphasis"><em>Arrows (Left, Right, Up, Down)</em></span>: Change the currently selected element.</p></li><li class="listitem"><p><span class="emphasis"><em>Shift-Arrows</em></span>: Extend the currently selected element to include the elements to the left, the right, above, or below.</p></li><li class="listitem"><p><span class="emphasis"><em>Ctrl-Arrows</em></span>: Move focus to a different element without changing the
 selection.</p></li><li class="listitem"><p><span class="emphasis"><em>Ctrl-Shift-Arrows</em></span>: Scroll the GEF viewer left, right, up, or down.</p></li><li class="listitem"><p><span class="emphasis"><em>Alt-Down Arrow</em></span>: Change the currently selected element to be the first
 nested element within the element that currently has focus.
 							</p></li><li class="listitem"><p><span class="emphasis"><em>Alt-Up Arrow</em></span>: Change the currently selected element to be the parent
@@ -112,7 +124,7 @@ element containing the element that currently has focus.</p></li><li class="list
 with focus. Repeatedly pressing either of these keys cycles the current
 selection forward or backward through the connections associated with
 the element with focus.
-							</p></li><li class="listitem"><p><span class="emphasis"><em>?, |</em></span>: Extend the selection to include connections associated with the element with focus.</p></li></ul></div></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e215"></a>Creating nodes</h5></div></div></div><p>Click on the Structure Tool or the Span Tool in order to
+							</p></li><li class="listitem"><p><span class="emphasis"><em>?, |</em></span>: Extend the selection to include connections associated with the element with focus.</p></li></ul></div></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e261"></a>Creating nodes</h5></div></div></div><p>Click on the Structure Tool or the Span Tool in order to
 						create a new node. Then, either drag-and-drop the tool onto a
 						position of your choice in the editing area, or click on the
 						editing area at the position of your choice.
@@ -138,7 +150,7 @@ the element with focus.
 						be
 						<span class="emphasis"><em>spanning relation</em></span>, and edges will only be created to selected nodes of type
 						<span class="emphasis"><em>token</em></span>, as spanning relations only accept tokens as target nodes.
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e245"></a>Creating edges</h5></div></div></div><p>To create an edge, click on the respective tool, then click
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e291"></a>Creating edges</h5></div></div></div><p>To create an edge, click on the respective tool, then click
 						on
 						the node that should be the source of the edge, and subsequently
 						on
@@ -191,12 +203,12 @@ the element with focus.
 						to commit it. Press
 						<span class="emphasis"><em>ESC</em></span>
 						to abort the editing process.
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e305"></a>Deleting elements and annotations</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e351"></a>Deleting elements and annotations</h5></div></div></div><p>
 						In order to delete elements and annotations, select the respective
 						element(s) or annotation(s) per mouse or keyboard and either press
 						<span class="emphasis"><em>DEL</em></span>
 						or click the delete symbol in the menu bar.
-					</p></div></div><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="d0e313"></a>Command-line-based annotation with AtomicAL</h4></div></div></div><p>Atomic provides the native annotation language Atomic
+					</p></div></div><div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="atomical_annotation"></a>Command-line-based annotation with AtomicAL</h4></div></div></div><p>Atomic provides the native annotation language Atomic
 					Annotation Language (AtomicAL) for rapid command-line annotation.
 				</p><p>
 					The AtomicAL console is available when an editor with AtomicAL
@@ -210,7 +222,7 @@ the element with focus.
 				</p><p>Please note that Atomic has some <span class="emphasis"><em>reserved keys</em></span> for annotation. These reserved keys
 						represent keys for specific annotations. For a more detailed explanation and a 
 						list of reserved keys, cf. <a class="xref" href="ar01s02.html#reference_reserved_words" title="Reserved keys">Reserved keys</a>.  
-				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e337"></a>Creating nodes</h5></div></div></div><p>
+				</p><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e383"></a>Creating nodes</h5></div></div></div><p>
 						To create a new structure node, use the
 						<span class="emphasis"><em>n</em></span>
 						command. It takes as arguments
@@ -234,7 +246,7 @@ the element with focus.
 						</pre><p>
 						Example:
 						</p><pre class="screen">s coref::reftype:group text:"The board"</pre><p>
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e372"></a>Creating edges</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e418"></a>Creating edges</h5></div></div></div><p>
 						To create a new edge, use the
 						<span class="emphasis"><em>e</em></span>
 						command. It takes as arguments
@@ -277,7 +289,7 @@ the element with focus.
 						</pre><p>
 						Example:
 						</p><pre class="screen">a n1 n3 t2..t5 d3 o4 x: y:y z::z:z</pre><p>
-					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e426"></a>Deleting elements and annotations</h5></div></div></div><p>
+					</p></div><div class="sect4"><div class="titlepage"><div><div><h5 class="title"><a name="d0e472"></a>Deleting elements and annotations</h5></div></div></div><p>
 						For the deletion of annotations, see
 						<a class="xref" href="index.html#atomical_annotation_elements" title="Annotation of elements">the section called &#8220;Annotation of elements&#8221;</a>.
 					</p><p>
@@ -290,7 +302,7 @@ the element with focus.
 								</p></li></ul></div><p>
 						Example:
 						</p><pre class="screen">d n1..n5 d1 o3</pre><p>
-					</p></div></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="d0e446"></a>Updates</h3></div></div></div><p>If your computer is connected to the internet, Atomic will automatically check 
+					</p></div></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="d0e492"></a>Updates</h3></div></div></div><p>If your computer is connected to the internet, Atomic will automatically check 
 			for available updates on startup. If updates are available, you will be notified and have the option 
 			to install the available updates. Installed updates will be available after the next restart of the application. You will also be prompted to restart once the
 			 installation of updates is completed.</p></div></div></div></body></html>
