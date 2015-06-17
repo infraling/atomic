@@ -1,9 +1,346 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
 <plugin>
-   <extension point="org.eclipse.help.toc">
-      <toc file="toc.xml" primary="true"/>
+   <extension-point id="de.uni_jena.iaa.linktype.atomic.sentenceDetectors" name="Sentence detectors for corpora" schema="schema/de.uni_jena.iaa.linktype.atomic.sentenceDetectors.exsd"/>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="de.uni_jena.iaa.linktype.atomic.core.Atomic">
+         </run>
+      </application>
    </extension>
-   <extension point="org.eclipse.help.index">
-      <index file="index.xml"/>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Navigation Perspective"
+            class="de.uni_jena.iaa.linktype.atomic.core.Perspective"
+            id="de.uni_jena.iaa.linktype.atomic.core.perspective">
+      </perspective>
    </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="de.uni_jena.iaa.linktype.atomic.core.application"
+            name="Atomic">
+         <property
+               name="windowImages"
+               value="icons/atomic_16x16x32.png,icons/atomic_32x32x32.png,icons/atomic_48x48x32.png,icons/atomic_64x64.png">
+         </property>
+         <property
+               name="appName"
+               value="Atomic">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.fileMenu"
+               label="File"
+               mnemonic="F">
+            <command
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New Project"
+                  mnemonic="N"
+                  style="push"
+                  tooltip="Opens a wizard dialog to help with the creation of new projects">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.import"
+                  label="Import corpus"
+                  mnemonic="I"
+                  style="push">
+            </command>
+            <separator
+                  name="de.uni_jena.iaa.linktype.atomic.core.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.file.save"
+                  label="Save"
+                  mnemonic="S"
+                  style="push"
+                  tooltip="Save project">
+            </command>
+            <command
+                  commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+                  label="Exit"
+                  mnemonic="x"
+                  style="push"
+                  tooltip="Exit Atomic">
+            </command>
+         </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.preferencesMenu"
+               label="Options"
+               mnemonic="O">
+            <command
+                  commandId="org.eclipse.epp.mpc.ui.command.showMarketplaceWizard"
+                  label="Install new plugins from Eclipse Marketplace"
+                  mnemonic="M"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.equinox.p2.ui.sdk.install"
+                  label="Install new plugins from p2 repository"
+                  mnemonic="I"
+                  style="push">
+            </command>
+            <separator
+                  name="de.uni_jena.iaa.linktype.atomic.core.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences"
+                  mnemonic="P"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.viewMenu"
+               label="View"
+               mnemonic="V">
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  label="Navigation View"
+                  mnemonic="N"
+                  style="push">
+               <parameter
+                     name="org.eclipse.ui.views.showView.viewId"
+                     value="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view">
+               </parameter>
+            </command>
+         </menu>
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.helpMenu"
+               label="Help"
+               mnemonic="H">
+            <command
+                  commandId="org.eclipse.ui.help.displayHelp"
+                  label="Help Contents"
+                  mnemonic="H"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="de.uni_jena.iaa.linktype.atomic.core.toolbar"
+               label="Atomic Toolbar">
+			<command
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New Project"
+                  mnemonic="N"
+                  style="push"
+                  tooltip="Opens a wizard dialog to help with the creation of new projects.">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.save"
+                  label="Save"
+                  style="push"
+                  tooltip="Save project">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="de.uni_jena.iaa.linktype.atomic.core.commands.ExitHandler"
+            id="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            name="Exit">
+      </command>
+      <command
+            defaultHandler="de.uni_jena.iaa.linktype.atomic.core.commands.UnavailableKeyboardShortcutHandler"
+            id="de.uni_jena.iaa.linktype.atomic.core.keyboardShortcutNotAvailableCommand"
+            name="Keyboard Shortcut not available">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.uni_jena.iaa.linktype.atomic.core.AtomicNewWizardCategory"
+            name="Atomic">
+      </category>
+      <primaryWizard
+            id="de.uni_jena.iaa.linktype.atomic.core.newAtomicProjectWizard">
+      </primaryWizard>
+      <wizard
+            canFinishEarly="false"
+            category="de.uni_jena.iaa.linktype.atomic.core.AtomicNewWizardCategory"
+            class="de.uni_jena.iaa.linktype.atomic.core.projects.NewAtomicProjectWizard"
+            descriptionImage="icons/atomic_64x64.png"
+            finalPerspective="de.uni_jena.iaa.linktype.atomic.core.perspective"
+            icon="icons/atomic.ico"
+            id="de.uni_jena.iaa.linktype.atomic.core.newAtomicProjectWizard"
+            name="New Atomic Project"
+            project="true">
+      </wizard>
+   </extension>
+   
+   <!-- Navigator below -->
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            id="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view"
+            name="Navigation">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerActionBinding
+            viewerId="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view">
+         <includes>
+            <actionExtension
+                  pattern="org.eclipse.ui.navigator.resources.*">
+            </actionExtension>
+         </includes>
+      </viewerActionBinding>
+      <viewerContentBinding
+            viewerId="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view">
+         <includes>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resourceContent">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.linkHelper">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.workingSets">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.uni_jena.iaa.linktype.atomic.core.perspective">
+         <view
+               id="de.uni_jena.iaa.linktype.atomic.ui.navigation.navigator_view"
+               ratio="0.2f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="de.uni_jena.iaa.linktype.atomic.core.context"
+            name="Atomic Default Context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.core.keyboardShortcutNotAvailableCommand"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+Q Q">
+      </key>
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.core.keyboardShortcutNotAvailableCommand"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+Q C">
+      </key>
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.core.commands.Exit"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+Q">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.import"
+            contextId="de.uni_jena.iaa.linktype.atomic.core.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+I">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.index">
+      <index
+            file="index.xml">
+      </index>
+   </extension>
+   <extension
+         id="atomicProjectNature"
+         name="Atomic Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="de.uni_jena.iaa.linktype.atomic.core.projects.AtomicProjectNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicPreferencePage"
+            id="de.uni_jena.iaa.linktype.atomic.core.preferences.atomicMainPreferencePage"
+            name="Atomic">
+      </page>
+      <page
+            category="de.uni_jena.iaa.linktype.atomic.core.preferences.atomicMainPreferencePage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AnnotationPreferencePage"
+            id="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
+            name="Annotation">
+      </page>
+      <page
+            category="de.uni_jena.iaa.linktype.atomic.core.atomicAnnotationPreferencePage"
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedKeysPreferencesPage"
+            id="de.uni_jena.iaa.linktype.atomic.core.reservedKeysPreferencePage"
+            name="Reserved keys">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.AtomicPreferencesInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="de.uni_jena.iaa.linktype.atomic.core.preferences.ReservedKeysPreferencesPage"
+            id="de.uni_jena.iaa.linktype.atomic.core.projects.properties.reservedWordsPropertyPage"
+            name="Reserved keys">
+            <enabledWhen>
+    <and>
+            <instanceof
+             value="org.eclipse.core.resources.IProject">
+        </instanceof>
+            <adapt type="org.eclipse.core.resources.IResource" >
+                <test
+                 property="org.eclipse.core.resources.projectNature"
+                value="de.uni_jena.iaa.linktype.atomic.core.atomicProjectNature">
+                </test>
+            </adapt>   
+    </and>
+    </enabledWhen>
+      </page>
+   </extension> <!-- Navigator above -->
+
 </plugin>
