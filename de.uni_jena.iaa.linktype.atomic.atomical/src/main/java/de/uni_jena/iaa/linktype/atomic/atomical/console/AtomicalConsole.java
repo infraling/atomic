@@ -491,7 +491,14 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 						}
 					}
 					for (TableItem item : lv.getLayerTableViewer().getTable().getItems()) {
-						if (item.getData().equals(layer.getSName())) {
+						String tmpLayerName;
+						if (layerName.equals("\u269B NO ACTIVE LEVEL \u269B")) {
+							tmpLayerName = "\u269B NO ASSIGNED LEVEL \u269B";
+						}
+						else {
+							tmpLayerName = layerName;
+						}
+						if (item.getData().equals(tmpLayerName)) {
 							item.setChecked(true);
 							lv.notifySelectionListeners();
 						}

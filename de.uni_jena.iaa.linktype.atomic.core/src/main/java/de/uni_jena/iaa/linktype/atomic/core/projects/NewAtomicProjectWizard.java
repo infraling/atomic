@@ -72,8 +72,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		setWindowTitle("New Atomic project");
 		detailsPage = new NewAtomicProjectWizardDetailsPage();
 		addPage(detailsPage);
-		sentenceDetectionPage = new NewAtomicProjectWizardSentenceDetectionPage("Sentence detection");
-		addPage(sentenceDetectionPage);
+//		sentenceDetectionPage = new NewAtomicProjectWizardSentenceDetectionPage("Sentence detection");
+//		addPage(sentenceDetectionPage);
 	}
 
 	/*
@@ -141,16 +141,16 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 			log.info("Wrote token texts to tokens.");
 
 			// Detect sentence
-			monitor.subTask("Detecting sentences in corpus text");
-			if (sentenceDetectionPage.getSentenceDetectorTypeToUse() != null) {
-				TreeRangeSet<Integer> sentenceRanges = detectSentences(sDocumentGraph);
-				SentenceDetectionService.writeSentencesToModel(sDocumentGraph, sentenceRanges);
-				log.info("Detected sentences.");
-			}
-			else {
-				log.info("Skipping sentence detection");
-			}
-			monitor.worked(1);
+//			monitor.subTask("Detecting sentences in corpus text");
+//			if (sentenceDetectionPage.getSentenceDetectorTypeToUse() != null) {
+//				TreeRangeSet<Integer> sentenceRanges = detectSentences(sDocumentGraph);
+//				SentenceDetectionService.writeSentencesToModel(sDocumentGraph, sentenceRanges);
+//				log.info("Detected sentences.");
+//			}
+//			else {
+//				log.info("Skipping sentence detection");
+//			}
+//			monitor.worked(1);
 
 			// Annotate tokens with text meta info
 			monitor.subTask("Serializing project");
