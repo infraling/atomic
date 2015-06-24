@@ -9,8 +9,9 @@
    <launcherArgs>
       <programArgs>-data @noDefault</programArgs>
       <vmArgs>-Dosgi.startLevel=7</vmArgs>
-      <vmArgsLin>-Dorg.eclipse.swt.browser.DefaultType=mozilla</vmArgsLin>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <vmArgsLin>-Dorg.eclipse.swt.browser.DefaultType=mozilla -Dlog4j.configurationFile=configuration/log4j2.xml</vmArgsLin>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Dlog4j.configurationFile=../../../configuration/log4j2.xml</vmArgsMac>
+      <vmArgsWin>-Dlog4j.configurationFile=configuration/log4j2.xml</vmArgsWin>
    </launcherArgs>
 
    <windowImages i16="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_16x16x32.png" i32="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_32x32x32.png" i48="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_48x48x32.png" i64="/de.uni_jena.iaa.linktype.atomic.core/icons/atomic_64x64.png"/>

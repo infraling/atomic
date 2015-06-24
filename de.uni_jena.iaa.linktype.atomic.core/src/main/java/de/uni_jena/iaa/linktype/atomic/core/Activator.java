@@ -68,6 +68,7 @@ public class Activator extends AbstractUIPlugin {
 //		    	if (display == null) {
 		    		display = PlatformUI.createDisplay();	
 //		    	}
+				System.err.println("DING DONG DEAD!");
 		    }
 			System.err.println("Activator display: " + display);
 		    AtomicWorkspacePicker.pickWorkspace(display);
