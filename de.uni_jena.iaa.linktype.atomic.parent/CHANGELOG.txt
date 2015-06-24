@@ -2,6 +2,13 @@
 * Changelog for Atomic *
 ************************
 
+Version 0.2
+===========
+- Add corpus navigation for the Annotation Graph Editor by introducing the Sentence View,
+the Level View, the Linked Sentences View (fix #39)
+- Fix regression bug for Mac OS X where logging plugin causes OSGi Framework error
+- Add "l" command to AtomicAL
+
 Version 0.1.9
 =============
 - Fixes #31: Enables setting STYPE on annotation graph relations
