@@ -16,11 +16,6 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.logging.log4j.LogManager; 
-import org.apache.logging.log4j.Logger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -46,10 +41,6 @@ public class Atomic implements IApplication {
 	    		display = PlatformUI.createDisplay();	
 	    	}
 	    }
-		System.err.println("Application display: " + display);
-		for (Entry<String,String> entry : System.getenv().entrySet()) {
-			System.err.println(entry.getKey() + ": " + entry.getValue());
-		}
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
 				if (returnCode == PlatformUI.RETURN_RESTART) return IApplication.EXIT_RESTART;

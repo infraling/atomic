@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.model;
 
-import java.io.File; 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;

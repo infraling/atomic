@@ -16,7 +16,7 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
-import org.eclipse.swt.widgets.Display; 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
@@ -64,13 +64,8 @@ public class Activator extends AbstractUIPlugin {
 			
 			Display display = Display.getCurrent();
 			if (display == null) {
-//		    	display = Display.getDefault();
-//		    	if (display == null) {
 		    		display = PlatformUI.createDisplay();	
-//		    	}
-				System.err.println("DING DONG DEAD!");
 		    }
-			System.err.println("Activator display: " + display);
 		    AtomicWorkspacePicker.pickWorkspace(display);
 		}
 		

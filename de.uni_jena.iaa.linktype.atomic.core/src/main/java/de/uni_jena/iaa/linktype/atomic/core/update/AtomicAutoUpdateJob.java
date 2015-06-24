@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.update;
 
-import java.net.InetAddress; 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.logging.log4j.LogManager;
