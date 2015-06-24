@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -22,8 +24,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.TreeRangeSet;
 
@@ -48,7 +48,7 @@ import de.uni_jena.iaa.linktype.atomic.core.utils.AtomicProjectUtils;
  */
 public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
-	private static final Logger log = LoggerFactory.getLogger(NewAtomicProjectWizard.class);
+	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizard.class);
 
 	private NewAtomicProjectWizardDetailsPage detailsPage;
 	private Object[] typedTokenizerToUse;

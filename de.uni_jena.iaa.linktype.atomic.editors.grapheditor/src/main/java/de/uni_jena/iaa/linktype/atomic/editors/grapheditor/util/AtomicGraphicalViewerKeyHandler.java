@@ -3,10 +3,12 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
@@ -19,8 +21,6 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
@@ -35,7 +35,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.GraphPart;
  */
 public class AtomicGraphicalViewerKeyHandler extends GraphicalViewerKeyHandler {
 	
-	private static final Logger log = LoggerFactory.getLogger(AtomicGraphicalViewerKeyHandler.class);
+	private static final Logger log = LogManager.getLogger(AtomicGraphicalViewerKeyHandler.class);
 
 	/**
 	 * @param viewer

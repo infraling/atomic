@@ -5,7 +5,6 @@ Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.logging
 Bundle-Version: 0.1.9
 Bundle-ClassPath: .,
  org/
-Eclipse-BuddyPolicy: registered
 Export-Package: org.apache.logging.log4j,
  org.apache.logging.log4j.core,
  org.apache.logging.log4j.core.appender,

@@ -3,9 +3,11 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.update;
 
-import java.net.InetAddress;
+import java.net.InetAddress; 
 import java.net.UnknownHostException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -17,8 +19,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Stephan Druskat
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AtomicAutoUpdateJob extends Job {
 	
-	private static final Logger log = LoggerFactory.getLogger(AtomicAutoUpdateJob.class);
+	private static final Logger log = LogManager.getLogger(AtomicAutoUpdateJob.class);
 
 	private IProvisioningAgent agent;
 	private IPreferenceStore prefStore;

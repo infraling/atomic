@@ -3,11 +3,13 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.projects;
 
-import java.net.MalformedURLException;
+import java.net.MalformedURLException;  
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
@@ -26,8 +28,6 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.uni_jena.iaa.linktype.atomic.core.corpus.LocaleProvider;
 import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetectionService;
@@ -38,7 +38,7 @@ import de.uni_jena.iaa.linktype.atomic.core.corpus.SentenceDetectionService;
  */
 public class NewAtomicProjectWizardSentenceDetectionPage extends WizardPage {
 
-	private static final Logger log = LoggerFactory.getLogger(NewAtomicProjectWizardSentenceDetectionPage.class);
+	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizardSentenceDetectionPage.class);
 
 	boolean hasSelection = false;
 	private Text textUseOwnApache;

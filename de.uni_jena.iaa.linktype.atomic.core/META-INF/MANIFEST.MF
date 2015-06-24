@@ -4,7 +4,6 @@ Bundle-Name: Atomic Core Plug-in
 Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.core; singleton:=true
 Bundle-Version: 0.1.9
 Bundle-Activator: de.uni_jena.iaa.linktype.atomic.core.Activator
-Eclipse-RegisterBuddy: de.uni_jena.iaa.linktype.atomic.logging
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.ide;bundle-version="3.7.0",
@@ -29,7 +28,8 @@ Require-Bundle: org.eclipse.ui,
  de.uni_jena.iaa.linktype.atomic.logging;bundle-version="0.1.8",
  org.apache.opennlp.tools;bundle-version="1.5.3",
  org.eclipse.gef;bundle-version="3.7.2",
- com.google.guava;bundle-version="14.0.1"
+ com.google.guava;bundle-version="14.0.1",
+ de.uni_jena.iaa.linktype.atomic.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: de.uni_jena.iaa.linktype.atomic.core.corpus,

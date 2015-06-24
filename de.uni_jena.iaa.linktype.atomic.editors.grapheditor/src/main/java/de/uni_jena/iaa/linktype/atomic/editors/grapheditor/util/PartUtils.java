@@ -3,7 +3,7 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -28,8 +30,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
@@ -55,7 +55,7 @@ import de.uni_jena.iaa.linktype.atomic.editors.grapheditor.parts.TokenPart;
  */
 public class PartUtils {
 
-	private static final Logger log = LoggerFactory.getLogger(PartUtils.class);
+	private static final Logger log = LogManager.getLogger(PartUtils.class);
 
 	public static final String SANS10BOLD = "sansserif 10pt bold";
 	public static final String SANS8 = "sansserif 8pt";

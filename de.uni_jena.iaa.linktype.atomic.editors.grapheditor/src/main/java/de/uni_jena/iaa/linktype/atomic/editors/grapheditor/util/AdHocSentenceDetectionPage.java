@@ -3,11 +3,13 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
-import java.net.MalformedURLException;
+import java.net.MalformedURLException; 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
@@ -26,8 +28,6 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
@@ -61,7 +61,7 @@ public class AdHocSentenceDetectionPage extends WizardPage {
 	public static final String THIRDPARTY_DETECTOR_EXTENSION_NAME = "name";
 	public static final String EXTENSION_ID = "de.uni_jena.iaa.linktype.atomic.sentenceDetectors";
 
-	private static final Logger log = LoggerFactory.getLogger(AdHocSentenceDetectionPage.class);
+	private static final Logger log = LogManager.getLogger(AdHocSentenceDetectionPage.class);
 
 	/**
 	 * @param sDocumentGraph

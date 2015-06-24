@@ -5,6 +5,8 @@ package de.uni_jena.iaa.linktype.atomic.core.editors;
 
 import java.io.File;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
@@ -12,8 +14,6 @@ import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.FileEditorInput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
@@ -31,7 +31,7 @@ import de.uni_jena.iaa.linktype.atomic.core.model.ModelRegistry;
  */
 public abstract class AtomicGraphicalEditor extends GraphicalEditorWithFlyoutPalette {
 	
-	private static final Logger log = LoggerFactory.getLogger(AtomicGraphicalEditor.class);
+	private static final Logger log = LogManager.getLogger(AtomicGraphicalEditor.class);
 
 	/**
 	 * The model {@link SDocumentGraph} for this editor instance

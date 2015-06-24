@@ -62,13 +62,14 @@ public class Activator extends AbstractUIPlugin {
 			packageAdminRef = bundleContext.getServiceReference(PackageAdmin.class.getName());
 			packageAdmin = (PackageAdmin) bundleContext.getService(packageAdminRef);
 			
-			Display display = null;
-		    if (Display.getCurrent() != null) {
-		    	display = Display.getCurrent();
+			Display display = Display.getCurrent();
+			if (display == null) {
+		    	display = Display.getDefault();
+		    	if (display == null) {
+		    		display = PlatformUI.createDisplay();	
+		    	}
 		    }
-		    else {
-		    	display = PlatformUI.createDisplay();
-		    }
+			System.err.println("Activator display: " + display);
 		    AtomicWorkspacePicker.pickWorkspace(display);
 		}
 		

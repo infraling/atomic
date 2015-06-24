@@ -16,34 +16,34 @@
  ******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic.core;
 
+import org.apache.logging.log4j.LogManager; 
+import org.apache.logging.log4j.Logger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class controls all aspects of the application's execution
  */
 public class Atomic implements IApplication {
 	
-	private static final Logger log = LoggerFactory.getLogger(Atomic.class);
+//	private static final Logger log = LogManager.getLogger(Atomic.class);
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 
-		log.info("Started Atomic");
-		Display display = null;
-		if (Display.getCurrent() != null) {
-	    	display = Display.getCurrent();
+		Display display = Display.getCurrent();
+		if (display == null) {
+	    	display = Display.getDefault();
+	    	if (display == null) {
+	    		display = PlatformUI.createDisplay();	
+	    	}
 	    }
-	    else {
-	    	display = PlatformUI.createDisplay();
-	    }
+		System.err.println("Application display: " + display);
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
 				if (returnCode == PlatformUI.RETURN_RESTART) return IApplication.EXIT_RESTART;

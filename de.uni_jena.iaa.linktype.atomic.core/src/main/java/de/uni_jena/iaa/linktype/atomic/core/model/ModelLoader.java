@@ -3,9 +3,11 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.model;
 
-import java.io.File;
+import java.io.File; 
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
@@ -17,8 +19,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
@@ -35,7 +35,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
  */
 public class ModelLoader {
 	
-	private static final Logger log = LoggerFactory.getLogger(ModelLoader.class);
+	private static final Logger log = LogManager.getLogger(ModelLoader.class);
 
 	/**
 	 * Opens a {@link ListDialog} listing the {@link SDocument}s contained in the

@@ -3,12 +3,12 @@
  */
 package de.uni_jena.iaa.linktype.atomic.editors.grapheditor.util;
 
-import org.eclipse.core.runtime.CoreException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.core.runtime.CoreException; 
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Stephan Druskat
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AccessorUtil {
 	
-	private static final Logger log = LoggerFactory.getLogger(AccessorUtil.class);
+	private static final Logger log = LogManager.getLogger(AccessorUtil.class);
 
 	/**
 	 * @param string

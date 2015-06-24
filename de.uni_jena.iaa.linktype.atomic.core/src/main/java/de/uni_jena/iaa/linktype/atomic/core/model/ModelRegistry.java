@@ -3,14 +3,14 @@
  */
 package de.uni_jena.iaa.linktype.atomic.core.model;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.part.FileEditorInput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Node;
@@ -28,7 +28,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
  */
 public class ModelRegistry {
 
-	private static final Logger log = LoggerFactory.getLogger(ModelRegistry.class);
+	private static final Logger log = LogManager.getLogger(ModelRegistry.class);
 
 	private static Map<IFile, SDocumentGraph> documentGraphs = new HashMap<IFile, SDocumentGraph>();
 	private static Map<IFile, Integer> editorsOnDocumentIFile = new HashMap<IFile, Integer>();
