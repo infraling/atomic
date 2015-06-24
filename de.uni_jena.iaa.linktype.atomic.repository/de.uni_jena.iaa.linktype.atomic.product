@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Atomic" uid="de.uni_jena.iaa.linktype.atomic.product" id="de.uni_jena.iaa.linktype.atomic.core.product" application="de.uni_jena.iaa.linktype.atomic.core.application" version="0.1.9" useFeatures="true" includeLaunchers="true">
+<product name="Atomic" uid="de.uni_jena.iaa.linktype.atomic.product" id="de.uni_jena.iaa.linktype.atomic.core.product" application="de.uni_jena.iaa.linktype.atomic.core.application" version="0.2" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -141,14 +141,14 @@ END OF TERMS AND CONDITIONS
    </plugins>
 
    <features>
-      <feature id="de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature" version="0.1.9"/>
-      <feature id="de.uni_jena.iaa.linktype.atomic.core.feature" version="0.1.9"/>
-      <feature id="de.uni_jena.iaa.linktype.atomic.model.feature" version="0.1.9"/>
+      <feature id="de.uni_jena.iaa.linktype.atomic.platform_dependencies.feature" version="0.2"/>
+      <feature id="de.uni_jena.iaa.linktype.atomic.core.feature" version="0.2"/>
+      <feature id="de.uni_jena.iaa.linktype.atomic.model.feature" version="0.2"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper.core"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.pepper.modules"/>
       <feature id="de.hu_berlin.german.korpling.saltnpepper.salt"/>
-      <feature id="de.uni_jena.iaa.linktype.atomic.editors.feature" version="0.1.9"/>
-      <feature id="de.uni_jena.iaa.linktype.atomic.atomical.feature" version="0.1.9"/>
+      <feature id="de.uni_jena.iaa.linktype.atomic.editors.feature" version="0.2"/>
+      <feature id="de.uni_jena.iaa.linktype.atomic.atomical.feature" version="0.2"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.help" version="1.3.0.v20110530-0844-7i7uFFmFFl8nvqbDpEqTvx"/>
