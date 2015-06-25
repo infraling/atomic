@@ -26,32 +26,40 @@ import org.eclipse.ui.PlatformUI;
  * This class controls all aspects of the application's execution
  */
 public class Atomic implements IApplication {
-	
-//	private static final Logger log = LogManager.getLogger(Atomic.class);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
+	// private static final Logger log = LogManager.getLogger(Atomic.class);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
+	 * IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 
-		Display display = Display.getCurrent();
-		if (display == null) {
-	    	display = Display.getDefault();
-	    	if (display == null) {
-	    		display = PlatformUI.createDisplay();	
-	    	}
-	    }
+//		log.info("Started Atomic");
+		Display display = null;
+		if (Display.getCurrent() != null) {
+			display = Display.getCurrent();
+		}
+		else {
+			display = PlatformUI.createDisplay();
+		}
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
-				if (returnCode == PlatformUI.RETURN_RESTART) return IApplication.EXIT_RESTART;
-				else return IApplication.EXIT_OK;
-		} 
+			if (returnCode == PlatformUI.RETURN_RESTART)
+				return IApplication.EXIT_RESTART;
+			else
+				return IApplication.EXIT_OK;
+		}
 		finally {
 			display.dispose();
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
 	public void stop() {
