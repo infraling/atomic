@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2014 Friedrich Schiller University Jena
- * Vivid Sky - Softwaremanufaktur, Michael Grübsch.
+ * Vivid Sky - Softwaremanufaktur, Michael Grï¿½bsch.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,17 +43,22 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperDocumentController;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperJob;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleController;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ExporterParams;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ImporterParams;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ModuleParams;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperJobParams;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParams;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParamsFactory;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperJob;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.StepDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
+
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperDocumentController;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperJob;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleController;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ExporterParams;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ImporterParams;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ModuleParams;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperJobParams;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParams;
+//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParamsFactory;
 
 public abstract class PepperModuleRunnable
   implements 
@@ -84,9 +89,13 @@ public abstract class PepperModuleRunnable
     this.cancelable = cancelable;
   }
 
-  protected abstract ImporterParams createImporterParams();
+  protected abstract StepDesc createImporterParams();
 
-  protected abstract ExporterParams createExporterParams();
+  protected abstract StepDesc createExporterParams();
+  
+//  protected abstract ImporterParams createImporterParams();
+//
+//  protected abstract ExporterParams createExporterParams();
 
   protected void setSpecialParams(ModuleParams moduleParams) throws IOException
   {
@@ -111,22 +120,29 @@ public abstract class PepperModuleRunnable
 
   protected void runModule() throws IOException, CoreException
   {
-    ImporterParams importerParams = createImporterParams();
-    setSpecialParams(importerParams);
-
-    ExporterParams exporterParams = createExporterParams();
-    
-    PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
-    pepperJobParams.setId(AbstractPepperWizard.PEPPER_JOB_ID.incrementAndGet());
-    pepperJobParams.getImporterParams().add(importerParams);
-    pepperJobParams.getExporterParams().add(exporterParams);
-
-    PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
-    pepperParams.getPepperJobParams().add(pepperJobParams);
-    
-    PepperConverter pepperConverter = pepperWizard.getPepperConverter();
-    pepperConverter.setPepperParams(pepperParams);
-    pepperConverter.start();
+	  createImporterParams();
+	  
+//    ImporterParams importerParams = createImporterParams();
+//    setSpecialParams(importerParams);
+//
+//    ExporterParams exporterParams = createExporterParams();
+//    
+//    PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
+//    pepperJobParams.setId(AbstractPepperWizard.PEPPER_JOB_ID.incrementAndGet());
+//    pepperJobParams.getImporterParams().add(importerParams);
+//    pepperJobParams.getExporterParams().add(exporterParams);
+//
+//    PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
+//    pepperParams.getPepperJobParams().add(pepperJobParams);
+//    
+//    PepperConverter pepperConverter = pepperWizard.getPepper();
+//    pepperConverter.setPepperParams(pepperParams);
+//    pepperConverter.start();
+	  
+	  Pepper pepper = pepperWizard.getPepper();
+	  String jobId= pepper.createJob();
+	  PepperJob pepperJob= pepper.getJob(jobId);
+	  pepperJob.createStepDesc();
 
     project.refreshLocal(IResource.DEPTH_INFINITE, null);
   }
@@ -141,7 +157,7 @@ public abstract class PepperModuleRunnable
     {
       synchronized (cancelLock)
       {
-        // prüfen, ob Ausführung bereits vor dem Start abgebrochen worden ist
+        // prï¿½fen, ob Ausfï¿½hrung bereits vor dem Start abgebrochen worden ist
         if (cancelled)
         {
           throw new InterruptedException();
@@ -149,7 +165,7 @@ public abstract class PepperModuleRunnable
         else
         {
           controlThread = Thread.currentThread();
-          // Thread in dem der Vorgang ausgeführt wird und der bei Abbruch im
+          // Thread in dem der Vorgang ausgefï¿½hrt wird und der bei Abbruch im
           // Progressmonitor unterbrochen werden soll
           moduleThread = new Thread("Pepper Module Thread #" + threadCounter.incrementAndGet())
           {
@@ -173,11 +189,11 @@ public abstract class PepperModuleRunnable
         }
       }
 
-      // Progressmonitor asynchron auf Abbruch überwachen
+      // Progressmonitor asynchron auf Abbruch ï¿½berwachen
       ScheduledFuture<?> cancellationCheck;
       if (cancelable)
       {
-        // Überwachungsthread
+        // ï¿½berwachungsthread
         cancellationCheck = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay
           ( new Runnable()
             {
@@ -205,7 +221,7 @@ public abstract class PepperModuleRunnable
       outcome = Boolean.FALSE;
       try
       {
-        // Modul ausführen
+        // Modul ausfï¿½hren
         moduleThread.start();
 
         Display display = Display.findDisplay(Thread.currentThread());
@@ -237,7 +253,7 @@ public abstract class PepperModuleRunnable
         // Monitor beenden
         monitor.done();
 
-        // Überwachungsthread stoppen
+        // ï¿½berwachungsthread stoppen
         if (cancellationCheck != null)
         {
           cancellationCheck.cancel(true);
@@ -294,7 +310,7 @@ public abstract class PepperModuleRunnable
 
       if (thread.isAlive())
       {
-        PepperConverter pepperConverter = pepperWizard.getPepperConverter();
+        Pepper pepperConverter = pepperWizard.getPepper();
         for (PepperJob pepperJob : pepperConverter.getPepperJobs())
         {
           Field field = pepperJob.getClass().getDeclaredField("allModuleControlers");
@@ -323,7 +339,7 @@ public abstract class PepperModuleRunnable
     Thread thread = moduleThread;
     if (thread != null && thread.isAlive())
     {
-      PepperConverter pepperConverter = pepperWizard.getPepperConverter();
+      PepperConverter pepperConverter = pepperWizard.getPepper();
       if (pepperConverter != null)
       {
         for (PepperJob pepperJob : pepperConverter.getPepperJobs())

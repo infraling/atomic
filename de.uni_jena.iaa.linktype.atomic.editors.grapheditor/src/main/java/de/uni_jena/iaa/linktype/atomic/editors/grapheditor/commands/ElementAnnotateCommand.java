@@ -78,7 +78,7 @@ public class ElementAnnotateCommand extends Command {
 			rel.createSFeature("saltCore", "STYPE", value);
 		}
 		else { // Element already has an STYPE
-			rel.getLabel("saltCore", "STYPE").setValue(value);
+			rel.addSType(value);
 			rel.eNotify(new NotificationImpl(Notification.SET, "oldValue", value));
 		}
 	}

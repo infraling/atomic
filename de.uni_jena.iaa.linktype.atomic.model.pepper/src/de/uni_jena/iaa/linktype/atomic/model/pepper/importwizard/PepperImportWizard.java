@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2013 Friedrich Schiller University Jena
- * Michael Grübsch
+ * Michael Grï¿½bsch
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,18 @@
 
 package de.uni_jena.iaa.linktype.atomic.model.pepper.importwizard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleResolver;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperImporter;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperModuleRunnable;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageDirectory;
@@ -74,7 +73,7 @@ public class PepperImportWizard
    * {@inheritDoc}
    */
   @Override
-  protected List<PepperImporter> resolvePepperModules(PepperModuleResolver pepperModuleResolver)
+  protected List<PepperImporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
   {
     return pepperModuleResolver.getPepperImporters();
   }
@@ -83,10 +82,10 @@ public class PepperImportWizard
    * {@inheritDoc}
    */
   @Override
-  public EList<FormatDefinition> getSupportedFormats()
+  public List<FormatDesc> getSupportedFormats()
   {
     PepperImporter module = getPepperModule();
-    return module != null ? module.getSupportedFormats() : new BasicEList<FormatDefinition>();
+    return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
   }
 
   public String getProjectName()

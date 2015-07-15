@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2014 Friedrich Schiller University Jena
- * Vivid Sky - Softwaremanufaktur, Michael Grübsch.
+ * Vivid Sky - Softwaremanufaktur, Michael Grï¿½bsch.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,22 @@
 
 package de.uni_jena.iaa.linktype.atomic.model.pepper.exportwizard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleResolver;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperExporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
+import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.WizardMode;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperModuleRunnable;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageDirectory;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageFormat;
@@ -41,7 +41,7 @@ import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPagePrope
 
 /**
  *
- * @author  Michael Grübsch
+ * @author  Michael Grï¿½bsch
  * @version $Revision$, $Date$
  */
 public class PepperExportWizard
@@ -112,7 +112,7 @@ public class PepperExportWizard
    * {@inheritDoc}
    */
   @Override
-  protected List<PepperExporter> resolvePepperModules(PepperModuleResolver pepperModuleResolver)
+  protected List<PepperExporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
   {
     return pepperModuleResolver.getPepperExporters();
   }
@@ -121,10 +121,10 @@ public class PepperExportWizard
    * {@inheritDoc}
    */
   @Override
-  public EList<FormatDefinition> getSupportedFormats()
+  public List<FormatDesc> getSupportedFormats()
   {
     PepperExporter module = getPepperModule();
-    return module != null ? module.getSupportedFormats() : new BasicEList<FormatDefinition>();
+    return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
   }
 
   /**

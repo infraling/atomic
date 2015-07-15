@@ -98,8 +98,8 @@ public class RelationPart extends AbstractConnectionEditPart {
 
 		RelationFigure figure = (RelationFigure) getFigure();
 		
-		if (((SRelation) getModel()).getLabel("saltCore", "STYPE") != null) {
-			figure.getLabel().setText(GraphElementRegistry.getIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph()) + ":" + ((SRelation) getModel()).getLabel("saltCore", "STYPE").getValueString());
+		if (((SRelation) getModel()).getSTypes() != null && ((SRelation) getModel()).getSTypes().size() > 0) {
+			figure.getLabel().setText(GraphElementRegistry.getIDForElement((SIdentifiableElement) getModel(), getSDocumentGraph()) + ":" + ((SRelation) getModel()).getSTypes().get(0));
 		}
 
 		// Reorder figure.getChildren() to avoid IndexOutOfBoundsException

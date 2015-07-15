@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2013 Friedrich Schiller University Jena
- * Michael Grübsch
+ * Michael Grï¿½bsch
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -39,13 +37,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.ServiceReference;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleResolver;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.util.PepperFWProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperty;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguration;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.core.PepperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.Activator;
 
 public abstract class AbstractPepperWizard
@@ -80,12 +79,12 @@ public abstract class AbstractPepperWizard
 
   protected final WizardMode wizardMode;
 
-  protected ServiceReference<PepperConverter> reference;
-  protected PepperConverter pepperConverter;
+  protected ServiceReference<Pepper> reference;
+  protected Pepper pepper;
   protected List<P> pepperModuleList;
   protected P pepperModule;
   protected PepperModuleProperties pepperModuleProperties;
-  protected FormatDefinition formatDefinition;
+  protected FormatDesc formatDesc;
   protected String exchangeTargetPath;
   protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
 
@@ -115,18 +114,18 @@ public abstract class AbstractPepperWizard
 
   public void initialize()
   {
-    reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(PepperConverter.class);
+    reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(Pepper.class);
     if (reference != null)
     {
-      pepperConverter = Activator.getDefault().getBundle().getBundleContext().getService(reference);
+      pepper = Activator.getDefault().getBundle().getBundleContext().getService(reference);
 
-      Properties properties = pepperConverter.getProperties();
+      PepperConfiguration properties = pepper.getConfiguration();
       if (properties == null)
       {
-        properties = new Properties();
+        properties = new PepperConfiguration();
       }
-      properties.setProperty(PepperFWProperties.PROP_REMOVE_SDOCUMENTS_AFTER_PROCESSING, "true");
-      pepperConverter.setProperties(properties);
+      properties.setProperty(PepperConfiguration.PROP_REMOVE_SDOCUMENTS_AFTER_PROCESSING, "true");
+      pepper.setConfiguration(properties);
     }
 
     pepperModuleProperties = new PepperModuleProperties();
@@ -139,16 +138,16 @@ public abstract class AbstractPepperWizard
     return wizardMode;
   }
 
-  protected abstract List<P> resolvePepperModules(PepperModuleResolver pepperModuleResolver);
+  protected abstract List<P> resolvePepperModules(ModuleResolver pepperModuleResolver);
 
   public List<P> getPepperModules()
   {
     if (pepperModuleList == null)
     {
       List<P> modules = null;
-      if (pepperConverter != null)
+      if (pepper != null)
       {
-        PepperModuleResolver pepperModuleResolver = pepperConverter.getPepperModuleResolver();
+        ModuleResolver pepperModuleResolver = ((PepperImpl)pepper).getModuleResolver();
         if (pepperModuleResolver != null)
         {
           modules = resolvePepperModules(pepperModuleResolver);
@@ -196,9 +195,9 @@ public abstract class AbstractPepperWizard
     return pepperModuleList;
   }
 
-  public PepperConverter getPepperConverter()
+  public Pepper getPepper()
   {
-    return pepperConverter;
+    return pepper;
   }
 
   public P getPepperModule()
@@ -229,21 +228,21 @@ public abstract class AbstractPepperWizard
     this.pepperModule = pepperModule;
   }
 
-  public abstract EList<FormatDefinition> getSupportedFormats();
+  public abstract List<FormatDesc> getSupportedFormats();
 
-  public FormatDefinition getFormatDefinition()
+  public FormatDesc getFormatDesc()
   {
-    return formatDefinition;
+    return formatDesc;
   }
 
-  public FormatDefinition getPreferredFormatDefinition()
+  public FormatDesc getPreferredFormatDesc()
   {
     P module = getPepperModule();
     String formatName = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_NAME);
     String formatVersion = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_VERSION);
     if (module != null && formatName != null && formatVersion != null)
     {
-      for (FormatDefinition fd : getSupportedFormats())
+      for (FormatDesc fd : getSupportedFormats())
       {
         if (formatName.equals(fd.getFormatName()) && formatVersion.equals(fd.getFormatVersion()))
         {
@@ -255,9 +254,9 @@ public abstract class AbstractPepperWizard
     return null;
   }
 
-  public void setFormatDefinition(FormatDefinition formatDefinition)
+  public void setFormatDesc(FormatDesc formatDesc)
   {
-    this.formatDefinition = formatDefinition;
+    this.formatDesc = formatDesc;
   }
   
   public String getExchangeTargetPath()
@@ -355,10 +354,10 @@ public abstract class AbstractPepperWizard
     {
       exchangeTargetPath = null;
       exchangeTargetType = ExchangeTargetType.DIRECTORY;
-      formatDefinition = null;
+      formatDesc = null;
       pepperModule = null;
       pepperModuleList = null;
-      pepperConverter = null;
+      pepper = null;
 
       Activator.getDefault().getBundle().getBundleContext().ungetService(reference);
       reference = null;
@@ -371,7 +370,7 @@ public abstract class AbstractPepperWizard
   {
     return 
         pepperModule != null 
-     && formatDefinition != null 
+     && formatDesc != null 
      && exchangeTargetPath != null;
   }
 
@@ -458,7 +457,7 @@ public abstract class AbstractPepperWizard
     P module = getPepperModule();
     settings.put(DIALOG_SETTINGS_MODULE, module != null ? module.getName() : null);
 
-    FormatDefinition fd = getFormatDefinition();
+    FormatDesc fd = getFormatDesc();
     settings.put(DIALOG_SETTINGS_FORMAT_NAME, fd != null ? fd.getFormatName() : null);
     settings.put(DIALOG_SETTINGS_FORMAT_VERSION, fd != null ? fd.getFormatVersion() : null);
     

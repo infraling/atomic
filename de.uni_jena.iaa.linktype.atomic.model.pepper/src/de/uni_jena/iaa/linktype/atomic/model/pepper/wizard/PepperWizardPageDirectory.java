@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2013 Friedrich Schiller University Jena
- * Michael Grübsch
+ * Michael Grï¿½bsch
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,13 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.ExchangeTargetType;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.WizardMode;
 
 /**
  * 
- * @author Michael Grübsch
+ * @author Michael Grï¿½bsch
  * @version $Revision: 1.2 $, $Date: 2012/03/29 22:59:03 $
  */
 public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPage implements IWizardPage

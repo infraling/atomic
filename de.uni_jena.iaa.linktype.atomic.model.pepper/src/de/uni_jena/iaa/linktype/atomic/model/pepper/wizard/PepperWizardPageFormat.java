@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2013 Friedrich Schiller University Jena
- * Michael Grübsch
+ * Michael Grï¿½bsch
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
 
 package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
 
-import org.eclipse.emf.common.util.EList;
+import java.util.List;
+
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -42,12 +43,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 
 /**
  *
- * @author  Michael Grübsch
+ * @author  Michael Grï¿½bsch
  * @version $Revision$, $Date$
  */
 public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage implements IWizardPage
@@ -98,7 +99,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
       @Override
       public String getText(Object element)
       {
-        return super.getText(((FormatDefinition) element).getFormatName());
+        return super.getText(((FormatDesc) element).getFormatName());
       }
     });
 
@@ -113,7 +114,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
       @Override
       public String getText(Object element)
       {
-        return super.getText(((FormatDefinition) element).getFormatVersion());
+        return super.getText(((FormatDesc) element).getFormatVersion());
       }
     });
 
@@ -140,7 +141,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
 
         boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
         setPageComplete(selected);
-        pepperWizard.setFormatDefinition(selected ? (FormatDefinition) ((IStructuredSelection) selection).getFirstElement() : null);
+        pepperWizard.setFormatDesc(selected ? (FormatDesc) ((IStructuredSelection) selection).getFirstElement() : null);
       }
     });
     
@@ -162,17 +163,17 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
   {
     if (visible)
     {
-      EList<FormatDefinition> supportedFormats = pepperWizard.getSupportedFormats();
+      List<FormatDesc> supportedFormats = pepperWizard.getSupportedFormats();
       tableViewer.setInput(supportedFormats);
 
-      FormatDefinition formatDefinition =
+      FormatDesc formatDefinition =
           supportedFormats.size() == 1
         ? supportedFormats.get(0)
-        : pepperWizard.getFormatDefinition();
+        : pepperWizard.getFormatDesc();
 
       if (formatDefinition == null)
       {
-        formatDefinition = pepperWizard.getPreferredFormatDefinition();
+        formatDefinition = pepperWizard.getPreferredFormatDesc();
       }
 
       tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
