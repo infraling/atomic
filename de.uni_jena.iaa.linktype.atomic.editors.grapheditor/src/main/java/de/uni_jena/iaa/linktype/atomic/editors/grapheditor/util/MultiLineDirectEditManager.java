@@ -33,7 +33,7 @@ public class MultiLineDirectEditManager extends DirectEditManager {
 		String initialLabelText = "";
 		for (SAnnotation annotation : ((SAnnotatableElement) getEditPart().getModel()).getSAnnotations()) {
 			String escapedKey = annotation.getSName().replaceAll(":", "\\\\:");
-			String escapedValue = annotation.getValueString().replaceAll(":", "\\\\:");
+			String escapedValue = annotation.getSValueSTEXT().replaceAll(":", "\\\\:");
 			if (annotation.getNamespace() != null) {
 				String escapedNamespace = annotation.getNamespace().replaceAll(":", "\\\\:");
 				initialLabelText = initialLabelText + escapedNamespace + "::" + escapedKey + ":" + escapedValue + "\n";

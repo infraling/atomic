@@ -21,7 +21,7 @@ public class SingleLineDirectEditManager extends DirectEditManager {
 		if (getEditPart() instanceof AnnotationPart) {
 			SAnnotation anno = (SAnnotation) getEditPart().getModel();
 			String escapedKey = anno.getSName().replaceAll(":", "\\\\:");
-			String escapedValue = anno.getValueString().replaceAll(":", "\\\\:");
+			String escapedValue = anno.getSValueSTEXT().replaceAll(":", "\\\\:");
 			if (anno.getNamespace() != null) {
 				String escapedNamespace = anno.getNamespace().replaceAll(":", "\\\\:");
 				initialLabelText = escapedNamespace + "::" + escapedKey + ":" + escapedValue;
