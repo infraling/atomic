@@ -17,7 +17,6 @@
 
 package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,10 +38,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.ServiceReference;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.MODULE_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguration;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperModuleDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.core.PepperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
@@ -50,12 +47,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModulePrope
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.Activator;
 
-/**
- * Entry point for starting a conversion via Pepper. This class implements a wizard to control the user input for configuring a Pepper job. 
- * @author Stephan Druskat
- *
- */
-public abstract class AbstractPepperWizard
+public abstract class AbstractPepperWizard_old
   <P extends PepperModule>
   extends 
     Wizard 
@@ -71,62 +63,38 @@ public abstract class AbstractPepperWizard
   @Deprecated
   protected static final String DIALOG_SETTINGS_EXCHANGE_DIRECTORY = "exchangeDirectory";
 
- 
-  
-  
-  
-  protected AbstractPepperWizard(String windowTitle, WizardMode wizardMode)
+  public static final String SALT_XML_FORMAT_NAME = "SaltXML";
+  public static final String SALT_XML_FORMAT_VERSION = "1.0";
+
+  protected static final ImageDescriptor DEFAULT_PAGE_IAMGE_DESCRIPTOR = 
+    AbstractUIPlugin.imageDescriptorFromPlugin(Activator.getDefault().getBundle().getSymbolicName(), "/saltnpepper_logo-64x64.png");
+
+  protected static final AtomicInteger PEPPER_JOB_ID = new AtomicInteger();
+
+  static
+  {
+    System.setProperty("PepperModuleResolver.TemprorariesURI", System.getProperty("java.io.tmpdir"));
+    System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
+  }
+
+  protected final WizardMode wizardMode;
+
+  protected ServiceReference<Pepper> reference;
+  protected Pepper pepper;
+  protected List<P> pepperModuleList;
+  protected P pepperModule;
+  protected PepperModuleProperties pepperModuleProperties;
+  protected FormatDesc formatDesc;
+  protected String exchangeTargetPath;
+  protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
+
+  protected AbstractPepperWizard_old(String windowTitle, WizardMode wizardMode)
   {
     this.wizardMode = wizardMode;
     setWindowTitle(windowTitle);
     setNeedsProgressMonitor(true);
     setDefaultPageImageDescriptor(DEFAULT_PAGE_IAMGE_DESCRIPTOR);
   }
-  
-//=============================================> probably unnecessary  
-  protected static final AtomicInteger PEPPER_JOB_ID = new AtomicInteger();
-  static
-  {
-    System.setProperty("PepperModuleResolver.TemprorariesURI", System.getProperty("java.io.tmpdir"));
-    System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
-  }
-  protected List<P> pepperModuleList;
-  protected P pepperModule;
-  protected PepperModuleProperties pepperModuleProperties;
-  protected FormatDesc formatDesc;
-  public static final String SALT_XML_FORMAT_NAME = "SaltXML";
-  public static final String SALT_XML_FORMAT_VERSION = "1.0";
-
-  
-//========================================> target path  
-  protected String exchangeTargetPath;
-  protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
-  public String getExchangeTargetPath()
-  {
-    return exchangeTargetPath;
-  }
-  
-  public void setExchangeTargetPath(String exchangeTargetPath)
-  {
-    this.exchangeTargetPath = exchangeTargetPath;
-  }
-
-  public ExchangeTargetType getExchangeTargetType()
-  {
-    return exchangeTargetType;
-  }
-
-  public void setExchangeTargetType(ExchangeTargetType exchangeTargetType)
-  {
-    this.exchangeTargetType = exchangeTargetType;
-  }
-//========================================< target path
-
-//=============================================> called by Eclipse
-  protected static final ImageDescriptor DEFAULT_PAGE_IAMGE_DESCRIPTOR = 
-    AbstractUIPlugin.imageDescriptorFromPlugin(Activator.getDefault().getBundle().getSymbolicName(), "/saltnpepper_logo-64x64.png");
-
-  protected final WizardMode wizardMode;
 
   /**
    * {@inheritDoc}
@@ -144,9 +112,6 @@ public abstract class AbstractPepperWizard
     return settings;
   }
 
-  /**
-   * Is called by implementing classes in {@link Wizard#init()}
-   */
   public void initialize()
   {
     reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(Pepper.class);
@@ -171,6 +136,199 @@ public abstract class AbstractPepperWizard
   public WizardMode getWizardMode()
   {
     return wizardMode;
+  }
+
+  protected abstract List<P> resolvePepperModules(ModuleResolver pepperModuleResolver);
+
+  public List<P> getPepperModules()
+  {
+    if (pepperModuleList == null)
+    {
+      List<P> modules = null;
+      if (pepper != null)
+      {
+        ModuleResolver pepperModuleResolver = ((PepperImpl)pepper).getModuleResolver();
+        if (pepperModuleResolver != null)
+        {
+          modules = resolvePepperModules(pepperModuleResolver);
+          if (modules != null)
+          {
+            Collections.sort
+              ( modules
+              , new Comparator<P>() 
+                {
+                  @Override
+                  public int compare(P o1, P o2) 
+                  {
+                    return o1.getName().compareTo(o2.getName());
+                  }
+                });
+          }
+          else
+          {
+            new MessageDialog
+              ( this.getShell()
+              , "Error"
+              , null
+              , "Did not found any Pepper module!"
+              , MessageDialog.ERROR
+              , new String[]{ IDialogConstants.OK_LABEL }
+              , 0).open();
+          }
+        }
+        else
+        {
+          new MessageDialog
+            ( this.getShell()
+            , "Error"
+            , null
+            , "Did not found Pepper module resolver!"
+            , MessageDialog.ERROR
+            , new String[]{ IDialogConstants.OK_LABEL }
+            , 0).open();
+        }
+      }
+
+      pepperModuleList = modules != null ? modules : Collections.<P>emptyList();
+    }
+    
+    return pepperModuleList;
+  }
+
+  public Pepper getPepper()
+  {
+    return pepper;
+  }
+
+  public P getPepperModule()
+  {
+    return pepperModule;
+  }
+
+  public P getPreferredPepperModule()
+  {
+    List<P> moduleList = getPepperModules();
+    String moduleName = getDialogSettings().get(DIALOG_SETTINGS_MODULE);
+    if (0 < moduleList.size() && moduleName != null)
+    {
+      for (P module : moduleList)
+      {
+        if (moduleName.equals(module.getName()))
+        {
+          return module;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  public void setPepperModule(P pepperModule)
+  {
+    this.pepperModule = pepperModule;
+  }
+
+  public abstract List<FormatDesc> getSupportedFormats();
+
+  public FormatDesc getFormatDesc()
+  {
+    return formatDesc;
+  }
+
+  public FormatDesc getPreferredFormatDesc()
+  {
+    P module = getPepperModule();
+    String formatName = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_NAME);
+    String formatVersion = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_VERSION);
+    if (module != null && formatName != null && formatVersion != null)
+    {
+      for (FormatDesc fd : getSupportedFormats())
+      {
+        if (formatName.equals(fd.getFormatName()) && formatVersion.equals(fd.getFormatVersion()))
+        {
+          return fd;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  public void setFormatDesc(FormatDesc formatDesc)
+  {
+    this.formatDesc = formatDesc;
+  }
+  
+  public String getExchangeTargetPath()
+  {
+    return exchangeTargetPath;
+  }
+  
+  public void setExchangeTargetPath(String exchangeTargetPath)
+  {
+    this.exchangeTargetPath = exchangeTargetPath;
+  }
+
+  public ExchangeTargetType getExchangeTargetType()
+  {
+    return exchangeTargetType;
+  }
+
+  public void setExchangeTargetType(ExchangeTargetType exchangeTargetType)
+  {
+    this.exchangeTargetType = exchangeTargetType;
+  }
+
+  public PepperModuleProperties getPepperModuleProperties()
+  {
+    return pepperModuleProperties;
+  }
+
+  public void addPepperModuleProperty(PepperModuleProperty<?> pepperModuleProperty)
+  {
+    pepperModuleProperties.addProperty(pepperModuleProperty);
+  }
+
+  public boolean containsPepperModuleProperty(String propertyName)
+  {
+    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
+    return property != null;
+  }
+
+  public String getPepperModulePropertyValue(String propertyName)
+  {
+    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
+    Object value = property != null ? property.getValue() : null;
+
+    return value != null ? value.toString() : null;
+  }
+
+  public void setPepperModulePropertyValue(String propertyName, String propertyValueString)
+  {
+    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
+    if (property != null)
+    {
+      property.setValueString(propertyValueString);
+    }
+  }
+
+  public void removePepperModuleProperty(String propertyName)
+  {
+    // es gibt kein remove in PepperModuleProperties 
+    PepperModuleProperty<?> property;
+    property = pepperModuleProperties.getProperty(propertyName);
+    if (property != null)
+    {
+      PepperModuleProperties properties = new PepperModuleProperties();
+      for (String name : pepperModuleProperties.getPropertyNames())
+      {
+        if ( ! name.equals(propertyName))
+        {
+          properties.addProperty(pepperModuleProperties.getProperty(name));
+        }
+      }
+      pepperModuleProperties = properties;
+    }
   }
 
   public void advance()
@@ -215,13 +373,11 @@ public abstract class AbstractPepperWizard
      && formatDesc != null 
      && exchangeTargetPath != null;
   }
-  
-  /**
-   * Returns the current Atomic project on which the conversion operation should be executed. This can be an existing project for export or a to-be-created project.
-   * @return
-   * @throws CoreException
-   */
+
   protected abstract IProject getProject() throws CoreException;
+  
+  protected abstract PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable);
+
   @Override
   public boolean performFinish()
   {
@@ -349,234 +505,4 @@ public abstract class AbstractPepperWizard
     IMPORT
   , EXPORT
   }
-//=============================================< called by Eclipse
-  
-  protected ServiceReference<Pepper> reference;
-  protected Pepper pepper;
-  public Pepper getPepper()
-  {
-    return pepper;
-  }
-  
-  /**
-   * Returns a list of PepperModules according to the requested module type.
-   * @return
-   */
-  public abstract List<PepperModuleDesc> getPepperModules();
-  
-  /**
-   * Returns description objects for all {@link PepperModule}s provided by the current {@link Pepper} instance. The list either contains all importers (sorted by name), manipulators (sorted by name) or all exporters (sorted by name).
-   * @param moduleType type of modules 
-   * @return a sorted list containing all modules belonging to the passed type 
-   */
-  protected List<PepperModuleDesc> getPepperModules(MODULE_TYPE moduleType){
-	  if (moduleType== null){
-		  throw new NullPointerException("The passed module type for getting all available Pepper modules is null. This might ba a bug. ");
-	  }
-	  List<PepperModuleDesc> retVal= null;
-	  Collection<PepperModuleDesc> descs= getPepper().getRegisteredModules();
-	  if ((descs!= null)&&(descs.size()!= 0)){
-		  retVal= new ArrayList<PepperModuleDesc>();
-		  for (PepperModuleDesc desc: descs){
-			  if (moduleType.equals(desc.getModuleType())){
-				  retVal.add(desc);
-			  }
-		  }
-		  Collections.sort(retVal, new Comparator<PepperModuleDesc>(){
-			@Override
-			public int compare(PepperModuleDesc desc1, PepperModuleDesc desc2) {
-				 return desc1.getName().compareTo(desc2.getName());
-			}  
-		  });
-	  }else{
-          new MessageDialog
-          ( this.getShell()
-          , "Error"
-          , null
-          , "Did not find any Pepper module!"
-          , MessageDialog.ERROR
-          , new String[]{ IDialogConstants.OK_LABEL }
-          , 0).open();
-      }
-	  return(retVal);
-  }
-  
-//  protected abstract List<P> resolvePepperModules(ModuleResolver pepperModuleResolver);
-
-  
-//  public List<P> getPepperModules()
-//  {
-//    if (pepperModuleList == null)
-//    {
-//      List<P> modules = null;
-//      if (pepper != null)
-//      {
-//        ModuleResolver pepperModuleResolver = ((PepperImpl)pepper).getModuleResolver();
-//        if (pepperModuleResolver != null)
-//        {
-//          modules = resolvePepperModules(pepperModuleResolver);
-//          if (modules != null)
-//          {
-//            Collections.sort
-//              ( modules
-//              , new Comparator<P>() 
-//                {
-//                  @Override
-//                  public int compare(P o1, P o2) 
-//                  {
-//                    return o1.getName().compareTo(o2.getName());
-//                  }
-//                });
-//          }
-//          else
-//          {
-//            new MessageDialog
-//              ( this.getShell()
-//              , "Error"
-//              , null
-//              , "Did not find any Pepper module!"
-//              , MessageDialog.ERROR
-//              , new String[]{ IDialogConstants.OK_LABEL }
-//              , 0).open();
-//          }
-//        }
-//        else
-//        {
-//          new MessageDialog
-//            ( this.getShell()
-//            , "Error"
-//            , null
-//            , "Did not found Pepper module resolver!"
-//            , MessageDialog.ERROR
-//            , new String[]{ IDialogConstants.OK_LABEL }
-//            , 0).open();
-//        }
-//      }
-//
-//      pepperModuleList = modules != null ? modules : Collections.<P>emptyList();
-//    }
-//    
-//    return pepperModuleList;
-//  }
-
-  
-
-  public P getPepperModule()
-  {
-    return pepperModule;
-  }
-
-  /**
-   * Gets the previously selected 
-   * @return
-   */
-  public P getPreferredPepperModule()
-  {
-	List<P> moduleList = getPepperModules();
-    String moduleName = getDialogSettings().get(DIALOG_SETTINGS_MODULE);
-    if (0 < moduleList.size() && moduleName != null)
-    {
-      for (P module : moduleList)
-      {
-        if (moduleName.equals(module.getName()))
-        {
-          return module;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  public void setPepperModule(P pepperModule)
-  {
-    this.pepperModule = pepperModule;
-  }
-
-  public abstract List<FormatDesc> getSupportedFormats();
-
-  public FormatDesc getFormatDesc()
-  {
-    return formatDesc;
-  }
-
-  public FormatDesc getPreferredFormatDesc()
-  {
-    P module = getPepperModule();
-    String formatName = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_NAME);
-    String formatVersion = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_VERSION);
-    if (module != null && formatName != null && formatVersion != null)
-    {
-      for (FormatDesc fd : getSupportedFormats())
-      {
-        if (formatName.equals(fd.getFormatName()) && formatVersion.equals(fd.getFormatVersion()))
-        {
-          return fd;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  public void setFormatDesc(FormatDesc formatDesc)
-  {
-    this.formatDesc = formatDesc;
-  }
-
-
-  
-  public PepperModuleProperties getPepperModuleProperties()
-  {
-    return pepperModuleProperties;
-  }
-
-  public void addPepperModuleProperty(PepperModuleProperty<?> pepperModuleProperty)
-  {
-    pepperModuleProperties.addProperty(pepperModuleProperty);
-  }
-
-  public boolean containsPepperModuleProperty(String propertyName)
-  {
-    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
-    return property != null;
-  }
-
-  public String getPepperModulePropertyValue(String propertyName)
-  {
-    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
-    Object value = property != null ? property.getValue() : null;
-
-    return value != null ? value.toString() : null;
-  }
-
-  public void setPepperModulePropertyValue(String propertyName, String propertyValueString)
-  {
-    PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
-    if (property != null)
-    {
-      property.setValueString(propertyValueString);
-    }
-  }
-
-  public void removePepperModuleProperty(String propertyName)
-  {
-    // es gibt kein remove in PepperModuleProperties 
-    PepperModuleProperty<?> property;
-    property = pepperModuleProperties.getProperty(propertyName);
-    if (property != null)
-    {
-      PepperModuleProperties properties = new PepperModuleProperties();
-      for (String name : pepperModuleProperties.getPropertyNames())
-      {
-        if ( ! name.equals(propertyName))
-        {
-          properties.addProperty(pepperModuleProperties.getProperty(name));
-        }
-      }
-      pepperModuleProperties = properties;
-    }
-  }
-  
-  protected abstract PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable);
 }

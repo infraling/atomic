@@ -118,7 +118,12 @@ public abstract class PepperModuleRunnable
     }
   }
 
-  protected void runModule() throws IOException, CoreException
+  /**
+   * Creates and starts a Pepper job. The job is created via {@link AbstractPepperWizard#getPepper()}. 
+   * @throws IOException
+   * @throws CoreException
+   */
+  protected void runPepper() throws IOException, CoreException
   {
 	  createImporterParams();
 	  
@@ -174,7 +179,7 @@ public abstract class PepperModuleRunnable
             {
               try
               {
-                runModule();
+                runPepper();
               }
               catch (IOException X)
               {

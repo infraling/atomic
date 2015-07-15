@@ -29,6 +29,8 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.MODULE_TYPE;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperModuleDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
@@ -57,6 +59,7 @@ public class PepperExportWizard
     super("Export via Pepper", WizardMode.EXPORT);
   }
 
+// =============================================> called by Eclipse  
   @Override
   public void init(IWorkbench workbench, IStructuredSelection selection)
   {
@@ -107,15 +110,15 @@ public class PepperExportWizard
       addPage(new PepperWizardPageProperties<PepperExporter>(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper export module properties."));
     }
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected List<PepperExporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
-  {
-    return pepperModuleResolver.getPepperExporters();
-  }
+//=============================================< called by Eclipse
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  protected List<PepperExporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
+//  {
+//    return pepperModuleResolver.getPepperExporters();
+//  }
 
   /**
    * {@inheritDoc}
@@ -143,5 +146,12 @@ public class PepperExportWizard
   protected IProject getProject() throws CoreException
   {
     return selectedProject;
+  }
+  /** 
+   * {@inheritDoc}
+   */
+  @Override
+  public List<PepperModuleDesc> getPepperModules() {
+  	return(super.getPepperModules(MODULE_TYPE.EXPORTER));
   }
 }

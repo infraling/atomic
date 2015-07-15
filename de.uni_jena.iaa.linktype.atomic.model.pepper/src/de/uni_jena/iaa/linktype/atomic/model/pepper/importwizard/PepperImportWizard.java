@@ -27,6 +27,8 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.MODULE_TYPE;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperModuleDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperImporter;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
@@ -69,14 +71,14 @@ public class PepperImportWizard
     addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected List<PepperImporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
-  {
-    return pepperModuleResolver.getPepperImporters();
-  }
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  protected List<PepperImporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
+//  {
+//    return pepperModuleResolver.getPepperImporters();
+//  }
 
   /**
    * {@inheritDoc}
@@ -128,4 +130,12 @@ public class PepperImportWizard
      && projectName != null
      && ! atomicProjectService.isProjectExisting(projectName);
   }
+
+/** 
+ * {@inheritDoc}
+ */
+@Override
+public List<PepperModuleDesc> getPepperModules() {
+	return(super.getPepperModules(MODULE_TYPE.IMPORTER));
+}
 }
