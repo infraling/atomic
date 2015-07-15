@@ -40,6 +40,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 
@@ -67,7 +69,7 @@ public abstract class PepperModuleRunnable
 {
   protected static final AtomicInteger threadCounter = new AtomicInteger();
 
-  protected final AbstractPepperWizard<? extends PepperModule> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected final IProject project;
   protected final boolean cancelable;
@@ -81,8 +83,10 @@ public abstract class PepperModuleRunnable
   protected volatile boolean done = false;
   protected volatile Thread controlThread = null;
   protected volatile Thread moduleThread = null;
+
+private String jobId;
   
-  public PepperModuleRunnable(AbstractPepperWizard<? extends PepperModule> pepperWizard, IProject project, boolean cancelable)
+  public PepperModuleRunnable(AbstractPepperWizard pepperWizard, IProject project, boolean cancelable)
   {
     this.pepperWizard = pepperWizard;
     this.project = project;
@@ -97,26 +101,26 @@ public abstract class PepperModuleRunnable
 //
 //  protected abstract ExporterParams createExporterParams();
 
-  protected void setSpecialParams(ModuleParams moduleParams) throws IOException
-  {
-    Properties properties = pepperWizard.getPepperModuleProperties().getProperties();
-    if (0 < properties.size())
-    {
-      File tempFile = File.createTempFile("pepper", ".properties");
-      tempFile.deleteOnExit();
-      
-      Writer writer = new FileWriter(tempFile);
-      try
-      {
-        properties.store(writer, "Generated pepper properties");
-        moduleParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
-      }
-      finally
-      {
-        writer.close();
-      }
-    }
-  }
+//  protected void setSpecialParams(ModuleParams moduleParams) throws IOException
+//  {
+//    Properties properties = pepperWizard.getPepperModuleProperties().getProperties();
+//    if (0 < properties.size())
+//    {
+//      File tempFile = File.createTempFile("pepper", ".properties");
+//      tempFile.deleteOnExit();
+//      
+//      Writer writer = new FileWriter(tempFile);
+//      try
+//      {
+//        properties.store(writer, "Generated pepper properties");
+//        moduleParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
+//      }
+//      finally
+//      {
+//        writer.close();
+//      }
+//    }
+//  }
 
   /**
    * Creates and starts a Pepper job. The job is created via {@link AbstractPepperWizard#getPepper()}. 
@@ -145,12 +149,14 @@ public abstract class PepperModuleRunnable
 //    pepperConverter.start();
 	  
 	  Pepper pepper = pepperWizard.getPepper();
-	  String jobId= pepper.createJob();
+	  jobId= pepper.createJob();
 	  PepperJob pepperJob= pepper.getJob(jobId);
 	  pepperJob.createStepDesc();
 
     project.refreshLocal(IResource.DEPTH_INFINITE, null);
   }
+  
+  
 
   /**
    * {@inheritDoc}
@@ -273,15 +279,23 @@ public abstract class PepperModuleRunnable
     }
     catch (InterruptedException X)
     {
+    	new MessageDialog
+        ( Display.getCurrent().getActiveShell()
+        , "Error"
+        , null
+        , "Any error occured in Pepper and unfortunately Pepper is not stoppable anymore. So run!!! "
+        , MessageDialog.ERROR
+        , new String[]{ IDialogConstants.OK_LABEL }
+        , 0).open();
       // Abbruchsignal empfangen
-      try
-      {
-        finishModuleThread(500);
-      }
-      catch (Throwable T)
-      {
-        throw new InvocationTargetException(throwable = T);
-      }
+//      try
+//      {
+//        finishModuleThread(500);
+//      }
+//      catch (Throwable T)
+//      {
+//        throw new InvocationTargetException(throwable = T);
+//      }
     }
     catch (Throwable T)
     {
@@ -296,74 +310,75 @@ public abstract class PepperModuleRunnable
     }
   }
 
-  /**
-   * Pepper hangs if it encounters an error: release its monitors manually.
-   */
-  protected void finishModuleThread(long gracePeriodInMillis) throws NoSuchFieldException, SecurityException, IllegalAccessException
-  {
-    Thread thread = moduleThread;
-    if (thread != null && thread.isAlive())
-    {
-      try
-      {
-        thread.join(gracePeriodInMillis);
-      }
-      catch (InterruptedException XX)
-      {
-        // siliently ignore
-      }
-
-      if (thread.isAlive())
-      {
-        Pepper pepperConverter = pepperWizard.getPepper();
-        for (PepperJob pepperJob : pepperConverter.getPepperJobs())
-        {
-          Field field = pepperJob.getClass().getDeclaredField("allModuleControlers");
-          field.setAccessible(true);
-          @SuppressWarnings("unchecked")
-
-          EList<PepperModuleController> pepperModuleControllers = (EList<PepperModuleController>) field.get(pepperJob);
-          for (PepperModuleController pepperModuleController : pepperModuleControllers)
-          {
-            pepperModuleController.getPepperM2JMonitor().finish();
-          }
-        }
-      }
-    }
-  }
+//  /**
+//   * Pepper hangs if it encounters an error: release its monitors manually.
+//   */
+//  protected void finishModuleThread(long gracePeriodInMillis) throws NoSuchFieldException, SecurityException, IllegalAccessException
+//  {
+//    Thread thread = moduleThread;
+//    if (thread != null && thread.isAlive())
+//    {
+//      try
+//      {
+//        thread.join(gracePeriodInMillis);
+//      }
+//      catch (InterruptedException XX)
+//      {
+//        // siliently ignore
+//      }
+//
+//      if (thread.isAlive())
+//      {
+//        Pepper pepper = pepperWizard.getPepper();
+//        PepperJob pepperJob= pepper.getJob(jobId); 
+//        
+//        pepperJob.getStatus()
+//        
+//          Field field = pepperJob.getClass().getDeclaredField("allModuleControlers");
+//          field.setAccessible(true);
+//          @SuppressWarnings("unchecked")
+//
+//          EList<PepperModuleController> pepperModuleControllers = (EList<PepperModuleController>) field.get(pepperJob);
+//          for (PepperModuleController pepperModuleController : pepperModuleControllers)
+//          {
+//            pepperModuleController.getPepperM2JMonitor().finish();
+//        }
+//      }
+//    }
+//  }
   
-  /**
-   * Collects status information. Unfortunately this status is not appropriated
-   * to be displayed within the Eclipse progress monitor dialog.
-   * 
-   * @return status information
-   */
-  protected String getStatusString()
-  {
-    String status = null;
-    Thread thread = moduleThread;
-    if (thread != null && thread.isAlive())
-    {
-      PepperConverter pepperConverter = pepperWizard.getPepper();
-      if (pepperConverter != null)
-      {
-        for (PepperJob pepperJob : pepperConverter.getPepperJobs())
-        {
-          PepperDocumentController documentController = pepperJob.getPepperDocumentController();
-          if (documentController != null)
-          {
-            String status4Print = documentController.getStatus4Print();
-            if (status4Print != null)
-            {
-              status = status != null ? status + "\n" + status4Print : status4Print;
-            }
-          }
-        }
-      }
-    }
-    
-    return status;
-  }
+//  /**
+//   * Collects status information. Unfortunately this status is not appropriated
+//   * to be displayed within the Eclipse progress monitor dialog.
+//   * 
+//   * @return status information
+//   */
+//  protected String getStatusString()
+//  {
+//    String status = null;
+//    Thread thread = moduleThread;
+//    if (thread != null && thread.isAlive())
+//    {
+//      PepperConverter pepperConverter = pepperWizard.getPepper();
+//      if (pepperConverter != null)
+//      {
+//        for (PepperJob pepperJob : pepperConverter.getPepperJobs())
+//        {
+//          PepperDocumentController documentController = pepperJob.getPepperDocumentController();
+//          if (documentController != null)
+//          {
+//            String status4Print = documentController.getStatus4Print();
+//            if (status4Print != null)
+//            {
+//              status = status != null ? status + "\n" + status4Print : status4Print;
+//            }
+//          }
+//        }
+//      }
+//    }
+//    
+//    return status;
+//  }
 
   /**
    * {@inheritDoc}

@@ -44,16 +44,15 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 
 /**
  *
  * @author  Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage implements IWizardPage
+public class PepperWizardPageFormat extends WizardPage implements IWizardPage
 {
-  protected final AbstractPepperWizard<P> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected TableViewer tableViewer;
 
@@ -63,7 +62,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
    * @param title
    * @param titleImage
    */
-  public PepperWizardPageFormat(AbstractPepperWizard<P> pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
+  public PepperWizardPageFormat(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
   {
     super(pageName, title, titleImage);
     setPageComplete(false);
@@ -173,7 +172,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
 
       if (formatDefinition == null)
       {
-        formatDefinition = pepperWizard.getPreferredFormatDesc();
+        formatDefinition = pepperWizard.getPreviouslySelectedFormatDesc();
       }
 
       tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);

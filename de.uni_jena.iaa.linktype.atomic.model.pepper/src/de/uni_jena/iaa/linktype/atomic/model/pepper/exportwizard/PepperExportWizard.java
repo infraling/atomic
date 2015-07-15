@@ -31,10 +31,7 @@ import org.eclipse.ui.IWorkbench;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.MODULE_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperModuleDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.WizardMode;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperModuleRunnable;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageDirectory;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageFormat;
@@ -48,7 +45,7 @@ import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPagePrope
  */
 public class PepperExportWizard
   extends 
-    AbstractPepperWizard<PepperExporter>
+    AbstractPepperWizard
   implements 
     IExportWizard
 {
@@ -104,10 +101,10 @@ public class PepperExportWizard
   {
     if (selectedProject != null)
     {
-      addPage(new PepperWizardPageModule<PepperExporter>(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export module."));
-      addPage(new PepperWizardPageFormat<PepperExporter>(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export format."));
-      addPage(new PepperWizardPageDirectory<PepperExporter>(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export path."));
-      addPage(new PepperWizardPageProperties<PepperExporter>(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper export module properties."));
+      addPage(new PepperWizardPageModule(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export module."));
+      addPage(new PepperWizardPageFormat(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export format."));
+      addPage(new PepperWizardPageDirectory(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export path."));
+      addPage(new PepperWizardPageProperties(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper export module properties."));
     }
   }
 //=============================================< called by Eclipse
@@ -126,7 +123,7 @@ public class PepperExportWizard
   @Override
   public List<FormatDesc> getSupportedFormats()
   {
-    PepperExporter module = getPepperModule();
+	  PepperModuleDesc module = getPepperModule();
     return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
   }
 

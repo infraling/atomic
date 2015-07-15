@@ -43,9 +43,6 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.common.MODULE_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguration;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperModuleDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.core.ModuleResolver;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.core.PepperImpl;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.Activator;
@@ -56,7 +53,6 @@ import de.uni_jena.iaa.linktype.atomic.model.pepper.Activator;
  *
  */
 public abstract class AbstractPepperWizard
-  <P extends PepperModule>
   extends 
     Wizard 
 {
@@ -90,8 +86,7 @@ public abstract class AbstractPepperWizard
     System.setProperty("PepperModuleResolver.TemprorariesURI", System.getProperty("java.io.tmpdir"));
     System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
   }
-  protected List<P> pepperModuleList;
-  protected P pepperModule;
+//  protected List<P> pepperModuleList;
   protected PepperModuleProperties pepperModuleProperties;
   protected FormatDesc formatDesc;
   public static final String SALT_XML_FORMAT_NAME = "SaltXML";
@@ -198,7 +193,7 @@ public abstract class AbstractPepperWizard
       exchangeTargetType = ExchangeTargetType.DIRECTORY;
       formatDesc = null;
       pepperModule = null;
-      pepperModuleList = null;
+//      pepperModuleList = null;
       pepper = null;
 
       Activator.getDefault().getBundle().getBundleContext().ungetService(reference);
@@ -211,8 +206,8 @@ public abstract class AbstractPepperWizard
   protected boolean canPerformFinish()
   {
     return 
-        pepperModule != null 
-     && formatDesc != null 
+        pepperModule != null &&
+     formatDesc != null 
      && exchangeTargetPath != null;
   }
   
@@ -298,7 +293,7 @@ public abstract class AbstractPepperWizard
     settings.put(DIALOG_SETTINGS_EXCHANGE_TARGET_PATH, exchangeTargetPath);
     settings.put(DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE, exchangeTargetType.name());
 
-    P module = getPepperModule();
+    PepperModuleDesc module = getPepperModule();
     settings.put(DIALOG_SETTINGS_MODULE, module != null ? module.getName() : null);
 
     FormatDesc fd = getFormatDesc();
@@ -459,24 +454,18 @@ public abstract class AbstractPepperWizard
 //    return pepperModuleList;
 //  }
 
-  
-
-  public P getPepperModule()
-  {
-    return pepperModule;
-  }
 
   /**
-   * Gets the previously selected 
+   * Gets the previously selected module name.
    * @return
    */
-  public P getPreferredPepperModule()
+  public PepperModuleDesc getPreviouslySelectedPepperModule()
   {
-	List<P> moduleList = getPepperModules();
+	Collection<PepperModuleDesc> moduleList = getPepper().getRegisteredModules();
     String moduleName = getDialogSettings().get(DIALOG_SETTINGS_MODULE);
     if (0 < moduleList.size() && moduleName != null)
     {
-      for (P module : moduleList)
+      for (PepperModuleDesc module : moduleList)
       {
         if (moduleName.equals(module.getName()))
         {
@@ -487,22 +476,13 @@ public abstract class AbstractPepperWizard
 
     return null;
   }
-
-  public void setPepperModule(P pepperModule)
+  /**
+   * Gets the previously selected module format description.
+   * @return
+   */
+  public FormatDesc getPreviouslySelectedFormatDesc()
   {
-    this.pepperModule = pepperModule;
-  }
-
-  public abstract List<FormatDesc> getSupportedFormats();
-
-  public FormatDesc getFormatDesc()
-  {
-    return formatDesc;
-  }
-
-  public FormatDesc getPreferredFormatDesc()
-  {
-    P module = getPepperModule();
+	PepperModuleDesc module = getPepperModule();
     String formatName = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_NAME);
     String formatVersion = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_VERSION);
     if (module != null && formatName != null && formatVersion != null)
@@ -519,6 +499,40 @@ public abstract class AbstractPepperWizard
     return null;
   }
 
+ 
+  protected PepperModuleDesc pepperModule;
+  /**
+   * Returns the fingerprint of the currently selected {@link PepperModule}.
+   * @return
+   */
+  public PepperModuleDesc getPepperModule()
+  {
+    return pepperModule;
+  }
+  /**
+   * Sets the fingerprint of the <em>currently</em> selected {@link PepperModule}.
+   * @param pepperModule
+   */
+  public void setPepperModule(PepperModuleDesc pepperModule)
+  {
+    this.pepperModule = pepperModule;
+  }
+
+  public abstract List<FormatDesc> getSupportedFormats();
+
+  /**
+   * Returns the <em>currently</em> selected {@link FormatDesc}.
+   * @param pepperModule
+   */
+  public FormatDesc getFormatDesc()
+  {
+    return formatDesc;
+  }
+
+  /**
+   * Sets the <em>currently</em> selected {@link FormatDesc}.
+   * @param pepperModule
+   */
   public void setFormatDesc(FormatDesc formatDesc)
   {
     this.formatDesc = formatDesc;
@@ -561,6 +575,7 @@ public abstract class AbstractPepperWizard
 
   public void removePepperModuleProperty(String propertyName)
   {
+	 
     // es gibt kein remove in PepperModuleProperties 
     PepperModuleProperty<?> property;
     property = pepperModuleProperties.getProperty(propertyName);

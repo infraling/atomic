@@ -41,16 +41,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperModuleDesc;
 
 /**
  *
  * @author  Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageModule<P extends PepperModule> extends WizardPage implements IWizardPage
+public class PepperWizardPageModule extends WizardPage implements IWizardPage
 {
-  protected final AbstractPepperWizard<P> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected TableViewer tableViewer;
 
@@ -61,7 +61,7 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
    * @param titleImage
    */
   public PepperWizardPageModule
-    ( AbstractPepperWizard<P> pepperWizard
+    ( AbstractPepperWizard pepperWizard
     , String pageName
     , String title
     , ImageDescriptor titleImage
@@ -99,11 +99,10 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
     tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
     tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
     {
-      @SuppressWarnings("unchecked")
       @Override
       public String getText(Object element)
       {
-        return super.getText(((P) element).getName());
+        return super.getText(((PepperModuleDesc) element).getName());
       }
     });
 
@@ -115,11 +114,10 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
     tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
     tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
     {
-      @SuppressWarnings("unchecked")
       @Override
       public String getText(Object element)
       {
-        return super.getText(((P) element).getVersion());
+        return super.getText(((PepperModuleDesc) element).getVersion());
       }
     });
 
@@ -139,7 +137,6 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
     
     tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
     {
-      @SuppressWarnings("unchecked")
       @Override
       public void selectionChanged(SelectionChangedEvent event)
       {
@@ -147,7 +144,7 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
         
         boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
         setPageComplete(selected);
-        pepperWizard.setPepperModule(selected ? (P) ((IStructuredSelection) selection).getFirstElement() : null);
+        pepperWizard.setPepperModule(selected ? (PepperModuleDesc) ((IStructuredSelection) selection).getFirstElement() : null);
       }
     });
 
@@ -169,10 +166,10 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
   {
     if (visible)
     {
-      P pepperModule = pepperWizard.getPepperModule();
+    	PepperModuleDesc pepperModule = pepperWizard.getPepperModule();
       if (pepperModule == null)
       {
-        pepperModule = pepperWizard.getPreferredPepperModule();
+        pepperModule = pepperWizard.getPreviouslySelectedPepperModule();
       }
 
       tableViewer.setInput(pepperWizard.getPepperModules());

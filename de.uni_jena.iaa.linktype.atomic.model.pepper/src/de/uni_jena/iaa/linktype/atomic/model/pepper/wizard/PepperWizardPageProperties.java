@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
 
@@ -59,9 +58,9 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModulePrope
  * @author  Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageProperties<P extends PepperModule> extends WizardPage implements IWizardPage
+public class PepperWizardPageProperties extends WizardPage implements IWizardPage
 {
-  protected final AbstractPepperWizard<P> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected TableViewer tableViewer;
 
@@ -71,7 +70,7 @@ public class PepperWizardPageProperties<P extends PepperModule> extends WizardPa
    * @param title
    * @param titleImage
    */
-  public PepperWizardPageProperties(AbstractPepperWizard<P> pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
+  public PepperWizardPageProperties(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
   {
     super(pageName, title, titleImage);
     setPageComplete(false);

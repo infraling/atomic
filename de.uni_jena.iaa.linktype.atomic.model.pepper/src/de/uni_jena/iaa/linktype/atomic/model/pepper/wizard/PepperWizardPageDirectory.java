@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModule;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.ExchangeTargetType;
 import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.WizardMode;
 
@@ -46,9 +45,9 @@ import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard.
  * @author Michael Gr�bsch
  * @version $Revision: 1.2 $, $Date: 2012/03/29 22:59:03 $
  */
-public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPage implements IWizardPage
+public class PepperWizardPageDirectory extends WizardPage implements IWizardPage
 {
-  protected final AbstractPepperWizard<P> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected Text text;
   protected Button btnFile;
@@ -58,7 +57,7 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
    * Create the wizard.
    */
   public PepperWizardPageDirectory
-    ( AbstractPepperWizard<P> pepperWizard
+    ( AbstractPepperWizard pepperWizard
     , String pageName
     , String title
     , ImageDescriptor titleImage
