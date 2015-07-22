@@ -20,5 +20,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions;bundle-version="3.4.300",
  de.uni_jena.iaa.linktype.atomic.core;bundle-version="0.1.9",
  de.uni_jena.iaa.linktype.atomic.views.layerview
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

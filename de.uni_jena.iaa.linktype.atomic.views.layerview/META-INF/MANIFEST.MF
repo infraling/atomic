@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  de.uni_jena.iaa.linktype.atomic.core;bundle-version="0.1.9",
  org.eclipse.emf.ecore
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: de.uni_jena.iaa.linktype.atomic.views.layerview,
  de.uni_jena.iaa.linktype.atomic.views.layerview.util

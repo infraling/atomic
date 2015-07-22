@@ -31,7 +31,7 @@ Require-Bundle: org.eclipse.ui,
  com.google.guava;bundle-version="14.0.1",
  de.uni_jena.iaa.linktype.atomic.core
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: de.uni_jena.iaa.linktype.atomic.core.corpus,
  de.uni_jena.iaa.linktype.atomic.core.editors,
  de.uni_jena.iaa.linktype.atomic.core.model,

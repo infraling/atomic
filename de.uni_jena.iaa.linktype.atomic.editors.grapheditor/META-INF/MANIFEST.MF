@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.ui,
  de.uni_jena.iaa.linktype.atomic.core,
  de.uni_jena.iaa.linktype.atomic.views.layerview,
  org.eclipse.draw2d
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: de.uni_jena.iaa.linktype.atomic.editors.grapheditor,
  de.uni_jena.iaa.linktype.atomic.editors.grapheditor.commands,
