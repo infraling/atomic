@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="de.uni_jena.iaa.linktype.atomic.target_platform" sequenceNumber="34">
+<?pde version="3.8"?><target name="de.uni_jena.iaa.linktype.atomic.target_platform" sequenceNumber="35">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.7.2.v20110927-2020-7G7W77A5WNgIRPdWXDIbNTSQPdQL"/>
@@ -25,10 +25,12 @@
 <repository location="file:/home/stephan/Dokumente/p2/pepperclipse/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="slf4j.api" version="1.7.7"/>
-<unit id="org.apache.opennlp.tools" version="1.6.0"/>
 <unit id="org.apache.logging.log4j.api" version="2.3.0"/>
 <unit id="org.apache.logging.log4j.core" version="2.3.0"/>
+<unit id="osgi.core" version="4.3.1.201210102023"/>
+<unit id="slf4j.api" version="1.7.7"/>
+<unit id="org.apache.opennlp.tools" version="1.6.0"/>
+<unit id="osgi.cmpn" version="4.3.1.201210102024"/>
 <unit id="log4j" version="1.2.17"/>
 <repository location="file:/home/stephan/git/deps-p2/target/repository/"/>
 </location>
