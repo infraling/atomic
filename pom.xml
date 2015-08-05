@@ -146,4 +146,7 @@
 		</profile>
 	</profiles>
   
+	<modules>
+		<module>plugins/atomic</module>
+	</modules>
 </project>
