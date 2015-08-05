@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmi:id="_tk5_oDttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.ide.application" bindingContexts="_tk5_qTttEeWM-OnCOdC5TQ">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_tk5_oTttEeWM-OnCOdC5TQ" label="de.uni_jena.iaa.linktype.atomic" width="500" height="400"/>
+  <rootContext xmi:id="_tk5_qTttEeWM-OnCOdC5TQ" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
+    <children xmi:id="_tk5_qjttEeWM-OnCOdC5TQ" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
+    <children xmi:id="_tk5_qzttEeWM-OnCOdC5TQ" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
+  </rootContext>
+  <addons xmi:id="_tk5_ojttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
+  <addons xmi:id="_tk5_ozttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
+  <addons xmi:id="_tk5_pDttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
+  <addons xmi:id="_tk5_pTttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
+  <addons xmi:id="_tk5_pjttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.ui.workbench.handler.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.HandlerProcessingAddon"/>
+  <addons xmi:id="_tk5_pzttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
+  <addons xmi:id="_tk5_qDttEeWM-OnCOdC5TQ" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
+</application:Application>
