@@ -1,7 +1,5 @@
 package de.uni_jena.iaa.linktype.atomic;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -12,8 +10,6 @@ public class Activator implements BundleActivator {
 	static BundleContext getContext() {
 		return context;
 	}
-	
-	private static final Logger log = LogManager.getLogger(Activator.class);
 
 	/*
 	 * (non-Javadoc)
@@ -21,7 +17,6 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		log.info("Started Atomic");
 	}
 
 	/*
