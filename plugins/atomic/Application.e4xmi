@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmi:id="_ayy4kDt6EeWUrtNfiJhRcA" elementId="org.eclipse.e4.ide.application" bindingContexts="_ayzfqDt6EeWUrtNfiJhRcA">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_ayzfoDt6EeWUrtNfiJhRcA" label="de.uni_jena.iaa.linktype.atomic" width="500" height="400"/>
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_ayzfoDt6EeWUrtNfiJhRcA" label="Atomic" width="500" height="400"/>
   <rootContext xmi:id="_ayzfqDt6EeWUrtNfiJhRcA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_ayzfqTt6EeWUrtNfiJhRcA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_ayzfqjt6EeWUrtNfiJhRcA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
