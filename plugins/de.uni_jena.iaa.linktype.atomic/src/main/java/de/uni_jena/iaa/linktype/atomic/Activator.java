@@ -1,4 +1,4 @@
-package atomic;
+package de.uni_jena.iaa.linktype.atomic;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

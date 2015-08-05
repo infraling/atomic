@@ -147,6 +147,6 @@
 	</profiles>
   
 	<modules>
-		<module>plugins/atomic</module>
+		<module>plugins/de.uni_jena.iaa.linktype.atomic</module>
 	</modules>
 </project>
