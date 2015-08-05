@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atomic
-Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic.core;singleton:=true
+Bundle-SymbolicName: de.uni_jena.iaa.linktype.atomic;singleton:=true
 Bundle-Version: 0.3.0.qualifier
 Bundle-Activator: atomic.Activator
 Bundle-Vendor: Friedrich Schiller University Jena

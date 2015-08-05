@@ -1,4 +1,4 @@
-package de.uni_jena.iaa.linktype.atomic;
+package atomic;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -17,7 +17,6 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		System.out.println("Starting Atomic");
 	}
 
 	/*
@@ -25,7 +24,6 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		System.err.println("Stopping Atomic");
 		Activator.context = null;
 	}
 

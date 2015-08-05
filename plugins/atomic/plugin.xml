@@ -5,15 +5,11 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            name="de.uni_jena.iaa.linktype.atomic.core"
+            name="de.uni_jena.iaa.linktype.atomic"
             application="org.eclipse.e4.ui.workbench.swt.E4Application">
          <property
                name="applicationCSS"
-               value="platform:/plugin/de.uni_jena.iaa.linktype.atomic.core/css/default.css">
-         </property>
-         <property
-               name="appName"
-               value="de.uni_jena.iaa.linktype.atomic.core">
+               value="platform:/plugin/de.uni_jena.iaa.linktype.atomic/css/default.css">
          </property>
       </product>
    </extension>
