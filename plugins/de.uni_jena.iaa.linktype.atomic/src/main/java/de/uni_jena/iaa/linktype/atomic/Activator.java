@@ -21,7 +21,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		log.info("Starting Atomic.");
+		log.trace("Starting bundle " + context.getBundle().getSymbolicName());
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		log.info("Stopping Atomic.");
+		log.trace("Stopping bundle " + context.getBundle().getSymbolicName());
 		Activator.context = null;
 	}
 
