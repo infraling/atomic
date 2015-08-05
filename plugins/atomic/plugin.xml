@@ -11,6 +11,10 @@
                name="applicationCSS"
                value="platform:/plugin/de.uni_jena.iaa.linktype.atomic/css/default.css">
          </property>
+         <property
+               name="appName"
+               value="de.uni_jena.iaa.linktype.atomic">
+         </property>
       </product>
    </extension>
 

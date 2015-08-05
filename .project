@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>atomic-target-platform</name>
+	<name>atomic-parent</name>
 	<comment></comment>
 	<projects>
+		<project>atomic</project>
+		<project>atomic-target-platform</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>
