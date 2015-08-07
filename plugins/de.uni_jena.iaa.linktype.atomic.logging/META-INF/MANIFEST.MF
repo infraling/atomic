@@ -52,5 +52,6 @@ Export-Package: org.apache.logging.log4j,
  org.apache.logging.log4j.status,
  org.apache.logging.log4j.util
 Require-Bundle: org.eclipse.core.runtime,
- javax.xml
+ javax.xml,
+ com.lmax.disruptor.osgi;bundle-version="3.3.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
