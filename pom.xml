@@ -146,4 +146,7 @@
 		</profile>
 	</profiles>
   
+	<modules>
+		<module>plugins/de.uni_jena.iaa.linktype.atomic.logging</module>
+	</modules>
 </project>
