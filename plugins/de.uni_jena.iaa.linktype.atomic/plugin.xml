@@ -11,17 +11,5 @@
          </run>
       </application>
    </extension>
-   <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="de.uni_jena.iaa.linktype.atomic.application"
-            name="Atomic (mixed mode)">
-         <property
-               name="windowImages"
-               value="icons/alt_window_16.gif,icons/alt_window_32.gif">
-         </property>
-      </product>
-   </extension>
 
 </plugin>

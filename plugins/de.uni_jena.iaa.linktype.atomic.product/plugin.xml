@@ -6,7 +6,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             name="de.uni_jena.iaa.linktype.atomic.product"
-            application="org.eclipse.e4.ui.workbench.swt.E4Application">
+            application="de.uni_jena.iaa.linktype.atomic.product">
          <property
                name="applicationCSS"
                value="platform:/plugin/de.uni_jena.iaa.linktype.atomic.product/css/default.css">
