@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="application"
+         id="de.uni_jena.iaa.linktype.atomic.application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
