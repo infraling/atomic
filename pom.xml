@@ -148,5 +148,7 @@
   
 	<modules>
 		<module>plugins/de.uni_jena.iaa.linktype.atomic.logging</module>
+		<module>plugins/de.uni_jena.iaa.linktype.atomic</module>
+		<module>plugins/de.uni_jena.iaa.linktype.atomic.product</module>
 	</modules>
 </project>

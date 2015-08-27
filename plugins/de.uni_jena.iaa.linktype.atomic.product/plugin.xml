@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+
+   <extension
+         id="atomic_product_id"
+         point="org.eclipse.core.runtime.products">
+      <product
+            name="de.uni_jena.iaa.linktype.atomic.product"
+            application="de.uni_jena.iaa.linktype.atomic.application">
+         <property
+               name="applicationCSS"
+               value="platform:/plugin/de.uni_jena.iaa.linktype.atomic.product/css/default.css">
+         </property>
+         <property
+               name="applicationXMI"
+               value="de.uni_jena.iaa.linktype.atomic/AtomicMixedMode.e4xmi">
+         </property>
+         <property
+               name="appName"
+               value="de.uni_jena.iaa.linktype.atomic.product">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
