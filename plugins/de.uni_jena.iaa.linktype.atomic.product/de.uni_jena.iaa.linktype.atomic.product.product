@@ -17,7 +17,9 @@
 
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.lmax.disruptor.osgi"/>
       <plugin id="de.uni_jena.iaa.linktype.atomic"/>
+      <plugin id="de.uni_jena.iaa.linktype.atomic.logging"/>
       <plugin id="de.uni_jena.iaa.linktype.atomic.product"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.inject"/>
