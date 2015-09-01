@@ -5,7 +5,7 @@
          id="atomic_product_id"
          point="org.eclipse.core.runtime.products">
       <product
-            name="de.uni_jena.iaa.linktype.atomic.product"
+            name="Atomic"
             application="de.uni_jena.iaa.linktype.atomic.application">
          <property
                name="applicationCSS"
@@ -17,7 +17,7 @@
          </property>
          <property
                name="appName"
-               value="de.uni_jena.iaa.linktype.atomic.product">
+               value="Atomic">
          </property>
       </product>
    </extension>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmi:id="_A5bUMExMEeW5O8JkhwQWyw" elementId="de.uni_jena.iaa.linktype.atomic.application">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_ElsxoExMEeW5O8JkhwQWyw" elementId="de.uni_jena.iaa.linktype.atomic.trimmedwindow.0">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_ElsxoExMEeW5O8JkhwQWyw" elementId="de.uni_jena.iaa.linktype.atomic.trimmedwindow.main">
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_KX5c8ExQEeW5O8JkhwQWyw" elementId="de.uni_jena.iaa.linktype.atomic.perspectivestack.0">
       <children xsi:type="advanced:Perspective" xmi:id="_MPLHoExQEeW5O8JkhwQWyw" elementId="de.uni_jena.iaa.linktype.atomic.perspective.0">
         <children xsi:type="basic:PartSashContainer" xmi:id="_NLEIIExQEeW5O8JkhwQWyw" elementId="de.uni_jena.iaa.linktype.atomic.partsashcontainer.0">
