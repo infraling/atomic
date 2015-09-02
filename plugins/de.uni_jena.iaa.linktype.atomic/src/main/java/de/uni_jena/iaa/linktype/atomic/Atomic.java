@@ -13,8 +13,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Atomic implements IApplication {
 	
-	// Define a static logger variable so that it references the
-	// Logger instance named "Atomic".
+	/** 
+	 * Defines a static logger variable so that it references the {@link Logger} instance named "Atomic".
+	 */
 	private static final Logger log = LogManager.getLogger(Atomic.class);
 	
 	/* (non-Javadoc)
