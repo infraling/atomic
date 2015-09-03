@@ -12,19 +12,11 @@
       </application>
    </extension>
    <extension
-         id="de.uni_jena.iaa.linktype.atomic.product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="de.uni_jena.iaa.linktype.atomic.application"
-            description="An extensible OS-independent multi-level annotation platform for linguistic corpora"
-            name="Atomic">
-      </product>
-   </extension>
-   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
             application="de.uni_jena.iaa.linktype.atomic.application"
+            description="An extensible OS-independent multi-level annotation platform for linguistic corpora"
             name="Atomic">
          <property
                name="appName"
