@@ -62,5 +62,37 @@
             sequence="M1+Q">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            id="de.uni_jena.iaa.linktype.atomic.views.navigation"
+            name="Navigation"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.uni_jena.iaa.linktype.atomic.perspectives.NavigationPerspective"
+            id="de.uni_jena.iaa.linktype.atomic.perspectives.navigation"
+            name="Navigation Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.uni_jena.iaa.linktype.atomic.perspectives.navigation">
+         <view
+               id="de.uni_jena.iaa.linktype.atomic.views.navigation"
+               minimized="false"
+               ratio="0.8f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
