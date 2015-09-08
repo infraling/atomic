@@ -85,11 +85,15 @@
       <perspectiveExtension
             targetID="de.uni_jena.iaa.linktype.atomic.perspectives.navigation">
          <view
+               closeable="true"
                id="de.uni_jena.iaa.linktype.atomic.views.navigation"
                minimized="false"
-               ratio="0.8f"
+               moveable="true"
+               ratio="0.2f"
                relationship="left"
                relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="true"
                visible="true">
          </view>
       </perspectiveExtension>

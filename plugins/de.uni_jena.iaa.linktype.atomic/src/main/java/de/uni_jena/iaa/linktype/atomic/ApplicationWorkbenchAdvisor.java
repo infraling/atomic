@@ -21,7 +21,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "de.uni_jena.iaa.linktype.atomic.perspective"; //$NON-NLS-1$
+	private static final String PERSPECTIVE_ID = "de.uni_jena.iaa.linktype.atomic.perspectives.navigation"; //$NON-NLS-1$
 
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
         return new ApplicationWorkbenchWindowAdvisor(configurer);

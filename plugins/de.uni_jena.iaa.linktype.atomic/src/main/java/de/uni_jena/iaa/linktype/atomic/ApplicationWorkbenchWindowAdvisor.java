@@ -15,28 +15,54 @@
  *******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * Provides setup machanisms for the Atomic workbench. @see {@link WorkbenchWindowAdvisor}. 
+ *
+ * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
+ *
+ */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-    public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-        super(configurer);
-    }
+	/**
+	 * @param configurer The configurer object for the workbench window
+	 */
+	public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+		super(configurer);
+	}
 
-    public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
-        return new ApplicationActionBarAdvisor(configurer);
-    }
-    
-    public void preWindowOpen() {
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setInitialSize(new Point(400, 300));
-        configurer.setShowCoolBar(false);
-        configurer.setShowStatusLine(false);
-        configurer.setTitle("Atomic " + FrameworkUtil.getBundle(this.getClass()).getVersion());
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createActionBarAdvisor(org.eclipse.ui.application.IActionBarConfigurer)
+	 */
+	public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
+		return new ApplicationActionBarAdvisor(configurer);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowOpen()
+	 */
+	public void preWindowOpen() {
+		// Configure the main window
+		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+		configurer.setInitialSize(new Point(400, 300));
+		configurer.setShowCoolBar(false);
+		configurer.setShowStatusLine(false);
+		configurer.setTitle("Atomic " + FrameworkUtil.getBundle(this.getClass()).getVersion());
+		configurer.setShowPerspectiveBar(true);
+
+		// Get a reference to the preferences store
+		IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+
+		// Make sure the needed perspective buttons are shown for quick access.
+		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, "de.uni_jena.iaa.linktype.atomic.perspectives.navigation");
+	}
 }
