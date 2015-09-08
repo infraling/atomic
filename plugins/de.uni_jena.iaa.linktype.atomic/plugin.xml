@@ -24,5 +24,43 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="de.uni_jena.iaa.linktype.atomic.menus.file"
+               label="File"
+               mnemonic="F"
+               tooltip="The File menu provides access to basic application funtionalities">
+            <command
+                  commandId="de.uni_jena.iaa.linktype.atomic.commands.exit"
+                  label="Exit"
+                  mnemonic="x"
+                  style="push"
+                  tooltip="Closes the workbench and quits Atomic">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="de.uni_jena.iaa.linktype.atomic.handlers.ExitHandler"
+            description="Exits Atomic"
+            id="de.uni_jena.iaa.linktype.atomic.commands.exit"
+            name="Exit Command">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="de.uni_jena.iaa.linktype.atomic.commands.exit"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+Q">
+      </key>
+   </extension>
 
 </plugin>
