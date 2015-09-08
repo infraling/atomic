@@ -57,7 +57,7 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="de.uni_jena.iaa.linktype.atomic.commands.exit"
-            contextId="org.eclipse.ui.contexts.window"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+Q">
       </key>
