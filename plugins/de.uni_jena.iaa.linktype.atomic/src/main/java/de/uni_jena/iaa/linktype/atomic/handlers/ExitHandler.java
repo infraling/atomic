@@ -35,7 +35,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class ExitHandler extends AbstractHandler {
 	
 	/** 
-	 * Defines a static logger variable so that it references the @see{Logger} instance named "ExitHandler".
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "ExitHandler".
 	 */
 	private static final Logger log = LogManager.getLogger(ExitHandler.class);
 	
