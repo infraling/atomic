@@ -47,7 +47,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		log.trace("Start %s", PLUGIN_ID);
+		log.trace("Start {}", PLUGIN_ID);
 		super.start(context);
 		plugin = this;
 	}
@@ -59,7 +59,7 @@ public class Activator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
-		log.trace("Stop %s", PLUGIN_ID);
+		log.trace("Stop {}", PLUGIN_ID);
 	}
 
 	/**

@@ -18,43 +18,121 @@
  *******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+
+import de.uni_jena.iaa.linktype.atomic.dialogs.SelectWorkspaceDialog;
 
 /**
  * This class controls all aspects of the application's execution
  */
 public class Atomic implements IApplication {
-	
-	/** 
-	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "Atomic".
+
+	/**
+	 * Defines a static logger variable so that it references the
+	 * {@link org.apache.logging.log4j.Logger} instance named "Atomic".
 	 */
 	private static final Logger log = LogManager.getLogger(Atomic.class);
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
+	private Location instanceLocation;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
+	 * IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 		log.trace("Start Atomic");
 		Display display = PlatformUI.createDisplay();
-		try {
-			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
-			if (returnCode == PlatformUI.RETURN_RESTART)
-				return IApplication.EXIT_RESTART;
-			else
-				return IApplication.EXIT_OK;
-		} finally {
-			display.dispose();
+		instanceLocation = Platform.getInstanceLocation();
+		boolean exit = checkWorkspaceSetup(display);
+		if (exit) {
+			return IApplication.EXIT_OK;
 		}
-		
+		else {
+			try {
+				int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
+				if (returnCode == PlatformUI.RETURN_RESTART)
+					return IApplication.EXIT_RESTART;
+				else
+					return IApplication.EXIT_OK;
+			}
+			finally {
+				display.dispose();
+			}
+		}
+
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Checks the workspace setup. If the workspace has been remembered, the
+	 * current instance of Atomic will use this workspace. If the workspace
+	 * hasn't been remembered, a dialog will be opened for the user to pick a
+	 * workspace.
+	 * 
+	 * @see {@link de.uni_jena.iaa.linktype.atomic.dialogs.SelectWorkspaceDialog}
+	 * 
+	 * @param display
+	 * @return boolean Whether the application should be exited
+	 */
+	private boolean checkWorkspaceSetup(Display display) {
+		boolean isWorkspaceRemembered = SelectWorkspaceDialog.isRememberWorkspace();
+		String lastUsedWorkspace = SelectWorkspaceDialog.getLastWorkspace();
+		if (isWorkspaceRemembered && (lastUsedWorkspace == null || lastUsedWorkspace.length() == 0)) {
+			isWorkspaceRemembered = false;
+		}
+		if (isWorkspaceRemembered) {
+			String ret = SelectWorkspaceDialog.checkWorkspaceDirectory(Display.getDefault().getActiveShell(), lastUsedWorkspace, false, false);
+			if (ret != null) {
+				isWorkspaceRemembered = false;
+			}
+		}
+		if (!isWorkspaceRemembered) {
+			SelectWorkspaceDialog workspaceDialog = new SelectWorkspaceDialog(false);
+			int retVal = workspaceDialog.open();
+			if (retVal == Window.CANCEL) {
+				if (workspaceDialog.getSelectedWorkspaceLocationAsString() == null) {
+					MessageDialog.openError(display.getActiveShell(), "Error", "Atomic can not start without a workspace and will now exit.");
+					return true;
+				}
+			}
+			else {
+				try {
+					instanceLocation.set(new URL("file", null, workspaceDialog.getSelectedWorkspaceLocationAsString()), false);
+				}
+				catch (IllegalStateException | IOException e) {
+					log.error("Setting the instance location didn't succeed!", e);
+					e.printStackTrace();
+				}
+			}
+		}
+		else {
+			// set the last used location and continue
+			try {
+				instanceLocation.set(new URL("file", null, lastUsedWorkspace), false);
+			}
+			catch (IllegalStateException | IOException e) {
+				log.error("Setting the instance location to the workspace last in use failed!", e);
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
 	public void stop() {
