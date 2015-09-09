@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * A dialog which lets the user pick his/her workspace. 
- * FIXME: Refactor into OOP instead of static. 
  * FIXME: Factor out logic, keep only GUI
  * 
  * <p>
@@ -212,7 +211,7 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 
 	
 	/* 
-	 * @copydoc @see org.eclipse.jface.dialogs.Dialog#okPressed()
+	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
 	protected void okPressed() {
