@@ -126,5 +126,16 @@
          </view>
       </perspectiveExtension>
    </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="de.uni_jena.iaa.linktype.atomic.ui.AtomicSplashHandler"
+            id="de.uni_jena.iaa.linktype.atomic.splashHandler">
+      </splashHandler>
+      <splashHandlerProductBinding
+            productId="de.uni_jena.iaa.linktype.atomic.product"
+            splashId="de.uni_jena.iaa.linktype.atomic.splashHandler">
+      </splashHandlerProductBinding>
+   </extension>
 
 </plugin>

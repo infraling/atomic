@@ -3,6 +3,7 @@
 
 <product name="Atomic" uid="de.uni_jena.iaa.linktype.atomic.product" id="de.uni_jena.iaa.linktype.atomic.product" application="de.uni_jena.iaa.linktype.atomic.application" version="0.3.0.qualifier" useFeatures="false" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -13,12 +14,17 @@
       </vmArgsMac>
    </launcherArgs>
 
+   <windowImages/>
+
+   <splash
+      location="de.uni_jena.iaa.linktype.atomic" />
    <launcher>
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -120,5 +126,12 @@
       <plugin id="org.w3c.dom.svg"/>
    </plugins>
 
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>
