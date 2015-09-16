@@ -41,6 +41,11 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "de.uni_jena.iaa.linktype.atomic.perspectives.navigation"; //$NON-NLS-1$
 
+	/**
+	 * Initializes the workbench advisor which configures the workbench
+	 *  
+	 * @copydoc @see org.eclipse.ui.application.WorkbenchAdvisor#initialize(org.eclipse.ui.application.IWorkbenchConfigurer)
+	 */
 	@Override
 	public void initialize(IWorkbenchConfigurer configurer) {
 		super.initialize(configurer);
@@ -58,7 +63,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	}
 
 	/**
-	 * Declares workbench images. FIXME: Factor out, this references the IDE plugin (cf. {@link #initialize(IWorkbenchConfigurer)}.
+	 * Declares workbench images. FIXME: Factor out, this references the IDE plugin (cf. {@link #initialize(IWorkbenchConfigurer)}).
 	 *
 	 * @param configurer
 	 * @param ideBundle
