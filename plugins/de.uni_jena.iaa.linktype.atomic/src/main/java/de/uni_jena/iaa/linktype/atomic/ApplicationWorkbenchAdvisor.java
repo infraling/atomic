@@ -15,17 +15,79 @@
  *******************************************************************************/
 package de.uni_jena.iaa.linktype.atomic;
 
+import java.net.URL;
+
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
+import org.osgi.framework.Bundle;
 
+/**
+ * Base class for configuring the workbench.
+ * 
+ * @see {@link org.eclipse.ui.application.WorkbenchAdvisor}
+ *      <p>
+ *      @author Stephan Druskat <stephan.druskat@uni-jena.de>
+ */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "de.uni_jena.iaa.linktype.atomic.perspectives.navigation"; //$NON-NLS-1$
 
-    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-        return new ApplicationWorkbenchWindowAdvisor(configurer);
-    }
+	@Override
+	public void initialize(IWorkbenchConfigurer configurer) {
+		super.initialize(configurer);
+
+		// FIXME: Factor this out, as it references the evil IDE plugin
+		// which introduces unwanted side-effects (menus, wizards, etc.).
+		IDE.registerAdapters();
+		final String ICONS_PATH = "icons/full/";
+		final String PATH_OBJECT = ICONS_PATH + "obj16/";
+		// FIXME: Replace with path to own icons!
+		Bundle ideBundle = Platform.getBundle(IDEWorkbenchPlugin.IDE_WORKBENCH);
+		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT, PATH_OBJECT + "prj_obj.gif", true);
+		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED, PATH_OBJECT + "cprj_obj.gif", true);
+
+	}
+
+	/**
+	 * Declares workbench images. FIXME: Factor out, this references the IDE plugin (cf. {@link #initialize(IWorkbenchConfigurer)}.
+	 *
+	 * @param configurer
+	 * @param ideBundle
+	 * @param symbolicName
+	 * @param path
+	 * @param shared
+	 */
+	private void declareWorkbenchImage(IWorkbenchConfigurer configurer, Bundle ideBundle, String symbolicName, String path, boolean shared) {
+		URL url = ideBundle.getEntry(path);
+		ImageDescriptor desc = ImageDescriptor.createFromURL(url);
+		configurer.declareImage(symbolicName, desc, shared);
+	}
+
+	/**
+	 * Returns the workspace root to be used as the input for the workbench page.
+	 * 
+	 * @return IAdaptable The input as an {@link IAdaptable}
+	 *  
+	 * @copydoc @see org.eclipse.ui.application.WorkbenchAdvisor#getDefaultPageInput()
+	 */
+	@Override
+	public IAdaptable getDefaultPageInput() {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		return workspace.getRoot();
+	}
+
+	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+		return new ApplicationWorkbenchWindowAdvisor(configurer);
+	}
 
 	public String getInitialWindowPerspectiveId() {
 		return PERSPECTIVE_ID;
