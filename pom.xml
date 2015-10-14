@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.uni_jena.iaa.linktype.atomic</groupId>
+  <groupId>org.corpus_tools.atomic</groupId>
   <artifactId>parent</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -11,6 +11,7 @@
 		<tycho-version>0.21.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
+		<deps-p2-repo.url>http://sdruskat.net/deps-p2/updates</deps-p2-repo.url>
 	</properties>
 
 	<repositories>
@@ -18,6 +19,12 @@
 			<id>mars</id>
 			<layout>p2</layout>
 			<url>${mars-repo.url}</url>
+		</repository>
+
+		<repository>
+			<id>deps-p2</id>
+			<layout>p2</layout>
+			<url>${deps-p2-repo.url}</url>
 		</repository>
 
 		<!-- <repository>
@@ -147,7 +154,7 @@
 	</profiles>
   
 	<modules>
-		<module>plugins/de.uni_jena.iaa.linktype.atomic.logging</module>
-		<module>plugins/de.uni_jena.iaa.linktype.atomic</module>
+		<module>plugins/org.corpus_tools.atomic.logging</module>
+		<module>plugins/org.corpus_tools.atomic</module>
 	</modules>
 </project>
