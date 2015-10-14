@@ -47,7 +47,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.corpus_tools.atomic.handlers.ExitHandler"
+            defaultHandler="org.corpus_tools.atomic.core.handlers.ExitHandler"
             description="Exits Atomic"
             id="org.corpus_tools.atomic.commands.exit"
             name="Exit Command">
@@ -103,7 +103,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.corpus_tools.atomic.perspectives.NavigationPerspective"
+            class="org.corpus_tools.atomic.ui.NavigationPerspective"
             id="org.corpus_tools.atomic.perspectives.navigation"
             name="Navigation Perspective">
       </perspective>

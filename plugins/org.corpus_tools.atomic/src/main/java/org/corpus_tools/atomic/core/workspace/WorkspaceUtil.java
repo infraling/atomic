@@ -16,26 +16,14 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.perspectives;
-
-import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IPerspectiveFactory;
+package org.corpus_tools.atomic.core.workspace;
 
 /**
- * Defines Atomic's Navigation Perspective, especially its layout, through code.
+ * Provides helper methods for workspace creation, switching, selecting, etc.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public class NavigationPerspective implements IPerspectiveFactory {
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
-	 */
-	@Override
-	public void createInitialLayout(IPageLayout layout) {
-		// TODO Auto-generated method stub
-
-	}
+public class WorkspaceUtil {
 
 }

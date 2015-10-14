@@ -63,6 +63,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
 
 		// Make sure the needed perspective buttons are shown for quick access.
-		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, "org.corpus_tools.atomic.perspectives.navigation");
+		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, "org.corpus_tools.atomic.ui.navigation");
 	}
 }

@@ -39,7 +39,7 @@ import org.osgi.framework.Bundle;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "org.corpus_tools.atomic.perspectives.navigation"; //$NON-NLS-1$
+	private static final String PERSPECTIVE_ID = "org.corpus_tools.atomic.ui.navigation"; //$NON-NLS-1$
 
 	/**
 	 * Initializes the workbench advisor which configures the workbench
