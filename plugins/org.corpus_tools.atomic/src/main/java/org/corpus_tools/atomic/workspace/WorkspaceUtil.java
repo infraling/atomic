@@ -16,7 +16,7 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.core.workspace;
+package org.corpus_tools.atomic.workspace;
 
 /**
  * Provides helper methods for workspace creation, switching, selecting, etc.

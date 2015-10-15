@@ -16,7 +16,7 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.ui.workspace;
+package org.corpus_tools.atomic.workspace;
 
 import java.io.File;
 import java.util.ArrayList;

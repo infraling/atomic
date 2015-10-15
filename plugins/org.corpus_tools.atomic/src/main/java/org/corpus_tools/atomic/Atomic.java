@@ -23,7 +23,7 @@ import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.ui.workspace.SelectWorkspaceDialog;
+import org.corpus_tools.atomic.workspace.SelectWorkspaceDialog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -81,7 +81,7 @@ public class Atomic implements IApplication {
 	 * hasn't been remembered, a dialog will be opened for the user to pick a
 	 * workspace.
 	 * 
-	 * @see {@link org.corpus_tools.atomic.ui.workspace.SelectWorkspaceDialog}
+	 * @see {@link org.corpus_tools.atomic.workspace.SelectWorkspaceDialog}
 	 * 
 	 * @param display
 	 * @return boolean Whether the application should be exited

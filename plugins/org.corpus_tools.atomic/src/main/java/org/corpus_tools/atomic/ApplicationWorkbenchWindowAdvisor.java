@@ -32,7 +32,7 @@ import org.osgi.framework.FrameworkUtil;
  *
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
-
+	
 	/**
 	 * @param configurer The configurer object for the workbench window
 	 */
