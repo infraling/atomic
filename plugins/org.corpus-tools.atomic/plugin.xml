@@ -35,6 +35,12 @@
                mnemonic="F"
                tooltip="The File menu provides access to basic application funtionalities">
             <command
+                  commandId="org.corpus_tools.atomic.commands.switchWorkspace"
+                  label="Switch Workspace"
+                  mnemonic="W"
+                  style="push">
+            </command>
+            <command
                   commandId="org.corpus_tools.atomic.commands.exit"
                   label="Exit"
                   mnemonic="x"
@@ -51,6 +57,12 @@
             description="Exits Atomic"
             id="org.corpus_tools.atomic.commands.exit"
             name="Exit Command">
+      </command>
+      <command
+            defaultHandler="org.corpus_tools.atomic.commands.SwitchWorkspaceHandler"
+            description="Allows the user to switch workspaces"
+            id="org.corpus_tools.atomic.commands.switchWorkspace"
+            name="Switch Workspace">
       </command>
    </extension>
    <extension

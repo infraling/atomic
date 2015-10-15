@@ -15,6 +15,11 @@
  *******************************************************************************/
 package org.corpus_tools.atomic;
 
+import java.io.File;
+
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
@@ -54,15 +59,19 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		// Configure the main window
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setInitialSize(new Point(400, 300));
-		configurer.setShowCoolBar(false);
-		configurer.setShowStatusLine(false);
-		configurer.setTitle("Atomic " + FrameworkUtil.getBundle(this.getClass()).getVersion());
-		configurer.setShowPerspectiveBar(true);
+		configurer.setShowCoolBar(true);
+		configurer.setShowStatusLine(true);
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		String workspaceDirectory = workspace.getRoot().getLocation().toFile().getAbsoluteFile().getAbsolutePath();
+		configurer.setTitle("Atomic " + FrameworkUtil.getBundle(this.getClass()).getVersion() + " - " + workspaceDirectory);
 
 		// Get a reference to the preferences store
 		IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
 
 		// Make sure the needed perspective buttons are shown for quick access.
 		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, "org.corpus_tools.atomic.ui.navigation");
+		
+		configurer.setShowPerspectiveBar(true);
+		System.err.println(configurer.getShowPerspectiveBar());
 	}
 }

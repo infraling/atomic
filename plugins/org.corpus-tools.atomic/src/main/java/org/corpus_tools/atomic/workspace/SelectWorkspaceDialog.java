@@ -30,8 +30,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -70,7 +68,7 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 	private static final String WORKSPACE_IDENTIFIER_FILE_NAME = ".atomic-workspace";
 
 	/**
-	 * Pre-IPreferenceStore preferences
+	 * Pre-IPreferenceStore preferences, as no access to IPreferenceStore is available at this point in the application lifecycle
 	 */
 	private static Preferences preferences = Preferences.userNodeForPackage(SelectWorkspaceDialog.class);
 	private static final String PREF_KEY_REMEMBER_WORKSPACE = "Remember workspace?";
