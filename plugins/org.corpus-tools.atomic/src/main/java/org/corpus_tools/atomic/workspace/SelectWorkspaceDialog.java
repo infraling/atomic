@@ -30,8 +30,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -75,7 +77,7 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 	private static final String PREF_KEY_WORKSPACE_ROOT = "Workspace root";
 	private static final String PREF_KEY_LAST_WORKSPACES = "Last workspace in use";
 	private static final String SPLIT_CHAR = "#";
-	private static final String MESSAGE_DEFAULT = "The workspace is a directory where files and settings will be stored.";
+	private static final String MESSAGE_DEFAULT = "Atomic stores your projects and settings in a folder called \"the workspace\".";
 	private static final String MESSAGE_INFO = "Please select a workspace root directory.";
 	private static final String MESSAGE_ERROR = "You must set a directory!";
 	private static final int MAX_WORKSPACES_IN_HISTORY = 20;
@@ -150,66 +152,74 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		Composite composite = (Composite) super.createDialogArea(parent);
+//		composite.setLayout(new RowLayout(SWT.VERTICAL));
 		setTitle("Pick workspace");
 		setMessage(MESSAGE_DEFAULT);
+		
+		createBrowseRow(composite);
+		
+		Composite rememberWSRow = new Composite(composite, SWT.NONE);
+		rememberWSRow.setLayout(new RowLayout(SWT.RIGHT));
+		rememberWorkspaceButton = new Button(rememberWSRow, SWT.CHECK);
+		rememberWorkspaceButton.setText("Remember workspace");
+		rememberWorkspaceButton.setSelection(preferences.getBoolean(PREF_KEY_REMEMBER_WORKSPACE, false));
 
-		try {
-			Composite innerComposite = new Composite(parent, SWT.NONE);
-			innerComposite.setLayout(new GridLayout());
-			innerComposite.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.VERTICAL_ALIGN_END | GridData.GRAB_HORIZONTAL));
-
-			CLabel label = new CLabel(innerComposite, SWT.NONE);
-			label.setText("Workspace Path");
-
-			workspacePathCombo = new Combo(innerComposite, SWT.BORDER);
-			String workspaceRoot = preferences.get(PREF_KEY_WORKSPACE_ROOT, "");
-			if (workspaceRoot == null || workspaceRoot.length() == 0) {
-				workspaceRoot = suggestWorkspaceDirectory();
-			}
-			workspacePathCombo.setText(workspaceRoot == null ? "" : workspaceRoot);
-
-			rememberWorkspaceButton = new Button(innerComposite, SWT.CHECK);
-			rememberWorkspaceButton.setText("Remember workspace");
-			rememberWorkspaceButton.setSelection(preferences.getBoolean(PREF_KEY_REMEMBER_WORKSPACE, false));
-
-			String lastUsedWorkspace = preferences.get(PREF_KEY_LAST_WORKSPACES, "");
-			lastWorkspacesList = new ArrayList<String>();
-			if (lastUsedWorkspace != null) {
-				String[] allWorkspaces = lastUsedWorkspace.split(SPLIT_CHAR);
-				for (String oneOfAllWorkspace : allWorkspaces)
-					lastWorkspacesList.add(oneOfAllWorkspace);
-			}
-			for (String lastOfAllWorkspace : lastWorkspacesList)
-				workspacePathCombo.add(lastOfAllWorkspace);
-
-			Button browseButton = new Button(innerComposite, SWT.PUSH);
-			browseButton.setText("Browse...");
-			browseButton.addListener(SWT.Selection, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					DirectoryDialog directoryDialog = new DirectoryDialog(getParentShell());
-					directoryDialog.setText("Select Workspace Root");
-					directoryDialog.setMessage(MESSAGE_INFO);
-					directoryDialog.setFilterPath(workspacePathCombo.getText());
-					String pick = directoryDialog.open();
-					if (pick == null && workspacePathCombo.getText().length() == 0) {
-						setMessage(MESSAGE_ERROR, IMessageProvider.ERROR);
-					}
-					else {
-						setMessage(MESSAGE_DEFAULT);
-						workspacePathCombo.setText(pick);
-					}
-				}
-			});
-			return innerComposite;
-		}
-		catch (Exception e) {
-			log.error(e.getStackTrace(), e);
-			return null;
-		}
+		return composite;
 	}
 
 	
+	/**
+	 * Creates a composite with the elements needed for appointing a path for the workspace.
+	 * 
+	 * @param Composite composite The parent composite 
+	 */
+	private void createBrowseRow(Composite composite) {
+		Composite row = new Composite(composite, SWT.NONE);
+		GridLayout layout = new GridLayout(3, false);
+		row.setLayout(layout);
+		
+		CLabel label = new CLabel(row, SWT.NONE);
+		label.setText("Workspace path:");
+		
+		workspacePathCombo = new Combo(row, SWT.BORDER);
+		String workspaceRoot = preferences.get(PREF_KEY_WORKSPACE_ROOT, "");
+		if (workspaceRoot == null || workspaceRoot.length() == 0) {
+			workspaceRoot = suggestWorkspaceDirectory();
+		}
+		workspacePathCombo.setText(workspaceRoot == null ? "" : workspaceRoot);
+
+		String lastUsedWorkspace = preferences.get(PREF_KEY_LAST_WORKSPACES, "");
+		lastWorkspacesList = new ArrayList<String>();
+		if (lastUsedWorkspace != null) {
+			String[] allWorkspaces = lastUsedWorkspace.split(SPLIT_CHAR);
+			for (String oneOfAllWorkspace : allWorkspaces)
+				lastWorkspacesList.add(oneOfAllWorkspace);
+		}
+		for (String lastOfAllWorkspace : lastWorkspacesList)
+			workspacePathCombo.add(lastOfAllWorkspace);
+		
+		Button browseButton = new Button(row, SWT.PUSH);
+		browseButton.setText("Browse...");
+		browseButton.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				DirectoryDialog directoryDialog = new DirectoryDialog(getParentShell());
+				directoryDialog.setText("Select Workspace Root");
+				directoryDialog.setMessage(MESSAGE_INFO);
+				directoryDialog.setFilterPath(workspacePathCombo.getText());
+				String pick = directoryDialog.open();
+				if (pick == null && workspacePathCombo.getText().length() == 0) {
+					setMessage(MESSAGE_ERROR, IMessageProvider.ERROR);
+				}
+				else {
+					setMessage(MESSAGE_DEFAULT);
+					workspacePathCombo.setText(pick);
+				}
+			}
+		});
+	}
+
 	/* 
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
