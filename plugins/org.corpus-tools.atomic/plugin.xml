@@ -76,6 +76,11 @@
             id="org.corpus_tools.atomic.keyscheme"
             name="Atomic Key Binding Scheme">
       </scheme>
+      <key
+            commandId="org.corpus_tools.atomic.commands.switchWorkspace"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="M3+M2+W">
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.views">
