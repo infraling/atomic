@@ -48,6 +48,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createActionBarAdvisor(org.eclipse.ui.application.IActionBarConfigurer)
 	 */
+	@Override
 	public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
 		return new ApplicationActionBarAdvisor(configurer);
 	}
@@ -55,6 +56,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowOpen()
 	 */
+	@Override
 	public void preWindowOpen() {
 		// Configure the main window
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
@@ -72,6 +74,10 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, "org.corpus_tools.atomic.ui.navigation");
 		
 		configurer.setShowPerspectiveBar(true);
-		System.err.println(configurer.getShowPerspectiveBar());
+	}
+	
+	@Override
+	public void postWindowOpen() {
+		getWindowConfigurer().getWindow().getShell().setMaximized(true);
 	}
 }

@@ -69,10 +69,13 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="org.corpus_tools.atomic.commands.exit"
-            contextId="org.eclipse.ui.contexts.dialogAndWindow"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            schemeId="org.corpus_tools.atomic.keyscheme"
             sequence="M1+Q">
       </key>
+      <scheme
+            id="org.corpus_tools.atomic.keyscheme"
+            name="Atomic Key Binding Scheme">
+      </scheme>
    </extension>
    <extension
          point="org.eclipse.ui.views">

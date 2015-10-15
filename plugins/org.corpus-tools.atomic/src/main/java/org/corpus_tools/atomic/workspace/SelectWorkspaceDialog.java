@@ -137,7 +137,6 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 	private String suggestWorkspaceDirectory() {
 		StringBuffer buffer = new StringBuffer();
 		String userHome = System.getProperty("user.home");
-		System.err.println(userHome);
 		log.trace("Value for \"user.home\" system property is \"{}\".", userHome);
 		buffer.append(userHome);
 		buffer.append(File.separator);
