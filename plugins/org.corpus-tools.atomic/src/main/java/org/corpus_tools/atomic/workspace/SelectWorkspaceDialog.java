@@ -145,12 +145,9 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 		return buffer.toString();
 	}
 
-	// ######### UI CODE ###########
-
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
-//		composite.setLayout(new RowLayout(SWT.VERTICAL));
 		setTitle("Pick workspace");
 		setMessage(MESSAGE_DEFAULT);
 		
