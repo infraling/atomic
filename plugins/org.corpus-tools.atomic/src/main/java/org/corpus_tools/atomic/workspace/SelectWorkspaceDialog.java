@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * A dialog which lets the user pick his/her workspace. 
- * FIXME: Factor out logic, keep only GUI
+ * FIXME: Factor out logic, keep only GUI, externalize Strings
  * 
  * <p>
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
