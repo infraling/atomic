@@ -9,6 +9,8 @@
    <launcherArgs>
       <programArgs>-consoleLog -console -data @noDefault
       </programArgs>
+      <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+      </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
