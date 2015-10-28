@@ -98,12 +98,14 @@ public class Atomic implements IApplication {
 				isWorkspaceRemembered = false;
 			}
 		}
+		log.trace("Remembered workspace: {}", isWorkspaceRemembered);
 		if (!isWorkspaceRemembered) {
 			SelectWorkspaceDialog workspaceDialog = new SelectWorkspaceDialog(false);
 			int retVal = workspaceDialog.open();
 			if (retVal == Window.CANCEL) {
 				if (workspaceDialog.getSelectedWorkspaceLocationAsString() == null) {
 					MessageDialog.openError(display.getActiveShell(), "Error", "Atomic can not start without a workspace and will now exit.");
+					log.info("No workspace set, exit application.");
 					return true;
 				}
 			}
@@ -135,13 +137,16 @@ public class Atomic implements IApplication {
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
 	public void stop() {
-		if (!PlatformUI.isWorkbenchRunning())
+		if (!PlatformUI.isWorkbenchRunning()) {
+			log.trace("Workbench is not running anymore, returning from stop().");
 			return;
+		}
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
 		display.syncExec(new Runnable() {
 			public void run() {
 				if (!display.isDisposed())
+					log.trace("Closing workbench.");
 					workbench.close();
 			}
 		});
