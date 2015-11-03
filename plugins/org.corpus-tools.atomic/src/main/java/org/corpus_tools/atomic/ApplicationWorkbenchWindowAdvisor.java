@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -41,7 +43,12 @@ import org.osgi.framework.FrameworkUtil;
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
-
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "ApplicationWorkbenchWindowAdvisor".
+	 */
+	private static final Logger log = LogManager.getLogger(ApplicationWorkbenchWindowAdvisor.class);
+	
 	/**
 	 * @param configurer The configurer object for the workbench window
 	 */
@@ -86,6 +93,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	@Override
 	public void postWindowOpen() {
+		log.trace("Hiding basic generic wizards (New Project, Import, Export, etc.");
 		// Hide basic wizards, e.g., New Project, etc.
 		// FIXME: Try to solve without internal classes!
 		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI.getWorkbench().getNewWizardRegistry();
@@ -97,7 +105,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			}
 		}
 
-		// Maximize application window
+		log.trace("Maximizing application window");
 		getWindowConfigurer().getWindow().getShell().setMaximized(true);
 	}
 
