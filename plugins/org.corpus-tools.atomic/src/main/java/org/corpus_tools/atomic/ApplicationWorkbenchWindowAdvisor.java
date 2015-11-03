@@ -15,6 +15,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -25,16 +29,19 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement;
+import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry;
+import org.eclipse.ui.wizards.IWizardCategory;
+import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- * Provides setup machanisms for the Atomic workbench. @see {@link WorkbenchWindowAdvisor}. 
- *
- * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
- *
+ * Provides setup machanisms for the Atomic workbench. @see {@link WorkbenchWindowAdvisor}.
+ * <p>
+ * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
-	
+
 	/**
 	 * @param configurer The configurer object for the workbench window
 	 */
@@ -42,7 +49,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		super(configurer);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createActionBarAdvisor(org.eclipse.ui.application.IActionBarConfigurer)
 	 */
 	@Override
@@ -50,7 +59,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		return new ApplicationActionBarAdvisor(configurer);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowOpen()
 	 */
 	@Override
@@ -69,12 +80,34 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 		// Make sure the needed perspective buttons are shown for quick access.
 		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, "org.corpus_tools.atomic.ui.navigation");
-		
+
 		configurer.setShowPerspectiveBar(true);
 	}
-	
+
 	@Override
 	public void postWindowOpen() {
+		// Hide basic wizards, e.g., New Project, etc.
+		// FIXME: Try to solve without internal classes!
+		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI.getWorkbench().getNewWizardRegistry();
+		IWizardCategory[] categories = PlatformUI.getWorkbench().getNewWizardRegistry().getRootCategory().getCategories();
+		for (IWizardDescriptor wizard : getAllWizards(categories)) {
+			if (wizard.getCategory().getId().matches("org.eclipse.ui.Basic")) {
+				WorkbenchWizardElement wizardElement = (WorkbenchWizardElement) wizard;
+				wizardRegistry.removeExtension(wizardElement.getConfigurationElement().getDeclaringExtension(), new Object[] { wizardElement });
+			}
+		}
+
+		// Maximize application window
 		getWindowConfigurer().getWindow().getShell().setMaximized(true);
 	}
+
+	private IWizardDescriptor[] getAllWizards(IWizardCategory[] categories) {
+		List<IWizardDescriptor> results = new ArrayList<IWizardDescriptor>();
+		for (IWizardCategory wizardCategory : categories) {
+			results.addAll(Arrays.asList(wizardCategory.getWizards()));
+			results.addAll(Arrays.asList(getAllWizards(wizardCategory.getCategories())));
+		}
+		return results.toArray(new IWizardDescriptor[0]);
+	}
+
 }
