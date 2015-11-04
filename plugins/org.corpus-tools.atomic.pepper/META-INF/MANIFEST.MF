@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Pepper Plugin
+Bundle-SymbolicName: org.corpus_tools.atomic.pepper
+Bundle-Version: 0.3.0.qualifier
+Bundle-Activator: org.corpus_tools.atomic.pepper.Activator
+Bundle-Vendor: Friedrich Schiller University Jena
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
