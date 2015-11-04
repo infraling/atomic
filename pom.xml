@@ -154,7 +154,8 @@
 	</profiles>
   
 	<modules>
-		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>plugins/org.corpus-tools.atomic</module>
+		<module>plugins/org.corpus-tools.atomic.logging</module>
+		<module>plugins/org.corpus-tools.atomic.pepper</module>
 	</modules>
 </project>
