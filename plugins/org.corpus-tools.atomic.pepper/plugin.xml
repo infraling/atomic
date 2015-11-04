@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="org.corpus_tools.atomic.pepper.categoryAtomicImport"
+            name="Atomic">
+      </category>
+      <wizard
+            category="org.corpus_tools.atomic.pepper.categoryAtomicImport"
+            class="org.corpus_tools.atomic.pepper.importwizard.PepperImportWizard"
+            id="org.corpus_tools.atomic.pepper.importwizard.pepperImportWizard"
+            name="Corpus Import via Pepper">
+      </wizard>
+      <primaryWizard
+            id="org.corpus_tools.atomic.pepper.importwizard.pepperImportWizard">
+      </primaryWizard>
+   </extension>
+
+</plugin>
