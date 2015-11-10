@@ -13,9 +13,28 @@
             id="org.corpus_tools.atomic.pepper.importwizard.pepperImportWizard"
             name="Corpus Import via Pepper">
       </wizard>
-      <primaryWizard
-            id="org.corpus_tools.atomic.pepper.importwizard.pepperImportWizard">
-      </primaryWizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.corpus_tools.atomic.menus.help.updates">
+         <command
+               commandId="org.corpus_tools.atomic.pepper.updateCommand"
+               label="Update Pepper"
+               mnemonic="P"
+               style="push"
+               tooltip="Updates Pepper and its modules">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.corpus_tools.atomic.pepper.update.PepperUpdateHandler"
+            id="org.corpus_tools.atomic.pepper.updateCommand"
+            name="Update Pepper">
+      </command>
    </extension>
 
 </plugin>

@@ -1,5 +1,7 @@
 package org.corpus_tools.atomic.pepper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -7,7 +9,12 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "Activator".
+	 */
+	private static final Logger log = LogManager.getLogger(Activator.class);
+	
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.corpus_tools.atomic.pepper"; //$NON-NLS-1$
 
@@ -25,6 +32,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
+		log.trace("Start {}", PLUGIN_ID);
 		super.start(context);
 		plugin = this;
 	}
