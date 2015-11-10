@@ -48,6 +48,17 @@
                   tooltip="Closes the workbench and quits Atomic">
             </command>
          </menu>
+         <menu
+               id="org.corpus_tools.atomic.menus.help"
+               label="Help"
+               mnemonic="H">
+            <menu
+                  id="org.corpus_tools.atomic.menus.help.updates"
+                  label="Updates"
+                  mnemonic="U"
+                  tooltip="Provides a menu for updating Atomic or parts of it.">
+            </menu>
+         </menu>
       </menuContribution>
    </extension>
    <extension
