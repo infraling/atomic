@@ -15,13 +15,18 @@
  *
  * Contributors:
  *     Stephan Druskat - initial API and implementation
+ *     Martin Klotz - nested class {@link ModuleTableReader} initial API
+ *     					and implementation
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.update;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,7 +48,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.impl.PepperOSGiConnector;
 
 /**
  * TODO Description
@@ -87,7 +93,7 @@ public class PepperUpdateJob extends Job {
 	 */
 	private static String getModulesXMLPath() {
 		Bundle bundle = Platform.getBundle("org.corpus_tools.atomic.pepper");
-		URL url = FileLocator.find(bundle, new Path("config/modules.xml"), null);
+		URL url = FileLocator.find(bundle, new Path("conf/modules.xml"), null);
 		URL modulesXMLURL = null;
 	    try {
 			modulesXMLURL = FileLocator.resolve(url);
@@ -112,8 +118,11 @@ public class PepperUpdateJob extends Job {
 		pepperProps.load();
 		
 		log.trace("Creating new Atomic Pepper OSGi connector and set its configuration to the newly loaded pepper properties: {}.", pepperProps);
-		pepper = new AtomicPepperOSGiConnector();
+		pepper = new AtomicPepperOSGiConnector();// AtomicPepperOSGiConnector();
 		pepper.setConfiguration(pepperProps);
+		if (!pepper.isInitialized()) {
+			pepper.init();
+		}
 		
 		updateAllPepperModules();
 		
@@ -123,16 +132,27 @@ public class PepperUpdateJob extends Job {
 	/**
 	 * The actual update (or initial installation) of all Pepper modules
 	 * listed in modules.xml. 
-	 *
 	 */
 	private void updateAllPepperModules() {
+		AtomicPepperOSGiConnector pepperConnector = getPepper();
+		log.trace("Get the module table from modules.xml");
 		try {
 			moduleTable = getModuleTable();
 		}
 		catch (ParserConfigurationException | SAXException | IOException e) {
 			log.error("Getting the module table failed!", e);
 		}
-		System.err.println(moduleTable);
+		
+		log.trace("Read the module table, update each module, and write the update result into a list of Strings, one item per module.");
+		List<String> lines = new ArrayList<String>();
+		for (String s : moduleTable.keySet()) {
+			if (pepperConnector.update(moduleTable.get(s).getLeft(), s, moduleTable.get(s).getRight(), false, false)) {
+				lines.add(s.concat(" successfully updated."));
+			} else {
+				lines.add(s.concat(" NOT updated."));
+			}
+		}
+		Collections.<String> sort(lines);
 	}
 
 	/**
@@ -164,6 +184,23 @@ public class PepperUpdateJob extends Job {
 		return pepper;
 	}
 
+	/**
+	 * Copyright 2009 Humboldt-Universität zu Berlin, INRIA.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 *       http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 *
+	 */
 	/**
 	 * This class is the call back handler for reading the modules.xml file, which provides Information about the pepperModules to be updated / installed.
 	 * 
