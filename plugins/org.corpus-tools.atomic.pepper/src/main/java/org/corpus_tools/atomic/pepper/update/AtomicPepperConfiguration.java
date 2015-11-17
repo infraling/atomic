@@ -21,6 +21,7 @@ package org.corpus_tools.atomic.pepper.update;
 import java.io.File;
 
 import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.launch.Framework;
 
@@ -50,8 +51,11 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 */
 	private File findPepperHome() {
 		String atomicHome = null;
-		
-		System.setProperty(PROP_PEPPER_HOME, atomicHome);
+		Bundle atomicPepperBundle = FrameworkUtil.getBundle(this.getClass());
+		String atomicPepperBundleName = atomicPepperBundle.getSymbolicName();
+		System.err.println(atomicPepperBundleName);
+//		atomicPepperBundle = 
+//		System.setProperty(PROP_PEPPER_HOME, atomicHome);
 		return null;
 	}
 
