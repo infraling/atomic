@@ -11,7 +11,8 @@
 		<tycho-version>0.21.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
-		<deps-p2-repo.url>http://sdruskat.net/deps-p2/updates</deps-p2-repo.url>
+		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
+		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies/</pepper-dependencies-repo.url>
 	</properties>
 
 	<repositories>
@@ -22,9 +23,15 @@
 		</repository>
 
 		<repository>
-			<id>deps-p2</id>
+			<id>atomic-dependencies</id>
 			<layout>p2</layout>
-			<url>${deps-p2-repo.url}</url>
+			<url>${atomic-dependencies-repo.url}</url>
+		</repository>
+
+		<repository>
+			<id>pepper-dependencies</id>
+			<layout>p2</layout>
+			<url>${pepper-dependencies-repo.url}</url>
 		</repository>
 
 		<!-- <repository>

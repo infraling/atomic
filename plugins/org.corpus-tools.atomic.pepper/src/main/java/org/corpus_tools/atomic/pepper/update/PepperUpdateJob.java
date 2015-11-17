@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
@@ -62,9 +63,8 @@ public class PepperUpdateJob extends Job {
 		
 		// EO Adapted from {@link PepperStarter#main}.
 
-		setPepperHome();
-		update();
-		return null;
+//		update();
+		return Status.OK_STATUS;
 	}
 
 	/**

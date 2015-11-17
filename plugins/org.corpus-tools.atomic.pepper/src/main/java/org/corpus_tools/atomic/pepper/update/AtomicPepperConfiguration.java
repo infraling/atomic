@@ -54,10 +54,15 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 		File pepperHome = findPepperHome();
 		try {
 			System.setProperty(PepperStarterConfiguration.PROP_PEPPER_HOME, pepperHome.getAbsolutePath());
+		}
+		catch (Exception e) {
+			log.error("Pepper home has not been found!", e);
+		}
+		try {
 			super.load(pepperHome);
 		}
 		catch (Exception e) {
-			log.error("Pepper home has not been found", e);
+			log.error("Could not load Pepper configuration for Atomic!", e);
 		}
 	}
 
