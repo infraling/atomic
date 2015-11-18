@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
 
 /**
@@ -49,7 +50,9 @@ public class PepperUpdateJob extends Job {
 		super(name);
 	}
 
-	/*
+	/**
+	 * Handles the actual update process.
+	 * 
 	 * @copydoc @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
@@ -61,6 +64,10 @@ public class PepperUpdateJob extends Job {
 		pepperProps = new AtomicPepperConfiguration();
 		pepperProps.load();
 		
+		pepper = new AtomicPepperOSGiConnector();
+		pepper.setConfiguration(pepperProps);
+		
+		System.err.println(pepper.getConfiguration().getProperty("pepper.plugin.path"));
 		// EO Adapted from {@link PepperStarter#main}.
 
 //		update();

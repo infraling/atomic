@@ -8,7 +8,7 @@ In order to achieve maximum conformity in plugin project names, folder names, pa
 |---|:---:|:---:|---|
 | Folder name | **X** | | /plugins/org.corpus-tools.atomic |
 | Project name |  | **X** | org.corpus_tools.atomic.plugin |
-| Maven group ID | **X** | | org.corpus-tools.atomic |
+| Maven group ID | **X** | | org.corpus_tools.atomic |
 | Plugin ID (MANIFEST.MF, plugin.xml, etc.) | | **X** | org.corpus_tools.atomic.plugin |
 | Extension ID | | **X** | <extension id="org.corpus_tools.atomic.application" point="org.eclipse.core.runtime.applications"> |
 | Product file name | | **X** | org.corpus_tools.atomic.product |
