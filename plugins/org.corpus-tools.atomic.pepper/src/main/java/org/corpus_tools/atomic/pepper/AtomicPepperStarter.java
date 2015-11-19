@@ -48,9 +48,6 @@ public class AtomicPepperStarter {
 		pepper = new AtomicPepperOSGiConnector();
 		pepper.setConfiguration(pepperProps);
 		
-		
-		System.err.println("PROPS " + pepperProps.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
-		
 		setPepper(pepper);
 	}
 	

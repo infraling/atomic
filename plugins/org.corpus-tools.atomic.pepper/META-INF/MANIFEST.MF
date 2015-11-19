@@ -26,3 +26,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.aether.util;bundle-version="1.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.commons.lang3;version="3.3.2",
+ org.apache.commons.lang3.tuple;version="3.3.2"

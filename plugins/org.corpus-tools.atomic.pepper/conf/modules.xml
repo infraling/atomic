@@ -30,9 +30,9 @@
 	<pepperModules>
 		<artifactId>pepperModules-MergingModules</artifactId>
 	</pepperModules>
-	<pepperModules>
+	<!-- <pepperModules>
 		<artifactId>pepperModules-MMAX2Modules</artifactId>
-	</pepperModules>
+	</pepperModules> -->
 	<pepperModules>
 		<artifactId>pepperModules-nlpModules</artifactId>
 	</pepperModules>

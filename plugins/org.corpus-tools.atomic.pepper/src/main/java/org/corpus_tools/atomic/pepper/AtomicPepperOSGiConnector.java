@@ -19,12 +19,24 @@
 package org.corpus_tools.atomic.pepper;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.osgi.framework.Bundle;
@@ -212,6 +224,86 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 	 **/
 	public AtomicPepperConfiguration getAtomicPepperConfiguration() {
 		return properties;
+	}
+	
+	@Override
+	public String getFrameworkVersion() {
+		return frameworkVersion;
+	}
+	
+	/**
+	 * This method checks the pepperModules in the modules.xml for updates and
+	 * triggers the installation process if a newer version is available
+	 */
+	public boolean update(String groupId, String artifactId, String repositoryUrl, boolean isSnapshot, boolean ignoreFrameworkVersion) {
+		return maven.update(groupId, artifactId, repositoryUrl, isSnapshot, ignoreFrameworkVersion, getBundle(groupId, artifactId, null));
+	}
+	
+	/**
+	 * Installs the given bundle and copies it to the plugin path, but does not
+	 * start it. <br>
+	 * If the the URI is of scheme http or https, the file will be downloaded. <br/>
+	 * If the URI points to a zip file, it will be extracted and copied.
+	 * 
+	 * @param bundleURI
+	 * @return
+	 * @throws BundleException
+	 * @throws IOException
+	 */
+	public Bundle installAndCopy(URI bundleURI) throws BundleException, IOException {
+		Bundle retVal = null;
+		if (bundleURI != null) {
+			String pluginPath = getAtomicPepperConfiguration().getPlugInPath();
+			if (pluginPath != null) {
+				// download file, if file is a web resource
+				if (("http".equalsIgnoreCase(bundleURI.getScheme())) || ("https".equalsIgnoreCase(bundleURI.getScheme()))) {
+					String tempPath = getAtomicPepperConfiguration().getTempPath().getCanonicalPath();
+					URL bundleUrl = bundleURI.toURL();
+					if (!tempPath.endsWith("/")) {
+						tempPath = tempPath + "/";
+					}
+					String baseName = FilenameUtils.getBaseName(bundleUrl.toString());
+					String extension = FilenameUtils.getExtension(bundleUrl.toString());
+					File bundleFile = new File(tempPath + baseName + "." + extension);
+
+					org.apache.commons.io.FileUtils.copyURLToFile(bundleURI.toURL(), bundleFile);
+					bundleURI = URI.create(bundleFile.getAbsolutePath());
+				}
+				if (bundleURI.getPath().endsWith("zip")) {
+					ZipFile zipFile = null;
+					try {
+						zipFile = new ZipFile(bundleURI.getPath());
+						Enumeration<? extends ZipEntry> entries = zipFile.entries();
+						while (entries.hasMoreElements()) {
+							ZipEntry entry = entries.nextElement();
+							File entryDestination = new File(pluginPath, entry.getName());
+							entryDestination.getParentFile().mkdirs();
+							if (entry.isDirectory()) {
+								entryDestination.mkdirs();
+							} else {
+								InputStream in = zipFile.getInputStream(entry);
+								OutputStream out = new FileOutputStream(entryDestination);
+								IOUtils.copy(in, out);
+								IOUtils.closeQuietly(in);
+								IOUtils.closeQuietly(out);
+								if (entryDestination.getName().endsWith(".jar")) {
+									retVal = install(entryDestination.toURI());
+								}
+							}
+						}
+					} finally {
+						zipFile.close();
+					}
+				} else if (bundleURI.getPath().endsWith("jar")) {
+					File bundleFile = new File(bundleURI.getPath());
+					File jarFile = new File(pluginPath, bundleFile.getName());
+					FileUtils.copyFile(bundleFile, jarFile);
+					retVal = install(jarFile.toURI());
+				}
+			}
+		}
+
+		return (retVal);
 	}
 
 }
