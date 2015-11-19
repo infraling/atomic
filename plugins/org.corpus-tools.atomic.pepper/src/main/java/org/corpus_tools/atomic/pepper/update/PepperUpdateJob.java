@@ -22,13 +22,11 @@ package org.corpus_tools.atomic.pepper.update;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
 
 /**
  * TODO Description
@@ -57,18 +55,8 @@ public class PepperUpdateJob extends Job {
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		// Adapted from {@link PepperStarter#main}.
-		PepperConnector pepper = null;
-		AtomicPepperConfiguration pepperProps = null;
-		
-		pepperProps = new AtomicPepperConfiguration();
-		pepperProps.load();
-		
-		pepper = new AtomicPepperOSGiConnector();
-		pepper.setConfiguration(pepperProps);
-		
-		System.err.println(pepper.getConfiguration().getProperty("pepper.plugin.path"));
-		// EO Adapted from {@link PepperStarter#main}.
+		AtomicPepperStarter pepperStarter = new AtomicPepperStarter();
+		pepperStarter.startPepper();
 
 //		update();
 		return Status.OK_STATUS;
@@ -82,14 +70,4 @@ public class PepperUpdateJob extends Job {
 		// TODO Auto-generated method stub
 		
 	}
-
-	/**
-	 * TODO: Description
-	 *
-	 */
-	private void setPepperHome() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

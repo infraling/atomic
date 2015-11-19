@@ -16,20 +16,28 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.pepper.update;
+package org.corpus_tools.atomic.pepper;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
+
+import com.google.common.base.Splitter;
+
 import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguration;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperUtil;
 
 /**
  * TODO Description
@@ -52,10 +60,20 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 		File pepperHome = findPepperHome();
 		File propFile = new File(pepperHome + "/conf/pepper.properties/");
 		try {
-			System.setProperty(PepperStarterConfiguration.PROP_PEPPER_HOME, pepperHome.getAbsolutePath());
+			this.setProperty(PepperStarterConfiguration.PROP_PEPPER_HOME, pepperHome.getAbsolutePath());
 		}
 		catch (Exception e) {
 			log.error("Pepper home has not been found!", e);
+		}
+		try {
+			// Set the plugin path
+			File atomicPluginPath = pepperHome.getParentFile();
+			this.setProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH, atomicPluginPath.getAbsolutePath());
+			log.trace("Set plugin path: {}.", this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
+
+		}
+		catch (Exception e) {
+			log.error("Plugin path could no be set for some reason.", e);
 		}
 		try {
 			load(propFile);
@@ -83,6 +101,68 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 			log.error("Could not resolve pepper home URL!", e);
 		}
 		return pepperHome;
+	}
+
+	/**
+	 * Returns the path for the OSGi plugins folder.
+	 * 
+	 * @return plugIn path
+	 */
+	public String getPlugInPath() {
+//		return (this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
+		return findPepperHome().getParentFile().getAbsolutePath();
+	}
+
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
+	public List<String> getDropInPaths() {
+			String rawList = this.getProperty(PepperStarterConfiguration.PROP_DROPIN_PATHS);
+			if (rawList != null) {
+				Iterator<String> it
+					= Splitter.on(',').trimResults().omitEmptyStrings().split(rawList).iterator();
+				List<String> result = new ArrayList<>();
+				while (it.hasNext()) {
+					result.add(it.next());
+				}
+				return result;
+			}
+			return null;
+	}
+	
+	/**
+	 * Returns a temporary path, where the entire system and all modules can
+	 * store temp files. If no temp folder is given by configuration file, the
+	 * default temporary folder given by the operating system is used.
+	 * 
+	 * @return path, where to store temporary files
+	 */
+	public File getTempPath() {
+		String tmpFolderStr = getProperty(PROP_TEMP_FOLDER);
+		File tmpFolder = null;
+		if (tmpFolderStr != null) {
+			tmpFolderStr = tmpFolderStr + "/pepper/";
+			tmpFolder = new File(tmpFolderStr);
+			if (!tmpFolder.exists()) {
+				if (!tmpFolder.mkdirs()) {
+					log.warn("Cannot create folder {}. ", tmpFolder);
+				}
+			}
+		} else {
+			tmpFolder = PepperUtil.getTempFile();
+		}
+		return (tmpFolder);
+	}
+
+	/**
+	 * Returns the content of property {@link #PROP_OSGI_SHAREDPACKAGES}.
+	 * 
+	 * @return plugIn path
+	 */
+	public String getSharedPackages() {
+		return (this.getProperty("pepper." + Constants.FRAMEWORK_SYSTEMPACKAGES));
 	}
 
 }
