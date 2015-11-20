@@ -119,7 +119,7 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 */
 	public String getPlugInPath() {
 //		return (this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
-		return findPepperHome().getParentFile().getAbsolutePath();
+		return findPepperHome().getParentFile().getParentFile().getAbsolutePath() + "/" + this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH);
 	}
 
 	/**
