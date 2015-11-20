@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Atomic" uid="org.corpus_tools.atomic.product" id="org.corpus_tools.atomic.product" application="org.corpus_tools.atomic.application" version="0.3.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Atomic" uid="org.corpus_tools.atomic.product" id="org.corpus_tools.atomic.product" application="org.corpus_tools.atomic.application" version="0.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
@@ -26,8 +27,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>
@@ -125,6 +128,10 @@
       <plugin id="org.w3c.dom.smil"/>
       <plugin id="org.w3c.dom.svg"/>
    </plugins>
+
+   <features>
+      <feature id="org.corpus_tools.atomic.feature" version="0.3.0.qualifier"/>
+   </features>
 
 
    <preferencesInfo>
