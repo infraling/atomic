@@ -21,11 +21,15 @@ package org.corpus_tools.atomic.pepper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
 
 /**
- * TODO Description
+ * This class configures and starts an instance of {@link Pepper} (implemented in
+ * {@link AtomicPepperOSGiConnector}. It also stores the Pepper instance in
+ * {@link AtomicPepperStarter#pepper}, which can be got from the instantiators
+ * of this class via {@link AtomicPepperStarter#getPepper()} to perform
+ * actions on the Pepper object.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
@@ -43,23 +47,25 @@ public class AtomicPepperStarter {
 		AtomicPepperConfiguration pepperProps = null;
 		
 		pepperProps = new AtomicPepperConfiguration();
+		log.trace("Loading Pepper properties via the object {}.", pepperProps);
 		pepperProps.load();
 		
 		pepper = new AtomicPepperOSGiConnector();
+		log.trace("Setting the Pepper properties ({}) as configuration in the {} object {}.", pepperProps, AtomicPepperOSGiConnector.class.getName(), pepper);
 		pepper.setConfiguration(pepperProps);
 		
 		setPepper(pepper);
 	}
 	
 	/**
-	 * @return the pepper
+	 * @return the Pepper instance (as a {@link PepperConnector} object).
 	 */
 	public PepperConnector getPepper() {
 		return pepper;
 	}
 
 	/**
-	 * @param pepper the pepper to set
+	 * @param pepper The {@link Pepper} to set
 	 */
 	public void setPepper(PepperConnector pepper) {
 		this.pepper = pepper;
