@@ -21,7 +21,6 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.update;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ import org.xml.sax.ext.DefaultHandler2;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
 
 /**
- * TODO Description
+ * A {@link Job} handling the update of Pepper modules.
  * <p>
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
@@ -71,6 +70,8 @@ public class PepperUpdateJob extends Job {
 
 	
 	/**
+	 * Constructor setting the path of the "modules.xml" file.
+	 *  
 	 * @param name
 	 */
 	public PepperUpdateJob(String name) {
@@ -79,9 +80,11 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * TODO: Description
+	 * Sets the path of the "modules.xml" file which contains
+	 * a list of Pepper modules to be updated, identified by
+	 * their Maven GAs. 
 	 *
-	 * @return
+	 * @return String The path of the "modules.xml" file
 	 */
 	private String setModulesXMLPath() {
 		Bundle atomicPepperBundle = FrameworkUtil.getBundle(this.getClass());
@@ -99,7 +102,9 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * Handles the actual update process.
+	 * Handles the actual update process by starting an instance of Pepper
+	 * (via an instance of {@link AtomicPepperStarter}), and calling
+	 * {@link #update()}.
 	 * 
 	 * @copydoc @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -115,7 +120,9 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * TODO: Description
+	 * Performs the actual update process by calling
+	 * {@link AtomicPepperOSGiConnector#update(String, String, String, boolean, boolean)}
+	 * on all entries of the module table.
 	 *
 	 */
 	private void update() {
@@ -141,9 +148,10 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * TODO: Description
+	 * Parses the "modules.xml" file into a {@link Map}, the
+	 * {@link #moduleTable}.
 	 *
-	 * @return
+	 * @return Map<String, Pair<String, String>> The module table
 	 */
 	private Map<String, Pair<String, String>> getModuleTable() throws ParserConfigurationException, SAXException, IOException {
 		if (this.moduleTable != null) {
@@ -175,10 +183,10 @@ public class PepperUpdateJob extends Job {
 
 	/**
 	 * This class is the call back handler for reading the modules.xml file,
-	 * which provides Information about the pepperModules to be updated /
+	 * which provides information about the Pepper modules to be updated or
 	 * installed.
 	 * 
-	 * @author klotzmaz
+	 * @author Martin Klotz
 	 *
 	 */
 	private static class ModuleTableReader extends DefaultHandler2 {

@@ -117,7 +117,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
 /**
- * TODO Description
+ * This class provides the functionality to operate with
+ * Maven repositories, e.g., in the update process.
+ * <p>It provides accessibility to Maven repositories via
+ * the Eclipse Aether libraries.
  * <p>
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */

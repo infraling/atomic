@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright 2015 Friedrich-Schiller-Universität Jena
+ * Copyright 2015 Friedrich-Schiller-Universität Jena,
+ * Humboldt-Universität zu Berlin, INRIA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +26,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -40,6 +39,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 
@@ -47,14 +47,22 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfigur
 import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.exceptions.PepperOSGiException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.exceptions.PepperOSGiFrameworkPluginException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.exceptions.PepperPropertyException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguration;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.impl.PepperOSGiConnector;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.core.PepperOSGiRunner;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperConfigurationException;
 
 /**
- * TODO Description
- *
+ * This class is an implementation of {@link Pepper}. It bridges between 
+ * the Atomic environment (Eclipse RCP based on an Equinox OSGi environment),
+ * and the Pepper OSGi environment, which is forced to use Atomic's OSGi
+ * {@link BundleContext}. The {@link AtomicPepperOSGiConnector} is used
+ * to install and start bundles as well as update Pepper module bundles.
+ * 
+ * TODO: Implement starting bundles so that the method can be called
+ * e.g., from the Pepper wizards.
+ * 
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
@@ -74,7 +82,7 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 //	private Map<URI, Long> locationBundleIdMap = new Hashtable<URI, Long>();
 	/**
 	 * Contains the version of the Pepper framework. {@link #PEPPER_VERSION} is not
-	 * used on purpose. This {@link String} contains the value of the
+	 * used, on purpose. This {@link String} contains the value of the
 	 * pepper-framework OSGi {@link Bundle}.
 	 */
 	private String frameworkVersion = null;
@@ -82,6 +90,7 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 	private static final String ARTIFACT_ID_PEPPER_FRAMEWORK = "pepper-framework";
 	private AtomicMavenAccessor maven = null;
 	/** Determines if this object has been initialized **/
+	@SuppressWarnings("unused")
 	private boolean isInit = false;
 
 	@Override

@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +41,12 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguratio
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperUtil;
 
 /**
- * TODO Description
+ * This class represents all properties that Pepper as used in Atomic
+ * has. The properties themselves are loaded from the "pepper.properties"
+ * file. The location of the file is FIXME in the configuration folder
+ * of the Pepper home directory as defined by {@link #findPepperHome()}.
+ * <p>The properties also include information about the location of
+ * paths needed for bundle-level operations.
  * <p>
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
@@ -54,7 +60,10 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	private static final Logger log = LogManager.getLogger(AtomicPepperConfiguration.class);
 
 	/**
-	 * TODO: Description
+	 * Loads the "pepper.properties" file via the 
+	 * {@link Properties#load(java.io.InputStream)} mechanism ultimately
+	 * at the end of the inheritance chain.
+	 * 
 	 */
 	public void load() {
 		File pepperHome = findPepperHome();
@@ -114,9 +123,11 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	}
 
 	/**
-	 * TODO: Description
+	 * Returns the dropin paths for OSGi bundles.
+	 * FIXME: These are not used in the contenxt of
+	 * Atomic.
 	 *
-	 * @return
+	 * @return List<String> the dropin paths
 	 */
 	public List<String> getDropInPaths() {
 			String rawList = this.getProperty(PepperStarterConfiguration.PROP_DROPIN_PATHS);

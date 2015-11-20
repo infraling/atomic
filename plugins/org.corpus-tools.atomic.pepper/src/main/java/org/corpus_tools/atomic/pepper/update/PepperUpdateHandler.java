@@ -26,7 +26,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 
 /**
- * TODO Description
+ * Handles selection of menu item "Help > Update > Update Pepper" by
+ * creating and scheduling a {@link PepperUpdateJob}.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
@@ -38,7 +39,9 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 	 */
 	private static final Logger log = LogManager.getLogger(PepperUpdateHandler.class);
 	
-	/* 
+	/** 
+	 * Executes the command: Creates and schedules a {@link PepperUpdateJob}. 
+	 *  
 	 * @copydoc @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
