@@ -3,12 +3,11 @@
 
 <product name="Atomic" uid="org.corpus_tools.atomic.product" id="org.corpus_tools.atomic.product" application="org.corpus_tools.atomic.application" version="0.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -console -data @noDefault
+      <programArgs>-data @noDefault
       </programArgs>
       <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
       </vmArgs>
@@ -20,17 +19,15 @@
 
    <splash
       location="org.corpus_tools.atomic" />
-   <launcher>
+   <launcher name="atomic">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>

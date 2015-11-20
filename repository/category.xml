@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.corpus_tools.atomic.feature_0.3.0.qualifier.jar" id="org.corpus_tools.atomic.feature" version="0.3.0.qualifier">
+      <category name="org.corpus_tools.atomic.repository"/>
+   </feature>
+   <category-def name="org.corpus_tools.atomic.repository" label="Atomic">
+      <description>
+         Atomic - Platform for multi-layer corpus annotation
+      </description>
+   </category-def>
+</site>
