@@ -129,9 +129,6 @@
    <features>
       <feature id="org.corpus_tools.atomic.feature" version="0.3.0.qualifier"/>
       <feature id="org.eclipse.rcp" version="4.5.1.v20150904-0015"/>
-      <feature id="org.eclipse.emf.ecore"/>
-      <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.emf.common"/>
    </features>
 
    <configurations>
