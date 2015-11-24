@@ -72,14 +72,14 @@
 				<extensions>true</extensions>
 			</plugin>
 
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<resolver>p2</resolver> -->
+					<resolver>p2</resolver>
 					<!-- configure the p2 target environments for multi-platform build -->
-					<!-- <environments>
+					<environments>
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
@@ -100,11 +100,15 @@
 							<ws>win32</ws>
 							<arch>x86_64</arch>
 						</environment>
+						<!-- Since Mars, cocoa-x86 is not included anymore, cf.
+						https://www.eclipse.org/projects/project-plan.php?planurl=/eclipse/development/plans/eclipse_project_plan_4_5.xml#target_environments -->
+						<!-- 
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86</arch>
 						</environment>
+						-->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
@@ -112,7 +116,7 @@
 						</environment>
 					</environments>
 				</configuration>
-			</plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 
