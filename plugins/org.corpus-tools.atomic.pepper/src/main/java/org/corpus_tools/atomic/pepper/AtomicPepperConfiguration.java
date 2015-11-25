@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -58,6 +59,10 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "AtomicPepperConfiguration".
 	 */
 	private static final Logger log = LogManager.getLogger(AtomicPepperConfiguration.class);
+	
+	/** Folder containing configuration files for Pepper */
+	public static final String FOLDER_PEPPER_CONF = "configuration";
+	
 
 	/**
 	 * Loads the "pepper.properties" file via the 
@@ -66,24 +71,28 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 * 
 	 */
 	public void load() {
-		File pepperHome = findPepperHome();
-		File propFile = new File(pepperHome + "/conf/pepper.properties/");
-		try {
-			this.setProperty(PepperStarterConfiguration.PROP_PEPPER_HOME, pepperHome.getAbsolutePath());
-		}
-		catch (Exception e) {
-			log.error("Pepper home has not been found!", e);
-		}
-		try {
-			// Set the plugin path
-			File atomicPluginPath = pepperHome.getParentFile();
-			this.setProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH, atomicPluginPath.getAbsolutePath());
-			log.trace("Set plugin path: {}.", this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
-
-		}
-		catch (Exception e) {
-			log.error("Plugin path could no be set for some reason.", e);
-		}
+//		File pepperHome = findPepperHome();
+		File atomicHome = findAtomicHome();
+		File propFile = new File(atomicHome.getAbsolutePath() + "/" + AtomicPepperConfiguration.FOLDER_PEPPER_CONF + "/" + PepperStarterConfiguration.FILE_PEPPER_PROP + "/");
+//		try {
+//			this.setProperty(PepperStarterConfiguration.PROP_PEPPER_HOME, pepperHome.getAbsolutePath());
+//		}
+//		catch (Exception e) {
+//			log.error("Pepper home has not been found!", e);
+//		}
+//		try {
+//			// Set the plugin path
+//			File atomicPluginPath = pepperHome.getParentFile();
+//			System.err.println(this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
+//			System.err.println("INSTALL: " + Platform.getInstallLocation().getURL());
+//			System.err.println("INSTRANCE: " + Platform.getInstanceLocation().getURL());
+//			this.setProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH, atomicPluginPath.getAbsolutePath());
+//			log.trace("Set plugin path: {}.", this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
+//
+//		}
+//		catch (Exception e) {
+//			log.error("Plugin path could no be set for some reason.", e);
+//		}
 		try {
 			load(propFile);
 		}
@@ -111,6 +120,19 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 		}
 		return pepperHome;
 	}
+	
+	/**
+	 * Gets the "Atomic home" folder, i.e., the folder where the Atomic executable is located.
+	 *
+	 * @return pepperHome The pepperHome File
+	 */
+	private File findAtomicHome() {
+		File atomicHome = null;
+		URL atomicHomeURL = null;
+		atomicHomeURL = Platform.getInstallLocation().getURL();
+		atomicHome = new File(atomicHomeURL.getFile());
+		return atomicHome;
+	}
 
 	/**
 	 * Returns the path for the OSGi plugins folder.
@@ -118,8 +140,8 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 * @return plugIn path
 	 */
 	public String getPlugInPath() {
-//		return (this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
-		return findPepperHome().getParentFile().getParentFile().getAbsolutePath() + "/" + this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH);
+		return (this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
+//		return findPepperHome().getParentFile().getParentFile().getAbsolutePath() + "/" + this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH);
 	}
 
 	/**

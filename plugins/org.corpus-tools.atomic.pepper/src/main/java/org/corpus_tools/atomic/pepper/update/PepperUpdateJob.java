@@ -21,6 +21,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.update;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,12 +37,14 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.pepper.AtomicPepperConfiguration;
 import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
 import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.osgi.framework.Bundle;
@@ -50,6 +53,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
+import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
 
 /**
@@ -64,6 +68,7 @@ public class PepperUpdateJob extends Job {
 	 * Defines a static logger variable so that it references the XML{@link org.apache.logging.log4j.Logger} instance named "PepperUpdateJob".
 	 */
 	private static final Logger log = LogManager.getLogger(PepperUpdateJob.class);
+	private static final String FILE_MODULES_XML = "modules.xml";
 	private PepperConnector pepper;
 	private Map<String, Pair<String, String>> moduleTable;
 	private static String MODULES_XML_PATH = null;
@@ -87,17 +92,9 @@ public class PepperUpdateJob extends Job {
 	 * @return String The path of the "modules.xml" file
 	 */
 	private String setModulesXMLPath() {
-		Bundle atomicPepperBundle = FrameworkUtil.getBundle(this.getClass());
-		URL bundleURL = FileLocator.find(atomicPepperBundle, new Path("/"), null);
-		URL pepperHomeURL = null;
-		String modulesXMLPath = null;
-		try {
-			pepperHomeURL = FileLocator.resolve(bundleURL);
-			modulesXMLPath = pepperHomeURL.getPath() + "conf/modules.xml";
-		}
-		catch (IOException e) {
-			log.error("Could not resolve pepper home URL!", e);
-		}
+		URL atomicHomeURL = Platform.getInstallLocation().getURL();
+		File atomicHome = new File(atomicHomeURL.getFile());
+		String modulesXMLPath = atomicHome.getAbsolutePath() + "/" + AtomicPepperConfiguration.FOLDER_PEPPER_CONF + "/" + FILE_MODULES_XML + "/";
 		return modulesXMLPath;
 	}
 
