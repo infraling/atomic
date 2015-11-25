@@ -93,7 +93,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	@Override
 	public void postWindowOpen() {
-		log.trace("Hiding basic generic wizards (New Project, Import, Export, etc.");
+		log.trace("Hiding basic generic wizards (New Project, Import, Export, etc.).");
 		// Hide basic wizards, e.g., New Project, etc.
 		// FIXME: Try to solve without internal classes!
 		AbstractExtensionWizardRegistry wizardRegistry = (AbstractExtensionWizardRegistry) PlatformUI.getWorkbench().getNewWizardRegistry();

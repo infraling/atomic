@@ -19,7 +19,6 @@
 package org.corpus_tools.atomic.pepper;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,13 +27,8 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkUtil;
-
 import com.google.common.base.Splitter;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
@@ -71,28 +65,8 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 * 
 	 */
 	public void load() {
-//		File pepperHome = findPepperHome();
 		File atomicHome = findAtomicHome();
 		File propFile = new File(atomicHome.getAbsolutePath() + "/" + AtomicPepperConfiguration.FOLDER_PEPPER_CONF + "/" + PepperStarterConfiguration.FILE_PEPPER_PROP + "/");
-//		try {
-//			this.setProperty(PepperStarterConfiguration.PROP_PEPPER_HOME, pepperHome.getAbsolutePath());
-//		}
-//		catch (Exception e) {
-//			log.error("Pepper home has not been found!", e);
-//		}
-//		try {
-//			// Set the plugin path
-//			File atomicPluginPath = pepperHome.getParentFile();
-//			System.err.println(this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
-//			System.err.println("INSTALL: " + Platform.getInstallLocation().getURL());
-//			System.err.println("INSTRANCE: " + Platform.getInstanceLocation().getURL());
-//			this.setProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH, atomicPluginPath.getAbsolutePath());
-//			log.trace("Set plugin path: {}.", this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
-//
-//		}
-//		catch (Exception e) {
-//			log.error("Plugin path could no be set for some reason.", e);
-//		}
 		try {
 			load(propFile);
 		}
@@ -101,26 +75,6 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 		}
 	}
 
-	/**
-	 * Tries to "find" the Pepper home directory, which is in fact the directory of the bundle o.c-t.a.pepper.
-	 *
-	 * @return pepperHome The pepperHome File
-	 */
-	private File findPepperHome() {
-		File pepperHome = null;
-		Bundle atomicPepperBundle = FrameworkUtil.getBundle(this.getClass());
-		URL bundleURL = FileLocator.find(atomicPepperBundle, new Path("/"), null);
-		URL pepperHomeURL = null;
-		try {
-			pepperHomeURL = FileLocator.resolve(bundleURL);
-			pepperHome = new File(pepperHomeURL.getFile());
-		}
-		catch (IOException e) {
-			log.error("Could not resolve pepper home URL!", e);
-		}
-		return pepperHome;
-	}
-	
 	/**
 	 * Gets the "Atomic home" folder, i.e., the folder where the Atomic executable is located.
 	 *
@@ -141,7 +95,6 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 */
 	public String getPlugInPath() {
 		return (this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
-//		return findPepperHome().getParentFile().getParentFile().getAbsolutePath() + "/" + this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH);
 	}
 
 	/**

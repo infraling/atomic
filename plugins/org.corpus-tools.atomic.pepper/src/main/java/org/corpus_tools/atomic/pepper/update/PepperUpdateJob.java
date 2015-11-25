@@ -40,20 +40,15 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.pepper.AtomicPepperConfiguration;
 import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
 import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
 
 /**
@@ -249,8 +244,6 @@ public class PepperUpdateJob extends Job {
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 			localName = qName.substring(qName.lastIndexOf(":") + 1);
-			// openEyes = TAG_GROUPID.equals(localName) ||
-			// TAG_ARTIFACTID.equals(localName) || TAG_REPO.equals(localName);
 			if (TAG_LIST.equals(localName)) {
 				defaultRepository = attributes.getValue(ATT_DEFAULTREPO);
 				defaultGroupId = attributes.getValue(ATT_DEFAULTGROUPID);
@@ -260,10 +253,9 @@ public class PepperUpdateJob extends Job {
 
 		@Override
 		public void characters(char[] ch, int start, int length) throws SAXException {
-			for (int i = start; i < start + length /* && openEyes */; i++) {
+			for (int i = start; i < start + length; i++) {
 				chars.append(ch[i]);
 			}
-			// openEyes = false;
 		}
 
 		@Override
