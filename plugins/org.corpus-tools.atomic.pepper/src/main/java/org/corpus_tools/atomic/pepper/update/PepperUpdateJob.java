@@ -25,10 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -44,6 +43,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -67,22 +67,22 @@ public class PepperUpdateJob extends Job {
 	private PepperConnector pepper;
 	private Map<String, Pair<String, String>> moduleTable;
 	private static String MODULES_XML_PATH = null;
+	private ArrayList<String> resultLines = null;
+	private String resultText;
 
-	
 	/**
 	 * Constructor setting the path of the "modules.xml" file.
-	 *  
+	 * 
 	 * @param name
 	 */
 	public PepperUpdateJob(String name) {
 		super(name);
 		MODULES_XML_PATH = setModulesXMLPath();
+		resultLines =  new ArrayList<String>();
 	}
 
 	/**
-	 * Sets the path of the "modules.xml" file which contains
-	 * a list of Pepper modules to be updated, identified by
-	 * their Maven GAs. 
+	 * Sets the path of the "modules.xml" file which contains a list of Pepper modules to be updated, identified by their Maven GAs.
 	 *
 	 * @return String The path of the "modules.xml" file
 	 */
@@ -94,9 +94,7 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * Handles the actual update process by starting an instance of Pepper
-	 * (via an instance of {@link AtomicPepperStarter}), and calling
-	 * {@link #update()}.
+	 * Handles the actual update process by starting an instance of Pepper (via an instance of {@link AtomicPepperStarter}), and calling {@link #update()}.
 	 * 
 	 * @copydoc @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -104,61 +102,70 @@ public class PepperUpdateJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		AtomicPepperStarter pepperStarter = new AtomicPepperStarter();
 		pepperStarter.startPepper();
-
 		setPepper(pepperStarter.getPepper());
-		
-		update();
+
+		IStatus updateStatus = update(monitor);
+		setResultText("");
+		for (String line : resultLines) {
+			setResultText(getResultText().concat("\n").concat(line));
+		}
+		return updateStatus;
+	}
+
+	/**
+	 * Performs the actual update process by calling {@link AtomicPepperOSGiConnector#update(String, String, String, boolean, boolean)} on all entries of the module table.
+	 * 
+	 * @param monitor
+	 * @return
+	 */
+	private IStatus update(IProgressMonitor monitor) {
+		try {
+			if (moduleTable != null) {
+				// Do nothing
+			}
+			else {
+			moduleTable = new HashMap<String, Pair<String, String>>();
+			SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+			saxParser.parse(MODULES_XML_PATH, new ModuleTableReader(moduleTable));
+			}
+		}
+		catch (ParserConfigurationException | SAXException | IOException e) {
+			log.error("Getting the Pepper module table from the file at {} didn't succeed!", MODULES_XML_PATH, e);
+			return new PepperUpdateErrorStatus(e);
+		}
+		int workUnits = moduleTable.entrySet().size();
+		SubMonitor subMonitor = SubMonitor.convert(monitor, workUnits);
+		for (Map.Entry<String, Pair<String, String>> entry : moduleTable.entrySet()) {
+			subMonitor.setTaskName("Updating " + entry.getKey() + " ...");
+			boolean cancelled = updateModule(entry, subMonitor.newChild(1));
+			if (cancelled) {
+				return Status.CANCEL_STATUS;
+			}
+		}
 		return Status.OK_STATUS;
 	}
 
 	/**
-	 * Performs the actual update process by calling
-	 * {@link AtomicPepperOSGiConnector#update(String, String, String, boolean, boolean)}
-	 * on all entries of the module table.
+	 * TODO: Description
 	 *
+	 * @param entry
+	 * @param newChild
 	 */
-	private void update() {
-		try {
-			moduleTable = getModuleTable();
+	private boolean updateModule(Entry<String, Pair<String, String>> entry, SubMonitor newChild) {
+		if (newChild.isCanceled()) {
+			return true;
 		}
-		catch (ParserConfigurationException | SAXException | IOException e) {
-			log.error("Getting the Pepper module table from the file at {} didn't succeed!", MODULES_XML_PATH, e);
-		}
-		List<String> lines = new ArrayList<String>();
 		AtomicPepperOSGiConnector pepper = (AtomicPepperOSGiConnector) getPepper();
-		for (Map.Entry<String, Pair<String, String>> entry : moduleTable.entrySet()) {
-			if (pepper.update(entry.getValue().getLeft(), entry.getKey(), entry.getValue().getRight(), false, false)) {
-				lines.add(entry.getKey().concat(" successfully updated."));
-			} else {
-				lines.add(entry.getKey().concat(" NOT updated."));
-			}
+		if (pepper.update(entry.getValue().getLeft(), entry.getKey(), entry.getValue().getRight(), false, false)) {
+			 resultLines.add(entry.getKey().concat(" successfully updated."));
 		}
-		Collections.<String> sort(lines);
-		for (String line : lines) {
-			System.err.println(line);
+		else {
+			 resultLines.add(entry.getKey().concat(" NOT updated."));
 		}
+		newChild.done();
+		return false;
 	}
 
-	/**
-	 * Parses the "modules.xml" file into a {@link Map}, the
-	 * {@link #moduleTable}.
-	 *
-	 * @return Map<String, Pair<String, String>> The module table
-	 */
-	private Map<String, Pair<String, String>> getModuleTable() throws ParserConfigurationException, SAXException, IOException {
-		if (this.moduleTable != null) {
-			return moduleTable;
-		}
-		HashMap<String, Pair<String, String>> table = new HashMap<String, Pair<String, String>>();
-		SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-		try {
-			saxParser.parse(MODULES_XML_PATH, new ModuleTableReader(table));
-		} catch (Exception e) {
-			log.debug("Could not parse modules.xml", e);
-		}
-		return table;
-	}
-	
 	/**
 	 * @return the pepper
 	 */
@@ -174,18 +181,28 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * This class is the call back handler for reading the modules.xml file,
-	 * which provides information about the Pepper modules to be updated or
-	 * installed.
+	 * @return the resultText
+	 */
+	public String getResultText() {
+		return resultText;
+	}
+
+	/**
+	 * @param resultText the resultText to set
+	 */
+	public void setResultText(String resultText) {
+		this.resultText = resultText;
+	}
+
+	/**
+	 * This class is the call back handler for reading the modules.xml file, which provides information about the Pepper modules to be updated or installed.
 	 * 
 	 * @author Martin Klotz
-	 *
 	 */
 	private static class ModuleTableReader extends DefaultHandler2 {
 		/**
-		 * all read module names are stored here Map: artifactId --> (groupId,
-		 * repository)
-		 * */
+		 * all read module names are stored here Map: artifactId --> (groupId, repository)
+		 */
 		private Map<String, Pair<String, String>> listedModules;
 		/** this string contains the last occurred artifactId */
 		private String artifactId;
@@ -196,23 +213,19 @@ public class PepperUpdateJob extends Job {
 		/** the name of the tag between the modules are listed */
 		private static final String TAG_LIST = "pepperModulesList";
 		/**
-		 * the name of the tag in the modules.xml file, between which the
-		 * modules' properties are listed
+		 * the name of the tag in the modules.xml file, between which the modules' properties are listed
 		 */
 		private static final String TAG_ITEM = "pepperModules";
 		/**
-		 * the name of the tag in the modules.xml file, between which the
-		 * modules' groupId is written
+		 * the name of the tag in the modules.xml file, between which the modules' groupId is written
 		 */
 		private static final String TAG_GROUPID = "groupId";
 		/**
-		 * the name of the tag in the modules.xml file, between which the
-		 * modules' name is written
+		 * the name of the tag in the modules.xml file, between which the modules' name is written
 		 */
 		private static final String TAG_ARTIFACTID = "artifactId";
 		/**
-		 * the name of the tag in the modules.xml file, between which the
-		 * modules' source is written
+		 * the name of the tag in the modules.xml file, between which the modules' source is written
 		 */
 		private static final String TAG_REPO = "repository";
 		/** the name of the attribute for the default repository */
@@ -222,8 +235,7 @@ public class PepperUpdateJob extends Job {
 		/** contains the default groupId for modules where no groupId is defined */
 		private String defaultGroupId;
 		/**
-		 * contains the default repository for modules where no repository is
-		 * defined
+		 * contains the default repository for modules where no repository is defined
 		 */
 		private String defaultRepository;
 		/** is used to read the module name character by character */
@@ -264,13 +276,16 @@ public class PepperUpdateJob extends Job {
 			if (TAG_ARTIFACTID.equals(localName)) {
 				artifactId = chars.toString();
 				chars.delete(0, chars.length());
-			} else if (TAG_GROUPID.equals(localName)) {
+			}
+			else if (TAG_GROUPID.equals(localName)) {
 				groupId = chars.toString();
 				chars.delete(0, chars.length());
-			} else if (TAG_REPO.equals(localName)) {
+			}
+			else if (TAG_REPO.equals(localName)) {
 				repo = chars.toString();
 				chars.delete(0, chars.length());
-			} else if (TAG_ITEM.equals(localName)) {
+			}
+			else if (TAG_ITEM.equals(localName)) {
 				groupId = groupId == null ? defaultGroupId : groupId;
 				listedModules.put(artifactId, Pair.of(groupId, (repo == null || repo.isEmpty() ? defaultRepository : repo)));
 				chars.delete(0, chars.length());
@@ -279,6 +294,107 @@ public class PepperUpdateJob extends Job {
 				repo = null;
 			}
 		}
+	}
+
+	/**
+	 * TODO Description
+	 * <p>
+	 * @author Stephan Druskat <stephan.druskat@uni-jena.de>
+	 */
+	class PepperUpdateErrorStatus implements IStatus {
+
+		/**
+		 * 
+		 */
+		public PepperUpdateErrorStatus(Throwable e) {
+			this.e = e;
+		}
+
+		private Throwable e;
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#getChildren()
+		 */
+		@Override
+		public IStatus[] getChildren() {
+			return null;
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#getCode()
+		 */
+		@Override
+		public int getCode() {
+			return -666;
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#getException()
+		 */
+		@Override
+		public Throwable getException() {
+			return e;
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#getMessage()
+		 */
+		@Override
+		public String getMessage() {
+			if (e instanceof ParserConfigurationException) {
+				return "due to a ParserConfigurationExeption";
+			}
+			else if (e instanceof SAXException) {
+				return "due to a SAXException";
+			}
+			else if (e instanceof IOException) {
+				return "due to an IOException";
+			}
+			else {
+				return null;
+			}
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#getPlugin()
+		 */
+		@Override
+		public String getPlugin() {
+			return null;
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#getSeverity()
+		 */
+		@Override
+		public int getSeverity() {
+			return 0;
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#isMultiStatus()
+		 */
+		@Override
+		public boolean isMultiStatus() {
+			return false;
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#isOK()
+		 */
+		@Override
+		public boolean isOK() {
+			return false;
+		}
+
+		/*
+		 * @copydoc @see org.eclipse.core.runtime.IStatus#matches(int)
+		 */
+		@Override
+		public boolean matches(int severityMask) {
+			return false;
+		}
+
 	}
 
 }

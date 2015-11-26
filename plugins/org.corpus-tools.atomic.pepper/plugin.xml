@@ -36,5 +36,15 @@
             name="Update Pepper">
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="org.eclipse.ui.ExtensionFactory:progressView"
+            id="org.eclipse.ui.views.ProgressView"
+            name="Progress"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>

@@ -78,6 +78,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setInitialSize(new Point(400, 300));
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
+		configurer.setShowProgressIndicator(true);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		String workspaceDirectory = workspace.getRoot().getLocation().toFile().getAbsoluteFile().getAbsolutePath();
 		configurer.setTitle("Atomic " + FrameworkUtil.getBundle(this.getClass()).getVersion() + " - " + workspaceDirectory);
