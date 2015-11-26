@@ -1,6 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Friedrich-Schiller-Universität Jena,
- * Humboldt-Universität zu Berlin, INRIA
+ * Copyright 2015 Friedrich-Schiller-Universität Jena
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,44 +15,38 @@
  *
  * Contributors:
  *     Stephan Druskat - initial API and implementation
- *     Martin Klotz - nested class {@link ModuleTableReader} initial API
- *     					and implementation
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.update;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.progress.UIJob;
 
 /**
- * A {@link Job} handling the update of Pepper modules. Internally delegates the update process to an instance of {@link PepperUpdateDelegate}.
+ * A {@link UIJob} handling the update of Pepper modules. Internally delegates the update process to an instance of {@link PepperUpdateDelegate}.
  * <p>
- * This job is not blocking the UI Thread.
+ * This job is blocking the UI Thread.
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
-public class PepperUpdateJob extends Job {
+public class PepperUpdateUIJob extends UIJob {
 
 	private PepperUpdateDelegate delegate;
 
 	/**
-	 * Constructor creating a new {@link PepperUpdateDelegate} object.
-	 * 
 	 * @param name
 	 */
-	public PepperUpdateJob(String name) {
+	public PepperUpdateUIJob(String name) {
 		super(name);
 		this.setDelegate(new PepperUpdateDelegate());
 	}
 
-	/**
-	 * Delegates the update logic to the run method of {@link PepperUpdateJob#delegate}.
-	 * 
-	 * @copydoc @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+	/* 
+	 * @copydoc @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
-		return getDelegate().run(monitor);
+	public IStatus runInUIThread(IProgressMonitor monitor) {
+		return delegate.run(monitor);
 	}
 
 	/**

@@ -20,7 +20,7 @@ package org.corpus_tools.atomic.pepper.update;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.pepper.update.PepperUpdateJob.PepperUpdateErrorStatus;
+import org.corpus_tools.atomic.pepper.update.PepperUpdateDelegate.PepperUpdateErrorStatus;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -77,7 +77,7 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 		public void done(IJobChangeEvent event) {
 			log.info("The PepperUpdateJob {} has finished with result {}. Proceeding to report result to user.", event.getJob(), event.getResult());
 			result = event.getResult();
-			resultText = ((PepperUpdateJob) event.getJob()).getResultText();
+			resultText = ((PepperUpdateJob) event.getJob()).getDelegate().getResultText();
 			Display display = PlatformUI.getWorkbench().getDisplay();
 			if (result == Status.CANCEL_STATUS) {
 				display.asyncExec(new Runnable() {
