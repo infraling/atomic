@@ -96,60 +96,24 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 	@Override
 	public void init() {
 		if (getAtomicPepperConfiguration().getPlugInPath() == null) {
-			throw new PepperPropertyException("Cannot start Pepper, because no plugin path is given for Pepper modules.");
+			PepperPropertyException e = new PepperPropertyException("Cannot start Pepper, because no plugin path is given for Pepper modules.");
+			log.error("No plugin path given.", e);
+			throw e;
 		}
 		File pluginPath = new File(getAtomicPepperConfiguration().getPlugInPath());
 		if (!pluginPath.exists()) {
-			throw new PepperOSGiException("Cannot load any plugins, since the configured path for plugins '" + pluginPath.getAbsolutePath() + "' does not exist. Please check the entry '" + PepperStarterConfiguration.PROP_PLUGIN_PATH + "' in the Pepper configuration file at '" + getConfiguration().getConfFolder().getAbsolutePath() + "'.");
+			PepperOSGiException e = new PepperOSGiException("Cannot load any plugins, since the configured path for plugins '" + pluginPath.getAbsolutePath() + "' does not exist. Please check the entry '" + PepperStarterConfiguration.PROP_PLUGIN_PATH + "' in the Pepper configuration file at '" + getConfiguration().getConfFolder().getAbsolutePath() + "'.");
+			log.error("Plugin path does not exist!", e);
+			throw e;
 		}
 		try {
 			// Disable PepperOSGiRunner and set bundle context
 			System.setProperty(PepperOSGiRunner.PROP_TEST_DISABLED, Boolean.TRUE.toString());
 			setBundleContext(FrameworkUtil.getBundle(this.getClass()).getBundleContext());
 		} catch (Exception e) {
+			log.error("OSGi environment could not be started: {}.", e.getMessage(), e);
 			throw new PepperOSGiException("The OSGi environment could not have been started: " + e.getMessage(), e);
 		}
-//		try {
-//			log.debug("plugin path:\t\t" + getAtomicPepperConfiguration().getPlugInPath());
-//
-//			log.debug("installing OSGI-bundles...");
-//			log.debug("-------------------- installing bundles --------------------");
-//			Collection<Bundle> bundles = null;
-
-			// installing module-bundles
-//			List<URI> dropInURIs = null;
-//			List<String> dropInRawStrings = getAtomicPepperConfiguration().getDropInPaths();
-//			if (dropInRawStrings != null) {
-//				dropInURIs = new ArrayList<>(dropInRawStrings.size());
-//				for (String path : dropInRawStrings) {
-//					dropInURIs.add(new File(path).toURI());
-//				}
-//			}
-//			log.debug("\tinstalling OSGI-bundles:");
-
-//			bundles = this.installBundles(new File(getAtomicPepperConfiguration().getPlugInPath()).toURI(), dropInURIs);
-//			log.debug("----------------------------------------------------------");
-//			log.debug("installing OSGI-bundles...FINISHED");
-//			log.debug("starting OSGI-bundles...");
-//			log.debug("-------------------- starting bundles --------------------");
-//			if ((bundles == null) || (bundles.isEmpty())) {
-//				bundles = new ArrayList<>();
-//				bundleIdMap = new Hashtable<>();
-//				for (Bundle bundle : getBundleContext().getBundles()) {
-//					bundles.add(bundle);
-//					bundleIdMap.put(bundle.getBundleId(), bundle);
-//				}
-//			}
-//
-//			this.startBundles(bundles);
-//			log.debug("----------------------------------------------------------");
-//			log.debug("starting OSGI-bundles...FINISHED");
-//		} catch (PepperException e) {
-//			throw e;
-//		} catch (Exception e) {
-//			throw new PepperOSGiException("An exception occured installing bundles for OSGi environment. ", e);
-//		}
-//
 		Bundle[] bundles = FrameworkUtil.getBundle(this.getClass()).getBundleContext().getBundles();
 		for (int i = 0; i < bundles.length; i++) {
 			Bundle bundle = bundles[i];
@@ -168,7 +132,9 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 		if (configuration instanceof AtomicPepperConfiguration) {
 			this.properties = (AtomicPepperConfiguration) configuration;
 		} else {
-			throw new PepperConfigurationException("Cannot set the given configuration, since it is not of type '" + AtomicPepperConfiguration.class.getSimpleName() + "'.");
+			PepperConfigurationException e = new PepperConfigurationException("Cannot set the given configuration, since it is not of type '" + AtomicPepperConfiguration.class.getSimpleName() + "'.");
+			log.error("Wrong Pepper configuration type!", e);
+			throw e;
 		}
 	}
 	
@@ -260,6 +226,7 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 	 * @throws IOException
 	 */
 	public Bundle installAndCopy(URI bundleURI) throws BundleException, IOException {
+		// TODO Add logs!
 		Bundle retVal = null;
 		if (bundleURI != null) {
 			String pluginPath = getAtomicPepperConfiguration().getPlugInPath();

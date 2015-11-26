@@ -139,6 +139,7 @@ public class PepperUpdateJob extends Job {
 			subMonitor.setTaskName("Updating " + entry.getKey() + " ...");
 			boolean cancelled = updateModule(entry, subMonitor.newChild(1));
 			if (cancelled) {
+				log.warn("Update process was cancelled, returning {}.", Status.CANCEL_STATUS);
 				return Status.CANCEL_STATUS;
 			}
 		}
@@ -146,20 +147,23 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * TODO: Description
+	 * Updates a single Pepper module.
 	 *
-	 * @param entry
+	 * @param entry The entry from the module table referring to the module to be updated.
 	 * @param newChild
 	 */
 	private boolean updateModule(Entry<String, Pair<String, String>> entry, SubMonitor newChild) {
 		if (newChild.isCanceled()) {
+			log.warn("Update was cancelled during processing module {}.", entry.getKey());
 			return true;
 		}
 		AtomicPepperOSGiConnector pepper = (AtomicPepperOSGiConnector) getPepper();
 		if (pepper.update(entry.getValue().getLeft(), entry.getKey(), entry.getValue().getRight(), false, false)) {
+			log.info(entry.getKey().concat(" successfully updated."));
 			 resultLines.add(entry.getKey().concat(" successfully updated."));
 		}
 		else {
+			log.info(entry.getKey().concat(" NOT updated."));
 			 resultLines.add(entry.getKey().concat(" NOT updated."));
 		}
 		newChild.done();
@@ -297,7 +301,9 @@ public class PepperUpdateJob extends Job {
 	}
 
 	/**
-	 * TODO Description
+	 * Represents a status of ERROR, i.e., where an exception has been thrown
+	 * and the job cannot be successfully finished. Sets the message to reflect
+	 * the type of the exception.
 	 * <p>
 	 * @author Stephan Druskat <stephan.druskat@uni-jena.de>
 	 */

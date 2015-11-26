@@ -61,7 +61,9 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 	}
 
 	/**
-	 * TODO Description
+	 * Listens to a {@link PepperUpdateJob} and catches the point where
+	 * the job is finished, then reacts to the job's resulting status
+	 * by reporting it to the user via different types of {@link MessageDialog}.
 	 * <p>
 	 * 
 	 * @author Stephan Druskat <stephan.druskat@uni-jena.de>
@@ -73,6 +75,7 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 
 		@Override
 		public void done(IJobChangeEvent event) {
+			log.info("The PepperUpdateJob {} has finished with result {}. Proceeding to report result to user.", event.getJob(), event.getResult());
 			result = event.getResult();
 			resultText = ((PepperUpdateJob) event.getJob()).getResultText();
 			Display display = PlatformUI.getWorkbench().getDisplay();
