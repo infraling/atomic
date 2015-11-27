@@ -20,18 +20,13 @@ package org.corpus_tools.atomic.pepper.update;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.pepper.update.PepperUpdateDelegate.PepperUpdateErrorStatus;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Handles selection of menu item "Help > Update > Update Pepper" by creating and scheduling a {@link PepperUpdateJob}.
@@ -40,6 +35,19 @@ import org.eclipse.ui.PlatformUI;
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 public class PepperUpdateHandler extends AbstractHandler implements IHandler {
+	
+	/*
+	 * TODO FIXME: Include boolean for sync/async, implement switch/case with Job call and tjis call:
+	 * 		try {
+			PepperUpdateRunnableWithProgress pepperUpdateRunnable = new PepperUpdateRunnableWithProgress();
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(pepperUpdateRunnable);
+		}
+		catch (InvocationTargetException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	 */
 
 	/**
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "PepperUpdateHandler".
@@ -61,54 +69,19 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 	}
 
 	/**
-	 * Listens to a {@link PepperUpdateJob} and catches the point where
-	 * the job is finished, then reacts to the job's resulting status
-	 * by reporting it to the user via different types of {@link MessageDialog}.
+	 * Listens to a {@link PepperUpdateJob} and catches the point where the job is finished, then reacts to the job's resulting status by reporting it to the user via different types of {@link MessageDialog}.
 	 * <p>
 	 * 
 	 * @author Stephan Druskat <stephan.druskat@uni-jena.de>
 	 */
 	public class PepperUpdateJobChangeAdapter extends JobChangeAdapter {
 
-		private IStatus result;
-		private String resultText;
-
 		@Override
 		public void done(IJobChangeEvent event) {
 			log.info("The PepperUpdateJob {} has finished with result {}. Proceeding to report result to user.", event.getJob(), event.getResult());
-			result = event.getResult();
-			resultText = ((PepperUpdateJob) event.getJob()).getDelegate().getResultText();
-			Display display = PlatformUI.getWorkbench().getDisplay();
-			if (result == Status.CANCEL_STATUS) {
-				display.asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Pepper update cancelled!", "The Pepper update process has been cancelled.\nThe following Pepper modules have been processed.\n" + resultText);
-					}
-				});
-				log.warn("Pepper update cancelled! Results:\n" + resultText);
-			}
-			else if (result == Status.OK_STATUS) {
-				display.asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Pepper update finished!", "The Pepper update process has successfully finished with the following results.\n" + resultText);
-					}
-				});
-				log.info("Pepper update finished, results:\n" + resultText);
-			}
-			else if (result instanceof PepperUpdateErrorStatus) {
-				display.asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						MessageDialog.openError(Display.getCurrent().getActiveShell(), "Pepper update could not finish!", "The Pepper update process did not finish successfully " + result.getMessage() + ".");
-					}
-				});
-				log.error("Error in Pepper update process due to the following exception: " + result.getException());
-			}
-
+			new PepperUpdateReporter(event.getResult(), ((PepperUpdateJob) event.getJob()).getDelegate().getResultText()).report();
+			event.getJob().removeJobChangeListener(this);
 		}
-
 	}
 
 }
