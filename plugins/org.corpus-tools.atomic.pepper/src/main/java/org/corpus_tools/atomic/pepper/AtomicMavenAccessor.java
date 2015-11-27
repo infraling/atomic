@@ -110,8 +110,6 @@ import org.eclipse.aether.version.InvalidVersionSpecificationException;
 import org.eclipse.aether.version.Version;
 import org.eclipse.aether.version.VersionRange;
 import org.eclipse.aether.version.VersionScheme;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.xml.sax.Attributes;
@@ -269,7 +267,6 @@ public class AtomicMavenAccessor {
 			}
 			catch (DependencyCollectionException e) {
 				log.warn("An error occured initializing the update mechanism. Please check your internet connection.", e);
-				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No internet connection!", "An error occurred during the initialization of the Pepper update mechanism.\n\nPlease check your internet connection!");
 				return false;
 			}
 			session = null;

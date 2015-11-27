@@ -18,6 +18,8 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.update;
 
+import java.io.IOException;
+import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
@@ -27,6 +29,8 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Handles selection of menu item "Help > Update > Update Pepper" by creating and scheduling a {@link PepperUpdateJob}.
@@ -62,6 +66,20 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		log.info("Starting Pepper update process, called from menu.");
+		try {
+			new URL("http://korpling.german.hu-berlin.de/maven2/").openConnection().getContent();
+		}
+		catch (IOException e) {
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No internet connection!", "An error occurred during the initialization of the Pepper update mechanism.\n\nPlease check your internet connection!");
+				}
+			});
+			log.warn("Cannot connect to korpling Maven repository at Humboldt-Universität zu Berlin!", e);
+			return null;
+		}
+		
 		PepperUpdateJob job = new PepperUpdateJob("Pepper Update running ...");
 		job.addJobChangeListener(new PepperUpdateJobChangeAdapter());
 		job.schedule();
