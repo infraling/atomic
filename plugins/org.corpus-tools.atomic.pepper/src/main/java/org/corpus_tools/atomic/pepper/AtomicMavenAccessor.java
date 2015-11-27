@@ -132,7 +132,7 @@ public class AtomicMavenAccessor {
 	private static final Logger log = LogManager.getLogger(AtomicMavenAccessor.class);
 
 	/** contains the path to the blacklist file. */
-	private static final String BLACKLIST_PATH = "./conf/dep/blacklist.cfg";
+	private static final String BLACKLIST_PATH = "./configuration/dependencies/blacklist.cfg";
 	/** this String contains the artifactId of pepper-framework. */
 	public static final String ARTIFACT_ID_PEPPER_FRAMEWORK = "pepper-framework";
 	/** this String contains the artifactId of pepper-parentModule. */
