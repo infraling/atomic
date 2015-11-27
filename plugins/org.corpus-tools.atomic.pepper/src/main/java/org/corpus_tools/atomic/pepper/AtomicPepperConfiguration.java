@@ -94,7 +94,7 @@ public class AtomicPepperConfiguration extends PepperConfiguration {
 	 * @return plugIn path
 	 */
 	public String getPlugInPath() {
-		return (this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
+		return (findAtomicHome().getAbsolutePath() + "/" + this.getProperty(PepperStarterConfiguration.PROP_PLUGIN_PATH));
 	}
 
 	/**
