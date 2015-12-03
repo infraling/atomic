@@ -2,6 +2,11 @@
 * Changelog for Atomic *
 ************************
 
+Version 0.2.1
+=============
+- Replace update site URL with new update site on Bintray
+- Replace Atomic website link in docs with new link on corpus-tools.org
+
 Version 0.2
 ===========
 - Add corpus navigation for the Annotation Graph Editor by introducing the Sentence View,

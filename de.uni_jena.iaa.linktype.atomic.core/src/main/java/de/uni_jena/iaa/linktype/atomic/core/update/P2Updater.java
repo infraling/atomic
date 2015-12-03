@@ -70,7 +70,7 @@ public class P2Updater {
 			throw new InvocationTargetException(throwable);
 		}
 		try {
-			URI repoLocation = new URI("http://linktype.iaa.uni-jena.de/atomic/updates/");
+			URI repoLocation = new URI("https://dl.bintray.com/corpus-tools-org/atomic/");
 			log.info("Adding repository " + repoLocation);
 			metadataManager.loadRepository(repoLocation, null);
 			artifactManager.loadRepository(repoLocation, null);
