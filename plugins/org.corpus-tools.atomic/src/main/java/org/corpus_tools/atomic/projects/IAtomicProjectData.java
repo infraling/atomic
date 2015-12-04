@@ -21,7 +21,7 @@ package org.corpus_tools.atomic.projects;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 
 /**
- * This class implements a String-based graph representing
+ * Atomic project data is basically a String-based graph representing
  * the Atomic project structure, i.e.:
  * <p>
  * A project, which contains exactly one {@link SaltProject} (not
@@ -31,12 +31,19 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
  * exactly one corpus graph), which contains n corpora, which
  * contain m documents each, which contain exactly one source text
  * each.
+ * <p>
+ * The relation between project and corpora is one of association
+ * rather than structural containment.
  * <p> 
+ * Classes implementing this interface provide the necessary methods
+ * to construct an object containing all data that a multi-corpus,
+ * multi-document project in Atomic can hold.
+ * <p>
  * See also the graphical in {@link IProjectCreator}.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public class AtomicProjectGraph {
+public interface IAtomicProjectData {
 
 }

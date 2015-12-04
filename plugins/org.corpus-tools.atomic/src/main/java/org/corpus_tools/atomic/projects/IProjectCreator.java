@@ -82,6 +82,6 @@ public interface IProjectCreator {
 	 * each document.
 	 * @return The Salt project
 	 */
-	SaltProject createMultiCorpusProject(AtomicProjectGraph projectGraph);
+	SaltProject createMultiCorpusProject(IAtomicProjectData projectGraph);
 
 }
