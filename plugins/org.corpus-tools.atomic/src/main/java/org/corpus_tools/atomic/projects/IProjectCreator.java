@@ -16,7 +16,7 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.model;
+package org.corpus_tools.atomic.projects;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 
@@ -57,28 +57,31 @@ public interface IProjectCreator {
 	 * Takes a pre-defined project structure and writes it into a {@link SaltProject}.
 	 * <p>
 	 * The structure must be defined as follows.
-	 * Project name (String)
-	 * Corpus name 1 (String) Corpus name 2 (String) ... Corpus name n (String)
-	 * Document name 1.1 (String) Document name 1.2 (String) ... Document name 1.n (String)
-	 * Document name 2.1 (String) Document name 2.2 (String) ... Document name 2.n (String)
-	 * ...
-	 * Document name n.1 (String) Document name n.2 (String) ... Document name n.n (String)
-	 * Source text 
-	 * |- Corpus name (String)
-	 *    |
-	 *    |- Document name (String)
-	 *       |
-	 *       |- Source text to be assigned to the parent document (String)
-	 * |- Corpus name (String)
-	 *    |
-	 *    |- Document name (String)
-	 *       |
-	 *       |- Source text to be assigned to the parent document (String)
+	 * <p>
+	 * <pre>
+	 *                       Project name
+	 *                         (String)
+	 *                         /  |  \
+	 *                        /   |   \
+	 *              Corpus name  ...  ...
+	 *               (String)
+	 *               /   |   \
+	 *              /    |    \
+	 *  Document name   ...   Document name
+	 *    (String)       |       (String)
+	 *       |           |          |
+	 *       |           |          |
+	 *   Source text    ...     Source text
+	 *    (String)               (String)    
+	 * </pre>
+	 * <p>
 	 * Takes multiple source texts and creates a {@link SaltProject} with a more complex corpus structure
 	 *
-	 * @param projectName
-	 * @return
+	 * @param projectGraph The project graph containing String representations of the named elements
+	 * in the project (the project itself, its corpora, their documents), and the source text for 
+	 * each document.
+	 * @return The Salt project
 	 */
-	SaltProject createMultiCorpusProject(String projectName);
+	SaltProject createMultiCorpusProject(AtomicProjectGraph projectGraph);
 
 }
