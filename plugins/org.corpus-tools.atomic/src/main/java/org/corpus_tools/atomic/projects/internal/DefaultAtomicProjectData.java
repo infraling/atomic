@@ -32,7 +32,7 @@ import org.corpus_tools.atomic.projects.IAtomicProjectData;
 /**
  * This internal class is the default implementation of {@link IAtomicProjectData}. It is not API and will only be used internally.
  * <p>
- * Clients should implement their own project data class is necessary.
+ * Clients should implement their own project data class if necessary.
  * <p>
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
@@ -45,30 +45,38 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	private static final Logger log = LogManager.getLogger(DefaultAtomicProjectData.class);
 
 	private String projectName = null;
-	private Map<String, Set<Pair<String, String>>> corpora = new HashMap<>(); // Each key = corpus -> Set of document<name,text>
+	private Map<String, Set<Pair<String, String>>> corpora = new HashMap<>(); // TODO: Set to final?
 
 	/**
 	 * Constructor taking the name of the project as argument.
 	 */
 	public DefaultAtomicProjectData(String projectName) {
-		this.setProjectName(projectName);
+		this.projectName = projectName;
 	}
 
-	public void createDocumentAndAddToCorpus(String corpus, String documentName, String documentSourceText) {
+	/**
+	 * Creates a "document", i.e. a pair of document name and document Text. If the respective
+	 * corpus already exists in the list of corpora, get that corpus, and attach the document to
+	 * the corpus. If the corpus doesn't not exist, create a new set to take up all documents for
+	 * that corpus, and add the corpus (here: corpus name) to the list of corpora, bringing its
+	 * (newly created) document set. 
+	 *
+	 * @param corpusName
+	 * @param documentName
+	 * @param documentSourceText
+	 */
+	public void createDocumentAndAddToCorpus(String corpusName, String documentName, String documentSourceText) {
 		Pair<String, String> document = new MutablePair<String, String>(documentName, documentSourceText);
-		if (getCorpora().containsKey(corpus)) {
-			if (!getCorpora().get(corpus).add(document)) {
-				log.warn("Could not add document {} to corpus {}.", document, corpus);
+		if (getCorpora().containsKey(corpusName)) {
+			boolean isDocumentAddedToCorpus = getCorpora().get(corpusName).add(document);
+			if (!isDocumentAddedToCorpus) {
+				log.warn("Could not add document {} to corpus {}.", document, corpusName);
 			}
 		}
 		else {
 			Set<Pair<String, String>> newDocumentSet = new HashSet<>();
-			if (newDocumentSet.add(document)) {
-				getCorpora().put(corpus, newDocumentSet);
-			}
-			else {
-				log.warn("Could not add document {} to corpus {}.", document, corpus);
-			}
+			newDocumentSet.add(document);
+			getCorpora().put(corpusName, newDocumentSet);
 		}
 	}
 
@@ -80,24 +88,10 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	}
 
 	/**
-	 * @param projectName the projectName to set
-	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-	/**
-	 * @return the corpora
+	 * @return The map of corpora, or an empty {@link Map}.
 	 */
 	public Map<String, Set<Pair<String, String>>> getCorpora() {
 		return corpora;
-	}
-
-	/**
-	 * @param corpora the corpora to set
-	 */
-	public void setCorpora(Map<String, Set<Pair<String, String>>> corpora) {
-		this.corpora = corpora;
 	}
 
 }
