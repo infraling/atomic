@@ -58,6 +58,11 @@ public class DefaultAtomicProjectDataTest {
 		// FIXME: Fleißarbeit: das Ganze noch für zweites Korpus
 		// Noch checken, ob erwartetes eintrifft wenn das gleiche dokument nochmal eingefügt wird
 		
+		///////////////////////////////////////
+		// Wenn diese Klasse von einem ANDEREN Objekt (bspw. Wizard) benutzt wird und man die Daten
+		// dort modellieren will, benutze ein Mockup-Framework. Denn: wenn diese Tests fehlschlagen, 
+		// sollen die Wizard-Tests nicht fehlschlagen
+		
 		// Add one document to corpus 1
 		getFixture().createDocumentAndAddToCorpus("test-corpus", "test-document", "test-source-text");
 		assertEquals(1, (getFixture().getCorpora().size()));
