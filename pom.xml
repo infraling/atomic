@@ -170,5 +170,6 @@
 		<module>plugins/org.corpus-tools.atomic.pepper</module>
 		<module>features/org-corpus-tools.atomic.feature</module>
 		<module>repository</module>
+		<module>tests</module>
 	</modules>
 </project>

@@ -21,6 +21,8 @@ package org.corpus_tools.atomic.projects.internal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +45,7 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	private static final Logger log = LogManager.getLogger(DefaultAtomicProjectData.class);
 
 	private String projectName = null;
-	private Map<String, HashSet<Pair<String, String>>> corpora = new HashMap<String, HashSet<Pair<String, String>>>(); // Each key = corpus -> Set of document<name,text>
+	private Map<String, Set<Pair<String, String>>> corpora = new HashMap<>(); // Each key = corpus -> Set of document<name,text>
 
 	/**
 	 * Constructor taking the name of the project as argument.
@@ -60,7 +62,7 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 			}
 		}
 		else {
-			HashSet<Pair<String, String>> newDocumentSet = new HashSet<Pair<String, String>>();
+			Set<Pair<String, String>> newDocumentSet = new HashSet<>();
 			if (newDocumentSet.add(document)) {
 				getCorpora().put(corpus, newDocumentSet);
 			}
@@ -87,14 +89,14 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	/**
 	 * @return the corpora
 	 */
-	public Map<String, HashSet<Pair<String, String>>> getCorpora() {
+	public Map<String, Set<Pair<String, String>>> getCorpora() {
 		return corpora;
 	}
 
 	/**
 	 * @param corpora the corpora to set
 	 */
-	public void setCorpora(Map<String, HashSet<Pair<String, String>>> corpora) {
+	public void setCorpora(Map<String, Set<Pair<String, String>>> corpora) {
 		this.corpora = corpora;
 	}
 
