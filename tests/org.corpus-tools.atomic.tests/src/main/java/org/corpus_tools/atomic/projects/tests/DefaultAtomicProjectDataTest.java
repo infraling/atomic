@@ -16,7 +16,7 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.tests;
+package org.corpus_tools.atomic.projects.tests;
 
 import static org.junit.Assert.*;
 

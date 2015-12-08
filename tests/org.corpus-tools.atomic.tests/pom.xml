@@ -4,10 +4,11 @@
   <artifactId>org.corpus_tools.atomic.tests</artifactId>
   <packaging>eclipse-test-plugin</packaging>
   <name>Atomic Core Tests</name>
+  <description>Includes all unit tests for the host plugin</description>
   <parent>
   	<groupId>org.corpus-tools.atomic</groupId>
   	<artifactId>parent</artifactId>
   	<version>0.3.0-SNAPSHOT</version>
-  	<relativePath>..</relativePath>
+  	<relativePath>../..</relativePath>
   </parent>
 </project>
