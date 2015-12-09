@@ -8,7 +8,7 @@
   <description>Includes meta files such as parent POM, launch configs, target def, etc.</description>
   
   <properties>
-		<tycho-version>0.21.0</tycho-version>
+		<tycho-version>0.24.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
 		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
@@ -166,6 +166,7 @@
   
 	<modules>
 		<module>plugins/org.corpus-tools.atomic</module>
+		<module>tests/org.corpus-tools.atomic.tests</module>
 		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>plugins/org.corpus-tools.atomic.pepper</module>
 		<module>features/org-corpus-tools.atomic.feature</module>

@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="58">
+<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="62">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.lmax.disruptor" version="3.3.2"/>
-<unit id="net.sdruskat.fragment.sun.misc" version="1.0.0"/>
-<repository location="http://dl.bintray.com/sdruskat/atomic-dependencies/"/>
-</location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.httpcomponents.fluent-hc" version="4.2.6"/>
 <unit id="org.codehaus.plexus.classworlds" version="2.4.0"/>
@@ -84,12 +79,18 @@
 <repository location="http://dl.bintray.com/sdruskat/pepper-dependencies"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.feature.group" version="4.5.1.v20150904-0015"/>
+<unit id="com.lmax.disruptor" version="3.3.2"/>
+<unit id="net.sdruskat.fragment.sun.misc" version="1.0.0"/>
+<repository location="https://dl.bintray.com/sdruskat/atomic-dependencies"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.aether.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.platform.feature.group" version="4.5.1.v20150904-0015"/>
 <unit id="org.eclipse.aether.transport.http.feature.feature.group" version="1.0.1.v20141111"/>
 <unit id="org.eclipse.rcp.feature.group" version="4.5.1.v20150904-0015"/>
 <unit id="org.eclipse.aether.transport.file.feature.feature.group" version="1.0.1.v20141111"/>
 <unit id="org.eclipse.aether.maven.feature.feature.group" version="3.1.0.20140706-2237"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.11.1.v20150904-0015"/>
 <unit id="org.eclipse.aether.connector.basic.feature.feature.group" version="1.0.1.v20141111"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
