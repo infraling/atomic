@@ -166,10 +166,10 @@
   
 	<modules>
 		<module>plugins/org.corpus-tools.atomic</module>
+		<module>tests/org.corpus-tools.atomic.tests</module>
 		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>plugins/org.corpus-tools.atomic.pepper</module>
 		<module>features/org-corpus-tools.atomic.feature</module>
 		<module>repository</module>
-		<module>tests/org.corpus-tools.atomic.tests</module>
 	</modules>
 </project>
