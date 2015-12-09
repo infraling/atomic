@@ -53,16 +53,6 @@ public class DefaultAtomicProjectDataTest {
 		// Empty corpus list
 		assertEquals(0, (getFixture().getCorpora().size()));
 
-		
-		//////////////////////////
-		// FIXME: Fleißarbeit: das Ganze noch für zweites Korpus
-		// Noch checken, ob erwartetes eintrifft wenn das gleiche dokument nochmal eingefügt wird
-		
-		///////////////////////////////////////
-		// Wenn diese Klasse von einem ANDEREN Objekt (bspw. Wizard) benutzt wird und man die Daten
-		// dort modellieren will, benutze ein Mockup-Framework. Denn: wenn diese Tests fehlschlagen, 
-		// sollen die Wizard-Tests nicht fehlschlagen
-		
 		// Add one document to corpus 1
 		getFixture().createDocumentAndAddToCorpus("test-corpus", "test-document", "test-source-text");
 		assertEquals(1, (getFixture().getCorpora().size()));
@@ -70,6 +60,7 @@ public class DefaultAtomicProjectDataTest {
 		assertEquals(1, getFixture().getCorpora().get("test-corpus").size());
 		assertEquals("test-document", getFixture().getCorpora().get("test-corpus").iterator().next().getKey());
 		assertEquals("test-source-text", getFixture().getCorpora().get("test-corpus").iterator().next().getValue());
+
 		// Add second document to corpus 1
 		getFixture().createDocumentAndAddToCorpus("test-corpus", "test-document-two", "test-source-text-two");
 		assertEquals(1, (getFixture().getCorpora().size()));
@@ -83,8 +74,68 @@ public class DefaultAtomicProjectDataTest {
 			}
 		}
 		assertTrue(corpusContainsDocument);
-	}
+		
+		// Add one document to corpus 2
+		getFixture().createDocumentAndAddToCorpus("test-corpus-2", "test-document", "test-source-text");
+		assertEquals(2, (getFixture().getCorpora().size()));
+		assertNotNull(getFixture().getCorpora().get("test-corpus-2"));
+		assertEquals(1, getFixture().getCorpora().get("test-corpus-2").size());
+		assertEquals("test-document", getFixture().getCorpora().get("test-corpus-2").iterator().next().getKey());
+		assertEquals("test-source-text", getFixture().getCorpora().get("test-corpus-2").iterator().next().getValue());
 
+		// Add second document to corpus 2
+		getFixture().createDocumentAndAddToCorpus("test-corpus-2", "test-document-two", "test-source-text-two");
+		assertEquals(2, (getFixture().getCorpora().size()));
+		assertNotNull(getFixture().getCorpora().get("test-corpus-2"));
+		assertEquals(2, getFixture().getCorpora().get("test-corpus-2").size());
+		boolean corpus2ContainsDocument = false;
+		for (Pair<String, String> document : getFixture().getCorpora().get("test-corpus-2")) {
+			if (document.getKey().equals("test-document-two")) {
+				corpus2ContainsDocument = true;
+				assertEquals("test-source-text-two", document.getValue());
+			}
+		}
+		assertTrue(corpus2ContainsDocument);
+		
+		// Check what happens when a corpus is added for a second time: New doc gets added
+		getFixture().createDocumentAndAddToCorpus("test-corpus", "test-document-new", "test-source-text-new");
+		assertEquals(2, getFixture().getCorpora().size());
+		assertNotNull(getFixture().getCorpora().get("test-corpus"));
+		assertEquals(3, getFixture().getCorpora().get("test-corpus").size());
+		boolean corpusContainsNewDocument = false;
+		for (Pair<String, String> document : getFixture().getCorpora().get("test-corpus")) {
+			if (document.getKey().equals("test-document-new")) {
+				corpusContainsNewDocument = true;
+				assertEquals("test-source-text-new", document.getValue());
+			}
+		}
+		assertTrue(corpusContainsNewDocument);
+
+		// Check what happens when a document is added to a corpus for a second time: Document gets replaced!
+		getFixture().createDocumentAndAddToCorpus("test-corpus", "test-document", "test-source-text-replacement");
+		assertEquals(3, getFixture().getCorpora().get("test-corpus").size());
+		boolean corpusContainsDocumentWithNewSourceText = false;
+		for (Pair<String, String> document : getFixture().getCorpora().get("test-corpus")) {
+			if (document.getKey().equals("test-document")) {
+				corpusContainsDocumentWithNewSourceText = true;
+				assertEquals("test-source-text-replacement", document.getValue());
+			}
+		}
+		assertTrue(corpusContainsDocumentWithNewSourceText);
+		
+		// Try to add the same document again
+		getFixture().createDocumentAndAddToCorpus("test-corpus", "test-document", "test-source-text-replacement");
+		assertEquals(3, getFixture().getCorpora().get("test-corpus").size());
+		boolean corpusContainsReplacementDocumentWithNewSourceText = false;
+		for (Pair<String, String> document : getFixture().getCorpora().get("test-corpus")) {
+			if (document.getKey().equals("test-document")) {
+				corpusContainsReplacementDocumentWithNewSourceText = true;
+				assertEquals("test-source-text-replacement", document.getValue());
+			}
+		}
+		assertTrue(corpusContainsReplacementDocumentWithNewSourceText);
+	}
+	
 	/**
 	 * Test method for {@link org.corpus_tools.atomic.projects.internal.DefaultAtomicProjectData#getProjectName()}.
 	 */

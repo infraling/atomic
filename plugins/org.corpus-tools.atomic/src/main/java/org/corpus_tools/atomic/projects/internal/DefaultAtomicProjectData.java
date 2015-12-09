@@ -20,6 +20,7 @@ package org.corpus_tools.atomic.projects.internal;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,22 +56,46 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	}
 
 	/**
-	 * Creates a "document", i.e. a pair of document name and document Text. If the respective
-	 * corpus already exists in the list of corpora, get that corpus, and attach the document to
-	 * the corpus. If the corpus doesn't not exist, create a new set to take up all documents for
-	 * that corpus, and add the corpus (here: corpus name) to the list of corpora, bringing its
-	 * (newly created) document set. 
+	 * Creates a "document", i.e. a pair of document name and document Text. 
+	 * <p>
+	 * If the respective corpus already exists in the list of corpora, get that corpus, 
+	 * and attach the document to the corpus. If the corpus doesn't not exist, create a
+	 * new set to take up all documents for that corpus, and add the corpus 
+	 * (here: corpus name) to the list of corpora, bringing its (newly created) document set.
 	 *
-	 * @param corpusName
-	 * @param documentName
-	 * @param documentSourceText
+	 * @param corpusName The name of the corpus
+	 * @param documentName The name of the document
+	 * @param documentSourceText The source text of the document
 	 */
 	public void createDocumentAndAddToCorpus(String corpusName, String documentName, String documentSourceText) {
 		Pair<String, String> document = new MutablePair<String, String>(documentName, documentSourceText);
+
+		// Check if the corpus is already in the list of corpora
 		if (getCorpora().containsKey(corpusName)) {
-			boolean isDocumentAddedToCorpus = getCorpora().get(corpusName).add(document);
-			if (!isDocumentAddedToCorpus) {
-				log.warn("Could not add document {} to corpus {}.", document, corpusName);
+			Set<Pair<String, String>> corpus = getCorpora().get(corpusName);
+
+			/*
+			 * Check if a document with #documentName already exists in corpus. 
+			 * If it does, replace its source text. 
+			 * If it doesn't add it.
+			 */
+			Pair<String, String> documentInCorpus = null;
+			for (Iterator<Pair<String, String>> iterator = corpus.iterator(); iterator.hasNext();) {
+				Pair<String, String> nextDocument = (Pair<String, String>) iterator.next();
+				if (nextDocument.getKey().equals(documentName)) {
+					documentInCorpus = nextDocument;
+				}
+			}
+			if (documentInCorpus != null) {
+				if (!replaceDocumentSourceText(documentInCorpus, documentSourceText)) {
+					log.warn("Source text in {} could not be replaced with new source text ({})!", documentName, documentSourceText);
+				}
+			}
+			else {
+				boolean isDocumentAddedToCorpus = getCorpora().get(corpusName).add(document);
+				if (!isDocumentAddedToCorpus) {
+					log.warn("Could not add document {} to corpus {}.", document, corpusName);
+				}
 			}
 		}
 		else {
@@ -81,7 +106,23 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	}
 
 	/**
-	 * @return the projectName
+	 * Replaces the source text of a document with a replacement source text. Returns true if the original source text (returned by {@link Pair#setValue(Object)}) does not equal the replacement source text parameter.
+	 *
+	 * @param documentInCorpus The document for which the source text should be changed
+	 * @param replacementSourceText The replacement source text
+	 * @return True if the replacement source does not equal the original source text, otherwise false
+	 */
+	private boolean replaceDocumentSourceText(Pair<String, String> documentInCorpus, String replacementSourceText) {
+		String originalSourceText = documentInCorpus.getValue();
+		if (originalSourceText.equals(replacementSourceText)) {
+			return true; // Not logically correct, but nothing actually changes.
+		}
+		originalSourceText = documentInCorpus.setValue(replacementSourceText); // SET is called here!
+		return !replacementSourceText.equals(originalSourceText);
+	}
+
+	/**
+	 * @return the name of the project
 	 */
 	public String getProjectName() {
 		return projectName;
