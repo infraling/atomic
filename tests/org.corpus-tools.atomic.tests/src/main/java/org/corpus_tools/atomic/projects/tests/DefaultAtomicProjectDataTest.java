@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Description
+ * Unit tests for {@link DefaultAtomicProjectData}.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
@@ -123,7 +123,7 @@ public class DefaultAtomicProjectDataTest {
 		}
 		assertTrue(corpusContainsDocumentWithNewSourceText);
 		
-		// Try to add the same document again
+		// Try to add the same document again: Should see no changes
 		getFixture().createDocumentAndAddToCorpus("test-corpus", "test-document", "test-source-text-replacement");
 		assertEquals(3, getFixture().getCorpora().get("test-corpus").size());
 		boolean corpusContainsReplacementDocumentWithNewSourceText = false;
