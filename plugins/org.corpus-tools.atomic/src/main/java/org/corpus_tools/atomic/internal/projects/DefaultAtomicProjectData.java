@@ -16,7 +16,7 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.projects.internal;
+package org.corpus_tools.atomic.internal.projects;
 
 import java.util.HashMap;
 import java.util.HashSet;

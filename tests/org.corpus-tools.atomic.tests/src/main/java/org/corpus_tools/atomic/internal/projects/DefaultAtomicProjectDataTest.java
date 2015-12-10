@@ -16,12 +16,12 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.projects.tests;
+package org.corpus_tools.atomic.internal.projects;
 
 import static org.junit.Assert.*;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.corpus_tools.atomic.projects.internal.DefaultAtomicProjectData;
+import org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +46,7 @@ public class DefaultAtomicProjectDataTest {
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.internal.DefaultAtomicProjectData#createDocumentAndAddToCorpus(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData#createDocumentAndAddToCorpus(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testCreateDocumentAndAddToCorpus() {
@@ -137,7 +137,7 @@ public class DefaultAtomicProjectDataTest {
 	}
 	
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.internal.DefaultAtomicProjectData#getProjectName()}.
+	 * Test method for {@link org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData#getProjectName()}.
 	 */
 	@Test
 	public void testGetProjectName() {
@@ -145,7 +145,7 @@ public class DefaultAtomicProjectDataTest {
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.internal.DefaultAtomicProjectData#getCorpora()}.
+	 * Test method for {@link org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData#getCorpora()}.
 	 */
 	@Test
 	public void testGetCorpora() {
