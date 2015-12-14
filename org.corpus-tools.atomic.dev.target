@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="62">
+<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="63">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.httpcomponents.fluent-hc" version="4.2.6"/>
@@ -93,6 +93,10 @@
 <unit id="org.eclipse.jdt.feature.group" version="3.11.1.v20150904-0015"/>
 <unit id="org.eclipse.aether.connector.basic.feature.feature.group" version="1.0.1.v20141111"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.mockito" version="1.9.5.v201311280930"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150821153341/repository/"/>
 </location>
 </locations>
 </target>
