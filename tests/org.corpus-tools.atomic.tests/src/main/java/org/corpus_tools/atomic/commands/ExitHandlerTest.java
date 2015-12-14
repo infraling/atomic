@@ -20,9 +20,20 @@ package org.corpus_tools.atomic.commands;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.expressions.EvaluationContext;
+import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.ui.ISources;
+import org.eclipse.ui.PlatformUI;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
 /**
  * TODO Description
@@ -30,6 +41,7 @@ import org.junit.Test;
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
+@RunWith(value=BlockJUnit4ClassRunner.class)
 public class ExitHandlerTest {
 
 	private ExitHandler fixture;
@@ -55,10 +67,19 @@ public class ExitHandlerTest {
 
 	/**
 	 * Test method for {@link org.corpus_tools.atomic.commands.ExitHandler#execute(org.eclipse.core.commands.ExecutionEvent)}.
+	 * @throws ExecutionException 
 	 */
 	@Test
-	public void testExecute() {
-//		fail("Not yet implemented");
+	public void testExecutionException() throws ExecutionException {
+		// Prepare execution event
+		IEvaluationContext context = new EvaluationContext(null, new Object());
+		Map<String, String> parameters = new HashMap<>();
+		ExecutionEvent event = new ExecutionEvent(null, parameters, null, context );
+		context.addVariable(ISources.ACTIVE_WORKBENCH_WINDOW_NAME, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		
+		// Test execute
+		assertTrue((boolean) getFixture().execute(event));
+		assertNull(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 	}
 
 	/**
