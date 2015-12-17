@@ -40,19 +40,10 @@ import org.junit.runner.RunWith;
 public class ExitHandlerGUITest {
 
 	private static SWTWorkbenchBot bot;
-	private ExitHandler fixture;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		bot = new SWTWorkbenchBot();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		this.setFixture(new ExitHandler());
 	}
 
 	/**
@@ -71,29 +62,14 @@ public class ExitHandlerGUITest {
 	 */
 	@Test
 	public void testExecute() throws ExecutionException {
-//		SWTBotMenu fileMenu = bot.menu("File");
-//		assertNotNull(fileMenu);
-//		SWTBotMenu exitMenu = fileMenu.menu("Exit");
-//		assertNotNull(exitMenu);
-//		exitMenu.click();
-//
-//		// Test execute
-////		assertTrue((boolean) getFixture().execute(exitEvent)); // Note: The workbench is closed by now. Cf. http://stackoverflow.com/q/34333091/731040
-//		assertNull(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-	}
+		SWTBotMenu fileMenu = bot.menu("File");
+		assertNotNull(fileMenu);
+		SWTBotMenu exitMenu = fileMenu.menu("Exit");
+		assertNotNull(exitMenu);
+		exitMenu.click();
 
-	/**
-	 * @return the fixture
-	 */
-	private ExitHandler getFixture() {
-		return fixture;
-	}
-
-	/**
-	 * @param fixture the fixture to set
-	 */
-	private void setFixture(ExitHandler fixture) {
-		this.fixture = fixture;
+		// Test execute
+		assertNull(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 	}
 
 }
