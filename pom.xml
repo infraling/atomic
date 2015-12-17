@@ -167,6 +167,7 @@
 	<modules>
 		<module>plugins/org.corpus-tools.atomic</module>
 		<module>tests/org.corpus-tools.atomic.tests</module>
+		<module>tests/org.corpus_tools.atomic.tests.gui</module>
 		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>plugins/org.corpus-tools.atomic.pepper</module>
 		<module>features/org-corpus-tools.atomic.feature</module>

@@ -39,16 +39,18 @@ public class SwitchWorkspaceHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		boolean isNewWorkspaceSelected = false;
 		SelectWorkspaceDialog selectWorkspaceDialog = new SelectWorkspaceDialog(true);
 		int pick = selectWorkspaceDialog.open();
 		if (pick == Dialog.CANCEL) {
-			return null;
+			isNewWorkspaceSelected = false;
 		}
-
+		else {
 		MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Switch Workspace", "Atomic will now restart with the new workspace.");
-
 		PlatformUI.getWorkbench().restart();
-		return null;
+		isNewWorkspaceSelected = true;
+		}
+		return isNewWorkspaceSelected;
 	}
 
 }
