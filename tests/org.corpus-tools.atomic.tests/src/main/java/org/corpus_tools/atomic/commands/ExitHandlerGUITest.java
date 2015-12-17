@@ -19,14 +19,12 @@
 package org.corpus_tools.atomic.commands;
 
 import static org.junit.Assert.*;
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.ui.PlatformUI;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +41,6 @@ public class ExitHandlerGUITest {
 
 	private static SWTWorkbenchBot bot;
 	private ExitHandler fixture;
-	private ExecutionEvent exitEvent;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -83,11 +80,6 @@ public class ExitHandlerGUITest {
 		// Test execute
 //		assertTrue((boolean) getFixture().execute(exitEvent)); // Note: The workbench is closed by now. Cf. http://stackoverflow.com/q/34333091/731040
 		assertNull(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-	}
-
-	@AfterClass
-	public static void sleep() {
-		bot.sleep(2000);
 	}
 
 	/**
