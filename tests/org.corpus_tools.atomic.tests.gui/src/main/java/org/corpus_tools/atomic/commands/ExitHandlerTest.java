@@ -19,18 +19,16 @@
 package org.corpus_tools.atomic.commands;
 
 import static org.junit.Assert.*;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.expressions.EvaluationContext;
-import org.eclipse.core.expressions.IEvaluationContext;
-import org.eclipse.ui.ISources;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.ui.PlatformUI;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * TODO Description
@@ -38,16 +36,14 @@ import org.junit.Test;
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
+@RunWith(SWTBotJunit4ClassRunner.class)
 public class ExitHandlerTest {
 
-	private ExitHandler fixture;
+	private static SWTWorkbenchBot bot;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		this.setFixture(new ExitHandler());
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		bot = new SWTWorkbenchBot();
 	}
 
 	/**
@@ -60,35 +56,20 @@ public class ExitHandlerTest {
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.commands.ExitHandler#execute(org.eclipse.core.commands.ExecutionEvent)}.
+	 * SWTBot test for menu entries executing the OUT
 	 * 
 	 * @throws ExecutionException
 	 */
 	@Test
 	public void testExecute() throws ExecutionException {
-		// Prepare execution event
-		IEvaluationContext context = new EvaluationContext(null, new Object());
-		Map<String, String> parameters = new HashMap<>();
-		ExecutionEvent event = new ExecutionEvent(null, parameters, null, context);
-		context.addVariable(ISources.ACTIVE_WORKBENCH_WINDOW_NAME, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		SWTBotMenu fileMenu = bot.menu("File");
+		assertNotNull(fileMenu);
+		SWTBotMenu exitMenu = fileMenu.menu("Exit");
+		assertNotNull(exitMenu);
+		exitMenu.click();
 
 		// Test execute
-		assertTrue((boolean) getFixture().execute(event));
 		assertNull(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-	}
-	
-	/**
-	 * @return the fixture
-	 */
-	private ExitHandler getFixture() {
-		return fixture;
-	}
-
-	/**
-	 * @param fixture the fixture to set
-	 */
-	private void setFixture(ExitHandler fixture) {
-		this.fixture = fixture;
 	}
 
 }

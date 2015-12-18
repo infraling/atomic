@@ -20,7 +20,9 @@ package org.corpus_tools.atomic.commands;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +38,7 @@ import org.junit.runner.RunWith;
 public class SwitchWorkspaceHandlerTest {
 
 	private SwitchWorkspaceHandler fixture;
+	private SWTWorkbenchBot bot;
 
 	/**
 	 * TODO: Description
@@ -44,7 +47,7 @@ public class SwitchWorkspaceHandlerTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		setFixture(new SwitchWorkspaceHandler());
+		bot = new SWTWorkbenchBot();
 	}
 
 	/**
@@ -61,7 +64,10 @@ public class SwitchWorkspaceHandlerTest {
 	 */
 	@Test
 	public void testExecute() {
-		fail("Not yet implemented");
+		SWTBotMenu fileMenu = bot.menu("File");
+		assertNotNull(fileMenu);
+		SWTBotMenu switchWorkspaceMenu = bot.menu("Switch workspace");
+		assertNotNull(switchWorkspaceMenu);
 	}
 
 	/**
