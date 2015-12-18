@@ -18,13 +18,23 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.commands;
 
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
+import static org.eclipse.swtbot.swt.finder.waits.Conditions.waitForWidget;
 import static org.junit.Assert.*;
 
+import org.corpus_tools.atomic.workspace.SelectWorkspaceDialog;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.matchers.WidgetOfType;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,16 +48,21 @@ import org.junit.runner.RunWith;
 public class SwitchWorkspaceHandlerTest {
 
 	private SwitchWorkspaceHandler fixture;
-	private SWTWorkbenchBot bot;
+	private static SWTWorkbenchBot bot;
 
 	/**
 	 * TODO: Description
 	 *
 	 * @throws java.lang.Exception
 	 */
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+	}
+	
 	@Before
-	public void setUp() throws Exception {
+	public void beforeAllTests() {
 		bot = new SWTWorkbenchBot();
+		bot.resetWorkbench();
 	}
 
 	/**
@@ -63,11 +78,33 @@ public class SwitchWorkspaceHandlerTest {
 	 * Test method for {@link org.corpus_tools.atomic.commands.SwitchWorkspaceHandler#execute(org.eclipse.core.commands.ExecutionEvent)}.
 	 */
 	@Test
-	public void testExecute() {
+	public void testDialogOpenedAndCloses() {
 		SWTBotMenu fileMenu = bot.menu("File");
 		assertNotNull(fileMenu);
-		SWTBotMenu switchWorkspaceMenu = bot.menu("Switch workspace");
+		SWTBotMenu switchWorkspaceMenu = bot.menu("Switch Workspace");
 		assertNotNull(switchWorkspaceMenu);
+		switchWorkspaceMenu.click();
+		bot.captureScreenshot("screenshots/screenshot-switchworkspacehandlertest-after-click.jpeg");
+//		bot.waitUntilWidgetAppears(new DefaultCondition() {
+//			
+//			public boolean test() throws Exception {
+//				return null != bot.shell("Switch Workspace");
+//			}
+//			
+//			public String getFailureMessage() {
+//				return "Could not find widget: Dialog \"Switch workspace\"...";
+//			}
+//		});
+		// Open dialog
+		SWTBotShell dialog = bot.shell("Switch workspace");
+		assertNotNull(dialog);
+		dialog.activate();
+		bot.captureScreenshot("screenshots/screenshot-switchworkspacehandlertest-dialog-should-be-open.jpeg");
+		SWTBot dialogBot = dialog.bot();
+		SWTBotButton cancelButton = dialogBot.button("Cancel");
+		assertNotNull(cancelButton);
+		cancelButton.click();
+		assertTrue(dialog.widget.isDisposed());
 	}
 
 	/**
