@@ -25,17 +25,19 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
  * TODO Description
- *
- * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
- *
+ * <p>
+ * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class SwitchWorkspaceHandlerTest {
@@ -53,21 +55,9 @@ public class SwitchWorkspaceHandlerTest {
 	 */
 	@Test
 	public void testDialogOpenedAndCloses() {
-		SWTBotMenu fileMenu = bot.menu("File");
-		assertNotNull(fileMenu);
-		SWTBotMenu switchWorkspaceMenu = bot.menu("Switch Workspace");
-		assertNotNull(switchWorkspaceMenu);
-		switchWorkspaceMenu.click();
-		
-		// Open dialog
-		SWTBotShell dialog = bot.shell("Switch workspace");
-		assertNotNull(dialog);
-		dialog.activate();
+		SWTBotShell dialog = openDialog();
 		SWTBot dialogBot = dialog.bot();
-		SWTBotButton cancelButton = dialogBot.button("Cancel");
-		assertNotNull(cancelButton);
-		cancelButton.click();
-		assertTrue(dialog.widget.isDisposed());
+		cancelDialog(dialog, dialogBot);
 	}
 
 	/**
@@ -77,16 +67,75 @@ public class SwitchWorkspaceHandlerTest {
 	public void testDialogOpenedViaShortcutAndCloses() {
 		SWTBotShell shell = bot.activeShell();
 		shell.pressShortcut(SWT.ALT | SWT.SHIFT, 'W');
-		
+
 		// Open dialog
 		SWTBotShell dialog = bot.shell("Switch workspace");
 		assertNotNull(dialog);
 		dialog.activate();
 		SWTBot dialogBot = dialog.bot();
+		cancelDialog(dialog, dialogBot);
+	}
+
+	/**
+	 * Test filling in dialog
+	 */
+	@Test
+	public void testFillingInCombo() {
+		SWTBotShell dialog = openDialog();
+		SWTBot dialogBot = dialog.bot();
+
+		SWTBotCombo combo = dialogBot.comboBox();
+		assertNotNull(combo);
+		combo.setText(System.getProperty("user.home") + "/atomic");
+		dialogBot.captureScreenshot("screenshots/combo-filled.jpeg");
+		assertEquals(System.getProperty("user.home") + "/atomic", combo.getText());
+		cancelDialog(dialog, dialogBot);
+	}
+	
+	@Test
+	public void testTogglingCheckbox() {
+		SWTBotShell dialog = openDialog();
+		SWTBot dialogBot = dialog.bot();
+		SWTBotCheckBox rememberButton = dialogBot.checkBox("Remember workspace");
+		assertNotNull(rememberButton);
+		boolean isChecked = rememberButton.isChecked();
+		rememberButton.click();
+		assertEquals(!isChecked, rememberButton.isChecked());
+		rememberButton.click();
+		assertEquals(isChecked, rememberButton.isChecked());
+		cancelDialog(dialog, dialogBot);
+	}
+
+	/**
+	 * Opens the dialog
+	 *
+	 * @return an {@link SWTBotShell} for the dialog
+	 */
+	private SWTBotShell openDialog() {
+		SWTBotMenu fileMenu = bot.menu("File");
+		assertNotNull(fileMenu);
+		SWTBotMenu switchWorkspaceMenu = bot.menu("Switch Workspace");
+		assertNotNull(switchWorkspaceMenu);
+		switchWorkspaceMenu.click();
+
+		// Open dialog
+		SWTBotShell dialog = bot.shell("Switch workspace");
+		assertNotNull(dialog);
+		dialog.activate();
+		return dialog;
+	}
+	
+	/**
+	 * Cancels the dialog
+	 *
+	 * @param dialog
+	 * @param dialogBot
+	 */
+	private void cancelDialog(SWTBotShell dialog, SWTBot dialogBot) {
 		SWTBotButton cancelButton = dialogBot.button("Cancel");
 		assertNotNull(cancelButton);
 		cancelButton.click();
 		assertTrue(dialog.widget.isDisposed());
 	}
-	
+
 }
