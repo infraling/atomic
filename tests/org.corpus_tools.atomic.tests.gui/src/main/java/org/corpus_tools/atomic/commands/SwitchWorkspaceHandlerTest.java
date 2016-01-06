@@ -18,6 +18,8 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.commands;
 
+import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertNotVisible;
+import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertVisible;
 import static org.junit.Assert.*;
 
 import org.eclipse.swt.SWT;
@@ -29,13 +31,12 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * TODO Description
+ * GUI tests for {@link SwitchWorkspaceHandler}
  * <p>
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
@@ -56,6 +57,7 @@ public class SwitchWorkspaceHandlerTest {
 	@Test
 	public void testDialogOpenedAndCloses() {
 		SWTBotShell dialog = openDialog();
+		assertVisible(dialog);
 		SWTBot dialogBot = dialog.bot();
 		cancelDialog(dialog, dialogBot);
 	}
@@ -71,6 +73,7 @@ public class SwitchWorkspaceHandlerTest {
 		// Open dialog
 		SWTBotShell dialog = bot.shell("Switch workspace");
 		assertNotNull(dialog);
+		assertTrue(dialog.isOpen());
 		dialog.activate();
 		SWTBot dialogBot = dialog.bot();
 		cancelDialog(dialog, dialogBot);
@@ -121,6 +124,7 @@ public class SwitchWorkspaceHandlerTest {
 		// Open dialog
 		SWTBotShell dialog = bot.shell("Switch workspace");
 		assertNotNull(dialog);
+		assertTrue(dialog.isOpen());
 		dialog.activate();
 		return dialog;
 	}
@@ -135,7 +139,10 @@ public class SwitchWorkspaceHandlerTest {
 		SWTBotButton cancelButton = dialogBot.button("Cancel");
 		assertNotNull(cancelButton);
 		cancelButton.click();
+		assertFalse(dialog.isOpen());
 		assertTrue(dialog.widget.isDisposed());
 	}
+	
+	// FIXME: Add further tests
 
 }
