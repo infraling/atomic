@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Friedrich-Schiller-Universität Jena
+ * Copyright 2016 Friedrich-Schiller-Universität Jena
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,65 +16,85 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.commands;
+package org.corpus_tools.atomic.workspace;
 
 import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertVisible;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.eclipse.swt.SWT;
+import java.util.Locale;
+
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * GUI tests for {@link SwitchWorkspaceHandler}
- * <p>
- * @author Stephan Druskat <stephan.druskat@uni-jena.de>
+ * GUI tests for {@link SelectWorkspaceDialog}
+ *
+ * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
+ *
  */
 @RunWith(SWTBotJunit4ClassRunner.class)
-public class SwitchWorkspaceHandlerTest {
-
+public class SelectWorkspaceDialogTest {
+	
 	private static SWTWorkbenchBot bot;
+	private SWTBotShell dialog = null;
 
 	@Before
-	public void beforeAllTests() {
+	public void setUp() {
 		bot = new SWTWorkbenchBot();
 		bot.resetWorkbench();
+		dialog  = openDialog();
 	}
-
-	/**
-	 * Test opening and cancelling of dialog
-	 */
+	
+	@After
+	public void tearDown(){
+		cancelDialog();
+	}
+	
+//	/**
+//	 * Test filling in dialog
+//	 */
+//	@Test
+//	public void testFillingInCombo() {
+//		SWTBotShell dialog = openDialog();
+//		SWTBot dialogBot = dialog.bot();
+//
+//		SWTBotCombo combo = dialogBot.comboBox();
+//		assertNotNull(combo);
+//		combo.setText(System.getProperty("user.home") + "/atomic");
+//		dialogBot.captureScreenshot("screenshots/combo-filled.jpeg");
+//		assertEquals(System.getProperty("user.home") + "/atomic", combo.getText());
+//		cancelDialog(dialog, dialogBot);
+//	}
+//	
+//	@Test
+//	public void testTogglingCheckbox() {
+//		SWTBotShell dialog = openDialog();
+//		SWTBot dialogBot = dialog.bot();
+//		
+//		SWTBotCheckBox rememberButton = dialogBot.checkBox("Remember workspace");
+//		assertNotNull(rememberButton);
+//		boolean isChecked = rememberButton.isChecked();
+//		rememberButton.click();
+//		assertEquals(!isChecked, rememberButton.isChecked());
+//		rememberButton.click();
+//		assertEquals(isChecked, rememberButton.isChecked());
+//		cancelDialog(dialog, dialogBot);
+//	}
+//	
 	@Test
-	public void testDialogOpenedAndCloses() {
-		SWTBotShell dialog = openDialog();
-		assertVisible(dialog);
-		SWTBot dialogBot = dialog.bot();
-		cancelDialog(dialog, dialogBot);
+	public void testBrowseButton() {
+		assertVisible(bot.button("Browse..."));
 	}
-
-	/**
-	 * Test opening and cancelling of dialog
-	 */
-	@Test
-	public void testDialogOpenedViaShortcutAndCloses() {
-		SWTBotShell shell = bot.activeShell();
-		shell.pressShortcut(SWT.ALT | SWT.SHIFT, 'W');
-
-		SWTBotShell dialog = bot.shell("Switch workspace");
-		assertNotNull(dialog);
-		assertTrue(dialog.isOpen());
-		dialog.activate();
-		SWTBot dialogBot = dialog.bot();
-		cancelDialog(dialog, dialogBot);
-	}
-
+	
 	/**
 	 * Opens the dialog
 	 *
@@ -96,10 +116,10 @@ public class SwitchWorkspaceHandlerTest {
 	 * @param dialog
 	 * @param dialogBot
 	 */
-	private void cancelDialog(SWTBotShell dialog, SWTBot dialogBot) {
-		dialogBot.button("Cancel").click();
+	private void cancelDialog() {
+		dialog.bot().button("Cancel").click();
 		assertFalse(dialog.isOpen());
 		assertTrue(dialog.widget.isDisposed());
 	}
-
+	
 }
