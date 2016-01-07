@@ -19,16 +19,12 @@
 package org.corpus_tools.atomic.workspace;
 
 import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertVisible;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Locale;
+import static org.junit.Assert.*;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.After;
 import org.junit.Before;
@@ -59,37 +55,29 @@ public class SelectWorkspaceDialogTest {
 		cancelDialog();
 	}
 	
-//	/**
-//	 * Test filling in dialog
-//	 */
-//	@Test
-//	public void testFillingInCombo() {
-//		SWTBotShell dialog = openDialog();
-//		SWTBot dialogBot = dialog.bot();
-//
-//		SWTBotCombo combo = dialogBot.comboBox();
-//		assertNotNull(combo);
-//		combo.setText(System.getProperty("user.home") + "/atomic");
-//		dialogBot.captureScreenshot("screenshots/combo-filled.jpeg");
-//		assertEquals(System.getProperty("user.home") + "/atomic", combo.getText());
-//		cancelDialog(dialog, dialogBot);
-//	}
-//	
-//	@Test
-//	public void testTogglingCheckbox() {
-//		SWTBotShell dialog = openDialog();
-//		SWTBot dialogBot = dialog.bot();
-//		
-//		SWTBotCheckBox rememberButton = dialogBot.checkBox("Remember workspace");
-//		assertNotNull(rememberButton);
-//		boolean isChecked = rememberButton.isChecked();
-//		rememberButton.click();
-//		assertEquals(!isChecked, rememberButton.isChecked());
-//		rememberButton.click();
-//		assertEquals(isChecked, rememberButton.isChecked());
-//		cancelDialog(dialog, dialogBot);
-//	}
-//	
+	/**
+	 * Test filling in dialog
+	 */
+	@Test
+	public void testFillingInCombo() {
+		SWTBotCombo combo = bot.comboBox();
+		assertNotNull(combo);
+		combo.setText(System.getProperty("user.home") + "/atomic");
+		bot.captureScreenshot("screenshots/combo-filled.jpeg");
+		assertEquals(System.getProperty("user.home") + "/atomic", combo.getText());
+	}
+	
+	@Test
+	public void testTogglingCheckbox() {
+		SWTBotCheckBox rememberButton = bot.checkBox("Remember workspace");
+		assertNotNull(rememberButton);
+		boolean isChecked = rememberButton.isChecked();
+		rememberButton.click();
+		assertEquals(!isChecked, rememberButton.isChecked());
+		rememberButton.click();
+		assertEquals(isChecked, rememberButton.isChecked());
+	}
+	
 	@Test
 	public void testBrowseButton() {
 		assertVisible(bot.button("Browse..."));
