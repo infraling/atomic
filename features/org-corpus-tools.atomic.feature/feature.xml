@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.corpus_tools.atomic.feature"
+      label="Atomic Platform"
+      version="0.3.0.qualifier"
+      provider-name="Friedrich Schiller University Jena"
+      plugin="org.corpus_tools.atomic">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.corpus_tools.atomic.logging" version="0.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.11.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.10.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator.resources" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="javax.xml"/>
+      <import plugin="com.lmax.disruptor" version="3.3.2" match="greaterOrEqual"/>
+      <import plugin="de.hu_berlin.german.korpling.saltnpepper.pepper-lib" version="2.1.2" match="greaterOrEqual"/>
+      <import plugin="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" version="2.1.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.common" version="2.11.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="org.codehaus.plexus.utils" version="3.0.10" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="14.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.util" version="3.3.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.api" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.connector.basic" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.impl" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.maven" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.spi" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.transport.file" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.transport.http" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.util" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.lang3"/>
+   </requires>
+
+   <plugin
+         id="org.corpus_tools.atomic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.corpus_tools.atomic.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.corpus_tools.atomic.pepper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

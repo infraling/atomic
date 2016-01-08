@@ -4,7 +4,7 @@
     -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
          to make all loggers asynchronous. -->
      
-    <Configuration status="TRACE">
+    <Configuration status="WARN">
     <Properties>
 		<Property name="log-path">logs</Property>
 	</Properties>

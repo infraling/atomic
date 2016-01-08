@@ -8,10 +8,11 @@
   <description>Includes meta files such as parent POM, launch configs, target def, etc.</description>
   
   <properties>
-		<tycho-version>0.21.0</tycho-version>
+		<tycho-version>0.24.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
-		<deps-p2-repo.url>http://sdruskat.net/deps-p2/updates</deps-p2-repo.url>
+		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
+		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies/</pepper-dependencies-repo.url>
 	</properties>
 
 	<repositories>
@@ -22,9 +23,15 @@
 		</repository>
 
 		<repository>
-			<id>deps-p2</id>
+			<id>atomic-dependencies</id>
 			<layout>p2</layout>
-			<url>${deps-p2-repo.url}</url>
+			<url>${atomic-dependencies-repo.url}</url>
+		</repository>
+
+		<repository>
+			<id>pepper-dependencies</id>
+			<layout>p2</layout>
+			<url>${pepper-dependencies-repo.url}</url>
 		</repository>
 
 		<!-- <repository>
@@ -65,14 +72,14 @@
 				<extensions>true</extensions>
 			</plugin>
 
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<resolver>p2</resolver> -->
+					<resolver>p2</resolver>
 					<!-- configure the p2 target environments for multi-platform build -->
-					<!-- <environments>
+					<environments>
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
@@ -93,11 +100,15 @@
 							<ws>win32</ws>
 							<arch>x86_64</arch>
 						</environment>
+						<!-- Since Mars, cocoa-x86 is not included anymore, cf.
+						https://www.eclipse.org/projects/project-plan.php?planurl=/eclipse/development/plans/eclipse_project_plan_4_5.xml#target_environments -->
+						<!-- 
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86</arch>
 						</environment>
+						-->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
@@ -105,7 +116,7 @@
 						</environment>
 					</environments>
 				</configuration>
-			</plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 
@@ -154,7 +165,12 @@
 	</profiles>
   
 	<modules>
-		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>plugins/org.corpus-tools.atomic</module>
+		<module>tests/org.corpus-tools.atomic.tests</module>
+		<module>tests/org.corpus_tools.atomic.tests.gui</module>
+		<module>plugins/org.corpus-tools.atomic.logging</module>
+		<module>plugins/org.corpus-tools.atomic.pepper</module>
+		<module>features/org-corpus-tools.atomic.feature</module>
+		<module>repository</module>
 	</modules>
 </project>

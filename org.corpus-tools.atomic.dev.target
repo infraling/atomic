@@ -1,65 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="43">
+<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="69">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.feature.group" version="4.5.1.v20150904-0015"/>
-<unit id="org.eclipse.rcp.feature.group" version="4.5.1.v20150904-0015"/>
-<repository location="http://download.eclipse.org/releases/mars/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.lmax.disruptor" version="3.3.2"/>
-<unit id="net.sdruskat.fragment.sun.misc" version="1.0.0"/>
-<repository location="https://dl.bintray.com/sdruskat/atomic-dependencies/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.aether.transport.file.source" version="1.0.2.v20150114"/>
-<unit id="org.apache.maven.repository-metadata" version="3.1.0"/>
-<unit id="org.apache.commons.io" version="2.4.0"/>
-<unit id="org.eclipse.aether.util" version="1.0.2.v20150114"/>
-<unit id="jcl.over.slf4j.source" version="1.6.2"/>
-<unit id="de.hu_berlin.german.korpling.saltnpepper.pepper-lib.source" version="2.1.2"/>
-<unit id="org.eclipse.osgi.services" version="3.4.0.v20140312-2051"/>
-<unit id="org.eclipse.aether.transport.http" version="1.0.2.v20150114"/>
-<unit id="org.codehaus.plexus.utils.source" version="3.0.10"/>
-<unit id="com.neovisionaries.nv-i18n" version="1.1.0"/>
-<unit id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" version="2.1.2"/>
-<unit id="org.apache.maven.model" version="3.1.0"/>
-<unit id="javax.inject.javax.inject.source" version="1.0.0"/>
-<unit id="org.eclipse.aether.transport.wagon.source" version="1.0.2.v20150114"/>
-<unit id="ch.qos.logback.classic.source" version="1.0.13"/>
-<unit id="org.eclipse.aether.transport.wagon" version="1.0.2.v20150114"/>
-<unit id="aopalliance.source" version="1.0.0"/>
-<unit id="org.codehaus.plexus.classworlds.source" version="2.4.0"/>
-<unit id="org.eclipse.aether.api" version="1.0.2.v20150114"/>
-<unit id="org.apache.maven.model-builder" version="3.1.0"/>
-<unit id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore" version="2.1.1"/>
-<unit id="org.apache.httpcomponents.httpclient" version="4.2.6"/>
-<unit id="org.apache.commons.codec.source" version="1.6.0"/>
-<unit id="org.apache.httpcomponents.httpmime" version="4.2.6"/>
-<unit id="org.apache.httpcomponents.httpcore.source" version="4.2.5"/>
-<unit id="com.google.guava" version="14.0.1"/>
-<unit id="ch.qos.logback.core" version="1.0.13"/>
-<unit id="commons-logging" version="1.1.1"/>
-<unit id="org.eclipse.aether.impl.source" version="1.0.2.v20150114"/>
-<unit id="org.codehaus.plexus.component-annotations.source" version="1.5.5"/>
-<unit id="org.eclipse.aether.transport.file" version="1.0.2.v20150114"/>
-<unit id="com.neovisionaries.nv-i18n.source" version="1.1.0"/>
-<unit id="org.apache.maven.repository-metadata.source" version="3.1.0"/>
-<unit id="de.hu_berlin.german.korpling.saltnpepper.pepper-lib" version="2.1.2"/>
-<unit id="javax.enterprise.cdi-api.source" version="1.0.0"/>
-<unit id="slf4j.api.source" version="1.7.5"/>
-<unit id="org.sonatype.sisu.guice" version="3.1.0"/>
-<unit id="org.knallgrau.textcat" version="1.0.1"/>
-<unit id="org.eclipse.aether.api.source" version="1.0.2.v20150114"/>
-<unit id="slf4j.api" version="1.7.5"/>
-<unit id="org.apache.commons.lang3.source" version="3.3.2"/>
-<unit id="org.eclipse.aether.spi" version="1.0.2.v20150114"/>
 <unit id="org.apache.httpcomponents.fluent-hc" version="4.2.6"/>
 <unit id="org.codehaus.plexus.classworlds" version="2.4.0"/>
 <unit id="org.codehaus.plexus.utils" version="3.0.10"/>
+<unit id="org.apache.maven.repository-metadata" version="3.1.0"/>
 <unit id="org.apache.maven.wagon.provider-api.source" version="1.0.0"/>
 <unit id="org.apache.commons.lang3" version="3.3.2"/>
 <unit id="org.apache.httpcomponents.httpclient-cache.source" version="4.2.6"/>
+<unit id="org.apache.commons.io" version="2.4.0"/>
+<unit id="de.hu_berlin.german.korpling.saltnpepper.pepper-lib.source" version="2.1.2"/>
+<unit id="jcl.over.slf4j.source" version="1.6.2"/>
+<unit id="org.eclipse.osgi.services" version="3.4.0.v20140312-2051"/>
 <unit id="javax.annotation.jsr250-api.source" version="1.0.0"/>
 <unit id="javax.annotation.jsr250-api" version="1.0.0"/>
 <unit id="javax.enterprise.cdi-api" version="1.0.0"/>
@@ -67,46 +20,98 @@
 <unit id="org.apache.httpcomponents.fluent-hc.source" version="4.2.6"/>
 <unit id="org.apache.httpcomponents.httpcore-nio.source" version="4.2.5"/>
 <unit id="jcl.over.slf4j" version="1.6.2"/>
+<unit id="org.codehaus.plexus.utils.source" version="3.0.10"/>
 <unit id="commons-logging.source" version="1.1.1"/>
+<unit id="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" version="2.1.2"/>
 <unit id="org.codehaus.janino.commons-compiler" version="2.7.8"/>
-<unit id="org.eclipse.aether.connector.basic" version="1.0.2.v20150114"/>
-<unit id="org.eclipse.aether.util.source" version="1.0.2.v20150114"/>
+<unit id="com.neovisionaries.nv-i18n" version="1.1.0"/>
+<unit id="org.apache.maven.model" version="3.1.0"/>
 <unit id="org.apache.maven.model-builder.source" version="3.1.0"/>
+<unit id="javax.inject.javax.inject.source" version="1.0.0"/>
 <unit id="org.apache.maven.wagon.provider-api" version="1.0.0"/>
 <unit id="org.apache.felix.framework" version="4.2.1"/>
+<unit id="ch.qos.logback.classic.source" version="1.0.13"/>
 <unit id="org.apache.httpcomponents.httpclient-cache" version="4.2.6"/>
 <unit id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCommon" version="2.1.1"/>
 <unit id="org.apache.commons.io.source" version="2.4.0"/>
+<unit id="aopalliance.source" version="1.0.0"/>
 <unit id="org.codehaus.plexus.component-annotations" version="1.5.5"/>
 <unit id="org.apache.httpcomponents.httpclient.source" version="4.2.6"/>
-<unit id="org.sonatype.sisu.guava" version="0.11.1"/>
+<unit id="org.codehaus.plexus.classworlds.source" version="2.4.0"/>
+<unit id="org.apache.maven.model-builder" version="3.1.0"/>
+<unit id="de.hu_berlin.german.korpling.saltnpepper.salt-saltCore" version="2.1.1"/>
 <unit id="de.hu_berlin.german.korpling.saltnpepper.salt-graph" version="2.1.1"/>
-<unit id="org.eclipse.aether.transport.http.source" version="1.0.2.v20150114"/>
+<unit id="org.apache.httpcomponents.httpclient" version="4.2.6"/>
 <unit id="org.apache.httpcomponents.httpcore" version="4.2.5"/>
-<unit id="org.eclipse.aether.connector.basic.source" version="1.0.2.v20150114"/>
-<unit id="org.eclipse.aether.spi.source" version="1.0.2.v20150114"/>
-<unit id="ch.qos.logback.classic" version="1.0.13"/>
+<unit id="org.apache.commons.codec.source" version="1.6.0"/>
 <unit id="org.apache.httpcomponents.httpcore-nio" version="4.2.5"/>
+<unit id="ch.qos.logback.classic" version="1.0.13"/>
+<unit id="org.apache.httpcomponents.httpmime" version="4.2.6"/>
+<unit id="org.apache.httpcomponents.httpcore.source" version="4.2.5"/>
+<unit id="com.google.guava" version="14.0.1"/>
+<unit id="ch.qos.logback.core" version="1.0.13"/>
 <unit id="org.apache.maven.model.source" version="3.1.0"/>
+<unit id="commons-logging" version="1.1.1"/>
 <unit id="org.eclipse.sisu.org.eclipse.sisu.plexus" version="0.0.0.M2a"/>
 <unit id="org.eclipse.osgi.services.source" version="3.4.0.v20140312-2051"/>
-<unit id="org.eclipse.aether.impl" version="1.0.2.v20150114"/>
-<unit id="org.apache.maven.aether-provider" version="3.1.0"/>
+<unit id="org.codehaus.plexus.component-annotations.source" version="1.5.5"/>
 <unit id="org.codehaus.plexus.interpolation.source" version="1.16.0"/>
+<unit id="com.neovisionaries.nv-i18n.source" version="1.1.0"/>
 <unit id="ch.qos.logback.core.source" version="1.0.13"/>
 <unit id="org.eclipse.sisu.inject" version="0.0.0.M2a"/>
-<unit id="org.apache.maven.aether-provider.source" version="3.1.0"/>
 <unit id="aopalliance" version="1.0.0"/>
 <unit id="org.cohehaus.janino" version="2.7.8"/>
 <unit id="org.apache.httpcomponents.httpmime.source" version="4.2.6"/>
+<unit id="org.apache.maven.repository-metadata.source" version="3.1.0"/>
 <unit id="org.apache.commons.codec" version="1.6.0"/>
 <unit id="asm" version="3.3.1"/>
 <unit id="com.google.guava.source" version="14.0.1"/>
+<unit id="de.hu_berlin.german.korpling.saltnpepper.pepper-lib" version="2.1.2"/>
+<unit id="javax.enterprise.cdi-api.source" version="1.0.0"/>
+<unit id="slf4j.api.source" version="1.7.5"/>
+<unit id="org.sonatype.sisu.guice" version="3.1.0"/>
+<unit id="org.knallgrau.textcat" version="1.0.1"/>
 <unit id="org.eclipse.equinox.util" version="1.0.500.v20130404-1337"/>
 <unit id="org.codehaus.plexus.interpolation" version="1.16.0"/>
-<unit id="com.google.code.findbugs.jsr305" version="1.3.9"/>
 <unit id="org.eclipse.sisu.org.eclipse.sisu.plexus.source" version="0.0.0.M2a"/>
+<unit id="slf4j.api" version="1.7.5"/>
+<unit id="org.apache.commons.lang3.source" version="3.3.2"/>
 <repository location="http://dl.bintray.com/sdruskat/pepper-dependencies"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.lmax.disruptor" version="3.3.2"/>
+<unit id="net.sdruskat.fragment.sun.misc" version="1.0.0"/>
+<repository location="https://dl.bintray.com/sdruskat/atomic-dependencies"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.aether.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.platform.feature.group" version="4.5.1.v20150904-0015"/>
+<unit id="org.eclipse.aether.transport.http.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.5.1.v20150904-0015"/>
+<unit id="org.eclipse.aether.transport.file.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.aether.maven.feature.feature.group" version="3.1.0.20140706-2237"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.11.1.v20150904-0015"/>
+<unit id="org.eclipse.aether.connector.basic.feature.feature.group" version="1.0.1.v20141111"/>
+<repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.hamcrest" version="1.1.0.v20090501071000"/>
+<unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
+<unit id="org.hamcrest.generator" version="1.3.0.v201305210900"/>
+<unit id="org.mockito" version="1.9.5.v201311280930"/>
+<unit id="org.hamcrest.text" version="1.1.0.v20090501071000"/>
+<unit id="org.hamcrest.library" version="1.3.0.v201505072020"/>
+<unit id="org.hamcrest.integration" version="1.3.0.v201305210900"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150821153341/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.3.0.201506081302"/>
+<unit id="org.eclipse.swtbot.eclipse.test.junit.feature.group" version="2.3.0.201506081302"/>
+<unit id="org.eclipse.swtbot.feature.group" version="2.3.0.201506081302"/>
+<unit id="org.eclipse.swtbot.generator.feature.feature.group" version="2.3.0.201506081302"/>
+<unit id="org.eclipse.swtbot.ide.feature.group" version="2.3.0.201506081302"/>
+<unit id="org.eclipse.swtbot.eclipse.gef.feature.group" version="2.3.0.201506081302"/>
+<repository location="http://download.eclipse.org/technology/swtbot/releases/latest/"/>
 </location>
 </locations>
 </target>

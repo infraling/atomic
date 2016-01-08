@@ -43,10 +43,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * A dialog which lets the user pick his/her workspace. 
- * FIXME: Factor out logic, keep only GUI, externalize Strings
- * 
+ * A dialog which lets the user pick his/her workspace. FIXME: Factor out logic, keep only GUI, externalize Strings TESTME
  * <p>
+ * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 public class SelectWorkspaceDialog extends TitleAreaDialog {
@@ -150,9 +149,9 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 		Composite composite = (Composite) super.createDialogArea(parent);
 		setTitle("Pick workspace");
 		setMessage(MESSAGE_DEFAULT);
-		
+
 		createBrowseRow(composite);
-		
+
 		Composite rememberWSRow = new Composite(composite, SWT.NONE);
 		rememberWSRow.setLayout(new RowLayout(SWT.RIGHT));
 		rememberWorkspaceButton = new Button(rememberWSRow, SWT.CHECK);
@@ -162,20 +161,19 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 		return composite;
 	}
 
-	
 	/**
 	 * Creates a composite with the elements needed for appointing a path for the workspace.
 	 * 
-	 * @param Composite composite The parent composite 
+	 * @param Composite composite The parent composite
 	 */
 	private void createBrowseRow(Composite composite) {
 		Composite row = new Composite(composite, SWT.NONE);
 		GridLayout layout = new GridLayout(3, false);
 		row.setLayout(layout);
-		
+
 		CLabel label = new CLabel(row, SWT.NONE);
 		label.setText("Workspace path:");
-		
+
 		workspacePathCombo = new Combo(row, SWT.BORDER);
 		String workspaceRoot = preferences.get(PREF_KEY_WORKSPACE_ROOT, "");
 		if (workspaceRoot == null || workspaceRoot.length() == 0) {
@@ -192,9 +190,9 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 		}
 		for (String lastOfAllWorkspace : lastWorkspacesList)
 			workspacePathCombo.add(lastOfAllWorkspace);
-		
+
 		Button browseButton = new Button(row, SWT.PUSH);
-		browseButton.setText("Browse...");
+		browseButton.setText("&Browse...");
 		browseButton.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
@@ -208,13 +206,18 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 				}
 				else {
 					setMessage(MESSAGE_DEFAULT);
-					workspacePathCombo.setText(pick);
+					if (pick != null) {
+						workspacePathCombo.setText(pick);
+					}
+					else {
+						log.trace("Variable \'pick\' is null.");
+					}
 				}
 			}
 		});
 	}
 
-	/* 
+	/*
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
@@ -282,7 +285,7 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 	 */
 	public static String checkWorkspaceDirectory(Shell parentShell, String workspaceLocation, boolean askForCreation, boolean calledFromWorkspaceDialog) {
 		File workspaceFile = new File(workspaceLocation + File.separator + WORKSPACE_IDENTIFIER_FILE_NAME);
-		
+
 		File workspaceDirectory = new File(workspaceLocation);
 		if (!workspaceDirectory.exists()) {
 			if (askForCreation) {
@@ -346,10 +349,7 @@ public class SelectWorkspaceDialog extends TitleAreaDialog {
 	}
 
 	/**
-	 * Checks whether the directory with the passed-in String location exists.
-	 * If it does not exist, the directory will be created, and the workspace
-	 * file (@see {@link SelectWorkspaceDialog#WORKSPACE_IDENTIFIER_FILE_NAME})
-	 * will be created.
+	 * Checks whether the directory with the passed-in String location exists. If it does not exist, the directory will be created, and the workspace file (@see {@link SelectWorkspaceDialog#WORKSPACE_IDENTIFIER_FILE_NAME}) will be created.
 	 *
 	 * @param workspaceDirectory The assumed workspace root directory
 	 * @return boolean true if all checks passed and workspace has been successfully created, false if there was a problem

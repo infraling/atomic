@@ -1,0 +1,2 @@
+All these tests need a GUI, so exclude them from infinitest
+.*

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Core GUI Tests
+Bundle-SymbolicName: org.corpus_tools.atomic.tests.gui;singleton:=true
+Bundle-Version: 0.3.0.qualifier
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Friedrich Schiller University Jena
+Fragment-Host: org.corpus_tools.atomic;bundle-version="0.3.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.swtbot.go,
+ org.eclipse.swt,
+ org.eclipse.swtbot.swt.finder
