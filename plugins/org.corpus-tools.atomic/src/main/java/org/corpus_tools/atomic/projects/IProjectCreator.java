@@ -83,5 +83,12 @@ public interface IProjectCreator {
 	 * @return The Salt project
 	 */
 	SaltProject createMultiCorpusProject(IAtomicProjectData projectGraph);
+	
+	/**
+	 * Saves the SaltProject.
+	 *
+	 * @param project
+	 */
+	void saveProject(SaltProject project);
 
 }

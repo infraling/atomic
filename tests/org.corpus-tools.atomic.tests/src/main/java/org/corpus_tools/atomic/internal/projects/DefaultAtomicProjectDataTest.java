@@ -37,7 +37,7 @@ public class DefaultAtomicProjectDataTest {
 	private DefaultAtomicProjectData fixture = null;
 
 	/**
-	 * TODO: Description
+	 * Set fixture.
 	 *
 	 * @throws java.lang.Exception
 	 */
