@@ -18,6 +18,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
+import java.util.LinkedHashSet;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 
 /**
@@ -45,5 +49,22 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
  *
  */
 public interface IAtomicProjectData {
+	
+	/**
+	 * Returns the name of the project.
+	 *
+	 * @return the project name
+	 */
+	public String getProjectName();
+	
+	/**
+	 * Returns the corpora contained in the project, as a {@link Map}.
+	 * The map contains corpora with their name as the key. The map values
+	 * are insertion-ordered sets of documents, i.e., tuples of document
+	 * name and document text.
+	 *
+	 * @return the map of corpora
+	 */
+	public Map<String, LinkedHashSet<Pair<String, String>>> getCorpora();
 
 }

@@ -19,11 +19,9 @@
 package org.corpus_tools.atomic.internal.projects;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +44,7 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	private static final Logger log = LogManager.getLogger(DefaultAtomicProjectData.class);
 
 	private String projectName = null;
-	private Map<String, Set<Pair<String, String>>> corpora = new HashMap<>(); // TODO: Set to final?
+	private Map<String, LinkedHashSet<Pair<String, String>>> corpora = new HashMap<>(); // TODO: Set to final?
 
 	/**
 	 * Constructor taking the name of the project as argument.
@@ -72,12 +70,12 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 
 		// Check if the corpus is already in the list of corpora
 		if (getCorpora().containsKey(corpusName)) {
-			Set<Pair<String, String>> corpus = getCorpora().get(corpusName);
+			LinkedHashSet<Pair<String, String>> corpus = getCorpora().get(corpusName);
 
 			/*
 			 * Check if a document with #documentName already exists in corpus. 
 			 * If it does, replace its source text. 
-			 * If it doesn't add it.
+			 * If it doesn't, add it.
 			 */
 			Pair<String, String> documentInCorpus = null;
 			for (Iterator<Pair<String, String>> iterator = corpus.iterator(); iterator.hasNext();) {
@@ -99,7 +97,7 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 			}
 		}
 		else {
-			Set<Pair<String, String>> newDocumentSet = new HashSet<>();
+			LinkedHashSet<Pair<String, String>> newDocumentSet = new LinkedHashSet<>();
 			newDocumentSet.add(document);
 			getCorpora().put(corpusName, newDocumentSet);
 		}
@@ -131,7 +129,7 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 	/**
 	 * @return The map of corpora, or an empty {@link Map}.
 	 */
-	public Map<String, Set<Pair<String, String>>> getCorpora() {
+	public Map<String, LinkedHashSet<Pair<String, String>>> getCorpora() {
 		return corpora;
 	}
 
