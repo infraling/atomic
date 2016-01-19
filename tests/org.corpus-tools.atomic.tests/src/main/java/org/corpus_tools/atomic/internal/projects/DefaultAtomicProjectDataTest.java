@@ -153,6 +153,9 @@ public class DefaultAtomicProjectDataTest {
 			assertEquals(String.valueOf(i), d.getRight());
 		}
 		getFixture().createDocumentAndAddToCorpus("c", "d4", "4");
+		getFixture().createDocumentAndAddToCorpus("c", "d2", "2");
+		getFixture().createDocumentAndAddToCorpus("c", "d3", "3");
+		getFixture().createDocumentAndAddToCorpus("c", "d4", "4");
 		i = 0;
 		for (Pair<String, String> d : corpus) {
 			i++;
