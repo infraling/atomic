@@ -20,6 +20,7 @@ package org.corpus_tools.atomic.internal.projects;
 
 import static org.junit.Assert.*;
 
+import java.util.LinkedHashSet;
 import org.apache.commons.lang3.tuple.Pair;
 import org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData;
 import org.junit.Before;
@@ -134,6 +135,29 @@ public class DefaultAtomicProjectDataTest {
 			}
 		}
 		assertTrue(corpusContainsReplacementDocumentWithNewSourceText);
+	}
+	
+	@Test
+	public void testDocumentInsertionOrder() {
+		setFixture(new DefaultAtomicProjectData("Test 2"));
+		getFixture().createDocumentAndAddToCorpus("c", "d1", "1");
+		getFixture().createDocumentAndAddToCorpus("c", "d2", "2");
+		getFixture().createDocumentAndAddToCorpus("c", "d3", "3");
+		getFixture().createDocumentAndAddToCorpus("c", "d4", "4");
+		getFixture().createDocumentAndAddToCorpus("c", "d5", "5");
+		LinkedHashSet<Pair<String, String>> corpus = getFixture().getCorpora().get("c");
+		assertNotNull(corpus);
+		int i = 0;
+		for (Pair<String, String> d : corpus) {
+			i++;
+			assertEquals(String.valueOf(i), d.getRight());
+		}
+		getFixture().createDocumentAndAddToCorpus("c", "d4", "4");
+		i = 0;
+		for (Pair<String, String> d : corpus) {
+			i++;
+			assertEquals(String.valueOf(i), d.getRight());
+		}
 	}
 	
 	/**
