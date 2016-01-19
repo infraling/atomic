@@ -59,7 +59,7 @@ public interface IAtomicProjectData {
 	
 	/**
 	 * Returns the corpora contained in the project, as a {@link Map}.
-	 * The map contains corpora with their name as the key. The map values
+	 * The map contains corpora with their String name as the key. The map values
 	 * are insertion-ordered sets of documents, i.e., tuples of document
 	 * name and document text.
 	 *
