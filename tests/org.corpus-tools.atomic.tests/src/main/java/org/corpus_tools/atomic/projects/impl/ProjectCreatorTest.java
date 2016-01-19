@@ -20,7 +20,6 @@ package org.corpus_tools.atomic.projects.impl;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,6 +77,9 @@ public class ProjectCreatorTest {
 				 */
 				for (SDocument document : corpus.getSCorpusGraph().getSDocuments()) {
 					assertEquals("document", document.getSName());
+					/*
+					 * Again, one document, one document data source.
+					 */
 					for (STextualDS source : document.getSDocumentGraph().getSTextualDSs()) {
 						assertEquals("source", source.getSText());
 					}
