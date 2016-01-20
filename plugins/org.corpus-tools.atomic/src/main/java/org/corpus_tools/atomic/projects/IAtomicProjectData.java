@@ -20,9 +20,12 @@ package org.corpus_tools.atomic.projects;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 
 /**
  * Atomic project data is basically a String-based graph representing
@@ -68,6 +71,15 @@ public interface IAtomicProjectData {
 	public Map<String, LinkedHashSet<Pair<String, String>>> getCorpora();
 	
 	/**
+	 * Returns all root corpora contained in the project, as a {@link Map}.
+	 * The name of the root corpus is the map key, the value is a set of
+	 * sub corpus names.
+	 *
+	 * @return the set of root corpora
+	 */
+	public Map<String, Set<String>> getRootCorpora();
+	
+	/**
 	 * Creates a "document", i.e. a pair of document name and document text. 
 	 * <p>
 	 * If the respective corpus already exists in the list of corpora, get that corpus, 
@@ -80,6 +92,16 @@ public interface IAtomicProjectData {
 	 * @param documentSourceText The source text of the document
 	 */
 	public void createDocumentAndAddToCorpus(String corpusName, String documentName, String documentSourceText);
+	
+	/**
+	 * Creates a corpus (i.e., sets a name), and optionally adds it to
+	 * a root corpus. If the root corpus is null, the corpus is added
+	 * directly to the project (i.e., the {@link SCorpusGraph}).
+	 *
+	 * @param rootCorpusName
+	 * @param corpusName
+	 */
+	public void createCorpus(String rootCorpusName, String corpusName);
 	
 	/**
 	 * Replaces the source text of a document with a replacement source text. Returns true if the original source text (returned by {@link Pair#setValue(Object)}) does not equal the replacement source text parameter.

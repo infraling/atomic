@@ -20,7 +20,12 @@ package org.corpus_tools.atomic.internal.projects;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData;
 import org.junit.Before;
@@ -161,6 +166,41 @@ public class DefaultAtomicProjectDataTest {
 			i++;
 			assertEquals(String.valueOf(i), d.getRight());
 		}
+	}
+	
+	@Test
+	public void testCreateCorpus() {
+		getFixture().createCorpus("root1", "sub1_1");
+		getFixture().createCorpus("root1", "sub1_2");
+		getFixture().createCorpus("root2", "sub2_1");
+		getFixture().createCorpus("root2", "sub2_2");
+		assertTrue(getFixture().getCorpora().keySet().contains("sub1_1"));
+		assertTrue(getFixture().getCorpora().keySet().contains("sub1_2"));
+		assertTrue(getFixture().getCorpora().keySet().contains("sub2_1"));
+		assertTrue(getFixture().getCorpora().keySet().contains("sub2_2"));
+		assertNotNull(getFixture().getRootCorpora().get("root1"));
+		assertEquals(new HashSet<>(Arrays.asList(new String[]{"sub1_1", "sub1_2"})), getFixture().getRootCorpora().get("root1"));
+		assertNotNull(getFixture().getRootCorpora().get("root2"));
+		assertEquals(new HashSet<>(Arrays.asList(new String[]{"sub2_1", "sub2_2"})), getFixture().getRootCorpora().get("root2"));
+	}
+	
+	@Test
+	public void testGetRootCorpora() {
+		getFixture().createCorpus("root1", "sub1_1");
+		getFixture().createCorpus("root1", "sub1_2");
+		getFixture().createCorpus("root2", "sub2_1");
+		getFixture().createCorpus("root2", "sub2_2");
+		Map<String, Set<String>> rc = getFixture().getRootCorpora();
+		assertNotNull(rc);
+		assertEquals(2, rc.size());
+		assertTrue(rc.containsKey("root1"));
+		assertTrue(rc.containsKey("root2"));
+		assertTrue(rc.get("root1").contains("sub1_1"));
+		assertTrue(rc.get("root1").contains("sub1_2"));
+		assertTrue(rc.get("root2").contains("sub2_1"));
+		assertTrue(rc.get("root2").contains("sub2_1"));
+		assertEquals(2, rc.get("root1").size());
+		assertEquals(2, rc.get("root2").size());
 	}
 	
 	/**
