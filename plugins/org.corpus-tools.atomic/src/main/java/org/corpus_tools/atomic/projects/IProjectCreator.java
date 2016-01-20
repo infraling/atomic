@@ -18,6 +18,8 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
+import java.io.File;
+
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 
 /**
@@ -89,6 +91,6 @@ public interface IProjectCreator {
 	 *
 	 * @param project
 	 */
-	void saveProject(SaltProject project);
+	boolean saveProject(SaltProject project, File saveFolder);
 
 }

@@ -27,9 +27,13 @@ import java.util.TreeSet;
 
 import org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData;
 import org.corpus_tools.atomic.projects.IAtomicProjectData;
+import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusDocumentRelation;
@@ -47,6 +51,9 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
  *
  */
 public class ProjectCreatorTest {
+	
+	@Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 	
 	private ProjectCreator fixture = null;
 
@@ -75,32 +82,41 @@ public class ProjectCreatorTest {
 	@Test
 	public void testCreateSingleCorpusProject() {
 		SaltProject project = getFixture().createSingleCorpusProject("project", "corpus", "document", "source");
-		assertEquals("project", project.getSName());
-		/* 
-		 * Nested for loops with assert okay here since there should only be the one corpus graph with
-		 * the one corpus in the project at this point! If the test fails, there is something wrong anyway!
-		 */
-		assertEquals(1, project.getSCorpusGraphs().size());
-		for (SCorpusGraph corpusGraph : project.getSCorpusGraphs()) {
-			assertEquals(1, corpusGraph.getSCorpora().size());
-			assertEquals(1, corpusGraph.getSDocuments().size());
-			for (SCorpus corpus : corpusGraph.getSCorpora()) {
-				assertEquals("corpus", corpus.getSName());
+		testSimpleProject(project);
+	}
+
+/**
+ * TODO: Description
+ *
+ * @param project
+ */
+private void testSimpleProject(SaltProject project) {
+	assertEquals("project", project.getSName());
+	/* 
+	 * Nested for loops with assert okay here since there should only be the one corpus graph with
+	 * the one corpus in the project at this point! If the test fails, there is something wrong anyway!
+	 */
+	assertEquals(1, project.getSCorpusGraphs().size());
+	for (SCorpusGraph corpusGraph : project.getSCorpusGraphs()) {
+		assertEquals(1, corpusGraph.getSCorpora().size());
+		assertEquals(1, corpusGraph.getSDocuments().size());
+		for (SCorpus corpus : corpusGraph.getSCorpora()) {
+			assertEquals("corpus", corpus.getSName());
+			/*
+			 * Similarly, there should only be one document in the one corpus, so test shouldn't fail if everything is okay.
+			 */
+			for (SDocument document : corpus.getSCorpusGraph().getSDocuments()) {
+				assertEquals("document", document.getSName());
 				/*
-				 * Similarly, there should only be one document in the one corpus, so test shouldn't fail if everything is okay.
+				 * Again, one document, one document data source.
 				 */
-				for (SDocument document : corpus.getSCorpusGraph().getSDocuments()) {
-					assertEquals("document", document.getSName());
-					/*
-					 * Again, one document, one document data source.
-					 */
-					for (STextualDS source : document.getSDocumentGraph().getSTextualDSs()) {
-						assertEquals("source", source.getSText());
-					}
+				for (STextualDS source : document.getSDocumentGraph().getSTextualDSs()) {
+					assertEquals("source", source.getSText());
 				}
 			}
 		}
 	}
+}
 
 	/**
 	 * Test method for {@link org.corpus_tools.atomic.projects.impl.ProjectCreator#createMultiCorpusProject(org.corpus_tools.atomic.projects.IAtomicProjectData)}.
@@ -184,7 +200,11 @@ public class ProjectCreatorTest {
 	 */
 	@Test
 	public void testSaveProject() {
-		fail("Not yet implemented"); // TODO
+		SaltProject project = getFixture().createSingleCorpusProject("project", "corpus", "document", "source");
+		assertTrue(getFixture().saveProject(project, folder.getRoot()));
+		SaltProject loadedProject = SaltFactory.eINSTANCE.createSaltProject();
+		loadedProject.loadSaltProject(URI.createFileURI(folder.getRoot().getAbsolutePath()));
+		testSimpleProject(loadedProject);
 	}
 
 	/**

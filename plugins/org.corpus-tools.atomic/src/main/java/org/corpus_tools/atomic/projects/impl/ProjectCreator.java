@@ -18,6 +18,8 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.impl;
 
+import java.io.File;
+
 import org.corpus_tools.atomic.projects.IAtomicProjectData;
 import org.corpus_tools.atomic.projects.IProjectCreator;
 
@@ -53,9 +55,9 @@ public class ProjectCreator implements IProjectCreator {
 	 * @copydoc @see org.corpus_tools.atomic.projects.IProjectCreator#saveProject(de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject)
 	 */
 	@Override
-	public void saveProject(SaltProject project) {
-		// TODO Auto-generated method stub
-		
+	public boolean saveProject(SaltProject project, File saveFolder) {
+		boolean isProjectSaved = false;
+		return isProjectSaved;
 	}
 
 }
