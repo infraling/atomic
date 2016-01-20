@@ -66,5 +66,29 @@ public interface IAtomicProjectData {
 	 * @return the map of corpora
 	 */
 	public Map<String, LinkedHashSet<Pair<String, String>>> getCorpora();
+	
+	/**
+	 * Creates a "document", i.e. a pair of document name and document text. 
+	 * <p>
+	 * If the respective corpus already exists in the list of corpora, get that corpus, 
+	 * and attach the document to the corpus. If the corpus doesn't not exist, create a
+	 * new set to take up all documents for that corpus, and add the corpus 
+	 * (here: corpus name) to the list of corpora, bringing its (newly created) document set.
+	 *
+	 * @param corpusName The name of the corpus
+	 * @param documentName The name of the document
+	 * @param documentSourceText The source text of the document
+	 */
+	public void createDocumentAndAddToCorpus(String corpusName, String documentName, String documentSourceText);
+	
+	/**
+	 * Replaces the source text of a document with a replacement source text. Returns true if the original source text (returned by {@link Pair#setValue(Object)}) does not equal the replacement source text parameter.
+	 *
+	 * @param documentInCorpus The document for which the source text should be changed
+	 * @param replacementSourceText The replacement source text
+	 * @return True if the replacement source does not equal the original source text, otherwise false
+	 */
+	public boolean replaceDocumentSourceText(Pair<String, String> documentInCorpus, String replacementSourceText);
 
+	
 }

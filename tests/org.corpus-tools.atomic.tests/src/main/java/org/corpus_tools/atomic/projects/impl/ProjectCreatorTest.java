@@ -20,14 +20,25 @@ package org.corpus_tools.atomic.projects.impl;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData;
+import org.corpus_tools.atomic.projects.IAtomicProjectData;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusDocumentRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 /**
  * Unit tests for {@link ProjectCreator}.
@@ -69,7 +80,10 @@ public class ProjectCreatorTest {
 		 * Nested for loops with assert okay here since there should only be the one corpus graph with
 		 * the one corpus in the project at this point! If the test fails, there is something wrong anyway!
 		 */
+		assertEquals(1, project.getSCorpusGraphs().size());
 		for (SCorpusGraph corpusGraph : project.getSCorpusGraphs()) {
+			assertEquals(1, corpusGraph.getSCorpora().size());
+			assertEquals(1, corpusGraph.getSDocuments().size());
 			for (SCorpus corpus : corpusGraph.getSCorpora()) {
 				assertEquals("corpus", corpus.getSName());
 				/*
@@ -93,7 +107,76 @@ public class ProjectCreatorTest {
 	 */
 	@Test
 	public void testCreateMultiCorpusProject() {
-		fail("Not yet implemented"); // TODO
+		IAtomicProjectData dummy = createMultiCorpusProject();
+		SaltProject project = getFixture().createMultiCorpusProject(dummy);
+		assertEquals("project", project.getSName());
+		/* There should now be
+		 * - 1 corpus graph
+		 * - 1 root corpus (!!! When there is mor than one corpus involved, 
+		 *   the default case is that there will always be one root corpus and
+		 *   the single corpora underneath it !!!)
+		 * - 3 corpora with
+		 * -- 3 documents each with the
+		 * -- respective name and the
+		 * -- respective source text
+		 */
+		assertEquals(1, project.getSCorpusGraphs().size());
+		assertNotNull(project.getSCorpusGraphs().get(0));
+		SCorpusGraph corpusGraph = project.getSCorpusGraphs().get(0);
+		assertEquals(1, corpusGraph.getSRootCorpus());
+		assertNotNull(corpusGraph.getSRootCorpus().get(0));
+		SCorpus rootCorpus = corpusGraph.getSRootCorpus().get(0);
+		// Number of SCorpusRelations going to the 3 subcorpora
+		assertEquals(3, rootCorpus.getOutgoingSRelations().size());
+		ArrayList<SCorpus> subCorpora = new ArrayList<>();
+		for (SRelation relation : rootCorpus.getOutgoingSRelations()) {
+			if (relation instanceof SCorpusRelation) {
+				SNode target = relation.getSTarget();
+				if (target instanceof SCorpus) {
+					subCorpora.add((SCorpus) target);
+				}
+			}
+		}
+		assertEquals(3, subCorpora.size());
+		SortedSet<String> subCorpusDocumentNumbers = new TreeSet<>();
+		for (SCorpus subCorpus : subCorpora) {
+			subCorpusDocumentNumbers.clear();
+			int i = 0;
+			for (SCorpusDocumentRelation cDRelation : corpusGraph.getSCorpusDocumentRelations()) {
+				if (cDRelation.getSCorpus().equals(subCorpus)) {
+					assertEquals(subCorpus.getSName().charAt(1), cDRelation.getSDocument().getSName().charAt(1));
+					assertEquals(subCorpus.getSName().charAt(1), cDRelation.getSDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText().charAt(1));
+					subCorpusDocumentNumbers.add(String.valueOf(cDRelation.getSDocument().getSName().charAt(3)));
+					i++;
+				}
+			}
+			assertEquals(3, i);
+			assertTrue(subCorpusDocumentNumbers.containsAll(Arrays.asList(new String[]{"1", "2", "3"})));
+		}
+	}
+
+	/**
+	 * Helper method that creates a multi-corpus project for testing purposes.
+	 *
+	 * @return the test project
+	 */
+	private IAtomicProjectData createMultiCorpusProject() {
+		IAtomicProjectData project = new DefaultAtomicProjectData("project");
+		project.createDocumentAndAddToCorpus("c1", "d1_1", "t1_1");
+		project.createDocumentAndAddToCorpus("c1", "d1_2", "t1_2");
+		project.createDocumentAndAddToCorpus("c1", "d1_3", "t1_3");
+
+		project.createDocumentAndAddToCorpus("c2", "d2_1", "t2_1");
+		project.createDocumentAndAddToCorpus("c2", "d2_2", "t2_2");
+		project.createDocumentAndAddToCorpus("c2", "d2_3", "t2_3");
+
+		project.createDocumentAndAddToCorpus("c3", "d3_1", "t3_1");
+		project.createDocumentAndAddToCorpus("c3", "d3_2", "t3_2");
+		project.createDocumentAndAddToCorpus("c3", "d3_3", "t3_3");
+		
+		assertNotNull(project);
+		
+		return project;
 	}
 
 	/**

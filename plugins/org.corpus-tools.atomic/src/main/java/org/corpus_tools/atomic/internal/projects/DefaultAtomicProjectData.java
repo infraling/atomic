@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.internal.projects;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -36,34 +36,32 @@ import org.corpus_tools.atomic.projects.IAtomicProjectData;
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
+/**
+ * TODO Description
+ *
+ * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
+ *
+ */
 public class DefaultAtomicProjectData implements IAtomicProjectData {
+
+	private String projectName;
+
+	/**
+	 * @param projectNameInput
+	 */
+	public DefaultAtomicProjectData(String projectName) {
+		this.projectName  = projectName;
+	}
 
 	/**
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "DefaultAtomicProjectData".
 	 */
 	private static final Logger log = LogManager.getLogger(DefaultAtomicProjectData.class);
 
-	private String projectName = null;
 	private Map<String, LinkedHashSet<Pair<String, String>>> corpora = new HashMap<>(); // TODO: Set to final?
 
-	/**
-	 * Constructor taking the name of the project as argument.
-	 */
-	public DefaultAtomicProjectData(String projectName) {
-		this.projectName = projectName;
-	}
-
-	/**
-	 * Creates a "document", i.e. a pair of document name and document Text. 
-	 * <p>
-	 * If the respective corpus already exists in the list of corpora, get that corpus, 
-	 * and attach the document to the corpus. If the corpus doesn't not exist, create a
-	 * new set to take up all documents for that corpus, and add the corpus 
-	 * (here: corpus name) to the list of corpora, bringing its (newly created) document set.
-	 *
-	 * @param corpusName The name of the corpus
-	 * @param documentName The name of the document
-	 * @param documentSourceText The source text of the document
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.IAtomicProjectData#createDocumentAndAddToCorpus(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public void createDocumentAndAddToCorpus(String corpusName, String documentName, String documentSourceText) {
 		Pair<String, String> document = new MutablePair<String, String>(documentName, documentSourceText);
@@ -103,28 +101,12 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 		}
 	}
 
-	/**
-	 * Replaces the source text of a document with a replacement source text. Returns true if the original source text (returned by {@link Pair#setValue(Object)}) does not equal the replacement source text parameter.
-	 *
-	 * @param documentInCorpus The document for which the source text should be changed
-	 * @param replacementSourceText The replacement source text
-	 * @return True if the replacement source does not equal the original source text, otherwise false
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.AbstractAtomicProjectData#replaceDocumentSourceText(org.apache.commons.lang3.tuple.Pair, java.lang.String)
 	 */
-	private boolean replaceDocumentSourceText(Pair<String, String> documentInCorpus, String replacementSourceText) {
-		String originalSourceText = documentInCorpus.getValue();
-		if (originalSourceText.equals(replacementSourceText)) {
-			return true; // Not logically correct, but nothing actually changes.
-		}
-		originalSourceText = documentInCorpus.setValue(replacementSourceText); // SET is called here!
-		return !replacementSourceText.equals(originalSourceText);
-	}
-
-	/**
-	 * @return the name of the project
-	 */
-	public String getProjectName() {
-		return projectName;
-	}
+//	@Override
+//	public boolean replaceDocumentSourceText(Pair<String, String> documentInCorpus, String replacementSourceText) {
+//	}
 
 	/**
 	 * @return The map of corpora, or an empty {@link Map}.
@@ -133,4 +115,24 @@ public class DefaultAtomicProjectData implements IAtomicProjectData {
 		return corpora;
 	}
 
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.IAtomicProjectData#getProjectName()
+	 */
+	public String getProjectName() {
+		return projectName;
+	}
+
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.IAtomicProjectData#replaceDocumentSourceText(org.apache.commons.lang3.tuple.Pair, java.lang.String)
+	 */
+	@Override
+	public boolean replaceDocumentSourceText(Pair<String, String> documentInCorpus, String replacementSourceText) {
+		String originalSourceText = documentInCorpus.getValue();
+		if (originalSourceText.equals(replacementSourceText)) {
+			return true; // Not logically correct, but nothing actually changes.
+		}
+		originalSourceText = documentInCorpus.setValue(replacementSourceText); // SET is called here!
+		return !replacementSourceText.equals(originalSourceText);
+	}
+	
 }
