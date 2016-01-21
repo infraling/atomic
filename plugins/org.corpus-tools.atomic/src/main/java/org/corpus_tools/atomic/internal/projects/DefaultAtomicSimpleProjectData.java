@@ -82,7 +82,7 @@ public class DefaultAtomicSimpleProjectData extends DefaultAtomicProjectData imp
 		
 		// If #documentInCorpus is not null, it is already in the corpus, hence, replace its source text.
 		if (documentInCorpus != null) {
-			if (!replaceDocumentSourceText(documentInCorpus, documentSourceText)) {
+			if (replaceDocumentSourceText(documentInCorpus, documentSourceText)) {
 				log.warn("Source text in {} could not be replaced with new source text ({})!", documentName, documentSourceText);
 			}
 		}

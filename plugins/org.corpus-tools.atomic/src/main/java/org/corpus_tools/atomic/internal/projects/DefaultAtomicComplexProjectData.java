@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.corpus_tools.atomic.projects.AtomicComplexProjectData;
 
 /**
@@ -33,6 +34,7 @@ import org.corpus_tools.atomic.projects.AtomicComplexProjectData;
 public class DefaultAtomicComplexProjectData extends DefaultAtomicProjectData implements AtomicComplexProjectData {
 
 	private Map<String, LinkedHashSet<String>> rootCorpora = new HashMap<>();
+	private Map<String, LinkedHashSet<Pair<String, String>>> subCorpora = new HashMap<>();
 
 	/**
 	 * Passes on the project name to {@link DefaultAtomicProjectData} and
@@ -68,6 +70,14 @@ public class DefaultAtomicComplexProjectData extends DefaultAtomicProjectData im
 	public void createDocumentAndAddToSubCorpus(String rootCorpusName, String corpusName, String documentName, String documentSourceText) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.AtomicComplexProjectData#getSubCorpora()
+	 */
+	@Override
+	public Map<String, LinkedHashSet<Pair<String, String>>> getSubCorpora() {
+		return subCorpora;
 	}
 
 }

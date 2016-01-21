@@ -18,8 +18,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import java.util.LinkedHashSet;
+import java.util.LinkedHashSet; 
 import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * For documentation see the documentation at {@link AtomicProjectData}.
@@ -40,6 +42,18 @@ public interface AtomicComplexProjectData extends AtomicProjectData {
 	 * @return a {@link Map} of the root corpora
 	 */
 	public Map<String, LinkedHashSet<String>> getRootCorpora();
+	
+	/**
+	 * Returns a {@link Map} of the sub-corpora contained in this project.
+	 * <p>
+	 * The map's keys are the names of the sub-corpora. The map's values
+	 * are {@link LinkedHashSet}s of document {@link Pair}s, where the first value
+	 * is the name of the document, and the second value is the document's
+	 * source text. 
+	 *
+	 * @return the sub-corpus map
+	 */
+	public Map<String, LinkedHashSet<Pair<String, String>>> getSubCorpora();
 	
 	/**
 	 * Creates a "document", i.e. a pair of document name and document text, and
