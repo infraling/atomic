@@ -50,7 +50,7 @@ public abstract class DefaultAtomicProjectData implements AtomicProjectData {
 	public boolean replaceDocumentSourceText(Pair<String, String> documentInCorpus, String replacementSourceText) {
 		String originalSourceText = documentInCorpus.getValue();
 		if (originalSourceText.equals(replacementSourceText)) {
-			return true; // Not logically correct, but nothing actually changes.
+			return false; // Not logically correct, but nothing actually changes.
 		}
 		originalSourceText = documentInCorpus.setValue(replacementSourceText); // SET is called here!
 		return !replacementSourceText.equals(originalSourceText);

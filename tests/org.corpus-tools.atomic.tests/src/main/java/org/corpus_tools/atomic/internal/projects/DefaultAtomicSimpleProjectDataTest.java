@@ -96,13 +96,15 @@ public class DefaultAtomicSimpleProjectDataTest {
 				documentUnderTest = document;
 			}
 		}
-		getFixture().replaceDocumentSourceText(documentUnderTest, "t");
+		boolean replaced = getFixture().replaceDocumentSourceText(documentUnderTest, "t");
+		assertFalse(replaced);
 		for (Pair<String, String> document : getFixture().getCorpus().getRight()) {
 			if (document.getLeft().equals("d")) {
 				assertTrue(document.getRight().equals("t"));
 			}
 		}
-		getFixture().replaceDocumentSourceText(documentUnderTest, "t-replacement");
+		replaced = getFixture().replaceDocumentSourceText(documentUnderTest, "t-replacement");
+		assertTrue(replaced);
 		for (Pair<String, String> document : getFixture().getCorpus().getRight()) {
 			if (document.getLeft().equals("d")) {
 				assertTrue(document.getRight().equals("t-replacement"));
