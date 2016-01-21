@@ -42,7 +42,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
-public interface IProjectCreator {
+public interface ProjectCreator {
 
 	/**
 	 * Takes a single source text and writes it into a {@link SaltProject} which contains only one corpus and one document.
@@ -65,6 +65,9 @@ public interface IProjectCreator {
 	 *                         (String)
 	 *                         /  |  \
 	 *                        /   |   \
+	 *         [Root corpus name]
+	 *              (String)
+	 *                   |
 	 *              Corpus name  ...  ...
 	 *               (String)
 	 *               /   |   \
@@ -84,13 +87,13 @@ public interface IProjectCreator {
 	 * each document.
 	 * @return The Salt project
 	 */
-	SaltProject createMultiCorpusProject(IAtomicProjectData projectGraph);
+	SaltProject createMultiCorpusProject(AtomicProjectData project);
 	
 	/**
-	 * Saves the SaltProject.
+	 * Saves the {@link SaltProject}.
 	 *
 	 * @param project
 	 */
-	boolean saveProject(SaltProject project, File saveFolder);
-
+	SaltProject saveProject(SaltProject project, File saveFolder);
+	
 }

@@ -20,26 +20,21 @@ package org.corpus_tools.atomic.internal.projects;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.tuple.Pair;
-import org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData;
+import org.corpus_tools.atomic.internal.projects.OLDDefaultAtomicProjectData;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link DefaultAtomicProjectData}.
+ * Unit tests for {@link OLDDefaultAtomicProjectData}.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
 public class DefaultAtomicProjectDataTest {
 	
-	private DefaultAtomicProjectData fixture = null;
+	private OLDDefaultAtomicProjectData fixture = null;
 
 	/**
 	 * Set fixture.
@@ -48,11 +43,11 @@ public class DefaultAtomicProjectDataTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		setFixture(new DefaultAtomicProjectData("Test"));
+		setFixture(new OLDDefaultAtomicProjectData("Test"));
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData#createDocumentAndAddToCorpus(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link org.corpus_tools.atomic.internal.projects.OLDDefaultAtomicProjectData#createDocumentAndAddToCorpus(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testCreateDocumentAndAddToCorpus() {
@@ -144,7 +139,7 @@ public class DefaultAtomicProjectDataTest {
 	
 	@Test
 	public void testDocumentInsertionOrder() {
-		setFixture(new DefaultAtomicProjectData("Test 2"));
+		setFixture(new OLDDefaultAtomicProjectData("Test 2"));
 		getFixture().createDocumentAndAddToCorpus("c", "d1", "1");
 		getFixture().createDocumentAndAddToCorpus("c", "d2", "2");
 		getFixture().createDocumentAndAddToCorpus("c", "d3", "3");
@@ -168,43 +163,8 @@ public class DefaultAtomicProjectDataTest {
 		}
 	}
 	
-	@Test
-	public void testCreateCorpus() {
-		getFixture().createCorpus("root1", "sub1_1");
-		getFixture().createCorpus("root1", "sub1_2");
-		getFixture().createCorpus("root2", "sub2_1");
-		getFixture().createCorpus("root2", "sub2_2");
-		assertTrue(getFixture().getCorpora().keySet().contains("sub1_1"));
-		assertTrue(getFixture().getCorpora().keySet().contains("sub1_2"));
-		assertTrue(getFixture().getCorpora().keySet().contains("sub2_1"));
-		assertTrue(getFixture().getCorpora().keySet().contains("sub2_2"));
-		assertNotNull(getFixture().getRootCorpora().get("root1"));
-		assertEquals(new HashSet<>(Arrays.asList(new String[]{"sub1_1", "sub1_2"})), getFixture().getRootCorpora().get("root1"));
-		assertNotNull(getFixture().getRootCorpora().get("root2"));
-		assertEquals(new HashSet<>(Arrays.asList(new String[]{"sub2_1", "sub2_2"})), getFixture().getRootCorpora().get("root2"));
-	}
-	
-	@Test
-	public void testGetRootCorpora() {
-		getFixture().createCorpus("root1", "sub1_1");
-		getFixture().createCorpus("root1", "sub1_2");
-		getFixture().createCorpus("root2", "sub2_1");
-		getFixture().createCorpus("root2", "sub2_2");
-		Map<String, Set<String>> rc = getFixture().getRootCorpora();
-		assertNotNull(rc);
-		assertEquals(2, rc.size());
-		assertTrue(rc.containsKey("root1"));
-		assertTrue(rc.containsKey("root2"));
-		assertTrue(rc.get("root1").contains("sub1_1"));
-		assertTrue(rc.get("root1").contains("sub1_2"));
-		assertTrue(rc.get("root2").contains("sub2_1"));
-		assertTrue(rc.get("root2").contains("sub2_1"));
-		assertEquals(2, rc.get("root1").size());
-		assertEquals(2, rc.get("root2").size());
-	}
-	
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData#getProjectName()}.
+	 * Test method for {@link org.corpus_tools.atomic.internal.projects.OLDDefaultAtomicProjectData#getProjectName()}.
 	 */
 	@Test
 	public void testGetProjectName() {
@@ -212,7 +172,7 @@ public class DefaultAtomicProjectDataTest {
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.internal.projects.DefaultAtomicProjectData#getCorpora()}.
+	 * Test method for {@link org.corpus_tools.atomic.internal.projects.OLDDefaultAtomicProjectData#getCorpora()}.
 	 */
 	@Test
 	public void testGetCorpora() {
@@ -222,14 +182,14 @@ public class DefaultAtomicProjectDataTest {
 	/**
 	 * @return the fixture
 	 */
-	private DefaultAtomicProjectData getFixture() {
+	private OLDDefaultAtomicProjectData getFixture() {
 		return fixture;
 	}
 
 	/**
 	 * @param fixture the fixture to set
 	 */
-	private void setFixture(DefaultAtomicProjectData fixture) {
+	private void setFixture(OLDDefaultAtomicProjectData fixture) {
 		this.fixture = fixture;
 	}
 
