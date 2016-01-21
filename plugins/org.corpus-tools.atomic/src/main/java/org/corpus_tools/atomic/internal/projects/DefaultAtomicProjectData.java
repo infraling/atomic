@@ -53,7 +53,8 @@ public abstract class DefaultAtomicProjectData implements AtomicProjectData {
 			return false; // Not logically correct, but nothing actually changes.
 		}
 		originalSourceText = documentInCorpus.setValue(replacementSourceText); // SET is called here!
-		return !replacementSourceText.equals(originalSourceText);
+		// If the replacement has worked, this should return true!
+		return !documentInCorpus.getValue().equals(originalSourceText);
 	}
 
 }
