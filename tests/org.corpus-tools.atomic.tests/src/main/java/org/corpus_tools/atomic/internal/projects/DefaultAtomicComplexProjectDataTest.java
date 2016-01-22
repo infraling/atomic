@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Description
+ * Unit test for {@link DefaultAtomicComplexProjectData}.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
@@ -85,42 +85,28 @@ public class DefaultAtomicComplexProjectDataTest {
 	@Test
 	public void testGetSubCorpora() {
 		createComplexCorpusStructure();
-		assertNotNull(getFixture().getRootCorpora());
-		assertEquals(3, getFixture().getRootCorpora().size());
-		assertNotNull(getFixture().getSubCorpora());
-		assertEquals(27, getFixture().getSubCorpora().size());
-		for (Entry<String, LinkedHashSet<String>> rootCorpusEntry : getFixture().getRootCorpora().entrySet()) {
-			int rootId = Integer.parseInt(rootCorpusEntry.getKey().substring(1));
-			assertNotNull(rootCorpusEntry.getKey());
-			assertNotNull(rootCorpusEntry.getValue());
-			assertEquals(9, rootCorpusEntry.getValue().size());
-			int subCorpusIndex = 0;
-			List<Integer> allSubCorpusIds = new ArrayList<>(3); 
-			for (String subCorpus : rootCorpusEntry.getValue()) {
-				int subCorpusId = Integer.parseInt(subCorpus.substring(3, 4)); 
-				assertNotNull(subCorpus);
-				assertTrue(getFixture().getSubCorpora().containsKey(subCorpus));
-				assertEquals(rootId, Integer.parseInt(subCorpus.substring(1, 2)));
-				int documentIndex = 0;
-				allSubCorpusIds.add(subCorpusIndex, subCorpusId);
-				List<Integer> allDocumentIds = new ArrayList<>(3);
-				for (Pair<String, String> document : getFixture().getSubCorpora().get(subCorpus)) {
-					assertNotNull(document);
-					assertNotNull(document.getLeft());
-					assertNotNull(document.getRight());
-					int documentId = Integer.parseInt(document.getLeft().substring(5, 6));
-					assertEquals(documentId, Integer.parseInt(document.getRight().substring(5, 6)));
-					allDocumentIds.add(documentIndex, documentId);
-					documentIndex++;
-					assertEquals(subCorpus.substring(1, 4), document.getLeft().substring(1, 4));
-					assertEquals(subCorpus.substring(1, 4), document.getRight().substring(1, 4));
-				}
-				assertEquals(3, allDocumentIds.size());
-				assertTrue(allDocumentIds.contains(Arrays.asList(new int[]{1,2,3})));
-				subCorpusIndex++;
+		for (Entry<String, LinkedHashSet<Pair<String, String>>> subCorpusEntry : getFixture().getSubCorpora().entrySet()) {
+			assertNotNull(subCorpusEntry);
+			assertNotNull(subCorpusEntry.getKey());
+			assertNotNull(subCorpusEntry.getValue());
+			assertEquals(9, subCorpusEntry.getValue().size());
+			assertTrue(getFixture().getRootCorpora().values().contains(subCorpusEntry.getKey()));
+			String subCorpus = subCorpusEntry.getKey();
+			int documentIndex = 0;
+			List<Integer> allDocumentIds = new ArrayList<>(3);
+			for (Pair<String, String> document : getFixture().getSubCorpora().get(subCorpus)) {
+				assertNotNull(document);
+				assertNotNull(document.getLeft());
+				assertNotNull(document.getRight());
+				int documentId = Integer.parseInt(document.getLeft().substring(5, 6));
+				assertEquals(documentId, Integer.parseInt(document.getRight().substring(5, 6)));
+				allDocumentIds.add(documentIndex, documentId);
+				documentIndex++;
+				assertEquals(subCorpus.substring(1, 4), document.getLeft().substring(1, 4));
+				assertEquals(subCorpus.substring(1, 4), document.getRight().substring(1, 4));
 			}
-			assertEquals(3, allSubCorpusIds.size());
-			assertTrue(allSubCorpusIds.contains(Arrays.asList(new int[]{1,2,3})));
+			assertEquals(3, allDocumentIds.size());
+			assertTrue(allDocumentIds.contains(Arrays.asList(new int[]{1,2,3})));
 		}
 	}
 
@@ -165,7 +151,44 @@ public class DefaultAtomicComplexProjectDataTest {
 	 */
 	@Test
 	public void testCreateDocumentAndAddToSubCorpus() {
-		fail("Not yet implemented"); // TODO
+		createComplexCorpusStructure();
+		assertNotNull(getFixture().getRootCorpora());
+		assertEquals(3, getFixture().getRootCorpora().size());
+		assertNotNull(getFixture().getSubCorpora());
+		assertEquals(27, getFixture().getSubCorpora().size());
+		for (Entry<String, LinkedHashSet<String>> rootCorpusEntry : getFixture().getRootCorpora().entrySet()) {
+			int rootId = Integer.parseInt(rootCorpusEntry.getKey().substring(1));
+			assertNotNull(rootCorpusEntry.getKey());
+			assertNotNull(rootCorpusEntry.getValue());
+			assertEquals(9, rootCorpusEntry.getValue().size());
+			int subCorpusIndex = 0;
+			List<Integer> allSubCorpusIds = new ArrayList<>(3); 
+			for (String subCorpus : rootCorpusEntry.getValue()) {
+				int subCorpusId = Integer.parseInt(subCorpus.substring(3, 4)); 
+				assertNotNull(subCorpus);
+				assertTrue(getFixture().getSubCorpora().containsKey(subCorpus));
+				assertEquals(rootId, Integer.parseInt(subCorpus.substring(1, 2)));
+				allSubCorpusIds.add(subCorpusIndex, subCorpusId);
+				int documentIndex = 0;
+				List<Integer> allDocumentIds = new ArrayList<>(3);
+				for (Pair<String, String> document : getFixture().getSubCorpora().get(subCorpus)) {
+					assertNotNull(document);
+					assertNotNull(document.getLeft());
+					assertNotNull(document.getRight());
+					int documentId = Integer.parseInt(document.getLeft().substring(5, 6));
+					assertEquals(documentId, Integer.parseInt(document.getRight().substring(5, 6)));
+					allDocumentIds.add(documentIndex, documentId);
+					documentIndex++;
+					assertEquals(subCorpus.substring(1, 4), document.getLeft().substring(1, 4));
+					assertEquals(subCorpus.substring(1, 4), document.getRight().substring(1, 4));
+				}
+				assertEquals(3, allDocumentIds.size());
+				assertTrue(allDocumentIds.contains(Arrays.asList(new int[]{1,2,3})));
+				subCorpusIndex++;
+			}
+			assertEquals(3, allSubCorpusIds.size());
+			assertTrue(allSubCorpusIds.contains(Arrays.asList(new int[]{1,2,3})));
+		}
 	}
 	
 	/**
