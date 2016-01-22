@@ -20,8 +20,11 @@ package org.corpus_tools.atomic.internal.projects;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -65,36 +68,7 @@ public class DefaultAtomicComplexProjectDataTest {
 	 */
 	@Test
 	public void testGetRootCorporaForMultipleRootCorpora() {
-		// Root corpus 1
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_1", "d1_1_1", "t1_1_1");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_1", "d1_1_2", "t1_1_2");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_1", "d1_1_3", "t1_1_3");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_2", "d1_2_1", "t1_2_1");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_2", "d1_2_2", "t1_2_2");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_2", "d1_2_3", "t1_2_3");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_3", "d1_3_1", "t1_3_1");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_3", "d1_3_2", "t1_3_2");
-		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_3", "d1_3_3", "t1_3_3");
-		// Root corpus 2
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_1", "d2_1_1", "t2_1_1");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_1", "d2_1_2", "t2_1_2");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_1", "d2_1_3", "t2_1_3");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_2", "d2_2_1", "t2_2_1");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_2", "d2_2_2", "t2_2_2");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_2", "d2_2_3", "t2_2_3");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_3", "d2_3_1", "t2_3_1");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_3", "d2_3_2", "t2_3_2");
-		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_3", "d2_3_3", "t2_3_3");
-		// Root corpus 3
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_1", "d3_1_1", "t3_1_1");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_1", "d3_1_2", "t3_1_2");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_1", "d3_1_3", "t3_1_3");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_2", "d3_2_1", "t3_2_1");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_2", "d3_2_2", "t3_2_2");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_2", "d3_2_3", "t3_2_3");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_3", "d3_3_1", "t3_3_1");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_3", "d3_3_2", "t3_3_2");
-		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_3", "d3_3_3", "t3_3_3");
+		createComplexCorpusStructure();
 		assertNotNull(getFixture().getRootCorpora());
 		assertEquals(3, getFixture().getRootCorpora().size());
 		assertTrue(getFixture().getRootCorpora().containsKey("r1"));
@@ -110,7 +84,44 @@ public class DefaultAtomicComplexProjectDataTest {
 	 */
 	@Test
 	public void testGetSubCorpora() {
-		fail("Not yet implemented"); // TODO
+		createComplexCorpusStructure();
+		assertNotNull(getFixture().getRootCorpora());
+		assertEquals(3, getFixture().getRootCorpora().size());
+		assertNotNull(getFixture().getSubCorpora());
+		assertEquals(27, getFixture().getSubCorpora().size());
+		for (Entry<String, LinkedHashSet<String>> rootCorpusEntry : getFixture().getRootCorpora().entrySet()) {
+			int rootId = Integer.parseInt(rootCorpusEntry.getKey().substring(1));
+			assertNotNull(rootCorpusEntry.getKey());
+			assertNotNull(rootCorpusEntry.getValue());
+			assertEquals(9, rootCorpusEntry.getValue().size());
+			int subCorpusIndex = 0;
+			List<Integer> allSubCorpusIds = new ArrayList<>(3); 
+			for (String subCorpus : rootCorpusEntry.getValue()) {
+				int subCorpusId = Integer.parseInt(subCorpus.substring(3, 4)); 
+				assertNotNull(subCorpus);
+				assertTrue(getFixture().getSubCorpora().containsKey(subCorpus));
+				assertEquals(rootId, Integer.parseInt(subCorpus.substring(1, 2)));
+				int documentIndex = 0;
+				allSubCorpusIds.add(subCorpusIndex, subCorpusId);
+				List<Integer> allDocumentIds = new ArrayList<>(3);
+				for (Pair<String, String> document : getFixture().getSubCorpora().get(subCorpus)) {
+					assertNotNull(document);
+					assertNotNull(document.getLeft());
+					assertNotNull(document.getRight());
+					int documentId = Integer.parseInt(document.getLeft().substring(5, 6));
+					assertEquals(documentId, Integer.parseInt(document.getRight().substring(5, 6)));
+					allDocumentIds.add(documentIndex, documentId);
+					documentIndex++;
+					assertEquals(subCorpus.substring(1, 4), document.getLeft().substring(1, 4));
+					assertEquals(subCorpus.substring(1, 4), document.getRight().substring(1, 4));
+				}
+				assertEquals(3, allDocumentIds.size());
+				assertTrue(allDocumentIds.contains(Arrays.asList(new int[]{1,2,3})));
+				subCorpusIndex++;
+			}
+			assertEquals(3, allSubCorpusIds.size());
+			assertTrue(allSubCorpusIds.contains(Arrays.asList(new int[]{1,2,3})));
+		}
 	}
 
 	/**
@@ -155,6 +166,45 @@ public class DefaultAtomicComplexProjectDataTest {
 	@Test
 	public void testCreateDocumentAndAddToSubCorpus() {
 		fail("Not yet implemented"); // TODO
+	}
+	
+	/**
+	 * Creates a complex corpus structure:
+	 * - 3 root corpora with
+	 * -- 3 subcorpora each with
+	 * --- 3 documents each
+	 */
+	private void createComplexCorpusStructure() {
+		// Root corpus 1
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_1", "d1_1_1", "t1_1_1");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_1", "d1_1_2", "t1_1_2");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_1", "d1_1_3", "t1_1_3");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_2", "d1_2_1", "t1_2_1");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_2", "d1_2_2", "t1_2_2");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_2", "d1_2_3", "t1_2_3");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_3", "d1_3_1", "t1_3_1");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_3", "d1_3_2", "t1_3_2");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s1_3", "d1_3_3", "t1_3_3");
+		// Root corpus 2
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_1", "d2_1_1", "t2_1_1");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_1", "d2_1_2", "t2_1_2");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_1", "d2_1_3", "t2_1_3");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_2", "d2_2_1", "t2_2_1");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_2", "d2_2_2", "t2_2_2");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_2", "d2_2_3", "t2_2_3");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_3", "d2_3_1", "t2_3_1");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_3", "d2_3_2", "t2_3_2");
+		getFixture().createDocumentAndAddToSubCorpus("r2", "s2_3", "d2_3_3", "t2_3_3");
+		// Root corpus 3
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_1", "d3_1_1", "t3_1_1");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_1", "d3_1_2", "t3_1_2");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_1", "d3_1_3", "t3_1_3");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_2", "d3_2_1", "t3_2_1");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_2", "d3_2_2", "t3_2_2");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_2", "d3_2_3", "t3_2_3");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_3", "d3_3_1", "t3_3_1");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_3", "d3_3_2", "t3_3_2");
+		getFixture().createDocumentAndAddToSubCorpus("r3", "s3_3", "d3_3_3", "t3_3_3");
 	}
 
 	/**
