@@ -191,6 +191,83 @@ public class DefaultAtomicComplexProjectDataTest {
 		}
 	}
 	
+	@Test
+	public void testReplaceDocumentSourceText() {
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d1", "t1");
+		Pair<String, String> documentUnderTest = null;
+		for (Pair<String, String> document : getFixture().getSubCorpora().get("s1")) {
+			assertNotNull(document);
+			if (document.getLeft().equals("d1")) {
+				assertTrue(document.getRight().equals("t1"));
+				documentUnderTest = document;
+			}
+		}
+		boolean replaced = getFixture().replaceDocumentSourceText(documentUnderTest, "t1");
+		assertFalse(replaced);
+		for (Pair<String, String> document : getFixture().getSubCorpora().get("s1")) {
+			if (document.getLeft().equals("d1")) {
+				assertTrue(document.getRight().equals("t1"));
+			}
+		}
+		replaced = getFixture().replaceDocumentSourceText(documentUnderTest, "t2");
+		assertTrue(replaced);
+		for (Pair<String, String> document : getFixture().getSubCorpora().get("s1")) {
+			if (document.getLeft().equals("d1")) {
+				assertTrue(document.getRight().equals("t2"));
+			}
+		}
+	}
+	
+	@Test
+	public void testDocumentInsertionOrderSingleRoot() {
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d1", "1");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d2", "2");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d3", "3");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d4", "4");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d5", "5");
+		LinkedHashSet<Pair<String, String>> corpus = getFixture().getSubCorpora().get("s1");
+		assertNotNull(corpus);
+		int i = 0;
+		for (Pair<String, String> d : corpus) {
+			i++;
+			assertEquals(String.valueOf(i), d.getRight());
+		}
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d4", "4");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d2", "2");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d3", "3");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s1", "d4", "4");
+		i = 0;
+		for (Pair<String, String> d : corpus) {
+			i++;
+			assertEquals(String.valueOf(i), d.getRight());
+		}
+	}
+
+	@Test
+	public void testDocumentInsertionOrderComplex() {
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s", "d1", "1");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s", "d2", "2");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s", "d3", "3");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s", "d4", "4");
+		getFixture().createDocumentAndAddToSubCorpus("r1", "s", "d5", "5");
+		LinkedHashSet<Pair<String, String>> corpus = getFixture().getSubCorpora().get("s");
+		assertNotNull(corpus);
+		int i = 0;
+		for (Pair<String, String> d : corpus) {
+			i++;
+			assertEquals(String.valueOf(i), d.getRight());
+		}
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s", "d4", "4");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s", "d2", "2");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s", "d3", "3");
+		getFixture().createDocumentAndAddToSingleRootSubCorpus("s", "d4", "4");
+		i = 0;
+		for (Pair<String, String> d : corpus) {
+			i++;
+			assertEquals(String.valueOf(i), d.getRight());
+		}
+	}
+	
 	/**
 	 * Creates a complex corpus structure:
 	 * - 3 root corpora with
