@@ -18,37 +18,33 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import java.util.LinkedHashSet;
-
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.Collection;
 
 /**
- * For documentation see the documentation at {@link AtomicProjectData}.
- * 
- * @see org.corpus_tools.atomic.projects.AtomicProjectData
+ * A project is the topmost structural entity for data in Atomic.
+ * <p>
+ * A project can contain one or more n-ary trees, the nodes of
+ * which must be implementations of {@link ProjectElement}. 
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public interface AtomicSimpleProjectData extends AtomicProjectData {
+public interface ProjectData {
 	
 	/**
-	 * Returns the single corpus in the project, which is a pair where
-	 * the left hand side is the name of the corpus, and the right hand
-	 * side is a {@link LinkedHashSet} containing the documents, i.e.,
-	 * pairs of document name and document source text.
+	 * Returns the name of the project. Must not return null.
 	 *
-	 * @return the single corpus
+	 * @return the project name.
 	 */
-	public Pair<String, LinkedHashSet<Pair<String, String>>> getCorpus();
+	public String getName();
 	
 	/**
-	 * Creates a "document", i.e. a pair of document name and document text,  
-	 * and attaches the document to the single corpus.
+	 * Returns the corpora ("root corpora") the project
+	 * contains, i.e., a {@link Collection} of {@link ProjectElement}s
+	 * which are the roots of n-ary trees of {@link ProjectElement}s.
 	 *
-	 * @param documentName The name of the document
-	 * @param documentSourceText The source text of the document
+	 * @return the project's corpora
 	 */
-	public void createDocumentAndAddToCorpus(String documentName, String documentSourceText);
+	public Collection<ProjectElement> getCorpora();
 
 }
