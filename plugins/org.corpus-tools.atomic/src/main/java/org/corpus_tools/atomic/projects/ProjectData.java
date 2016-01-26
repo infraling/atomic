@@ -46,5 +46,26 @@ public interface ProjectData {
 	 * @return the project's corpora
 	 */
 	public Collection<ProjectElement> getCorpora();
+	
+	/**
+	 * Adds a corpus to the project. The argument is
+	 * the root {@link ProjectElement} of the n-ary
+	 * corpus structure tree.
+	 *
+	 * @param the corpus to add
+	 */
+	public void addCorpus(ProjectElement corpus);
+	
+	/**
+	 * Removes a corpus from the project. The argument is
+	 * the {@link ProjectElement} to remove. Returns whether
+	 * project had contained the corpus to remove, i.e.,
+	 * whether the project has changed due to the method
+	 * call. When returned, the element is not in the
+	 * project anymore.
+	 *
+	 * @return the corpus to remove
+	 */
+	public boolean removeCorpus(ProjectElement corpus);
 
 }
