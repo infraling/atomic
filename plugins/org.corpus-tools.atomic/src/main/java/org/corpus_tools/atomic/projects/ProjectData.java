@@ -19,6 +19,7 @@
 package org.corpus_tools.atomic.projects;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * A project is the topmost structural entity for data in Atomic.
@@ -45,7 +46,7 @@ public interface ProjectData {
 	 *
 	 * @return the project's corpora
 	 */
-	public Collection<ProjectNode> getCorpora();
+	public HashMap<String, ProjectNode> getCorpora();
 	
 	/**
 	 * Adds a corpus to the project. The argument is
@@ -58,16 +59,15 @@ public interface ProjectData {
 	
 	/**
 	 * Removes a corpus from the project. The argument is
-	 * the {@link ProjectNode} to remove. Returns whether
-	 * project had contained the corpus to remove, i.e.,
-	 * whether the project has changed due to the method
-	 * call. When returned, the element is not in the
-	 * project anymore.
+	 * the name of the {@link ProjectNode} to remove. 
+	 * <p>
+	 * Returns the previous node associated with this name
+	 * or null if there was no node of this name.
 	 *
 	 * @param the corpus to remove
 	 * @return true if the corpus has been removed, i.e.,
 	 * the project has changed
 	 */
-	public boolean removeCorpus(ProjectNode corpus);
+	public ProjectNode removeCorpus(String corpusName);
 
 }

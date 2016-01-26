@@ -18,8 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.internal.projects;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 
 import org.corpus_tools.atomic.projects.ProjectData;
 import org.corpus_tools.atomic.projects.ProjectNode;
@@ -34,7 +33,7 @@ import org.corpus_tools.atomic.projects.ProjectNode;
 public class DefaultProjectData implements ProjectData {
 
 	private String name;
-	private Collection<ProjectNode> corpora = new HashSet<>();
+	private HashMap<String, ProjectNode> corpora = new HashMap<>();
 
 	/**
 	 * Constructor taking the name of the project.
@@ -57,7 +56,7 @@ public class DefaultProjectData implements ProjectData {
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectData#getCorpora()
 	 */
 	@Override
-	public Collection<ProjectNode> getCorpora() {
+	public HashMap<String, ProjectNode> getCorpora() {
 		return corpora;
 	}
 
@@ -66,15 +65,15 @@ public class DefaultProjectData implements ProjectData {
 	 */
 	@Override
 	public void addCorpus(ProjectNode corpus) {
-		getCorpora().add(corpus);
+		getCorpora().put(corpus.getName(), corpus);
 	}
 
 	/*
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectData#removeCorpus(org.corpus_tools.atomic.projects.ProjectNode)
 	 */
 	@Override
-	public boolean removeCorpus(ProjectNode corpus) {
-		return getCorpora().remove(corpus);
+	public ProjectNode removeCorpus(String corpusName) {
+		return getCorpora().remove(corpusName);
 	}
 
 }
