@@ -18,10 +18,11 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import java.util.Collection;
+import java.util.LinkedHashMap;
 
 /**
- * A project element is an abstraction over corpora and documents.
+ * A project node is a node in the n-ary corpus structure tree, i.e.,
+ * an abstraction over corpora and documents.
  * <p>
  * In Atomic, a project (the topmost structural entity for data) can
  * contain one or more corpora, which in turn can contain zero or more
@@ -37,55 +38,51 @@ import java.util.Collection;
  * <p>@see {@link ProjectData}
  *
  */
-public interface ProjectElement {
+public interface ProjectNode {
 	
 	/**
-	 * Returns the value of a project element.
+	 * Returns the value of the project node.
+	 * In case of a corpus, this is the corpus'
+	 * name. In case of a document, this is the
+	 * name and the source text of the document. 
 	 *
-	 * @return the value of the project element
+	 * @return the value of the project node
 	 */
 	public Object value();
 	
 	/**
 	 * Returns the child nodes of this project element.
 	 * <p>
-	 * This method must never return null or an empty collection, 
-	 * unless the object on which this method is called 
-	 * represents a document, in which case this method must 
-	 * return an empty collection. Clients
-	 * implementing this interface should be aware that the
-	 * order of elements in the {@link Collection} of
-	 * {@link ProjectElement}s depends on the concrete 
-	 * implementation of this interface.
+	 * This method must return null when the project
+	 * node represents a document, as documents can 
+	 * have no children. It must return a non-empty
+	 * {@link LinkedHashMap} when the project node 
+	 * represents a corpus, as corpora must have at
+	 * least one child, either a sub-corpus or a
+	 * document.
 	 *
 	 * @return the project element's children
 	 */
-	public Collection<ProjectElement> getChildren();
+	public LinkedHashMap<String, ProjectNode> getChildren();
 	
 	/**
-	 * Adds a child, i.e., a {@link ProjectElement}, to this
-	 * {@link ProjectElement}. The new child is added to the
-	 * {@link Collection} of children as per default. Clients
-	 * implementing this interface should be aware that the
-	 * order of elements in the {@link Collection} of
-	 * {@link ProjectElement}s returned by {@link #getChildren()}
-	 * depends on the concrete implementation of this interface.
+	 * Adds a child, i.e., a {@link ProjectNode}, to this
+	 * {@link ProjectNode}. The new child is added to the
+	 * {@link LinkedHashMap} of children.
 	 *
 	 * @param the child to add
 	 */
-	public void addChild(ProjectElement child);
+	public void addChild(ProjectNode child);
 	
 	/**
 	 * Removes a corpus from the project. The argument is
-	 * the {@link ProjectElement} to remove. Returns whether
-	 * project had contained the corpus to remove, i.e.,
-	 * whether the project has changed due to the method
-	 * call. When returned, the element is not in the
-	 * project anymore.
+	 * the name of the {@link ProjectNode} to remove. 
+	 * <p>
+	 * Returns the previous node associated with this name
+	 * or null if there was no node of this name.
 	 *
 	 * @param the child to remove
-	 * @return true if the child was removed, i.e., the
-	 * parent has changed
+	 * @return the removed node or null
 	 */
-	public boolean removeChild(ProjectElement child);
+	public ProjectNode removeChild(String childName);
 }

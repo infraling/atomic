@@ -24,7 +24,7 @@ import java.util.Collection;
  * A project is the topmost structural entity for data in Atomic.
  * <p>
  * A project can contain one or more n-ary trees, the nodes of
- * which must be implementations of {@link ProjectElement}. 
+ * which must be implementations of {@link ProjectNode}. 
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
@@ -40,25 +40,25 @@ public interface ProjectData {
 	
 	/**
 	 * Returns the corpora ("root corpora") the project
-	 * contains, i.e., a {@link Collection} of {@link ProjectElement}s
-	 * which are the roots of n-ary trees of {@link ProjectElement}s.
+	 * contains, i.e., a {@link Collection} of {@link ProjectNode}s
+	 * which are the roots of n-ary trees of {@link ProjectNode}s.
 	 *
 	 * @return the project's corpora
 	 */
-	public Collection<ProjectElement> getCorpora();
+	public Collection<ProjectNode> getCorpora();
 	
 	/**
 	 * Adds a corpus to the project. The argument is
-	 * the root {@link ProjectElement} of the n-ary
+	 * the root {@link ProjectNode} of the n-ary
 	 * corpus structure tree.
 	 *
 	 * @param the corpus to add
 	 */
-	public void addCorpus(ProjectElement corpus);
+	public void addCorpus(ProjectNode corpus);
 	
 	/**
 	 * Removes a corpus from the project. The argument is
-	 * the {@link ProjectElement} to remove. Returns whether
+	 * the {@link ProjectNode} to remove. Returns whether
 	 * project had contained the corpus to remove, i.e.,
 	 * whether the project has changed due to the method
 	 * call. When returned, the element is not in the
@@ -68,6 +68,6 @@ public interface ProjectData {
 	 * @return true if the corpus has been removed, i.e.,
 	 * the project has changed
 	 */
-	public boolean removeCorpus(ProjectElement corpus);
+	public boolean removeCorpus(ProjectNode corpus);
 
 }
