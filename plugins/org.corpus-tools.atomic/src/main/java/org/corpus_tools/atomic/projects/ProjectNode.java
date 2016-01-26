@@ -22,7 +22,8 @@ import java.util.LinkedHashMap;
 
 /**
  * A project node is a node in the n-ary corpus structure tree, i.e.,
- * an abstraction over corpora and documents.
+ * an abstraction over corpora and documents. Every {@link ProjectNode}
+ * must have a {@link String} name.
  * <p>
  * In Atomic, a project (the topmost structural entity for data) can
  * contain one or more corpora, which in turn can contain zero or more
@@ -39,6 +40,13 @@ import java.util.LinkedHashMap;
  *
  */
 public interface ProjectNode {
+	
+	/**
+	 * Returns the name of the project node.
+	 *
+	 * @return the name of the {@link ProjectNode}
+	 */
+	public String getName();
 	
 	/**
 	 * Returns the value of the project node.
