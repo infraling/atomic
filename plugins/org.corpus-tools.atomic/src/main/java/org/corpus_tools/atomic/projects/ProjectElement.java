@@ -52,9 +52,40 @@ public interface ProjectElement {
 	 * This method must never return null or an empty collection, 
 	 * unless the object on which this method is called 
 	 * represents a document, in which case this method must 
-	 * return an empty collection. 
+	 * return an empty collection. Clients
+	 * implementing this interface should be aware that the
+	 * order of elements in the {@link Collection} of
+	 * {@link ProjectElement}s depends on the concrete 
+	 * implementation of this interface.
 	 *
 	 * @return the project element's children
 	 */
 	public Collection<ProjectElement> getChildren();
+	
+	/**
+	 * Adds a child, i.e., a {@link ProjectElement}, to this
+	 * {@link ProjectElement}. The new child is added to the
+	 * {@link Collection} of children as per default. Clients
+	 * implementing this interface should be aware that the
+	 * order of elements in the {@link Collection} of
+	 * {@link ProjectElement}s returned by {@link #getChildren()}
+	 * depends on the concrete implementation of this interface.
+	 *
+	 * @param the child to add
+	 */
+	public void addChild(ProjectElement child);
+	
+	/**
+	 * Removes a corpus from the project. The argument is
+	 * the {@link ProjectElement} to remove. Returns whether
+	 * project had contained the corpus to remove, i.e.,
+	 * whether the project has changed due to the method
+	 * call. When returned, the element is not in the
+	 * project anymore.
+	 *
+	 * @param the child to remove
+	 * @return true if the child was removed, i.e., the
+	 * parent has changed
+	 */
+	public boolean removeChild(ProjectElement child);
 }

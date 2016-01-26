@@ -64,7 +64,9 @@ public interface ProjectData {
 	 * call. When returned, the element is not in the
 	 * project anymore.
 	 *
-	 * @return the corpus to remove
+	 * @param the corpus to remove
+	 * @return true if the corpus has been removed, i.e.,
+	 * the project has changed
 	 */
 	public boolean removeCorpus(ProjectElement corpus);
 
