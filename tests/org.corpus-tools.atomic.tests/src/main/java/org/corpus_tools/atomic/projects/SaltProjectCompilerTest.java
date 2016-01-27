@@ -20,8 +20,11 @@ package org.corpus_tools.atomic.projects;
 
 import static org.junit.Assert.*;
 
+import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 
 /**
  * Unit test for {@link SaltProjectCompiler}.
@@ -34,21 +37,49 @@ public class SaltProjectCompilerTest {
 	private SaltProjectCompiler fixture = null;
 
 	/**
-	 * Set up the fixture.
+	 * Set up the fixture and a dummy {@link ProjectData} object (FIXME: Mock this!).
+	 * Structure as follows:
+	 * 
+	 * PROJECT (project)
+	 * 
+	 *   - c1
+	 *     - d1:t1
+	 *     - d2:t2
+	 *   - c2
+	 *     - c21
+	 *       - d211:t211
+	 *       - d212:t212
+	 *     - c22
+	 *       - c221
+	 *         - d221:t221
 	 *
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-//		setFixture(new SaltProjectCompiler(projectData));
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.SaltProjectCompiler#SaltProjectCompiler(org.corpus_tools.atomic.projects.ProjectData)}.
-	 */
-	@Test
-	public void testSaltProjectCompiler() {
-		fail("Not yet implemented"); // TODO
+		DefaultProjectData data = new DefaultProjectData("project");
+		Corpus c1 = new Corpus("c1");
+		  Document d1 = new Document("d1", "t1");
+		  Document d2 = new Document("d2", "t2");
+		  c1.addChild(d1);
+		  c1.addChild(d2);
+		Corpus c2 = new Corpus("corpus2");
+		  Corpus c21 = new Corpus("c21");
+		    Document d211 = new Document("d211", "t211");
+		    Document d212 = new Document("d212", "t212");
+		  c21.addChild(d211);
+		  c21.addChild(d212);
+		c2.addChild(c21);
+		  Corpus c22 = new Corpus("c22");
+		    Corpus c221 = new Corpus("c221");
+		      Document d221 = new Document("d221", "t221");
+		    c221.addChild(d221);
+		  c22.addChild(c221);
+		c2.addChild(c22);
+		data.addCorpus(c1);
+		data.addCorpus(c2);
+		
+		setFixture(new SaltProjectCompiler(data));
 	}
 
 	/**
@@ -56,7 +87,10 @@ public class SaltProjectCompilerTest {
 	 */
 	@Test
 	public void testRun() {
-		fail("Not yet implemented"); // TODO
+		Object retVal = getFixture().run();
+		assertTrue(retVal instanceof SaltProject);
+		SaltProject project = (SaltProject) retVal;
+		assertEquals(2, project.getSCorpusGraphs().size());
 	}
 
 	/**

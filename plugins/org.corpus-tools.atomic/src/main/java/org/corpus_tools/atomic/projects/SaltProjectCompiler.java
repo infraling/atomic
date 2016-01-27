@@ -30,7 +30,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 
 /**
  * Compiles a {@link SaltProject} from a {@link ProjectData} object.
+ * This class is meant to be used with Salt version 2.1.1.
+ * 
+ * @version %I%, %G%
  * <p>
+ * @see <a href="https://github.com/korpling/salt/releases/tag/salt-2.1.1">Salt version 2.1.1</a>
+ * @see <a href="http://corpus-tools.org/salt">http://corpus-tools.org/salt</a>
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
