@@ -42,21 +42,20 @@ import java.util.LinkedHashMap;
 public interface ProjectNode {
 	
 	/**
+	 * Sets the name of the project node. Returns the old
+	 * name, i.e., the name that has been "overwritten".
+	 *
+	 * @param name the name to set
+	 * @return the old name
+	 */
+	public String setName(String name);
+	
+	/**
 	 * Returns the name of the project node.
 	 *
 	 * @return the name of the {@link ProjectNode}
 	 */
 	public String getName();
-	
-	/**
-	 * Returns the value of the project node.
-	 * In case of a corpus, this is the corpus'
-	 * name. In case of a document, this is the
-	 * name and the source text of the document. 
-	 *
-	 * @return the value of the project node
-	 */
-	public Object value();
 	
 	/**
 	 * Returns the child nodes of this project element.

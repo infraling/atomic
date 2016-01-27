@@ -43,21 +43,6 @@ public class Corpus implements ProjectNode {
 	}
 
 	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#value()
-	 */
-	/**
-	 * The value of a corpus node is the name
-	 * of the corpus, which is returned from
-	 * this method.
-	 *
-	 * @return the corpus name
-	 */
-	@Override
-	public Object value() {
-		return name;
-	}
-
-	/* 
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
 	 */
 	@Override
@@ -87,6 +72,16 @@ public class Corpus implements ProjectNode {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#setName(java.lang.String)
+	 */
+	@Override
+	public String setName(String name) {
+		String oldName = getName();
+		this.name = name;
+		return oldName;
 	}
 
 }

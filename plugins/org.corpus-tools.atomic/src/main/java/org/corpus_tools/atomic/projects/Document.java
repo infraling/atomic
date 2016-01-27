@@ -21,7 +21,6 @@ package org.corpus_tools.atomic.projects;
 import java.util.LinkedHashMap;
 
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,18 +63,6 @@ public class Document extends MutablePair<String, String> implements ProjectNode
 	}
 
 	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#value()
-	 */
-	/**
-	 * The value of a document is a {@link Pair} of its name
-	 * and its source text.
-	 */
-	@Override
-	public Object value() {
-		return this;
-	}
-
-	/* 
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
 	 */
 	@Override
@@ -108,14 +95,18 @@ public class Document extends MutablePair<String, String> implements ProjectNode
 		return sourceText;
 	}
 
+	public String setSourceText(String newSourceText) {
+		String oldSourceText = getSourceText();
+		this.sourceText = newSourceText; 
+		return oldSourceText;
+	}
+	
 	/* 
 	 * @copydoc @see java.util.Map.Entry#setValue(java.lang.Object)
 	 */
 	@Override
-	public String setValue(String newSourceText) {
-		String oldSourceText = getSourceText();
-		this.sourceText = newSourceText; 
-		return oldSourceText;
+	public String setValue(String value) {
+		return setSourceText(value);
 	}
 
 	/* 
@@ -132,6 +123,16 @@ public class Document extends MutablePair<String, String> implements ProjectNode
 	@Override
 	public String getRight() {
 		return getSourceText();
+	}
+
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#setName(java.lang.String)
+	 */
+	@Override
+	public String setName(String name) {
+		String oldName = getName();
+		this.name = name;
+		return oldName;
 	}
 
 }
