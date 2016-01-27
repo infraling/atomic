@@ -57,14 +57,6 @@ public class DocumentTest {
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#value()}.
-	 */
-	@Test
-	public void testValue() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
 	 * Test method for {@link org.corpus_tools.atomic.projects.Document#getChildren()}.
 	 */
 	@Test
@@ -97,6 +89,14 @@ public class DocumentTest {
 	}
 
 	/**
+	 * Test method for {@link org.corpus_tools.atomic.projects.Document#setSourceText(java.lang.String)}.
+	 */
+	@Test
+	public void testSetSourceText() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
 	 * Test method for {@link org.corpus_tools.atomic.projects.Document#setValue(java.lang.String)}.
 	 */
 	@Test
@@ -117,6 +117,14 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testGetRight() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
+	 * Test method for {@link org.corpus_tools.atomic.projects.Document#setName(java.lang.String)}.
+	 */
+	@Test
+	public void testSetName() {
 		fail("Not yet implemented"); // TODO
 	}
 

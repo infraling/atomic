@@ -20,40 +20,41 @@ package org.corpus_tools.atomic.projects;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Description
- *
- * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
- *
+ * Unit tests for {@link Corpus}.
+ * <p>
+ * 
+ * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 public class CorpusTest {
 
+	private Corpus fixture = null;
+
 	/**
-	 * TODO: Description
+	 * Sets the fixture.
 	 *
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+		setFixture(new Corpus("corpus"));
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Corpus#Corpus(java.lang.String)}.
+	 * Test method for {@link<String, String>.of("d1", "t3") org.corpus_tools.atomic.projects.Corpus#Corpus(java.lang.String)}.
 	 */
 	@Test
 	public void testCorpus() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Corpus#value()}.
-	 */
-	@Test
-	public void testValue() {
-		fail("Not yet implemented"); // TODO
+		assertNotNull(getFixture());
+		assertEquals("corpus", getFixture().getName());
+		assertNotNull(getFixture().getChildren());
+		assertEquals(0, getFixture().getChildren().size());
 	}
 
 	/**
@@ -61,7 +62,27 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testGetChildren() {
-		fail("Not yet implemented"); // TODO
+		getFixture().addChild(new Corpus("c1"));
+		getFixture().addChild(new Document("d1", "t1"));
+		getFixture().addChild(new Corpus("c2"));
+		getFixture().addChild(new Document("d2", "t2"));
+		getFixture().addChild(new Corpus("c1"));
+		getFixture().addChild(new Document("d1", "t3"));
+		// Should have 4 children now, in the order c1, d1, c2, d2
+		assertNotNull(getFixture().getChildren());
+		assertEquals(4, getFixture().getChildren().size());
+		assertTrue(getFixture().getChildren().containsKey("c1"));
+		assertTrue(getFixture().getChildren().containsKey("c2"));
+		assertTrue(getFixture().getChildren().containsKey("d1"));
+		assertTrue(getFixture().getChildren().containsKey("d2"));
+		Iterator<String> keys = getFixture().getChildren().keySet().iterator();
+		String[] keysArray = new String[] { "c1", "d1", "c2", "d2" }; // This should be the correct order in getChildren()
+		int i = 0;
+		while (keys.hasNext()) {
+			String name = (String) keys.next();
+			assertEquals(keysArray[i], name);
+			i++;
+		}
 	}
 
 	/**
@@ -69,7 +90,21 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testAddChild() {
-		fail("Not yet implemented"); // TODO
+		getFixture().addChild(new Corpus("c1"));
+		getFixture().addChild(new Document("d1", "t1"));
+		getFixture().addChild(new Corpus("c2"));
+		getFixture().addChild(new Document("d2", "t2"));
+		getFixture().addChild(new Corpus("c1"));
+		getFixture().addChild(new Document("d1", "t3"));
+		// Should have 4 children now, in the order c1, d1, c2, d2
+		assertNotNull(getFixture().getChildren());
+		assertEquals(4, getFixture().getChildren().size());
+		assertTrue(getFixture().getChildren().containsKey("c1"));
+		assertTrue(getFixture().getChildren().containsKey("c2"));
+		assertTrue(getFixture().getChildren().containsKey("d1"));
+		assertTrue(getFixture().getChildren().containsKey("d2"));
+		assertNotEquals("t1", getFixture().getChildren().get("d1"));
+		assertEquals(new MutablePair<String, String>("d1", "t3"), getFixture().getChildren().get("d1"));
 	}
 
 	/**
@@ -77,7 +112,69 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testRemoveChild() {
-		fail("Not yet implemented"); // TODO
+		getFixture().addChild(new Corpus("c1"));
+		getFixture().addChild(new Document("d1", "t1"));
+		getFixture().addChild(new Corpus("c2"));
+		getFixture().addChild(new Corpus("c3"));
+		getFixture().addChild(new Document("d2", "t2"));
+		String[] keysArray = new String[] { "c1", "d1", "c2", "c3", "d2" }; // The original order in getChildren()
+		Iterator<String> keys = getFixture().getChildren().keySet().iterator();
+		int i = 0;
+		while (keys.hasNext()) {
+			String name = (String) keys.next();
+			assertEquals(keysArray[i], name);
+			i++;
+		}
+		// Remove last element
+		assertEquals(new Document("d2", "t2"), getFixture().removeChild("d2"));
+		assertEquals(4, getFixture().getChildren().size());
+		assertFalse(getFixture().getChildren().containsKey("d2"));
+		assertNull(getFixture().getChildren().get("d2"));
+		keysArray = new String[] { "c1", "d1", "c2", "c3" }; // sans d2
+		keys = getFixture().getChildren().keySet().iterator();
+		i = 0;
+		while (keys.hasNext()) {
+			String name = (String) keys.next();
+			assertEquals(keysArray[i], name);
+			i++;
+		}
+		// Remove first element
+		assertEquals("c1", getFixture().removeChild("c1").getName());
+		assertEquals(3, getFixture().getChildren().size());
+		assertFalse(getFixture().getChildren().containsKey("c1"));
+		assertNull(getFixture().getChildren().get("c1"));
+		keysArray = new String[] { "d1", "c2", "c3" }; // sans d2
+		keys = getFixture().getChildren().keySet().iterator();
+		i = 0;
+		while (keys.hasNext()) {
+			String name = (String) keys.next();
+			assertEquals(keysArray[i], name);
+			i++;
+		}
+		// Remove middle element
+		assertEquals("c2", getFixture().removeChild("c2").getName());
+		assertEquals(2, getFixture().getChildren().size());
+		assertFalse(getFixture().getChildren().containsKey("c2"));
+		assertNull(getFixture().getChildren().get("c2"));
+		keysArray = new String[] { "d1", "c3" }; // sans d2
+		keys = getFixture().getChildren().keySet().iterator();
+		i = 0;
+		while (keys.hasNext()) {
+			String name = (String) keys.next();
+			assertEquals(keysArray[i], name);
+			i++;
+		}
+		// Remove last element
+		assertEquals("c3", getFixture().removeChild("c3").getName());
+		assertEquals(1, getFixture().getChildren().size());
+		assertFalse(getFixture().getChildren().containsKey("c3"));
+		assertNull(getFixture().getChildren().get("c3"));
+		assertEquals(1, getFixture().getChildren().size());
+		assertTrue(getFixture().getChildren().containsKey("d1"));
+		// Remove last remaining element
+		assertEquals(new Document("d1", "t1"), getFixture().removeChild("d1"));
+		assertEquals(0, getFixture().getChildren().size());
+		assertNotNull(getFixture().getChildren());
 	}
 
 	/**
@@ -85,7 +182,32 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testGetName() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("corpus", getFixture().getName());
+		assertEquals("corpus", getFixture().setName("korpus"));
+		assertEquals("korpus", getFixture().getName());
+	}
+
+	/**
+	 * Test method for {@link org.corpus_tools.atomic.projects.Corpus#setName(java.lang.String)}.
+	 */
+	@Test
+	public void testSetName() {
+		assertEquals("corpus", getFixture().setName("korpus"));
+		assertEquals("korpus", getFixture().setName("corpus"));
+	}
+
+	/**
+	 * @return the fixture
+	 */
+	private Corpus getFixture() {
+		return fixture;
+	}
+
+	/**
+	 * @param fixture the fixture to set
+	 */
+	private void setFixture(Corpus fixture) {
+		this.fixture = fixture;
 	}
 
 }
