@@ -54,8 +54,9 @@ public class Corpus implements ProjectNode {
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
 	 */
 	@Override
-	public void addChild(ProjectNode child) {
+	public ProjectNode addChild(ProjectNode child) {
 		getChildren().put(child.getName(), child);
+		return child;
 	}
 
 	/* 

@@ -90,10 +90,14 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testAddChild() {
-		getFixture().addChild(new Corpus("c1"));
-		getFixture().addChild(new Document("d1", "t1"));
-		getFixture().addChild(new Corpus("c2"));
-		getFixture().addChild(new Document("d2", "t2"));
+		Corpus c1 = new Corpus("c1");
+		Corpus c2 = new Corpus("c2");
+		Document d1 = new Document("d1", "t1");
+		Document d2 = new Document("d2", "t2");
+		assertEquals(c1, getFixture().addChild(c1));
+		assertEquals(d1, getFixture().addChild(d1));
+		assertEquals(c2, getFixture().addChild(c2));
+		assertEquals(d2, getFixture().addChild(d2));
 		getFixture().addChild(new Corpus("c1"));
 		getFixture().addChild(new Document("d1", "t3"));
 		// Should have 4 children now, in the order c1, d1, c2, d2

@@ -75,11 +75,13 @@ public interface ProjectNode {
 	/**
 	 * Adds a child, i.e., a {@link ProjectNode}, to this
 	 * {@link ProjectNode}. The new child is added to the
-	 * {@link LinkedHashMap} of children.
+	 * {@link LinkedHashMap} of children. Returns the added
+	 * child {@link ProjectNode}.
 	 *
 	 * @param the child to add
+	 * @return the added child
 	 */
-	public void addChild(ProjectNode child);
+	public ProjectNode addChild(ProjectNode child);
 	
 	/**
 	 * Removes a corpus from the project. The argument is

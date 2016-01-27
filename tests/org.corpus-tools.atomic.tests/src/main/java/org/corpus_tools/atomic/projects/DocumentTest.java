@@ -20,24 +20,36 @@ package org.corpus_tools.atomic.projects;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.attribute.DocAttributeSet;
+
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Description
+ * Unit test for {@link Document}.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
 public class DocumentTest {
+	
+	private Document fixture = null;
 
 	/**
-	 * TODO: Description
+	 * Set the fixture.
 	 *
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+		setFixture(new Document("document", "text"));
 	}
 
 	/**
@@ -45,7 +57,9 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testDocument() {
-		fail("Not yet implemented"); // TODO
+		assertNotNull(getFixture());
+		assertEquals(new MutablePair<String, String>("document", "text"), getFixture());
+		assertNull(getFixture().getChildren());
 	}
 
 	/**
@@ -53,7 +67,9 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testGetName() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("document", getFixture().getName());
+		assertEquals("document", getFixture().setName("dokument"));
+		assertEquals("dokument", getFixture().getName());
 	}
 
 	/**
@@ -61,7 +77,7 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testGetChildren() {
-		fail("Not yet implemented"); // TODO
+		assertNull(getFixture().getChildren());
 	}
 
 	/**
@@ -69,7 +85,8 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testAddChild() {
-		fail("Not yet implemented"); // TODO
+		assertNull(getFixture().addChild(new Corpus("c1")));
+		assertNull(getFixture().addChild(new Document("d1", "t1")));
 	}
 
 	/**
@@ -77,7 +94,7 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testRemoveChild() {
-		fail("Not yet implemented"); // TODO
+		assertNull(getFixture().removeChild("x"));
 	}
 
 	/**
@@ -85,7 +102,7 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testGetSourceText() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("text", getFixture().getSourceText());
 	}
 
 	/**
@@ -93,31 +110,9 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testSetSourceText() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#setValue(java.lang.String)}.
-	 */
-	@Test
-	public void testSetValueString() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#getLeft()}.
-	 */
-	@Test
-	public void testGetLeft() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#getRight()}.
-	 */
-	@Test
-	public void testGetRight() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("text", getFixture().setSourceText("text2"));
+		assertEquals("text2", getFixture().setSourceText("text2"));
+		assertEquals("text2", getFixture().setSourceText("text"));
 	}
 
 	/**
@@ -125,7 +120,23 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testSetName() {
-		fail("Not yet implemented"); // TODO
+		assertEquals("document", getFixture().setName("dokument"));
+		assertEquals("dokument", getFixture().setName("dokument"));
+		assertEquals("dokument", getFixture().setName("document"));
+	}
+
+	/**
+	 * @return the fixture
+	 */
+	private Document getFixture() {
+		return fixture;
+	}
+
+	/**
+	 * @param fixture the fixture to set
+	 */
+	private void setFixture(Document fixture) {
+		this.fixture = fixture;
 	}
 
 }

@@ -75,8 +75,9 @@ public class Document extends MutablePair<String, String> implements ProjectNode
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
 	 */
 	@Override
-	public void addChild(ProjectNode child) {
+	public ProjectNode addChild(ProjectNode child) {
 		log.warn("A document cannot have any children, therefore calling \"addChild()\" on one does onthing.");
+		return null;
 	}
 
 	/* 
