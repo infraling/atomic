@@ -16,15 +16,27 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.projects;
+package org.corpus_tools.atomic.projects.salt;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
+import org.corpus_tools.atomic.projects.Corpus;
+import org.corpus_tools.atomic.projects.Document;
+import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
  * Unit test for {@link SaltProjectCompiler}.
@@ -63,7 +75,7 @@ public class SaltProjectCompilerTest {
 		  Document d2 = new Document("d2", "t2");
 		  c1.addChild(d1);
 		  c1.addChild(d2);
-		Corpus c2 = new Corpus("corpus2");
+		Corpus c2 = new Corpus("c2");
 		  Corpus c21 = new Corpus("c21");
 		    Document d211 = new Document("d211", "t211");
 		    Document d212 = new Document("d212", "t212");
@@ -91,14 +103,53 @@ public class SaltProjectCompilerTest {
 		assertTrue(retVal instanceof SaltProject);
 		SaltProject project = (SaltProject) retVal;
 		assertEquals(2, project.getSCorpusGraphs().size());
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.SaltProjectCompiler#setProjectData(org.corpus_tools.atomic.projects.ProjectData)}.
-	 */
-	@Test
-	public void testSetProjectData() {
-		fail("Not yet implemented"); // TODO
+		// Assert that one corpus graph includes 4 corpora, the other has 1
+		SCorpusGraph corpusGraphC1 = null;
+		SCorpusGraph corpusGraphC2 = null;
+		for (SCorpusGraph corpusGraph : project.getSCorpusGraphs()) {
+			if (corpusGraph.getSCorpora().size() == 1) {
+				corpusGraphC1 = corpusGraph;
+			}
+			else {
+				corpusGraphC2 = corpusGraph;
+			}
+		}
+		assertEquals(1, corpusGraphC1.getSCorpora().size());
+		assertEquals(4, corpusGraphC2.getSCorpora().size());
+		// Assert that the corpus names are correct
+		assertEquals("c1", corpusGraphC1.getSCorpora().get(0).getSName());
+		List<String> corpusNamesC2 = new ArrayList<>();
+		for (SCorpus corpus : corpusGraphC2.getSCorpora()) {
+			corpusNamesC2.add(corpus.getSName());
+		}
+		Collections.sort(corpusNamesC2);
+		assertEquals("c2", corpusNamesC2.get(0));
+		assertEquals("c21", corpusNamesC2.get(1));
+		assertEquals("c22", corpusNamesC2.get(2));
+		assertEquals("c221", corpusNamesC2.get(3));
+		// Assert that the corpora contain the right number of documents and right documents
+		assertEquals(2, corpusGraphC1.getSDocuments().size());
+		SDocument[] documentsC1 = new SDocument[2];
+		for (SDocument document : corpusGraphC1.getSDocuments()) {
+			documentsC1[Integer.parseInt(document.getSName().substring(1)) - 1] = document;
+		}
+		assertEquals("d1", documentsC1[0].getSName());
+		assertEquals("d2", documentsC1[1].getSName());
+		assertEquals("t1", documentsC1[0].getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t2", documentsC1[1].getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		
+		assertEquals(3, corpusGraphC2.getSDocuments().size());
+		Map<String, SDocument> documentsC2Map = new HashMap<>();
+		for (SDocument document : corpusGraphC2.getSDocuments()) {
+			documentsC2Map.put(document.getSName(), document);
+		}
+		assertEquals(3, documentsC2Map.size());
+		assertTrue(documentsC2Map.containsKey("d211"));
+		assertTrue(documentsC2Map.containsKey("d212"));
+		assertTrue(documentsC2Map.containsKey("d221"));
+		assertEquals("t211", documentsC2Map.get("d211").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t212", documentsC2Map.get("d212").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t221", documentsC2Map.get("d221").getSDocumentGraph().getSTextualDSs().get(0).getSText());
 	}
 
 	/**
