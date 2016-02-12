@@ -99,7 +99,7 @@ public class SaltProjectCompiler implements ProjectCompiler {
 				thread.join();
 			}
 			catch (InterruptedException e) {
-				log.error("The thread processing root corpus {} has been interrupted.", ((CorpusCreationRunnable) threads.get(thread)).getRootCorpus().getName(), e);
+				log.error("The thread processing a root corpus has been interrupted.", e);
 			}
 		}
 		// Add all created SCorpusGraphs to the project

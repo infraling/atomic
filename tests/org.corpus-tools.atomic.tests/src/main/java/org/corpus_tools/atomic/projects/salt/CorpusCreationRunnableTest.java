@@ -20,10 +20,20 @@ package org.corpus_tools.atomic.projects.salt;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.corpus_tools.atomic.projects.Corpus;
+import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 /**
  * Unit tests for {@link CorpusCreationRunnable}.
@@ -39,35 +49,19 @@ public class CorpusCreationRunnableTest {
 	 * Set up the fixture and a dummy {@link Corpus} object (FIXME: Mock this!).
 	 * Structure as follows:
 	 * 
-	 * PROJECT (project)
-	 * 
-	 *   - c1
-	 *     - d1:t1
-	 *     - d2:t2
-	 *   - c2
-	 *     - c21
-	 *       - d211:t211
-	 *       - d212:t212
-	 *     - c22
-	 *       - c221
-	 *         - d221:t221
-	 *
+	 * CorpusGraph1
+	 * 	C1
+	 *  	C12
+	 *  	C13
+	 * 		
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		Corpus corpus = new Corpus("corpus");
-		setFixture(new CorpusCreationRunnable(corpus));
-	}
-
-	/**
-	 * Constructs a corpus to be tested
-	 *
-	 * @return
-	 */
-	private ProjectNode constructCorpus() {
-		// TODO Auto-generated method stub
-		return null;
+		Corpus c1 = new Corpus("c1");
+		c1.addChild(new Corpus("c12"));
+		c1.addChild(new Corpus("c13"));
+		setFixture(new CorpusCreationRunnable(c1));
 	}
 
 	/**
@@ -75,7 +69,23 @@ public class CorpusCreationRunnableTest {
 	 */
 	@Test
 	public void testRun() {
-		fail("Not yet implemented"); // TODO
+		getFixture().run();
+		SCorpusGraph corpusGraph = getFixture().getCorpusGraph();
+		assertNotNull(corpusGraph);
+		assertEquals(3, corpusGraph.getSCorpora().size());
+		assertNotNull(corpusGraph.getSRootCorpus());
+		assertEquals(1, corpusGraph.getSRootCorpus().size());
+		assertEquals("c1", corpusGraph.getSRootCorpus().get(0).getSName());
+		assertEquals(2, corpusGraph.getSRootCorpus().get(0).getOutgoingSRelations().size());
+		ArrayList<String> subCorpusNames = new ArrayList<>();
+		for (SRelation outgoing : corpusGraph.getSRootCorpus().get(0).getOutgoingSRelations()) {
+			assertTrue(outgoing instanceof SCorpusRelation);
+			assertTrue(outgoing.getSTarget() instanceof SCorpus);
+			subCorpusNames.add(outgoing.getSTarget().getSName());
+		}
+		Collections.sort(subCorpusNames);
+		assertEquals("c12", subCorpusNames.get(0));
+		assertEquals("c13", subCorpusNames.get(1));
 	}
 
 	/**

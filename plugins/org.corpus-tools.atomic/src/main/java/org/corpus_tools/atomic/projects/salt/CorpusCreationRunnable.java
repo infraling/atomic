@@ -161,7 +161,7 @@ public class CorpusCreationRunnable implements Runnable {
 	/**
 	 * @return the rootCorpus
 	 */
-	public ProjectNode getRootCorpus() {
+	private ProjectNode getRootCorpus() {
 		return rootCorpus;
 	}
 
