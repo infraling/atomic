@@ -16,23 +16,26 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.projects;
+package org.corpus_tools.atomic.projects.salt;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.projects.ProjectCompiler;
+import org.corpus_tools.atomic.projects.ProjectData;
+import org.corpus_tools.atomic.projects.ProjectNode;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 
 /**
  * Compiles a {@link SaltProject} from a {@link ProjectData} object.
  * This class is meant to be used with Salt version 2.1.1.
  * 
- * @version %I%, %G%
  * <p>
  * @see <a href="https://github.com/korpling/salt/releases/tag/salt-2.1.1">Salt version 2.1.1</a>
  * @see <a href="http://corpus-tools.org/salt">http://corpus-tools.org/salt</a>
@@ -82,92 +85,28 @@ public class SaltProjectCompiler implements ProjectCompiler {
 		log.trace("Created a SaltProject and set its name to {}.", projectData.getName());
 
 		// Multi-threaded create corpusgraph and add structure for each corpus in getcorpora
+		Map<Thread, Runnable> threads = new HashMap<>();
 		for (ProjectNode rootCorpus : getProjectData().getCorpora().values()) {
-			log.trace("Creating the corpus graph and corpus structure for the root corpus {}.", rootCorpus.getName());
-			SCorpusGraph corpusGraph = factory.createSCorpusGraph();
-			corpusGraph.setSId("corpus-graph-" + rootCorpus.getName().replaceAll(" ", "_"));
-
-			createCorpusStructure(corpusGraph, rootCorpus, null);
-
-			project.getSCorpusGraphs().add(corpusGraph);
-			log.trace("Finished creating the corpus structure for root corpus {}.", rootCorpus);
+			RootCorpusCreationRunnable runnable = new RootCorpusCreationRunnable(rootCorpus);
+			Thread worker = new Thread(runnable);
+			worker.setName("Worker thread for runnable creating structure for root corpus " + rootCorpus.getName());
+			worker.start();
+			threads.put(worker, runnable);
+		}
+		// Wait for all threads to finish
+		for (Thread thread : threads.keySet()) {
+			try {
+				thread.join();
+			}
+			catch (InterruptedException e) {
+				log.error("The thread processing root corpus {} has been interrupted.", ((RootCorpusCreationRunnable) threads.get(thread)).getRootCorpus().getName(), e);
+			}
+		}
+		// Add all created SCorpusGraphs to the project
+		for (Runnable runnable : threads.values()) {
+			project.getSCorpusGraphs().add(((RootCorpusCreationRunnable) runnable).getCorpusGraph());
 		}
 		return project;
-	}
-
-	/**
-	 * Creates a corpus structure via recursive traversal. The root node for the traversal
-	 * is the {@link ProjectNode} argument.
-	 * <p>
-	 * <ol>
-	 * <li>Creates an {@link SCorpus} object, sets its ID to corpusData.getName() and adds it to corpusGraph</li>
-	 * <li>Traverses corpusData's children:
-	 *   <ul>
-	 *   <li>If the child is an instance of {@link Document}, call {@link #createDocument(Document)} on it to create
-	 *   an instance of {@link SDocument} and add it to corpusGraph.</li>
-	 *   <li>If the child is an instance of {@link Corpus}, recursively call {@link #createCorpusStructure(SCorpusGraph, ProjectNode, SCorpus)}, with
-	 *   the child as new root node.</li>
-	 *   </ul>
-	 * </li>
-	 * </ol>
-	 *
-	 * @param corpusGraph The {@link SCorpusGraph} for the nodes root corpus
-	 * @param corpusData The traversal {@link ProjectNode} root
-	 * @param parentCorpus The {@link SCorpus} to which the corpusData's children will be added
-	 */
-	private void createCorpusStructure(SCorpusGraph corpusGraph, ProjectNode corpusData, SCorpus parentCorpus) {
-		log.entry(corpusGraph, corpusData, parentCorpus);
-		if (corpusData == null) {
-			final NullPointerException e = new NullPointerException("Corpus data is null!");
-			throw log.throwing(e);
-		}
-		else if (corpusGraph == null) {
-			final NullPointerException e = new NullPointerException("Corpus graph is null!");
-			throw log.throwing(e);
-		}
-
-		// Create the corpus in the corpus graph
-		SCorpus corpus = factory.createSCorpus();
-		corpus.setSName(corpusData.getName());
-		if (parentCorpus == null) {
-			corpusGraph.addSNode(corpus);
-		}
-		else {
-			corpusGraph.addSSubCorpus(parentCorpus, corpus);
-		}
-
-		// Traverse through children
-		for (ProjectNode child : corpusData.getChildren().values()) {
-			if (child instanceof Document) {
-				corpusGraph.addSDocument(corpus, (SDocument) createDocument((Document) child));
-				return;
-			}
-			else if (child instanceof Corpus) {
-				createCorpusStructure(corpusGraph, (Corpus) child, corpus);
-			}
-			else {
-				log.warn("{} is an instance of neither Document nor Corpus...", child);
-			}
-		}
-		log.exit();
-	}
-
-	/**
-	 * Creates an instance of {@link SDocument} and fills it with 
-	 * the data from documentData.
-	 *
-	 * @param documentData the data for this document
-	 * @return a newly created instance of {@link SDocument}, containing the data from documentData
-	 */
-	private Object createDocument(Document documentData) {
-		log.entry(documentData);
-		SDocument document = factory.createSDocument();
-		document.setSName(documentData.getName());
-		document.setSDocumentGraph(factory.createSDocumentGraph());
-		STextualDS sourceText = factory.createSTextualDS();
-		sourceText.setSText(documentData.getSourceText());
-		document.getSDocumentGraph().addSNode(sourceText);
-		return log.exit(document);
 	}
 
 	/* 
