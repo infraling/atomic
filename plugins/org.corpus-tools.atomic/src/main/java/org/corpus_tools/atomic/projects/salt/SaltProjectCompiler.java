@@ -87,7 +87,7 @@ public class SaltProjectCompiler implements ProjectCompiler {
 		// Multi-threaded create corpusgraph and add structure for each corpus in getcorpora
 		Map<Thread, Runnable> threads = new HashMap<>();
 		for (ProjectNode rootCorpus : getProjectData().getCorpora().values()) {
-			RootCorpusCreationRunnable runnable = new RootCorpusCreationRunnable(rootCorpus);
+			CorpusCreationRunnable runnable = new CorpusCreationRunnable(rootCorpus);
 			Thread worker = new Thread(runnable);
 			worker.setName("Worker thread for runnable creating structure for root corpus " + rootCorpus.getName());
 			worker.start();
@@ -99,12 +99,12 @@ public class SaltProjectCompiler implements ProjectCompiler {
 				thread.join();
 			}
 			catch (InterruptedException e) {
-				log.error("The thread processing root corpus {} has been interrupted.", ((RootCorpusCreationRunnable) threads.get(thread)).getRootCorpus().getName(), e);
+				log.error("The thread processing root corpus {} has been interrupted.", ((CorpusCreationRunnable) threads.get(thread)).getRootCorpus().getName(), e);
 			}
 		}
 		// Add all created SCorpusGraphs to the project
 		for (Runnable runnable : threads.values()) {
-			project.getSCorpusGraphs().add(((RootCorpusCreationRunnable) runnable).getCorpusGraph());
+			project.getSCorpusGraphs().add(((CorpusCreationRunnable) runnable).getCorpusGraph());
 		}
 		return project;
 	}

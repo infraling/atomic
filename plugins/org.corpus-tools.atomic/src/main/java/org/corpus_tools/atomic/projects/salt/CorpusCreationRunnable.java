@@ -40,14 +40,14 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public class RootCorpusCreationRunnable implements Runnable {
+public class CorpusCreationRunnable implements Runnable {
 	
 	private Map<Thread, Runnable> documentThreads = new HashMap<>();
 	
 	/** 
-	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "RootCorpusCreationRunnable".
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "CorpusCreationRunnable".
 	 */
-	private static final Logger log = LogManager.getLogger(RootCorpusCreationRunnable.class);
+	private static final Logger log = LogManager.getLogger(CorpusCreationRunnable.class);
 	
 	private ProjectNode rootCorpus = null;
 	private SCorpusGraph corpusGraph = null;
@@ -56,7 +56,7 @@ public class RootCorpusCreationRunnable implements Runnable {
 	/**
 	 * 
 	 */
-	public RootCorpusCreationRunnable(ProjectNode rootCorpus) {
+	public CorpusCreationRunnable(ProjectNode rootCorpus) {
 		setRootCorpus(rootCorpus);
 		setCorpusGraph(factory.createSCorpusGraph());
 	}
