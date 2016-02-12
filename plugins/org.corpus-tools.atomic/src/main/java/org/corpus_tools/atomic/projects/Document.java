@@ -76,7 +76,7 @@ public class Document extends MutablePair<String, String> implements ProjectNode
 	 */
 	@Override
 	public ProjectNode addChild(ProjectNode child) {
-		log.warn("A document cannot have any children, therefore calling \"addChild()\" on one does onthing.");
+		log.warn("A document cannot have any children, therefore calling \"addChild()\" on one does nothing.");
 		return null;
 	}
 
