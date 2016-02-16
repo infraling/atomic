@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbench;
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public class AtomicProjectWizard extends Wizard implements INewWizard {
+public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 	/* 
 	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
@@ -38,6 +38,16 @@ public class AtomicProjectWizard extends Wizard implements INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public void addPages() {
+		
+	}
+	
+	@Override
+	protected boolean canPerformFinish() {
+		
 	}
 
 	/* 
