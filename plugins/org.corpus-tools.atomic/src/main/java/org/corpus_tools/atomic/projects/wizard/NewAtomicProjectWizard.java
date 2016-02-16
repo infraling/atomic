@@ -18,6 +18,8 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -25,13 +27,20 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * A wizard for creating new Atomic (i.e., Salt) projects.
- *
- * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
- *
+ * <p>
+ * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 public class NewAtomicProjectWizard extends Wizard implements INewWizard {
-
-	/* 
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "NewAtomicProjectWizard".
+	 */
+	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizard.class);
+	
+	private String postProcessingPage = null; // TODO FIXME
+	private NewAtomicProjectWizardPageProjectStructure structurePage = new NewAtomicProjectWizardPageProjectStructure();
+	
+	/*
 	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	@Override
@@ -39,24 +48,35 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public void addPages() {
-		
-	}
-	
-	@Override
-	protected boolean canPerformFinish() {
-		
+		addPage(getStructurePage());
 	}
 
 	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#canFinish()
+	 */
+	@Override
+	public boolean canFinish() {
+		// TODO Auto-generated method stub
+		return (false && super.canFinish());
+	}
+	
+
+	/*
 	 * @copydoc @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		return false; // TODO FIXME
+	}
+
+	/**
+	 * @return the structurePage
+	 */
+	private NewAtomicProjectWizardPageProjectStructure getStructurePage() {
+		return structurePage;
 	}
 
 }
