@@ -24,15 +24,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.corpus_tools.atomic.projects.Corpus;
-import org.corpus_tools.atomic.projects.Document;
-import org.corpus_tools.atomic.projects.ProjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 /**
