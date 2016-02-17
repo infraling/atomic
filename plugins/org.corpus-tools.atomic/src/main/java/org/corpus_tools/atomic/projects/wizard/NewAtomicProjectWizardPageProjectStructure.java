@@ -20,9 +20,11 @@ package org.corpus_tools.atomic.projects.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Monitor;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -42,20 +44,25 @@ import org.eclipse.swt.widgets.Group;
  *
  */
 public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
-	private Text text_2;
-	private Text text_3;
-	private Text text_4;
-	private Text text_5;
-	private Text text_6;
+	private Text corpusNameText;
+	private Text addSubCorpusNameText;
+	private Text addDocumentNameText;
+	private Text documentNameText;
+	private Text sourceTextText;
 	
 	/**
 	 * Default constructor calling the constructor {@link #NewAtomicProjectWizardPageProjectStructure(String)}
 	 * with the default page name. 
 	 */
 	public NewAtomicProjectWizardPageProjectStructure() {
-		super("NONE"); // FIXME
-		setTitle("NÖ");
-		setDescription("Dec");
+		super("Create the project structure");
+		setTitle("Create the project structure");
+		setDescription("Create the structure of the new project by adding corpora, subcorpora, and documents.");
+		/* 
+		 * FIXME TODO: Add context-sensitive help to Atomic, the the "?" button will show in the wizard. Add the
+		 * following description to a help "window" of sorts:
+		 * Every corpus must have a name and can contain n (sub-) corpora and n documents. Every document must have a name and must contain one source text.
+		 */
 	}
 
 	/* 
@@ -93,14 +100,14 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		Composite leftComposite = new Composite(sashForm, SWT.NONE);
 		leftComposite.setLayout(new GridLayout(2, false));
 		
-		Button btnNewRootCorpus = new Button(leftComposite, SWT.NONE);
-		btnNewRootCorpus.setText("New root corpus");
+		Button btnNewCorpus = new Button(leftComposite, SWT.NONE);
+		btnNewCorpus.setText("New corpus");
 		
 		Button btnRemoveElement = new Button(leftComposite, SWT.NONE);
 		btnRemoveElement.setText("Remove element");
 		
-		Tree tree = new Tree(leftComposite, SWT.BORDER);
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		Tree projectStructureTree = new Tree(leftComposite, SWT.BORDER);
+		projectStructureTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		Composite rightComposite = new Composite(sashForm, SWT.NONE);
 		rightComposite.setLayout(new FillLayout());
@@ -121,31 +128,31 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		lblName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblName.setText("Name:");
 		
-		text_2 = new Text(corpusGroupComposite, SWT.BORDER);
-		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		corpusNameText = new Text(corpusGroupComposite, SWT.BORDER);
+		corpusNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Button btnSave = new Button(corpusGroupComposite, SWT.NONE);
-		btnSave.setText("Save");
+		Button saveCorpusNameBtn = new Button(corpusGroupComposite, SWT.NONE);
+		saveCorpusNameBtn.setText("Save");
 		
 		Label lblAddSubcorpus = new Label(corpusGroupComposite, SWT.NONE);
 		lblAddSubcorpus.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblAddSubcorpus.setText("Add subcorpus:");
 		
-		text_3 = new Text(corpusGroupComposite, SWT.BORDER);
-		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		addSubCorpusNameText = new Text(corpusGroupComposite, SWT.BORDER);
+		addSubCorpusNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Button btnAdd = new Button(corpusGroupComposite, SWT.NONE);
-		btnAdd.setText("Add");
+		Button addSubCorpusBtn = new Button(corpusGroupComposite, SWT.NONE);
+		addSubCorpusBtn.setText("Add");
 		
 		Label lblAddDocument = new Label(corpusGroupComposite, SWT.NONE);
 		lblAddDocument.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblAddDocument.setText("Add document:");
 		
-		text_4 = new Text(corpusGroupComposite, SWT.BORDER);
-		text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		addDocumentNameText = new Text(corpusGroupComposite, SWT.BORDER);
+		addDocumentNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Button btnAdd_1 = new Button(corpusGroupComposite, SWT.NONE);
-		btnAdd_1.setText("Add");
+		Button addDocumentBtn = new Button(corpusGroupComposite, SWT.NONE);
+		addDocumentBtn.setText("Add");
 		
 		Composite documentComposite = new Composite(sashForm_1, SWT.NONE);
 		documentComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -161,28 +168,43 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		lblName_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblName_1.setText("Name:");
 		
-		text_5 = new Text(documentGroupComposite, SWT.BORDER);
-		text_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		documentNameText = new Text(documentGroupComposite, SWT.BORDER);
+		documentNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Button btnSave_1 = new Button(documentGroupComposite, SWT.NONE);
-		btnSave_1.setText("Save");
+		Button saveDocumentNameBtn = new Button(documentGroupComposite, SWT.NONE);
+		saveDocumentNameBtn.setText("Save");
 		
 		Label lblSourceText = new Label(documentGroupComposite, SWT.NONE);
 		lblSourceText.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
 		lblSourceText.setText("Source text:");
 		
-		text_6 = new Text(documentGroupComposite, SWT.BORDER | SWT.MULTI);
-		text_6.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		sourceTextText = new Text(documentGroupComposite, SWT.BORDER | SWT.MULTI);
+		sourceTextText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		new Label(documentGroupComposite, SWT.NONE);
 		
-		Button btnBrowse = new Button(documentGroupComposite, SWT.NONE);
-		btnBrowse.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		btnBrowse.setText("Browse");
+		Button browseSourceTextBtn = new Button(documentGroupComposite, SWT.NONE);
+		browseSourceTextBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		browseSourceTextBtn.setText("Browse");
 		
-		Button btnSave_2 = new Button(documentGroupComposite, SWT.NONE);
-		btnSave_2.setText("Save");
+		Button saveSourceTextBtn = new Button(documentGroupComposite, SWT.NONE);
+		saveSourceTextBtn.setText("Save");
 		
 		sashForm_1.setWeights(new int[] {1, 1});
 		sashForm.setWeights(new int[] {1, 1});
+	}
+	
+	@Override
+	public void performHelp() 
+	{
+	    Shell shell = new Shell(getShell());
+	    shell.setText("My Custom Help !!");
+	    shell.setLayout(new GridLayout());
+	    shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+	    Browser browser = new Browser(shell, SWT.NONE);
+	    browser.setUrl("http://stackoverflow.com/questions/7322489/cant-put-content-behind-swt-wizard-help-button");
+	    browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+	    shell.open();
 	}
 }
