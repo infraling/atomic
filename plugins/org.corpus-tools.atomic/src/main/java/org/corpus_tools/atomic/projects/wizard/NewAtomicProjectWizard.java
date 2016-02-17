@@ -71,6 +71,11 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		return false; // TODO FIXME
 	}
+	
+	@Override
+	public String getWindowTitle() {
+		return "New Project";
+	}
 
 	/**
 	 * @return the structurePage
