@@ -22,7 +22,10 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -30,10 +33,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
 
 /**
  * A wizard page for the user to construct the structure of a
@@ -43,8 +42,6 @@ import org.eclipse.swt.layout.FormAttachment;
  *
  */
 public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
-	private Text text;
-	private Text text_1;
 	private Text text_2;
 	private Text text_3;
 	private Text text_4;
@@ -57,6 +54,8 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	public NewAtomicProjectWizardPageProjectStructure() {
 		super("NONE"); // FIXME
+		setTitle("NÖ");
+		setDescription("Dec");
 	}
 
 	/* 
@@ -64,6 +63,26 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		// Calculate and set good size and position for dialog
+		Monitor[] monitors = getShell().getDisplay().getMonitors();
+		Monitor activeMonitor = null;
+
+		Rectangle r = getShell().getBounds();
+		for (int i = 0; i < monitors.length; i++) {
+			if (monitors[i].getBounds().intersects(r)) {
+				activeMonitor = monitors[i];
+			}
+		}
+		Rectangle bounds = activeMonitor.getClientArea();
+		int boundsWidth = bounds.width;
+		int boundsHeight = bounds.height;
+		Point size = getShell().computeSize((int) (boundsWidth * (80.0f / 100.0f)), (int) (boundsHeight * (80.0f / 100.0f)));
+		
+		int x = bounds.x + ((bounds.width - size.x) / 2);
+	    getShell().setSize(size);
+	    getShell().setLocation(x, 0);
+	    
+	    // Create controls
 		Composite container = new Composite(parent, SWT.NULL);
 		setControl(container);
 		container.setLayout(new FillLayout());
@@ -163,7 +182,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		Button btnSave_2 = new Button(documentGroupComposite, SWT.NONE);
 		btnSave_2.setText("Save");
 		
-		sashForm_1.setWeights(new int[] {118, 213});
+		sashForm_1.setWeights(new int[] {1, 1});
 		sashForm.setWeights(new int[] {1, 1});
 	}
 }
