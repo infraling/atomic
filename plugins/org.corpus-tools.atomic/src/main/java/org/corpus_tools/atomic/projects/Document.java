@@ -20,9 +20,9 @@ package org.corpus_tools.atomic.projects;
 
 import java.util.LinkedHashMap;
 
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.models.AbstractBean;
 
 /**
  * This class represents a document, i.e., a leaf in the
@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public class Document extends MutablePair<String, String> implements ProjectNode {
+public class Document extends AbstractBean implements ProjectNode {
 
 	/** 
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "Document".
@@ -40,26 +40,51 @@ public class Document extends MutablePair<String, String> implements ProjectNode
 	private static final Logger log = LogManager.getLogger(Document.class);
 	
 	/**
-	 * The generated serial version ID.
+	 * String representing the source text of the document.
 	 */
-	private static final long serialVersionUID = -4638023814060887391L;
-	private String sourceText;
-	private String name;
+	private String sourceText = null;
 	
 	/**
-	 * Constructor taking a document name and a document source text as arguments.
+	 * String representing the name of the document. 
 	 */
-	public Document(String name, String sourceText) {
-		this.name = name;
-		this.sourceText = sourceText;
+	private String name = null;
+	
+	/**
+	 * Default no-arg constructor (JavaBean compliance). 
+	 */
+	public Document() {
 	}
 
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getName()
+	/**
+	 * @return the sourceText
 	 */
-	@Override
+	public String getSourceText() {
+		return sourceText;
+	}
+
+	/**
+	 * @param sourceText the sourceText to set
+	 */
+	public void setSourceText(String sourceText) {
+		final String oldSourceText = this.sourceText;
+		this.sourceText = sourceText;
+		firePropertyChange("sourceText", oldSourceText, this.sourceText);
+	}
+
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		final String oldName = this.name;
+		this.name = name;
+		firePropertyChange("name", oldName, this.name);
 	}
 
 	/* 
@@ -87,53 +112,6 @@ public class Document extends MutablePair<String, String> implements ProjectNode
 	public ProjectNode removeChild(String childName) {
 		log.warn("A document cannot have any children, therefore calling \"removeChild()\" on one always returns null.");
 		return null;
-	}
-
-	/**
-	 * @return the sourceText
-	 */
-	public String getSourceText() {
-		return sourceText;
-	}
-
-	public String setSourceText(String newSourceText) {
-		String oldSourceText = getSourceText();
-		this.sourceText = newSourceText; 
-		return oldSourceText;
-	}
-	
-	/* 
-	 * @copydoc @see java.util.Map.Entry#setValue(java.lang.Object)
-	 */
-	@Override
-	public String setValue(String value) {
-		return setSourceText(value);
-	}
-
-	/* 
-	 * @copydoc @see org.apache.commons.lang3.tuple.Pair#getLeft()
-	 */
-	@Override
-	public String getLeft() {
-		return getName();
-	}
-
-	/* 
-	 * @copydoc @see org.apache.commons.lang3.tuple.Pair#getRight()
-	 */
-	@Override
-	public String getRight() {
-		return getSourceText();
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#setName(java.lang.String)
-	 */
-	@Override
-	public String setName(String name) {
-		String oldName = getName();
-		this.name = name;
-		return oldName;
 	}
 
 }
