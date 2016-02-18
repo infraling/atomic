@@ -48,7 +48,10 @@ public class DocumentCreationRunnableTest {
 		SCorpus corpus = SaltFactory.eINSTANCE.createSCorpus();
 		corpus.setId("12345");
 		corpus.setSName("corpus");
-		setFixture(new DocumentCreationRunnable(corpus, new Document("document", "sourceText")));
+		Document d = new Document();
+		d.setName("document");
+		d.setSourceText("sourceText");
+		setFixture(new DocumentCreationRunnable(corpus, d));
 	}
 
 	/**
