@@ -42,13 +42,11 @@ import java.util.LinkedHashMap;
 public interface ProjectNode {
 	
 	/**
-	 * Sets the name of the project node. Returns the old
-	 * name, i.e., the name that has been "overwritten".
+	 * Sets the name of the project node. 
 	 *
 	 * @param name the name to set
-	 * @return the old name
 	 */
-	public String setName(String name);
+	public void setName(String name);
 	
 	/**
 	 * Returns the name of the project node.
