@@ -49,9 +49,10 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	public Corpus() {
 	}
 	
-	/**
-	 * @return the name
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getName()
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -59,19 +60,16 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#setName(java.lang.String)
 	 */
-	@Override
-	/**
-	 * @param name the name to set
-	 */
 	public void setName(final String name) {
 		final String oldName = this.name;
 		this.name = name;
 		firePropertyChange("name", oldName, this.name);
 	}
-
-	/**
-	 * @return the children
+	
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
 	 */
+	@Override
 	public LinkedHashMap<String, ProjectNode> getChildren() {
 		return children;
 	}
@@ -84,7 +82,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 		this.children = children;
 		firePropertyChange("children", oldChildren, this.children);
 	}
-	
+
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
 	 */
