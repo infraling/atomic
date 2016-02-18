@@ -74,9 +74,13 @@ public class DefaultProjectDataTest {
 	public void testGetCorpora() {
 		assertNotNull(getFixture().getCorpora());
 		assertEquals(0, getFixture().getCorpora().size());
-		getFixture().addCorpus(new Corpus());
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		getFixture().addCorpus(c1);
 		assertEquals(1, getFixture().getCorpora().size());
-		getFixture().addCorpus(new Corpus());
+		Corpus c1New = new Corpus();
+		c1New.setName("c1");
+		getFixture().addCorpus(c1New);
 		assertEquals(1, getFixture().getCorpora().size());
 		getFixture().addCorpus(new Corpus());
 		assertEquals(2, getFixture().getCorpora().size());
