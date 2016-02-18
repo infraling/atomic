@@ -55,7 +55,11 @@ public class DocumentTest {
 	@Test
 	public void testDocument() {
 		assertNotNull(getFixture());
-		assertEquals(new MutablePair<String, String>("document", "text"), getFixture());
+		Document d = new Document();
+		d.setName("document");
+		d.setSourceText("text");
+		assertEquals(d.getName(), getFixture().getName());
+		assertEquals(d.getSourceText(), getFixture().getSourceText());
 		assertNull(getFixture().getChildren());
 	}
 
