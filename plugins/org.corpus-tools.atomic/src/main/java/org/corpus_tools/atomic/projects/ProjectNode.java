@@ -79,7 +79,7 @@ public interface ProjectNode {
 	 * @param the child to add
 	 * @return the added child
 	 */
-	public ProjectNode addChild(ProjectNode child);
+	public ProjectNode addChild(final ProjectNode child);
 	
 	/**
 	 * Removes a corpus from the project. The argument is
@@ -91,5 +91,5 @@ public interface ProjectNode {
 	 * @param the child to remove
 	 * @return the removed node or null
 	 */
-	public ProjectNode removeChild(String childName);
+	public ProjectNode removeChild(final String childName);
 }
