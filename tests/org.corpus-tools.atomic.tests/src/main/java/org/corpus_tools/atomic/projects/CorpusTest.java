@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -135,8 +134,10 @@ public class CorpusTest {
 		assertTrue(getFixture().getChildren().containsKey("c2"));
 		assertTrue(getFixture().getChildren().containsKey("d1"));
 		assertTrue(getFixture().getChildren().containsKey("d2"));
-		assertNotEquals("t1", getFixture().getChildren().get("d1"));
-		assertEquals(new MutablePair<String, String>("d1", "t3"), getFixture().getChildren().get("d1"));
+		assertTrue(getFixture().getChildren().get("d1") instanceof Document);
+		assertNotEquals("t1", ((Document) getFixture().getChildren().get("d1")).getSourceText());
+		assertEquals("d1", getFixture().getChildren().get("d1").getName());
+		assertEquals("t3", ((Document) getFixture().getChildren().get("d1")).getSourceText());
 	}
 
 	/**
@@ -170,10 +171,10 @@ public class CorpusTest {
 			i++;
 		}
 		// Remove last element
-		Document d2New = new Document();
-		d2New.setName("d2");
-		d2New.setSourceText("t2");
-		assertEquals(d2New, getFixture().removeChild("d2"));
+		assertTrue(getFixture().getChildren().get("d2") instanceof Document);
+		ProjectNode d = getFixture().removeChild("d2");
+		assertEquals("d2", d.getName());
+		assertEquals("t2", ((Document) d).getSourceText());
 		assertEquals(4, getFixture().getChildren().size());
 		assertFalse(getFixture().getChildren().containsKey("d2"));
 		assertNull(getFixture().getChildren().get("d2"));
@@ -219,10 +220,10 @@ public class CorpusTest {
 		assertEquals(1, getFixture().getChildren().size());
 		assertTrue(getFixture().getChildren().containsKey("d1"));
 		// Remove last remaining element
-		Document d1New = new Document();
-		d1New.setName("d1");
-		d1New.setSourceText("t1");
-		assertEquals(d1New, getFixture().removeChild("d1"));
+		ProjectNode d1Removed = getFixture().removeChild("d1");
+		assertTrue(d1Removed instanceof Document);
+		assertEquals("d1", d1Removed.getName());
+		assertEquals("t1", ((Document) d1Removed).getSourceText());
 		assertEquals(0, getFixture().getChildren().size());
 		assertNotNull(getFixture().getChildren());
 	}

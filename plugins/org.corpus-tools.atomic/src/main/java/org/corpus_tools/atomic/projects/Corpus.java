@@ -47,6 +47,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	 * Default no-arg constructor (JavaBean compliance). 
 	 */
 	public Corpus() {
+		children = new LinkedHashMap<>();
 	}
 	
 	/* 
@@ -92,7 +93,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 		final LinkedHashMap<String, ProjectNode> newChildren = getChildren();
 		newChildren.put(child.getName(), child);
 		setChildren(newChildren);
-		return null;
+		return child;
 	}
 
 	/* 

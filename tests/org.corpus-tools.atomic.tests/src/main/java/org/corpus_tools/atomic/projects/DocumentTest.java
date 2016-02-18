@@ -20,7 +20,6 @@ package org.corpus_tools.atomic.projects;
 
  import static org.junit.Assert.*;
 
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.Before;
 import org.junit.Test;
 
