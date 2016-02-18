@@ -55,9 +55,14 @@ public class CorpusCreationRunnableTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		Corpus c1 = new Corpus("c1");
-		c1.addChild(new Corpus("c12"));
-		c1.addChild(new Corpus("c13"));
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		Corpus c12 = new Corpus();
+		c12.setName("c12");
+		c1.addChild(c12);
+		Corpus c13 = new Corpus();
+		c13.setName("c13");
+		c1.addChild(c13);
 		setFixture(new CorpusCreationRunnable(c1));
 	}
 
