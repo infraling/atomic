@@ -74,11 +74,11 @@ public class DefaultProjectDataTest {
 	public void testGetCorpora() {
 		assertNotNull(getFixture().getCorpora());
 		assertEquals(0, getFixture().getCorpora().size());
-		getFixture().addCorpus(new Corpus("c1"));
+		getFixture().addCorpus(new Corpus());
 		assertEquals(1, getFixture().getCorpora().size());
-		getFixture().addCorpus(new Corpus("c1"));
+		getFixture().addCorpus(new Corpus());
 		assertEquals(1, getFixture().getCorpora().size());
-		getFixture().addCorpus(new Corpus("c2"));
+		getFixture().addCorpus(new Corpus());
 		assertEquals(2, getFixture().getCorpora().size());
 		assertThat(getFixture().getCorpora(), instanceOf(HashMap.class));
 	}
@@ -88,21 +88,27 @@ public class DefaultProjectDataTest {
 	 */
 	@Test
 	public void testAddCorpus() {
-		getFixture().addCorpus(new Corpus("c1"));
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		getFixture().addCorpus(c1);
 		assertEquals(1, getFixture().getCorpora().size());
 		assertNotNull(getFixture().getCorpora().entrySet());
 		assertTrue(getFixture().getCorpora().containsKey("c1"));
 		assertNotNull(getFixture().getCorpora().get("c1"));
 		assertThat(getFixture().getCorpora().get("c1"), instanceOf(Corpus.class));
 		ProjectNode oldC1 = getFixture().getCorpora().get("c1");
-		getFixture().addCorpus(new Corpus("c1"));
+		Corpus c1New = new Corpus();
+		c1New.setName("c1");
+		getFixture().addCorpus(c1New);
 		assertEquals(1, getFixture().getCorpora().size());
 		assertTrue(getFixture().getCorpora().containsKey("c1"));
 		assertFalse(getFixture().getCorpora().containsKey("c2"));
 		assertNotNull(getFixture().getCorpora().get("c1"));
 		assertThat(getFixture().getCorpora().get("c1"), instanceOf(Corpus.class));
 		assertNotEquals(oldC1, getFixture().getCorpora().get("c1"));
-		getFixture().addCorpus(new Corpus("c2"));
+		Corpus c2 = new Corpus();
+		c2.setName("c2");
+		getFixture().addCorpus(c2);
 		assertEquals(2, getFixture().getCorpora().size());
 		assertTrue(getFixture().getCorpora().containsKey("c2"));
 		assertTrue(getFixture().getCorpora().containsKey("c1"));
@@ -117,8 +123,12 @@ public class DefaultProjectDataTest {
 	@Test
 	public void testRemoveCorpus() {
 		assertNull(getFixture().getCorpora().remove("c1"));
-		getFixture().addCorpus(new Corpus("c1"));
-		getFixture().addCorpus(new Corpus("c2"));
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		getFixture().addCorpus(c1);
+		Corpus c2 = new Corpus();
+		c2.setName("c2");
+		getFixture().addCorpus(c2);
 		assertNotNull(getFixture().getCorpora().get("c1"));
 		assertNotNull(getFixture().getCorpora().get("c2"));
 		assertEquals(2, getFixture().getCorpora().size());
