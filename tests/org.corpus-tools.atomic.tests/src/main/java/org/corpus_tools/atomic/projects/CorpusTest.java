@@ -18,13 +18,15 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.*; 
 
 import java.util.Iterator;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.codebox.bean.JavaBeanTester;
 
 /**
  * Unit tests for {@link Corpus}.
@@ -43,7 +45,9 @@ public class CorpusTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		setFixture(new Corpus("corpus"));
+		Corpus c = new Corpus();
+		c.setName("corpus");
+		setFixture(c);
 	}
 
 	/**
@@ -62,12 +66,25 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testGetChildren() {
-		getFixture().addChild(new Corpus("c1"));
-		getFixture().addChild(new Document("d1", "t1"));
-		getFixture().addChild(new Corpus("c2"));
-		getFixture().addChild(new Document("d2", "t2"));
-		getFixture().addChild(new Corpus("c1"));
-		getFixture().addChild(new Document("d1", "t3"));
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		getFixture().addChild(c1);
+		Document d1 = new Document();
+		d1.setName("d1");
+		d1.setSourceText("t1");
+		getFixture().addChild(d1);
+		Corpus c2 = new Corpus();
+		c2.setName("c2");
+		getFixture().addChild(c2);
+		Document d2 = new Document();
+		d2.setName("d2");
+		d2.setSourceText("t2");
+		getFixture().addChild(d2);
+		getFixture().addChild(c1);
+		Document d1New = new Document();
+		d1New.setName("d1");
+		d1New.setSourceText("t3");
+		getFixture().addChild(d1New);
 		// Should have 4 children now, in the order c1, d1, c2, d2
 		assertNotNull(getFixture().getChildren());
 		assertEquals(4, getFixture().getChildren().size());
@@ -90,16 +107,27 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testAddChild() {
-		Corpus c1 = new Corpus("c1");
-		Corpus c2 = new Corpus("c2");
-		Document d1 = new Document("d1", "t1");
-		Document d2 = new Document("d2", "t2");
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		Corpus c2 = new Corpus();
+		c2.setName("c2");
+		Document d1 = new Document();
+		d1.setName("d1");
+		d1.setSourceText("t1");
+		Document d2 = new Document();
+		d2.setName("d2");
+		d2.setSourceText("t2");
 		assertEquals(c1, getFixture().addChild(c1));
 		assertEquals(d1, getFixture().addChild(d1));
 		assertEquals(c2, getFixture().addChild(c2));
 		assertEquals(d2, getFixture().addChild(d2));
-		getFixture().addChild(new Corpus("c1"));
-		getFixture().addChild(new Document("d1", "t3"));
+		Corpus c1New = new Corpus();
+		c1New.setName("c1");
+		getFixture().addChild(c1New);
+		Document d1New = new Document();
+		d1New.setName("d1");
+		d1New.setSourceText("t3");
+		getFixture().addChild(d1New);
 		// Should have 4 children now, in the order c1, d1, c2, d2
 		assertNotNull(getFixture().getChildren());
 		assertEquals(4, getFixture().getChildren().size());
@@ -116,11 +144,23 @@ public class CorpusTest {
 	 */
 	@Test
 	public void testRemoveChild() {
-		getFixture().addChild(new Corpus("c1"));
-		getFixture().addChild(new Document("d1", "t1"));
-		getFixture().addChild(new Corpus("c2"));
-		getFixture().addChild(new Corpus("c3"));
-		getFixture().addChild(new Document("d2", "t2"));
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		getFixture().addChild(c1);
+		Document d1 = new Document();
+		d1.setName("d1");
+		d1.setSourceText("t1");
+		getFixture().addChild(d1);
+		Corpus c2 = new Corpus();
+		c2.setName("c2");
+		getFixture().addChild(c2);
+		Corpus c3 = new Corpus();
+		c3.setName("c3");
+		getFixture().addChild(c3);
+		Document d2 = new Document();
+		d2.setName("d2");
+		d2.setSourceText("t2");
+		getFixture().addChild(d2);
 		String[] keysArray = new String[] { "c1", "d1", "c2", "c3", "d2" }; // The original order in getChildren()
 		Iterator<String> keys = getFixture().getChildren().keySet().iterator();
 		int i = 0;
@@ -130,7 +170,10 @@ public class CorpusTest {
 			i++;
 		}
 		// Remove last element
-		assertEquals(new Document("d2", "t2"), getFixture().removeChild("d2"));
+		Document d2New = new Document();
+		d2New.setName("d2");
+		d2New.setSourceText("t2");
+		assertEquals(d2New, getFixture().removeChild("d2"));
 		assertEquals(4, getFixture().getChildren().size());
 		assertFalse(getFixture().getChildren().containsKey("d2"));
 		assertNull(getFixture().getChildren().get("d2"));
@@ -176,7 +219,10 @@ public class CorpusTest {
 		assertEquals(1, getFixture().getChildren().size());
 		assertTrue(getFixture().getChildren().containsKey("d1"));
 		// Remove last remaining element
-		assertEquals(new Document("d1", "t1"), getFixture().removeChild("d1"));
+		Document d1New = new Document();
+		d1New.setName("d1");
+		d1New.setSourceText("t1");
+		assertEquals(d1New, getFixture().removeChild("d1"));
 		assertEquals(0, getFixture().getChildren().size());
 		assertNotNull(getFixture().getChildren());
 	}
@@ -187,17 +233,15 @@ public class CorpusTest {
 	@Test
 	public void testGetName() {
 		assertEquals("corpus", getFixture().getName());
-		assertEquals("corpus", getFixture().setName("korpus"));
 		assertEquals("korpus", getFixture().getName());
 	}
 
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Corpus#setName(java.lang.String)}.
-	 */
 	@Test
-	public void testSetName() {
-		assertEquals("corpus", getFixture().setName("korpus"));
-		assertEquals("korpus", getFixture().setName("corpus"));
+	public void testBeanFeatures() {
+		Corpus c = new Corpus();
+		c.setName("corpus");
+		JavaBeanTester.builder(Corpus.class).loadData().testInstance(getFixture());
+		JavaBeanTester.builder(Corpus.class).loadData().testEquals(getFixture(), c);
 	}
 
 	/**
