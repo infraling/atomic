@@ -37,7 +37,9 @@ public abstract class AbstractBean {
 	private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	/**
-	 * Adds a {@link PropertyChangeListener}.
+	 * Adds a {@link PropertyChangeListener} for all properties.
+	 * 
+	 * @see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}.
 	 * 
 	 * @param listener The property change listener to add (must not be null!)
 	 * @throws RuntimeException if listener is null
