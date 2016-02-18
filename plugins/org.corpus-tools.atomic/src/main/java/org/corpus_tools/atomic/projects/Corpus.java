@@ -20,57 +20,38 @@ package org.corpus_tools.atomic.projects;
 
 import java.util.LinkedHashMap;
 
+import org.corpus_tools.atomic.models.AbstractBean;
+import org.eclipse.core.runtime.Assert;
+
 /**
- * This class represents a corpus, i.e., a node in the
+ * JavaBean definition of a corpus, i.e., a node in the
  * corpus structure tree. A corpus can be a root corpus,
- * i.e., the topmost structural element in a project. It
- * must have one or more children: at least one sub-corpus
- * or one document.
+ * i.e., the topmost structural element in a project.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public class Corpus implements ProjectNode {
+public class Corpus extends AbstractBean implements ProjectNode {
 	
-	private String name;
-	private LinkedHashMap<String, ProjectNode> children = new LinkedHashMap<>();
+	/**
+	 * Property <code>name</name>, readable and writable.
+	 */
+	private String name = null;
 
 	/**
-	 * Constructor taking the name of the corpus.
+	 * Property <code>children</name>, readable and writable.
 	 */
-	public Corpus(String name) {
-		this.name = name;
+	private LinkedHashMap<String, ProjectNode> children = null;
+	
+	/**
+	 * Default no-arg constructor (JavaBean compliance). 
+	 */
+	public Corpus() {
 	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
+	
+	/**
+	 * @return the name
 	 */
-	@Override
-	public LinkedHashMap<String, ProjectNode> getChildren() {
-		return children ;
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
-	 */
-	@Override
-	public ProjectNode addChild(ProjectNode child) {
-		getChildren().put(child.getName(), child);
-		return child;
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#removeChild(java.lang.String)
-	 */
-	@Override
-	public ProjectNode removeChild(String childName) {
-		return getChildren().remove(childName);
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getName()
-	 */
-	@Override
 	public String getName() {
 		return name;
 	}
@@ -79,10 +60,53 @@ public class Corpus implements ProjectNode {
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#setName(java.lang.String)
 	 */
 	@Override
-	public String setName(String name) {
-		String oldName = getName();
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(final String name) {
+		final String oldName = this.name;
 		this.name = name;
-		return oldName;
+		firePropertyChange("name", oldName, this.name);
+	}
+
+	/**
+	 * @return the children
+	 */
+	public LinkedHashMap<String, ProjectNode> getChildren() {
+		return children;
+	}
+
+	/**
+	 * @param children the children to set
+	 */
+	public void setChildren(final LinkedHashMap<String, ProjectNode> children) {
+		final LinkedHashMap<String, ProjectNode> oldChildren = this.children;
+		this.children = children;
+		firePropertyChange("children", oldChildren, this.children);
+	}
+	
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
+	 */
+	@Override
+	public ProjectNode addChild(final ProjectNode child) {
+		Assert.isNotNull(child);
+		final LinkedHashMap<String, ProjectNode> newChildren = getChildren();
+		newChildren.put(child.getName(), child);
+		setChildren(newChildren);
+		return null;
+	}
+
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#removeChild(java.lang.String)
+	 */
+	@Override
+	public ProjectNode removeChild(final String childName) {
+		Assert.isNotNull(childName);
+		final LinkedHashMap<String, ProjectNode> newChildren = getChildren();
+		ProjectNode removedChild = newChildren.remove(childName);
+		setChildren(newChildren);
+		return removedChild;
 	}
 
 }
