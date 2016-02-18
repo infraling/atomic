@@ -72,24 +72,30 @@ public interface ProjectNode {
 	
 	/**
 	 * Adds a child, i.e., a {@link ProjectNode}, to this
-	 * {@link ProjectNode}. The new child is added to the
+	 * {@link ProjectNode}. Clients must assert that this 
+	 * is not null, and throw a {@link RuntimeException}
+	 * if it is. The new child is added to the
 	 * {@link LinkedHashMap} of children. Returns the added
 	 * child {@link ProjectNode}.
 	 *
-	 * @param the child to add
+	 * @param the child to add (must not be null)
 	 * @return the added child
+	 * @throws RuntimeException if child is null
 	 */
 	public ProjectNode addChild(final ProjectNode child);
 	
 	/**
 	 * Removes a corpus from the project. The argument is
-	 * the name of the {@link ProjectNode} to remove. 
+	 * the name of the {@link ProjectNode} to remove. Clients
+	 * must assert that this is not null, and throw a {@link RuntimeException}
+	 * if it is. 
 	 * <p>
 	 * Returns the previous node associated with this name
 	 * or null if there was no node of this name.
 	 *
-	 * @param the child to remove
+	 * @param the name of the child to remove (must not be null)
 	 * @return the removed node or null
+	 * @throws RuntimeException if childName is null
 	 */
 	public ProjectNode removeChild(final String childName);
 }
