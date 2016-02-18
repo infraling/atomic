@@ -18,19 +18,13 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.attribute.DocAttributeSet;
+ import static org.junit.Assert.*;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.codebox.bean.JavaBeanTester;
 
 /**
  * Unit test for {@link Document}.
@@ -49,7 +43,10 @@ public class DocumentTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		setFixture(new Document("document", "text"));
+		Document d = new Document();
+		d.setName("document");
+		d.setSourceText("text");
+		setFixture(d);
 	}
 
 	/**
@@ -68,7 +65,7 @@ public class DocumentTest {
 	@Test
 	public void testGetName() {
 		assertEquals("document", getFixture().getName());
-		assertEquals("document", getFixture().setName("dokument"));
+		getFixture().setName("dokument");
 		assertEquals("dokument", getFixture().getName());
 	}
 
@@ -85,8 +82,8 @@ public class DocumentTest {
 	 */
 	@Test
 	public void testAddChild() {
-		assertNull(getFixture().addChild(new Corpus("c1")));
-		assertNull(getFixture().addChild(new Document("d1", "t1")));
+		assertNull(getFixture().addChild(new Corpus()));
+		assertNull(getFixture().addChild(new Document()));
 	}
 
 	/**
@@ -105,24 +102,13 @@ public class DocumentTest {
 		assertEquals("text", getFixture().getSourceText());
 	}
 
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#setSourceText(java.lang.String)}.
-	 */
 	@Test
-	public void testSetSourceText() {
-		assertEquals("text", getFixture().setSourceText("text2"));
-		assertEquals("text2", getFixture().setSourceText("text2"));
-		assertEquals("text2", getFixture().setSourceText("text"));
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#setName(java.lang.String)}.
-	 */
-	@Test
-	public void testSetName() {
-		assertEquals("document", getFixture().setName("dokument"));
-		assertEquals("dokument", getFixture().setName("dokument"));
-		assertEquals("dokument", getFixture().setName("document"));
+	public void testBeanFeatures() {
+		Document d = new Document();
+		d.setName("document");
+		d.setSourceText("text");
+		JavaBeanTester.builder(Document.class).loadData().testInstance(getFixture());
+		JavaBeanTester.builder(Document.class).loadData().testEquals(getFixture(), d);
 	}
 
 	/**

@@ -233,6 +233,7 @@ public class CorpusTest {
 	@Test
 	public void testGetName() {
 		assertEquals("corpus", getFixture().getName());
+		getFixture().setName("korpus");
 		assertEquals("korpus", getFixture().getName());
 	}
 
