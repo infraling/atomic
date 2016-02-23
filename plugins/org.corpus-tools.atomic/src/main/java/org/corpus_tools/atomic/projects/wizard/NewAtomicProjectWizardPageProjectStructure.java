@@ -58,7 +58,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	public NewAtomicProjectWizardPageProjectStructure() {
 		super("Create the project structure");
-		setModel(new DefaultProjectData("New project"));
+		setModel(new DefaultProjectData());
 		setTitle("Create the project structure");
 		setDescription("Create the structure of the new project by adding corpora, subcorpora, and documents.");
 		/* 

@@ -44,7 +44,10 @@ public class DefaultProjectDataTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		setFixture(new DefaultProjectData("project"));
+		DefaultProjectData data = new DefaultProjectData();
+		data.setName("project");
+		setFixture(data);
+		
 	}
 
 	/**

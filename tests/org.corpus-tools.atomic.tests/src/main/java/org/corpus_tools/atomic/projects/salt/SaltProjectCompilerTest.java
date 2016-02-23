@@ -69,7 +69,8 @@ public class SaltProjectCompilerTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		DefaultProjectData data = new DefaultProjectData("project");
+		DefaultProjectData data = new DefaultProjectData();
+		data.setName("project");
 		Corpus c1 = new Corpus();
 		c1.setName("c1");
 		  Document d1 = new Document();
