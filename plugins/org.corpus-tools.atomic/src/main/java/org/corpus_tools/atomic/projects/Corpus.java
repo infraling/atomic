@@ -78,7 +78,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	/**
 	 * @param children the children to set
 	 */
-	public void setChildren(final LinkedHashMap<String, ProjectNode> children) {
+	private void setChildren(final LinkedHashMap<String, ProjectNode> children) {
 		final LinkedHashMap<String, ProjectNode> oldChildren = this.children;
 		this.children = children;
 		firePropertyChange("children", oldChildren, this.children);
