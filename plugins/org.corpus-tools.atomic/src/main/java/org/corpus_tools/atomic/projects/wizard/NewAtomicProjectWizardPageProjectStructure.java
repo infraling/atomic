@@ -18,7 +18,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import org.corpus_tools.atomic.internal.projects.DefaultProjectData; 
+import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
+import org.corpus_tools.atomic.projects.Corpus;
+import org.corpus_tools.atomic.projects.Document;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -58,7 +61,8 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	public NewAtomicProjectWizardPageProjectStructure() {
 		super("Create the project structure");
-		setModel(new DefaultProjectData());
+//		setModel(new DefaultProjectData());
+		setModel(dELETEMECreateModel());
 		setTitle("Create the project structure");
 		setDescription("Create the structure of the new project by adding corpora, subcorpora, and documents.");
 		/* 
@@ -67,6 +71,42 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		 * Every corpus must have a name and can contain n (sub-) corpora and n documents. Every document must have a name and must contain one source text.
 		 * Must include Eclipse Help plugin for this.
 		 */
+	}
+
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
+	private DefaultProjectData dELETEMECreateModel() {
+		DefaultProjectData data = new DefaultProjectData();
+		data.setName("project");
+		Corpus root = new Corpus();
+		root.setName("root");
+		Corpus c1 = new Corpus();
+		c1.setName("c1");
+		Document c1d1 = new Document();
+		c1d1.setName("c1d1");
+		c1d1.setSourceText("tc1d1");
+		c1.addChild(c1d1);
+		Document c1d2 = new Document();
+		c1d2.setName("c1d2");
+		c1d2.setSourceText("tc1d2");
+		c1.addChild(c1d2);
+		Corpus c2 = new Corpus();
+		c2.setName("c2");
+		Document c2d1 = new Document();
+		c2d1.setName("c2d1");
+		c2d1.setSourceText("tc2d1");
+		c2.addChild(c2d1);
+		Document c2d2 = new Document();
+		c2d2.setName("c2d2");
+		c2d2.setSourceText("tc2d2");
+		c2.addChild(c2d2);
+		root.addChild(c1);
+		root.addChild(c2);
+		data.addCorpus(root);
+		return data;
 	}
 
 	/* 
@@ -99,7 +139,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
 		
-		// Project composite
+		// Project name
 		Group projectGroup = new Group(container, SWT.NONE);
 		projectGroup.setText("Project");
 		projectGroup.setLayout(new GridLayout(2, false));
@@ -114,6 +154,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		txtNewProject.setText("New project");
 		txtNewProject.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
+		// Project contents
 		SashForm sashForm = new SashForm(container, SWT.HORIZONTAL);
 		sashForm.setLocation(0, 0);
 		GridData gridDataSashForm = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
@@ -130,8 +171,12 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		Button btnRemoveElement = new Button(leftComposite, SWT.NONE);
 		btnRemoveElement.setText("Remove element");
 		
-		Tree projectStructureTree = new Tree(leftComposite, SWT.BORDER);
-		projectStructureTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		TreeViewer projectTreeViewer = new TreeViewer(leftComposite);
+		projectTreeViewer.setContentProvider(new ProjectTreeContentProvider());
+	    projectTreeViewer.setInput(getModel());
+	    projectTreeViewer.setLabelProvider(new ProjectTreeLabelProvider());
+//		Tree projectStructureTree = new Tree(leftComposite, SWT.BORDER);
+		projectTreeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		Composite rightComposite = new Composite(sashForm, SWT.NONE);
 		rightComposite.setLayout(new GridLayout(1, false));
