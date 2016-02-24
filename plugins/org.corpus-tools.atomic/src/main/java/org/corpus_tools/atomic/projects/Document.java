@@ -50,6 +50,11 @@ public class Document extends AbstractBean implements ProjectNode {
 	private String name = null;
 	
 	/**
+	 * The document's parent in the project structure tree. 
+	 */
+	private Corpus parent = null;
+	
+	/**
 	 * Default no-arg constructor (JavaBean compliance). 
 	 */
 	public Document() {
@@ -112,6 +117,20 @@ public class Document extends AbstractBean implements ProjectNode {
 	public ProjectNode removeChild(String childName) {
 		log.warn("A document cannot have any children, therefore calling \"removeChild()\" on one always returns null.");
 		return null;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public Corpus getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Corpus parent) {
+		this.parent = parent;
 	}
 
 }

@@ -44,6 +44,11 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	private LinkedHashMap<String, ProjectNode> children = null;
 	
 	/**
+	 * Property <code>parent</name>, readable and writable.
+	 */
+	private Object parent = null;
+	
+	/**
 	 * Default no-arg constructor (JavaBean compliance). 
 	 */
 	public Corpus() {
@@ -106,6 +111,20 @@ public class Corpus extends AbstractBean implements ProjectNode {
 		ProjectNode removedChild = newChildren.remove(childName);
 		setChildren(newChildren);
 		return removedChild;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public Object getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Object parent) {
+		this.parent = parent;
 	}
 
 }
