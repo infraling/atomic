@@ -228,12 +228,16 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 							if (((Document) node).getSourceText() != null) {
 								sourceTextText.setText(((Document) node).getSourceText());
 							}
+							else {
+								sourceTextText.setText("");
+							}
 							
 						}
 					}
 				}
 			}
 		});
+		projectTreeViewer.expandAll();
 
 		Composite rightComposite = new Composite(sashForm, SWT.NONE);
 		rightComposite.setLayout(new GridLayout(1, false));
@@ -260,6 +264,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				getSelectedCorpus().setName(corpusNameText.getText());
 				projectTreeViewer.refresh();
+				projectTreeViewer.expandAll();
 			}
 		});
 
@@ -282,6 +287,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				newSubCorpus.setName(addSubCorpusNameText.getText());
 				getSelectedCorpus().addChild(newSubCorpus);
 				projectTreeViewer.refresh();
+				projectTreeViewer.expandAll();
 				addSubCorpusNameText.setText("");
 			}
 		});
@@ -305,6 +311,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				newDocument.setName(addDocumentNameText.getText());
 				getSelectedCorpus().addChild(newDocument);
 				projectTreeViewer.refresh();
+				projectTreeViewer.expandAll();
 				addDocumentNameText.setText("");
 			}
 		});
@@ -331,6 +338,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				getSelectedDocument().setName(documentNameText.getText());
 				projectTreeViewer.refresh();
+				projectTreeViewer.expandAll();
 			}
 		});
 
