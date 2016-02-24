@@ -18,8 +18,11 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
+import java.util.TreeMap;
+
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.ProjectData;
+import org.corpus_tools.atomic.projects.ProjectNode;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -64,7 +67,8 @@ public class ProjectTreeContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof ProjectData) {
 			ProjectData project = (ProjectData) parentElement;
-			return project.getCorpora().values().toArray();
+			TreeMap<String, ProjectNode> sortedCorpora = new TreeMap<>(project.getCorpora());
+			return sortedCorpora.values().toArray();
 		}
 		else if (parentElement instanceof Corpus) {
 			Corpus corpus = (Corpus) parentElement;

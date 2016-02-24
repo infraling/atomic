@@ -25,7 +25,9 @@ import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -55,6 +57,7 @@ import org.eclipse.core.databinding.beans.BeanProperties;
 /**
  * A wizard page for the user to construct the structure of a project.
  * <p>
+ * FIXME: SWTBot test this class!
  * 
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
@@ -77,50 +80,15 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	public NewAtomicProjectWizardPageProjectStructure() {
 		super("Create the project structure");
-		// setModel(new DefaultProjectData());
-		setModel(dELETEMECreateModel());
+		DefaultProjectData projectData = new DefaultProjectData();
+		projectData.setName("New Atomic project");
+		setModel(projectData);
 		setTitle("Create the project structure");
 		setDescription("Create the structure of the new project by adding corpora, subcorpora, and documents.");
 		/*
 		 * FIXME TODO: Add context-sensitive help to Atomic, the the "?" button will show in the wizard. Add the following description to a help "window" of sorts: Every corpus must have a name and can contain n (sub-) corpora and n
 		 * documents. Every document must have a name and must contain one source text. Must include Eclipse Help plugin for this.
 		 */
-	}
-
-	/**
-	 * TODO: Description
-	 *
-	 * @return
-	 */
-	private DefaultProjectData dELETEMECreateModel() {
-		DefaultProjectData data = new DefaultProjectData();
-		data.setName("project");
-		Corpus root = new Corpus();
-		root.setName("root");
-		Corpus c1 = new Corpus();
-		c1.setName("c1");
-		Document c1d1 = new Document();
-		c1d1.setName("c1d1");
-		c1d1.setSourceText("tc1d1");
-		c1.addChild(c1d1);
-		Document c1d2 = new Document();
-		c1d2.setName("c1d2");
-		c1d2.setSourceText("tc1d2");
-		c1.addChild(c1d2);
-		Corpus c2 = new Corpus();
-		c2.setName("c2");
-		Document c2d1 = new Document();
-		c2d1.setName("c2d1");
-		c2d1.setSourceText("tc2d1");
-		c2.addChild(c2d1);
-		Document c2d2 = new Document();
-		c2d2.setName("c2d2");
-		c2d2.setSourceText("tc2d2");
-		c2.addChild(c2d2);
-		root.addChild(c1);
-		root.addChild(c2);
-		data.addCorpus(root);
-		return data;
 	}
 
 	/*
@@ -180,15 +148,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 		Button btnNewCorpus = new Button(leftComposite, SWT.NONE);
 		btnNewCorpus.setText("New corpus");
-
+		
 		Button btnRemoveElement = new Button(leftComposite, SWT.NONE);
 		btnRemoveElement.setText("Remove element");
-		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// System.err.println(getModel());
-			}
-		});
 
 		projectTreeViewer = new TreeViewer(leftComposite, SWT.SINGLE);
 		new Label(leftComposite, SWT.NONE);
@@ -231,7 +193,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 							else {
 								sourceTextText.setText("");
 							}
-							
+
 						}
 					}
 				}
@@ -239,6 +201,41 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		});
 		projectTreeViewer.expandAll();
 
+		// Only add button listeners now, as TreeViewer doesn't exist up until now
+		btnNewCorpus.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String numberOfExistingRootCorpora = (getModel().getCorpora().size() > 0) ? " " + String.valueOf(getModel().getCorpora().size() + 1) : "" ;
+				Corpus newRootCorpus = new Corpus();
+				newRootCorpus.setName("Root corpus" + numberOfExistingRootCorpora);
+				getModel().addCorpus(newRootCorpus);
+				projectTreeViewer.refresh();
+				projectTreeViewer.expandAll();
+			}
+		});
+		
+		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ISelection selection = projectTreeViewer.getSelection();
+				ProjectNode selectionParent = getCurrentSelectionParent();
+				if (selection instanceof ITreeSelection) {
+					ITreeSelection treeSelection = (ITreeSelection) selection;
+					Object selectedElement = treeSelection.getFirstElement();
+					if (selectedElement instanceof ProjectNode) {
+						ProjectNode selectedNode = (ProjectNode) selectedElement;
+						if (selectionParent instanceof Corpus) {
+							((Corpus) selectionParent).removeChild(selectedNode.getName());
+						}
+						else if (selectionParent == null) {
+							getModel().removeCorpus(selectedNode.getName());
+						}
+						projectTreeViewer.refresh();
+					}
+				}
+			}
+		});
+		
 		Composite rightComposite = new Composite(sashForm, SWT.NONE);
 		rightComposite.setLayout(new GridLayout(1, false));
 
@@ -262,7 +259,18 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				getSelectedCorpus().setName(corpusNameText.getText());
+				ProjectNode selectionParent = getCurrentSelectionParent();
+				String oldName = getSelectedCorpus().getName();
+				Corpus newCorpus = new Corpus();
+				newCorpus.setName(corpusNameText.getText());
+				if (selectionParent instanceof Corpus) {
+					selectionParent.removeChild(oldName);
+					selectionParent.addChild(newCorpus);
+				}
+				else if (selectionParent == null) { // I.e., selectionParent is ProjectData
+					getModel().removeCorpus(oldName);
+					getModel().addCorpus(newCorpus);
+				}
 				projectTreeViewer.refresh();
 				projectTreeViewer.expandAll();
 			}
@@ -336,7 +344,15 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				getSelectedDocument().setName(documentNameText.getText());
+				ProjectNode selectionParent = getCurrentSelectionParent();
+				String oldName = getSelectedDocument().getName();
+				Document newDocument = new Document();
+				newDocument.setName(documentNameText.getText());
+				newDocument.setSourceText(sourceTextText.getText());
+				if (selectionParent instanceof Corpus) {
+					selectionParent.removeChild(oldName);
+					selectionParent.addChild(newDocument);
+				}
 				projectTreeViewer.refresh();
 				projectTreeViewer.expandAll();
 			}
@@ -383,6 +399,21 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		shell.open();
+	}
+	
+	private ProjectNode getCurrentSelectionParent() {
+		ISelection selection = projectTreeViewer.getSelection();
+		if (selection instanceof ITreeSelection) {
+			ITreeSelection treeSelection = (ITreeSelection) selection;
+			Object selectionParent = treeSelection.getPaths()[0].getParentPath().getLastSegment();
+			if (selectionParent instanceof ProjectNode) {
+				return (ProjectNode) selectionParent;
+			}
+			else {
+				return null;
+			}
+		}
+		return null;
 	}
 
 	/**
