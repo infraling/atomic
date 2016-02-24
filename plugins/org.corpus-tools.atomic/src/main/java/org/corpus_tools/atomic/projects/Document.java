@@ -52,7 +52,7 @@ public class Document extends AbstractBean implements ProjectNode {
 	/**
 	 * The document's parent in the project structure tree. 
 	 */
-	private Corpus parent = null;
+	private Object parent = null;
 	
 	/**
 	 * Default no-arg constructor (JavaBean compliance). 
@@ -122,14 +122,14 @@ public class Document extends AbstractBean implements ProjectNode {
 	/**
 	 * @return the parent
 	 */
-	public Corpus getParent() {
+	public Object getParent() {
 		return parent;
 	}
 
 	/**
 	 * @param parent the parent to set
 	 */
-	public void setParent(Corpus parent) {
+	public void setParent(Object parent) {
 		this.parent = parent;
 	}
 
