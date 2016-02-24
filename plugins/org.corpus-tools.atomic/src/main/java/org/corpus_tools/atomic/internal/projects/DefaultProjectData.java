@@ -90,6 +90,7 @@ public class DefaultProjectData extends AbstractBean implements ProjectData {
 	@Override
 	public void addCorpus(final ProjectNode corpus) {
 		Assert.isNotNull(corpus);
+		corpus.setParent(this);
 		final HashMap<String,ProjectNode> newCorpora = getCorpora();
 		newCorpora.put(corpus.getName(), corpus);
 		setCorpora(newCorpora);

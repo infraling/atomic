@@ -56,6 +56,20 @@ public interface ProjectNode {
 	public String getName();
 	
 	/**
+	 * Sets the parent of this node, either of type {@link ProjectData} or of type {@link ProjectNode}
+	 *
+	 * @param parent the parent to set
+	 */
+	public void setParent(Object parent);
+	
+	/**
+	 * Returns the parent of the project node.
+	 *
+	 * @return the parent of this {@link ProjectNode}
+	 */
+	public Object getParent();
+	
+	/**
 	 * Returns the child nodes of this project element.
 	 * <p>
 	 * This method must return null when the project

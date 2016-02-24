@@ -95,6 +95,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	@Override
 	public ProjectNode addChild(final ProjectNode child) {
 		Assert.isNotNull(child);
+		child.setParent(this);
 		final LinkedHashMap<String, ProjectNode> newChildren = getChildren();
 		newChildren.put(child.getName(), child);
 		setChildren(newChildren);
