@@ -25,6 +25,7 @@ import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
+import org.corpus_tools.atomic.projects.wizard.ProjectTreeObservableFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -50,9 +51,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
+import org.eclipse.jface.databinding.viewers.ViewerSupport;
+import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.beans.BeansObservables;
 
 /**
  * A wizard page for the user to construct the structure of a project.
@@ -154,10 +161,13 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 		projectTreeViewer = new TreeViewer(leftComposite, SWT.SINGLE);
 		new Label(leftComposite, SWT.NONE);
-		projectTreeViewer.setContentProvider(new ProjectTreeContentProvider());
-		projectTreeViewer.setInput(getModel());
-		projectTreeViewer.setLabelProvider(new ProjectTreeLabelProvider());
+		ObservableListTreeContentProvider provider = new ObservableListTreeContentProvider(new ProjectTreeObservableFactory(getModel()), new ProjectTreeStructureAdvisor());
+//		projectTreeViewer.setContentProvider(new ProjectTreeContentProvider());
+		projectTreeViewer.setContentProvider(provider);
+		projectTreeViewer.setLabelProvider(new ObservableProjectTreeLabelProvider(provider.getKnownElements()));
 		projectTreeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		projectTreeViewer.setInput(getModel());
+
 		projectTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -225,10 +235,10 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 					if (selectedElement instanceof ProjectNode) {
 						ProjectNode selectedNode = (ProjectNode) selectedElement;
 						if (selectionParent instanceof Corpus) {
-							((Corpus) selectionParent).removeChild(selectedNode.getName());
+							((Corpus) selectionParent).removeChild(selectedNode);
 						}
-						else if (selectionParent == null) {
-							getModel().removeCorpus(selectedNode.getName());
+						else if (selectionParent == null) { // I.e., node is root corpus and therefore contained in model.getCorpora()
+							getModel().removeCorpus((Corpus) selectedNode);
 						}
 						projectTreeViewer.refresh();
 					}
@@ -257,19 +267,19 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		getCorpusControls().add(saveCorpusNameBtn);
 		saveCorpusNameBtn.addSelectionListener(new SelectionAdapter() {
 
+			// FIXME: Factor out "getSelected..." and use treeviewer.selection instead
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ProjectNode selectionParent = getCurrentSelectionParent();
-				String oldName = getSelectedCorpus().getName();
 				Corpus newCorpus = new Corpus();
 				newCorpus.setName(corpusNameText.getText());
 				if (selectionParent instanceof Corpus) {
-					selectionParent.removeChild(oldName);
-					selectionParent.addChild(newCorpus);
+					((Corpus) selectionParent).removeChild(getSelectedCorpus());
+					((Corpus) selectionParent).addChild(newCorpus);
 				}
 				else if (selectionParent == null) { // I.e., selectionParent is ProjectData
-					getModel().removeCorpus(oldName);
-					getModel().addCorpus(newCorpus);
+					getModel().removeCorpus(getSelectedCorpus());
+					getModel().addCorpus(getSelectedCorpus());
 				}
 				projectTreeViewer.refresh();
 				projectTreeViewer.expandAll();
@@ -345,13 +355,12 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ProjectNode selectionParent = getCurrentSelectionParent();
-				String oldName = getSelectedDocument().getName();
 				Document newDocument = new Document();
 				newDocument.setName(documentNameText.getText());
 				newDocument.setSourceText(sourceTextText.getText());
 				if (selectionParent instanceof Corpus) {
-					selectionParent.removeChild(oldName);
-					selectionParent.addChild(newDocument);
+					((Corpus) selectionParent).removeChild(getSelectedDocument());
+					((Corpus) selectionParent).addChild(newDocument);
 				}
 				projectTreeViewer.refresh();
 				projectTreeViewer.expandAll();
@@ -486,6 +495,11 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		IObservableValue observeTextDocumentNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(documentNameText);
 		IObservableValue nameSelectedDocumentObserveValue = BeanProperties.value("name").observe(selectedDocument);
 		bindingContext.bindValue(observeTextDocumentNameTextObserveWidget, nameSelectedDocumentObserveValue, null, null);
+		//
+		IObservableValue treeViewerSelectionObserveSelection = ViewersObservables.observeSingleSelection(projectTreeViewer);
+		IObservableValue textTextObserveWidget = SWTObservables.observeText(corpusNameText, SWT.Modify);
+		IObservableValue treeViewerValueObserveDetailValue = BeansObservables.observeDetailValue(treeViewerSelectionObserveSelection, "text", String.class);
+		bindingContext.bindValue(textTextObserveWidget, treeViewerValueObserveDetailValue);
 		//
 		return bindingContext;
 	}

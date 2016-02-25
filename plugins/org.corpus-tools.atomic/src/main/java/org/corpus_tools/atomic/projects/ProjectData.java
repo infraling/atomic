@@ -20,6 +20,7 @@ package org.corpus_tools.atomic.projects;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A project is the topmost structural entity for data in Atomic.
@@ -41,25 +42,25 @@ public interface ProjectData {
 	
 	/**
 	 * Returns the corpora ("root corpora") the project
-	 * contains, i.e., a {@link Collection} of {@link ProjectNode}s
+	 * contains, i.e., a {@link Collection} of {@link Corpus}s
 	 * which are the roots of n-ary trees of {@link ProjectNode}s.
 	 *
 	 * @return the project's corpora
 	 */
-	public HashMap<String, ProjectNode> getCorpora();
+	public List<Corpus> getCorpora();
 	
 	/**
 	 * Adds a corpus to the project. The argument is
-	 * the root {@link ProjectNode} of the n-ary
+	 * the root {@link Corpus} of the n-ary
 	 * corpus structure tree.
 	 *
 	 * @param the corpus to add
 	 */
-	public void addCorpus(ProjectNode corpus);
+	public void addCorpus(Corpus corpus);
 	
 	/**
 	 * Removes a corpus from the project. The argument is
-	 * the name of the {@link ProjectNode} to remove. 
+	 * the name of the {@link Corpus} to remove. 
 	 * <p>
 	 * Returns the previous node associated with this name
 	 * or null if there was no node of this name.
@@ -68,6 +69,6 @@ public interface ProjectData {
 	 * @return true if the corpus has been removed, i.e.,
 	 * the project has changed
 	 */
-	public ProjectNode removeCorpus(String corpusName);
+	public Corpus removeCorpus(Corpus corpus);
 
 }

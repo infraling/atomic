@@ -19,6 +19,7 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.ProjectData;
@@ -67,12 +68,12 @@ public class ProjectTreeContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof ProjectData) {
 			ProjectData project = (ProjectData) parentElement;
-			TreeMap<String, ProjectNode> sortedCorpora = new TreeMap<>(project.getCorpora());
-			return sortedCorpora.values().toArray();
+			TreeSet<Corpus> sortedCorpora = new TreeSet<>(project.getCorpora());
+			return sortedCorpora.toArray();
 		}
 		else if (parentElement instanceof Corpus) {
 			Corpus corpus = (Corpus) parentElement;
-			return corpus.getChildren().values().toArray();
+			return corpus.getChildren().toArray();
 		}
 		return null;
 	}

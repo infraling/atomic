@@ -139,7 +139,7 @@ public class CorpusCreationRunnable implements Runnable {
 			getCorpusGraph().addSSubCorpus(parentCorpus, corpus);
 		}
 
-		for (ProjectNode child : corpusData.getChildren().values()) {
+		for (ProjectNode child : ((Corpus) corpusData).getChildren()) {
 			Set<Document> workedDocs = new HashSet<>();
 			if (child instanceof Document && !workedDocs.contains(child)) {
 				DocumentCreationRunnable runnable = new DocumentCreationRunnable(corpus, (Document) child);

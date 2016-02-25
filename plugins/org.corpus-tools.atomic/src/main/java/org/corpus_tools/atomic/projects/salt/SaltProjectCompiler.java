@@ -86,7 +86,7 @@ public class SaltProjectCompiler implements ProjectCompiler {
 
 		// Multi-threaded create corpusgraph and add structure for each corpus in getcorpora
 		Map<Thread, Runnable> threads = new HashMap<>();
-		for (ProjectNode rootCorpus : getProjectData().getCorpora().values()) {
+		for (ProjectNode rootCorpus : getProjectData().getCorpora()) {
 			CorpusCreationRunnable runnable = new CorpusCreationRunnable(rootCorpus);
 			Thread worker = new Thread(runnable);
 			worker.setName("Worker thread for runnable creating structure for root corpus " + rootCorpus.getName());

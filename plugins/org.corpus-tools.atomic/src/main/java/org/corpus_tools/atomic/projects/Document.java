@@ -92,32 +92,32 @@ public class Document extends AbstractBean implements ProjectNode {
 		firePropertyChange("name", oldName, this.name);
 	}
 
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
-	 */
-	@Override
-	public LinkedHashMap<String, ProjectNode> getChildren() {
-		log.warn("A document cannot have any children, therefore calling \"getChildren()\" on one always returns null.");
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
-	 */
-	@Override
-	public ProjectNode addChild(ProjectNode child) {
-		log.warn("A document cannot have any children, therefore calling \"addChild()\" on one does nothing.");
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#removeChild(java.lang.String)
-	 */
-	@Override
-	public ProjectNode removeChild(String childName) {
-		log.warn("A document cannot have any children, therefore calling \"removeChild()\" on one always returns null.");
-		return null;
-	}
+//	/* 
+//	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
+//	 */
+//	@Override
+//	public LinkedHashMap<String, ProjectNode> getChildren() {
+//		log.warn("A document cannot have any children, therefore calling \"getChildren()\" on one always returns null.");
+//		return null;
+//	}
+//
+//	/* 
+//	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
+//	 */
+//	@Override
+//	public ProjectNode addChild(ProjectNode child) {
+//		log.warn("A document cannot have any children, therefore calling \"addChild()\" on one does nothing.");
+//		return null;
+//	}
+//
+//	/* 
+//	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#removeChild(java.lang.String)
+//	 */
+//	@Override
+//	public ProjectNode removeChild(String childName) {
+//		log.warn("A document cannot have any children, therefore calling \"removeChild()\" on one always returns null.");
+//		return null;
+//	}
 
 	/**
 	 * @return the parent

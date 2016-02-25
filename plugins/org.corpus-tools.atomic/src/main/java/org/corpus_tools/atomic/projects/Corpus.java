@@ -18,7 +18,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.corpus_tools.atomic.models.AbstractBean;
 import org.eclipse.core.runtime.Assert;
@@ -27,6 +30,12 @@ import org.eclipse.core.runtime.Assert;
  * JavaBean definition of a corpus, i.e., a node in the
  * corpus structure tree. A corpus can be a root corpus,
  * i.e., the topmost structural element in a project.
+ *
+ * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
+ *
+ */
+/**
+ * TODO Description
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
@@ -41,7 +50,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	/**
 	 * Property <code>children</name>, readable and writable.
 	 */
-	private LinkedHashMap<String, ProjectNode> children = null;
+	private List<ProjectNode> children = null;
 	
 	/**
 	 * Property <code>parent</name>, readable and writable.
@@ -52,7 +61,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	 * Default no-arg constructor (JavaBean compliance). 
 	 */
 	public Corpus() {
-		children = new LinkedHashMap<>();
+		children = new ArrayList<>();
 	}
 	
 	/* 
@@ -72,44 +81,50 @@ public class Corpus extends AbstractBean implements ProjectNode {
 		firePropertyChange("name", oldName, this.name);
 	}
 	
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
+	/**
+	 * TODO: Description
+	 *
+	 * @return
 	 */
-	@Override
-	public LinkedHashMap<String, ProjectNode> getChildren() {
+	public List<ProjectNode> getChildren() {
 		return children;
 	}
 
 	/**
 	 * @param children the children to set
 	 */
-	private void setChildren(final LinkedHashMap<String, ProjectNode> children) {
-		final LinkedHashMap<String, ProjectNode> oldChildren = this.children;
+	private void setChildren(final List<ProjectNode> children) {
+		final List<ProjectNode> oldChildren = this.children;
 		this.children = children;
 		firePropertyChange("children", oldChildren, this.children);
 	}
 
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
+	/**
+	 * TODO: Description
+	 *
+	 * @param child
+	 * @return
 	 */
-	@Override
 	public ProjectNode addChild(final ProjectNode child) {
 		Assert.isNotNull(child);
 		child.setParent(this);
-		final LinkedHashMap<String, ProjectNode> newChildren = getChildren();
-		newChildren.put(child.getName(), child);
+		final List<ProjectNode> newChildren = getChildren();
+		newChildren.add(child);
 		setChildren(newChildren);
 		return child;
 	}
 
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#removeChild(java.lang.String)
+	/**
+	 * TODO: Description
+	 *
+	 * @param child
+	 * @return
 	 */
-	@Override
-	public ProjectNode removeChild(final String childName) {
-		Assert.isNotNull(childName);
-		final LinkedHashMap<String, ProjectNode> newChildren = getChildren();
-		ProjectNode removedChild = newChildren.remove(childName);
+	public ProjectNode removeChild(final ProjectNode child) {
+		Assert.isNotNull(child);
+		final List<ProjectNode> newChildren = getChildren();
+		int indexOfChildToBeRemoved = newChildren.indexOf(child);
+		ProjectNode removedChild = newChildren.remove(indexOfChildToBeRemoved );
 		setChildren(newChildren);
 		return removedChild;
 	}

@@ -18,8 +18,12 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.internal.projects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import org.corpus_tools.atomic.models.AbstractBean;
+import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.ProjectData;
 import org.corpus_tools.atomic.projects.ProjectNode;
 import org.eclipse.core.runtime.Assert;
@@ -41,13 +45,13 @@ public class DefaultProjectData extends AbstractBean implements ProjectData {
 	/**
 	 * Property <code>corpora</name>, readable and writable.
 	 */
-	private HashMap<String, ProjectNode> corpora = null;
+	private List<Corpus> corpora = null;
 	
 	/**
 	 * Default no-arg constructor (JavaBean compliance). 
 	 */
 	public DefaultProjectData() {
-		corpora = new HashMap<>();
+		corpora = new ArrayList<>();
 	}
 
 	/*
@@ -71,15 +75,15 @@ public class DefaultProjectData extends AbstractBean implements ProjectData {
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectData#getCorpora()
 	 */
 	@Override
-	public HashMap<String, ProjectNode> getCorpora() {
+	public List<Corpus> getCorpora() {
 		return corpora;
 	}
 
 	/**
 	 * @param corpora the corpora to set
 	 */
-	public void setCorpora(final HashMap<String, ProjectNode> corpora) {
-		final HashMap<String, ProjectNode> oldCorpora = this.corpora;
+	public void setCorpora(final List<Corpus> corpora) {
+		final List<Corpus> oldCorpora = this.corpora;
 		this.corpora = corpora;
 		firePropertyChange("corpora", oldCorpora, this.corpora);
 	}
@@ -88,11 +92,11 @@ public class DefaultProjectData extends AbstractBean implements ProjectData {
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectData#addCorpus(org.corpus_tools.atomic.projects.ProjectNode)
 	 */
 	@Override
-	public void addCorpus(final ProjectNode corpus) {
+	public void addCorpus(final Corpus corpus) {
 		Assert.isNotNull(corpus);
 		corpus.setParent(this);
-		final HashMap<String,ProjectNode> newCorpora = getCorpora();
-		newCorpora.put(corpus.getName(), corpus);
+		final List<Corpus> newCorpora = getCorpora();
+		newCorpora.add(corpus);
 		setCorpora(newCorpora);
 	}
 
@@ -100,10 +104,11 @@ public class DefaultProjectData extends AbstractBean implements ProjectData {
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectData#removeCorpus(org.corpus_tools.atomic.projects.ProjectNode)
 	 */
 	@Override
-	public ProjectNode removeCorpus(final String corpusName) {
-		Assert.isNotNull(corpusName);
-		final HashMap<String, ProjectNode> newCorpora = getCorpora();
-		ProjectNode removedCorpus = newCorpora.remove(corpusName);
+	public Corpus removeCorpus(final Corpus corpus) {
+		Assert.isNotNull(corpus);
+		final List<Corpus> newCorpora = getCorpora();
+		int indexOfCorpusToBeRemoved = newCorpora.indexOf(corpus);
+		Corpus removedCorpus = newCorpora.remove(indexOfCorpusToBeRemoved);
 		setCorpora(newCorpora);
 		return removedCorpus;
 	}

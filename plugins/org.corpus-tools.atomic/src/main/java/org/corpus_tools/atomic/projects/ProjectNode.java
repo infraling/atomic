@@ -19,6 +19,8 @@
 package org.corpus_tools.atomic.projects;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A project node is a node in the n-ary corpus structure tree, i.e.,
@@ -75,14 +77,14 @@ public interface ProjectNode {
 	 * This method must return null when the project
 	 * node represents a document, as documents can 
 	 * have no children. It must return a non-empty
-	 * {@link LinkedHashMap} when the project node 
+	 * {@link LinkedList} when the project node 
 	 * represents a corpus, as corpora must have at
 	 * least one child, either a sub-corpus or a
 	 * document.
 	 *
 	 * @return the project element's children
 	 */
-	public LinkedHashMap<String, ProjectNode> getChildren();
+//	public List<ProjectNode> getChildren();
 	
 	/**
 	 * Adds a child, i.e., a {@link ProjectNode}, to this
@@ -96,7 +98,7 @@ public interface ProjectNode {
 	 * @return the added child
 	 * @throws RuntimeException if child is null
 	 */
-	public ProjectNode addChild(final ProjectNode child);
+//	public ProjectNode addChild(final ProjectNode child);
 	
 	/**
 	 * Removes a corpus from the project. The argument is
@@ -111,5 +113,5 @@ public interface ProjectNode {
 	 * @return the removed node or null
 	 * @throws RuntimeException if childName is null
 	 */
-	public ProjectNode removeChild(final String childName);
+//	public ProjectNode removeChild(final ProjectNode child);
 }
