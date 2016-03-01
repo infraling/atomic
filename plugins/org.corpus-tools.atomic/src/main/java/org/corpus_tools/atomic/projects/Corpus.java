@@ -86,7 +86,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	/**
 	 * @param children the children to set
 	 */
-	private void setChildren(final List<ProjectNode> children) {
+	public void setChildren(final List<ProjectNode> children) {
 		final List<ProjectNode> oldChildren = this.children;
 		this.children = children;
 		firePropertyChange("children", oldChildren, this.children);

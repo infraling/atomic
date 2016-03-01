@@ -18,8 +18,6 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 /**

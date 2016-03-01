@@ -19,18 +19,15 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
 import org.corpus_tools.atomic.projects.Corpus;
-import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
-import org.corpus_tools.atomic.projects.wizard.ProjectTreeObservableFactory;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -49,17 +46,21 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
+
+
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.observable.list.WritableList;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.property.list.IListProperty;
+import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.observable.IObservable;
+import org.eclipse.core.databinding.observable.value.ComputedValue;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
 
 /**
  * A wizard page for the user to construct the structure of a project.
@@ -69,27 +70,30 @@ import org.eclipse.core.databinding.beans.BeansObservables;
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
 public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
-	private DataBindingContext m_bindingContext;
+	private DataBindingContext bindingContext;
 	private Text corpusNameText;
 	private Text addSubCorpusNameText;
 	private Text addDocumentNameText;
 	private Text documentNameText;
 	private Text sourceTextText;
-	private DefaultProjectData model;
+//	private DefaultProjectData model;
+	private Corpus model;
 	private Text projectNameText;
-	private Corpus selectedCorpus;
-	private Document selectedDocument;
 	private Set<Control> corpusConstrols = new HashSet<>(), documentControls = new HashSet<>();
 	private TreeViewer projectTreeViewer;
+	private Button btnRemoveElement;
 
 	/**
 	 * Default constructor calling the constructor {@link #NewAtomicProjectWizardPageProjectStructure(String)} with the default page name.
 	 */
 	public NewAtomicProjectWizardPageProjectStructure() {
 		super("Create the project structure");
-		DefaultProjectData projectData = new DefaultProjectData();
-		projectData.setName("New Atomic project");
-		setModel(projectData);
+		Corpus project = new Corpus();
+		project.setName("Project");
+		Corpus root = new Corpus();
+		root.setName("Root corpus");
+		project.addChild(root);
+		setModel(project);
 		setTitle("Create the project structure");
 		setDescription("Create the structure of the new project by adding corpora, subcorpora, and documents.");
 		/*
@@ -153,96 +157,101 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		Composite leftComposite = new Composite(sashForm, SWT.NONE);
 		leftComposite.setLayout(new GridLayout(2, false));
 
-		Button btnNewCorpus = new Button(leftComposite, SWT.NONE);
-		btnNewCorpus.setText("New corpus");
+		final Button btnNewCorpus = new Button(leftComposite, SWT.NONE);
+		btnNewCorpus.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<ProjectNode> corpusList = getModel().getChildren();
+				String numberOfExistingRootCorpora = (getModel().getChildren().size() > 0) ? " " + String.valueOf(getModel().getChildren().size() + 1) : "";
+				Corpus newRootCorpus = new Corpus();
+				newRootCorpus.setName("Root corpus" + numberOfExistingRootCorpora);
+				corpusList.add(newRootCorpus);
+				getModel().setChildren(corpusList);
+				projectTreeViewer.setSelection(new StructuredSelection(newRootCorpus));
+				corpusNameText.selectAll();
+				corpusNameText.setFocus();
+				projectTreeViewer.refresh();
+			}
+		});
+		btnNewCorpus.setText("New root corpus");
 		
-		Button btnRemoveElement = new Button(leftComposite, SWT.NONE);
+		btnRemoveElement = new Button(leftComposite, SWT.NONE);
 		btnRemoveElement.setText("Remove element");
 
 		projectTreeViewer = new TreeViewer(leftComposite, SWT.SINGLE);
 		new Label(leftComposite, SWT.NONE);
-		ObservableListTreeContentProvider provider = new ObservableListTreeContentProvider(new ProjectTreeObservableFactory(getModel()), new ProjectTreeStructureAdvisor());
-//		projectTreeViewer.setContentProvider(new ProjectTreeContentProvider());
-		projectTreeViewer.setContentProvider(provider);
-		projectTreeViewer.setLabelProvider(new ObservableProjectTreeLabelProvider(provider.getKnownElements()));
-		projectTreeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		projectTreeViewer.setInput(getModel());
+//		IListProperty childrenList = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") });
+//		ObservableListTreeContentProvider provider = new ObservableListTreeContentProvider(childrenList.listFactory(), null);
+//		projectTreeViewer.setContentProvider(provider);
+//		projectTreeViewer.setLabelProvider(new ObservableMapLabelProvider(BeanProperties.value("name").observeDetail(provider.getKnownElements())));
+		projectTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+//		projectTreeViewer.setUseHashlookup(true);
+//		projectTreeViewer.setInput(getModel());
 
-		projectTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				if (event.getSelection() instanceof TreeSelection) {
-					TreeSelection selection = (TreeSelection) event.getSelection();
-					if (selection.getFirstElement() instanceof ProjectNode) {
-						ProjectNode node = (ProjectNode) selection.getFirstElement();
-						if (node instanceof Corpus) {
-							setSelectedCorpus((Corpus) node);
-							setSelectedDocument(null);
-							for (Control field : getDocumentControls()) {
-								field.setEnabled(false);
-							}
-							for (Control field : getCorpusControls()) {
-								field.setEnabled(true);
-							}
-							corpusNameText.setText(node.getName());
-						}
-						else if (node instanceof Document) {
-							setSelectedDocument((Document) node);
-							setSelectedCorpus(null);
-							for (Control field : getCorpusControls()) {
-								field.setEnabled(false);
-							}
-							for (Control field : getDocumentControls()) {
-								field.setEnabled(true);
-							}
-							documentNameText.setText(node.getName());
-							if (((Document) node).getSourceText() != null) {
-								sourceTextText.setText(((Document) node).getSourceText());
-							}
-							else {
-								sourceTextText.setText("");
-							}
-
-						}
-					}
-				}
-			}
-		});
+//		projectTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+//
+//			@Override
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				if (event.getSelection() instanceof TreeSelection) {
+//					TreeSelection selection = (TreeSelection) event.getSelection();
+//					if (selection.getFirstElement() instanceof ProjectNode) {
+//						ProjectNode node = (ProjectNode) selection.getFirstElement();
+//						if (node instanceof Corpus) {
+//							setSelectedCorpus((Corpus) node);
+//							setSelectedDocument(null);
+//							for (Control field : getDocumentControls()) {
+//								field.setEnabled(false);
+//							}
+//							for (Control field : getCorpusControls()) {
+//								field.setEnabled(true);
+//							}
+//							corpusNameText.setText(node.getName());
+//						}
+//						else if (node instanceof Document) {
+//							setSelectedDocument((Document) node);
+//							setSelectedCorpus(null);
+//							for (Control field : getCorpusControls()) {
+//								field.setEnabled(false);
+//							}
+//							for (Control field : getDocumentControls()) {
+//								field.setEnabled(true);
+//							}
+//							documentNameText.setText(node.getName());
+//							if (((Document) node).getSourceText() != null) {
+//								sourceTextText.setText(((Document) node).getSourceText());
+//							}
+//							else {
+//								sourceTextText.setText("");
+//							}
+//
+//						}
+//					}
+//				}
+//			}
+//		});
 		projectTreeViewer.expandAll();
 
 		// Only add button listeners now, as TreeViewer doesn't exist up until now
-		btnNewCorpus.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String numberOfExistingRootCorpora = (getModel().getCorpora().size() > 0) ? " " + String.valueOf(getModel().getCorpora().size() + 1) : "" ;
-				Corpus newRootCorpus = new Corpus();
-				newRootCorpus.setName("Root corpus" + numberOfExistingRootCorpora);
-				getModel().addCorpus(newRootCorpus);
-				projectTreeViewer.refresh();
-				projectTreeViewer.expandAll();
-			}
-		});
 		
 		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ISelection selection = projectTreeViewer.getSelection();
-				ProjectNode selectionParent = getCurrentSelectionParent();
-				if (selection instanceof ITreeSelection) {
-					ITreeSelection treeSelection = (ITreeSelection) selection;
-					Object selectedElement = treeSelection.getFirstElement();
-					if (selectedElement instanceof ProjectNode) {
-						ProjectNode selectedNode = (ProjectNode) selectedElement;
-						if (selectionParent instanceof Corpus) {
-							((Corpus) selectionParent).removeChild(selectedNode);
-						}
-						else if (selectionParent == null) { // I.e., node is root corpus and therefore contained in model.getCorpora()
-							getModel().removeCorpus((Corpus) selectedNode);
-						}
-						projectTreeViewer.refresh();
-					}
-				}
+//				ISelection selection = projectTreeViewer.getSelection();
+////				ProjectNode selectionParent = getCurrentSelectionParent();
+//				if (selection instanceof ITreeSelection) {
+//					ITreeSelection treeSelection = (ITreeSelection) selection;
+//					Object selectedElement = treeSelection.getFirstElement();
+//					if (selectedElement instanceof ProjectNode) {
+//						ProjectNode selectedNode = (ProjectNode) selectedElement;
+//						if (selectionParent instanceof Corpus) {
+//							((Corpus) selectionParent).removeChild(selectedNode);
+//						}
+//						else if (selectionParent == null) { // I.e., node is root corpus and therefore contained in model.getCorpora()
+//							getModel().removeCorpus((Corpus) selectedNode);
+//						}
+//						projectTreeViewer.refresh();
+//					}
+//				}
 			}
 		});
 		
@@ -270,19 +279,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 			// FIXME: Factor out "getSelected..." and use treeviewer.selection instead
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ProjectNode selectionParent = getCurrentSelectionParent();
-				Corpus newCorpus = new Corpus();
-				newCorpus.setName(corpusNameText.getText());
-				if (selectionParent instanceof Corpus) {
-					((Corpus) selectionParent).removeChild(getSelectedCorpus());
-					((Corpus) selectionParent).addChild(newCorpus);
-				}
-				else if (selectionParent == null) { // I.e., selectionParent is ProjectData
-					getModel().removeCorpus(getSelectedCorpus());
-					getModel().addCorpus(getSelectedCorpus());
-				}
-				projectTreeViewer.refresh();
-				projectTreeViewer.expandAll();
+//				ProjectNode selectionParent = getCurrentSelectionParent();
 			}
 		});
 
@@ -301,12 +298,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Corpus newSubCorpus = new Corpus();
-				newSubCorpus.setName(addSubCorpusNameText.getText());
-				getSelectedCorpus().addChild(newSubCorpus);
-				projectTreeViewer.refresh();
-				projectTreeViewer.expandAll();
-				addSubCorpusNameText.setText("");
 			}
 		});
 
@@ -325,12 +316,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Document newDocument = new Document();
-				newDocument.setName(addDocumentNameText.getText());
-				getSelectedCorpus().addChild(newDocument);
-				projectTreeViewer.refresh();
-				projectTreeViewer.expandAll();
-				addDocumentNameText.setText("");
 			}
 		});
 
@@ -354,16 +339,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ProjectNode selectionParent = getCurrentSelectionParent();
-				Document newDocument = new Document();
-				newDocument.setName(documentNameText.getText());
-				newDocument.setSourceText(sourceTextText.getText());
-				if (selectionParent instanceof Corpus) {
-					((Corpus) selectionParent).removeChild(getSelectedDocument());
-					((Corpus) selectionParent).addChild(newDocument);
-				}
-				projectTreeViewer.refresh();
-				projectTreeViewer.expandAll();
 			}
 		});
 
@@ -388,12 +363,12 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				getSelectedDocument().setSourceText(sourceTextText.getText());
 			}
 		});
 
 		sashForm.setWeights(new int[] { 1, 1 });
-		m_bindingContext = initDataBindings();
+		bindingContext = initDataBindings();
+		initExtraBindings(bindingContext);
 	}
 
 	@Override
@@ -428,43 +403,15 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	/**
 	 * @return the model
 	 */
-	public DefaultProjectData getModel() {
+	public Corpus getModel() {
 		return model;
 	}
 
 	/**
 	 * @param model the model to set
 	 */
-	public void setModel(DefaultProjectData model) {
+	public void setModel(Corpus model) {
 		this.model = model;
-	}
-
-	/**
-	 * @return the selectedCorpus
-	 */
-	public Corpus getSelectedCorpus() {
-		return selectedCorpus;
-	}
-
-	/**
-	 * @param selectedCorpus the selectedCorpus to set
-	 */
-	public void setSelectedCorpus(Corpus selectedCorpus) {
-		this.selectedCorpus = selectedCorpus;
-	}
-
-	/**
-	 * @return the selectedDocument
-	 */
-	public Document getSelectedDocument() {
-		return selectedDocument;
-	}
-
-	/**
-	 * @param selectedDocument the selectedDocument to set
-	 */
-	public void setSelectedDocument(Document selectedDocument) {
-		this.selectedDocument = selectedDocument;
 	}
 
 	/**
@@ -481,26 +428,38 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		return documentControls;
 	}
 
-	protected DataBindingContext initDataBindings() {
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
+	private DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
-		//
-		IObservableValue observeTextTxtNewProjectObserveWidget = WidgetProperties.text(SWT.Modify).observe(projectNameText);
-		IObservableValue nameModelObserveValue = BeanProperties.value("name").observe(model);
-		bindingContext.bindValue(observeTextTxtNewProjectObserveWidget, nameModelObserveValue, null, null);
-		//
-		IObservableValue observeTextCorpusNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(corpusNameText);
-		IObservableValue nameSelectedCorpusObserveValue = BeanProperties.value("name").observe(selectedCorpus);
-		bindingContext.bindValue(observeTextCorpusNameTextObserveWidget, nameSelectedCorpusObserveValue, null, null);
-		//
-		IObservableValue observeTextDocumentNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(documentNameText);
-		IObservableValue nameSelectedDocumentObserveValue = BeanProperties.value("name").observe(selectedDocument);
-		bindingContext.bindValue(observeTextDocumentNameTextObserveWidget, nameSelectedDocumentObserveValue, null, null);
-		//
+		
 		IObservableValue treeViewerSelectionObserveSelection = ViewersObservables.observeSingleSelection(projectTreeViewer);
-		IObservableValue textTextObserveWidget = SWTObservables.observeText(corpusNameText, SWT.Modify);
-		IObservableValue treeViewerValueObserveDetailValue = BeansObservables.observeDetailValue(treeViewerSelectionObserveSelection, "text", String.class);
+		IObservableValue textTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(corpusNameText);//SWTObservables.observeText(beanText, SWT.Modify);
+		IObservableValue treeViewerValueObserveDetailValue = BeanProperties.value("name").observeDetail(treeViewerSelectionObserveSelection);
 		bindingContext.bindValue(textTextObserveWidget, treeViewerValueObserveDetailValue);
-		//
+		
 		return bindingContext;
 	}
+	
+	/**
+	 * TODO: Description
+	 *
+	 * @param bindingContext2
+	 */
+	private void initExtraBindings(DataBindingContext dbc) {
+		final IObservableValue projectTreeViewerSelection = ViewersObservables.observeSingleSelection(projectTreeViewer);
+		IObservableValue projectElementSelected = new ComputedValue(Boolean.TYPE) {
+			protected Object calculate() {
+				return Boolean.valueOf(projectTreeViewerSelection.getValue() != null);
+			}
+		};
+//		dbc.bindValue(WidgetProperties.enabled().observe(btnNewCorpus), projectElementSelected);
+		
+		ViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.list("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"));
+	}
+
+
 }

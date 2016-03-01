@@ -94,7 +94,6 @@ public class DefaultProjectData extends AbstractBean implements ProjectData {
 	@Override
 	public void addCorpus(final Corpus corpus) {
 		Assert.isNotNull(corpus);
-		corpus.setParent(this);
 		final List<Corpus> newCorpora = getCorpora();
 		newCorpora.add(corpus);
 		setCorpora(newCorpora);
