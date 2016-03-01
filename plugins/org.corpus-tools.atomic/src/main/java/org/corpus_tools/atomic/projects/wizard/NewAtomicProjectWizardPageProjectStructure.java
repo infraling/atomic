@@ -18,6 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +49,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.swt.widgets.Group;
@@ -76,7 +78,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private Text addDocumentNameText;
 	private Text documentNameText;
 	private Text sourceTextText;
-//	private DefaultProjectData model;
 	private Corpus model = createNewProject();
 	private Text projectNameText;
 	private Set<Control> corpusConstrols = new HashSet<>(), documentControls = new HashSet<>();
@@ -106,10 +107,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		project.setName("Project");
 		Corpus root = new Corpus();
 		root.setName("Root corpus");
-		Document d = new Document();
-		d.setName("New document");
-		d.setSourceText("Source text");
-		root.addChild(d);
 		project.addChild(root);
 		return project;
 	}
@@ -188,106 +185,34 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		btnNewCorpus.setText("New root corpus");
 		
 		btnRemoveElement = new Button(leftComposite, SWT.NONE);
+		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TreeItem selectedItem = projectTreeViewer.getTree().getSelection()[0];
+				TreeItem parentItem = selectedItem.getParentItem();
+				Corpus parent;
+				int index;
+				if (parentItem == null) {
+					parent = getModel();
+					index = projectTreeViewer.getTree().indexOf(selectedItem);
+				}
+				else {
+					parent = (Corpus) parentItem.getData();
+					index = parentItem.indexOf(selectedItem);
+				}
+
+				List<ProjectNode> list = new ArrayList<ProjectNode>(parent.getChildren());
+				list.remove(index);
+				parent.setChildren(list);
+			}
+		});
 		btnRemoveElement.setText("Remove element");
 
 		projectTreeViewer = new TreeViewer(leftComposite, SWT.SINGLE);
 		new Label(leftComposite, SWT.NONE);
-		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] {BeanProperties.list("children")});
-		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(childrenProperty.listFactory(), null);
-		projectTreeViewer.setContentProvider(contentProvider);
-		projectTreeViewer.setLabelProvider(new LabelProvider() {
-			
-			@Override
-			public Image getImage(Object element) {
-				if (element instanceof Corpus) {
-					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-				}
-				else if (element instanceof Document) {
-					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
-				}
-				return null;
-			}
-			
-			@Override
-			public String getText(Object element) {
-				if (element instanceof ProjectNode) {
-					return ((ProjectNode) element).getName();
-				}
-				return null;
-			}			
-
-		});
 		projectTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-//		projectTreeViewer.setUseHashlookup(true);
-		projectTreeViewer.setInput(getModel());
-
-//		projectTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-//
-//			@Override
-//			public void selectionChanged(SelectionChangedEvent event) {
-//				if (event.getSelection() instanceof TreeSelection) {
-//					TreeSelection selection = (TreeSelection) event.getSelection();
-//					if (selection.getFirstElement() instanceof ProjectNode) {
-//						ProjectNode node = (ProjectNode) selection.getFirstElement();
-//						if (node instanceof Corpus) {
-//							setSelectedCorpus((Corpus) node);
-//							setSelectedDocument(null);
-//							for (Control field : getDocumentControls()) {
-//								field.setEnabled(false);
-//							}
-//							for (Control field : getCorpusControls()) {
-//								field.setEnabled(true);
-//							}
-//							corpusNameText.setText(node.getName());
-//						}
-//						else if (node instanceof Document) {
-//							setSelectedDocument((Document) node);
-//							setSelectedCorpus(null);
-//							for (Control field : getCorpusControls()) {
-//								field.setEnabled(false);
-//							}
-//							for (Control field : getDocumentControls()) {
-//								field.setEnabled(true);
-//							}
-//							documentNameText.setText(node.getName());
-//							if (((Document) node).getSourceText() != null) {
-//								sourceTextText.setText(((Document) node).getSourceText());
-//							}
-//							else {
-//								sourceTextText.setText("");
-//							}
-//
-//						}
-//					}
-//				}
-//			}
-//		});
 		projectTreeViewer.expandAll();
 
-		// Only add button listeners now, as TreeViewer doesn't exist up until now
-		
-		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-//				ISelection selection = projectTreeViewer.getSelection();
-////				ProjectNode selectionParent = getCurrentSelectionParent();
-//				if (selection instanceof ITreeSelection) {
-//					ITreeSelection treeSelection = (ITreeSelection) selection;
-//					Object selectedElement = treeSelection.getFirstElement();
-//					if (selectedElement instanceof ProjectNode) {
-//						ProjectNode selectedNode = (ProjectNode) selectedElement;
-//						if (selectionParent instanceof Corpus) {
-//							((Corpus) selectionParent).removeChild(selectedNode);
-//						}
-//						else if (selectionParent == null) { // I.e., node is root corpus and therefore contained in model.getCorpora()
-//							getModel().removeCorpus((Corpus) selectedNode);
-//						}
-//						projectTreeViewer.refresh();
-//					}
-//				}
-			}
-		});
-		
 		Composite rightComposite = new Composite(sashForm, SWT.NONE);
 		rightComposite.setLayout(new GridLayout(1, false));
 
@@ -309,7 +234,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		getCorpusControls().add(saveCorpusNameBtn);
 		saveCorpusNameBtn.addSelectionListener(new SelectionAdapter() {
 
-			// FIXME: Factor out "getSelected..." and use treeviewer.selection instead
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 //				ProjectNode selectionParent = getCurrentSelectionParent();
