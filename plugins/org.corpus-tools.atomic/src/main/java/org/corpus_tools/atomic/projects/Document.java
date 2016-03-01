@@ -18,8 +18,6 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import java.util.LinkedHashMap;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.models.AbstractBean;
@@ -48,11 +46,6 @@ public class Document extends AbstractBean implements ProjectNode {
 	 * String representing the name of the document. 
 	 */
 	private String name = null;
-	
-	/**
-	 * The document's parent in the project structure tree. 
-	 */
-	private Object parent = null;
 	
 	/**
 	 * Default no-arg constructor (JavaBean compliance). 
@@ -90,47 +83,6 @@ public class Document extends AbstractBean implements ProjectNode {
 		final String oldName = this.name;
 		this.name = name;
 		firePropertyChange("name", oldName, this.name);
-	}
-
-//	/* 
-//	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#getChildren()
-//	 */
-//	@Override
-//	public LinkedHashMap<String, ProjectNode> getChildren() {
-//		log.warn("A document cannot have any children, therefore calling \"getChildren()\" on one always returns null.");
-//		return null;
-//	}
-//
-//	/* 
-//	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#addChild(org.corpus_tools.atomic.projects.ProjectNode)
-//	 */
-//	@Override
-//	public ProjectNode addChild(ProjectNode child) {
-//		log.warn("A document cannot have any children, therefore calling \"addChild()\" on one does nothing.");
-//		return null;
-//	}
-//
-//	/* 
-//	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectNode#removeChild(java.lang.String)
-//	 */
-//	@Override
-//	public ProjectNode removeChild(String childName) {
-//		log.warn("A document cannot have any children, therefore calling \"removeChild()\" on one always returns null.");
-//		return null;
-//	}
-
-	/**
-	 * @return the parent
-	 */
-	public Object getParent() {
-		return parent;
-	}
-
-	/**
-	 * @param parent the parent to set
-	 */
-	public void setParent(Object parent) {
-		this.parent = parent;
 	}
 
 }

@@ -18,10 +18,6 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * A project node is a node in the n-ary corpus structure tree, i.e.,
  * an abstraction over corpora and documents. Every {@link ProjectNode}
@@ -57,61 +53,4 @@ public interface ProjectNode {
 	 */
 	public String getName();
 	
-	/**
-	 * Sets the parent of this node, either of type {@link ProjectData} or of type {@link ProjectNode}
-	 *
-	 * @param parent the parent to set
-	 */
-	public void setParent(Object parent);
-	
-	/**
-	 * Returns the parent of the project node.
-	 *
-	 * @return the parent of this {@link ProjectNode}
-	 */
-	public Object getParent();
-	
-	/**
-	 * Returns the child nodes of this project element.
-	 * <p>
-	 * This method must return null when the project
-	 * node represents a document, as documents can 
-	 * have no children. It must return a non-empty
-	 * {@link LinkedList} when the project node 
-	 * represents a corpus, as corpora must have at
-	 * least one child, either a sub-corpus or a
-	 * document.
-	 *
-	 * @return the project element's children
-	 */
-//	public List<ProjectNode> getChildren();
-	
-	/**
-	 * Adds a child, i.e., a {@link ProjectNode}, to this
-	 * {@link ProjectNode}. Clients must assert that this 
-	 * is not null, and throw a {@link RuntimeException}
-	 * if it is. The new child is added to the
-	 * {@link LinkedHashMap} of children. Returns the added
-	 * child {@link ProjectNode}.
-	 *
-	 * @param the child to add (must not be null)
-	 * @return the added child
-	 * @throws RuntimeException if child is null
-	 */
-//	public ProjectNode addChild(final ProjectNode child);
-	
-	/**
-	 * Removes a corpus from the project. The argument is
-	 * the name of the {@link ProjectNode} to remove. Clients
-	 * must assert that this is not null, and throw a {@link RuntimeException}
-	 * if it is. 
-	 * <p>
-	 * Returns the previous node associated with this name
-	 * or null if there was no node of this name.
-	 *
-	 * @param the name of the child to remove (must not be null)
-	 * @return the removed node or null
-	 * @throws RuntimeException if childName is null
-	 */
-//	public ProjectNode removeChild(final ProjectNode child);
 }

@@ -19,8 +19,6 @@
 package org.corpus_tools.atomic.projects;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.corpus_tools.atomic.models.AbstractBean;
@@ -53,11 +51,6 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	private List<ProjectNode> children = null;
 	
 	/**
-	 * Property <code>parent</name>, readable and writable.
-	 */
-	private Object parent = null;
-	
-	/**
 	 * Default no-arg constructor (JavaBean compliance). 
 	 */
 	public Corpus() {
@@ -82,9 +75,9 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	}
 	
 	/**
-	 * TODO: Description
+	 * Returns the child nodes of this corpus.
 	 *
-	 * @return
+	 * @return the corpus' children
 	 */
 	public List<ProjectNode> getChildren() {
 		return children;
@@ -100,14 +93,19 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	}
 
 	/**
-	 * TODO: Description
+	 * Adds a child, i.e., a {@link ProjectNode}, to this
+	 * {@link Corpus}. Assert that this 
+	 * is not null, and throw a {@link RuntimeException}
+	 * if it is. The new child is added to the
+	 * {@link List} of children. Returns the added
+	 * child {@link ProjectNode}.
 	 *
-	 * @param child
-	 * @return
+	 * @param the child to add (must not be null)
+	 * @return the added child
+	 * @throws RuntimeException if child is null
 	 */
 	public ProjectNode addChild(final ProjectNode child) {
 		Assert.isNotNull(child);
-		child.setParent(this);
 		final List<ProjectNode> newChildren = getChildren();
 		newChildren.add(child);
 		setChildren(newChildren);
@@ -115,10 +113,17 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	}
 
 	/**
-	 * TODO: Description
+	 * Removes an element from the corpus. The argument is
+	 * the name of the {@link ProjectNode} to remove. Must 
+	 * assert that this is not null, and throw a {@link RuntimeException}
+	 * if it is. 
+	 * <p>
+	 * Returns the previous node associated with this name
+	 * or null if there was no node of this name.
 	 *
-	 * @param child
-	 * @return
+	 * @param the name of the child to remove (must not be null)
+	 * @return the removed node or null
+	 * @throws RuntimeException if childName is null
 	 */
 	public ProjectNode removeChild(final ProjectNode child) {
 		Assert.isNotNull(child);
@@ -127,20 +132,6 @@ public class Corpus extends AbstractBean implements ProjectNode {
 		ProjectNode removedChild = newChildren.remove(indexOfChildToBeRemoved );
 		setChildren(newChildren);
 		return removedChild;
-	}
-
-	/**
-	 * @return the parent
-	 */
-	public Object getParent() {
-		return parent;
-	}
-
-	/**
-	 * @param parent the parent to set
-	 */
-	public void setParent(Object parent) {
-		this.parent = parent;
 	}
 
 }
