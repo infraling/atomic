@@ -22,11 +22,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
 import org.corpus_tools.atomic.projects.Corpus;
+import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -40,25 +41,24 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
-
-
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.property.list.IListProperty;
 import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
-import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.observable.IObservable;
 import org.eclipse.core.databinding.observable.value.ComputedValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 
@@ -77,7 +77,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private Text documentNameText;
 	private Text sourceTextText;
 //	private DefaultProjectData model;
-	private Corpus model;
+	private Corpus model = createNewProject();
 	private Text projectNameText;
 	private Set<Control> corpusConstrols = new HashSet<>(), documentControls = new HashSet<>();
 	private TreeViewer projectTreeViewer;
@@ -88,18 +88,30 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	public NewAtomicProjectWizardPageProjectStructure() {
 		super("Create the project structure");
-		Corpus project = new Corpus();
-		project.setName("Project");
-		Corpus root = new Corpus();
-		root.setName("Root corpus");
-		project.addChild(root);
-		setModel(project);
 		setTitle("Create the project structure");
 		setDescription("Create the structure of the new project by adding corpora, subcorpora, and documents.");
 		/*
 		 * FIXME TODO: Add context-sensitive help to Atomic, the the "?" button will show in the wizard. Add the following description to a help "window" of sorts: Every corpus must have a name and can contain n (sub-) corpora and n
 		 * documents. Every document must have a name and must contain one source text. Must include Eclipse Help plugin for this.
 		 */
+	}
+
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
+	private Corpus createNewProject() {
+		Corpus project = new Corpus();
+		project.setName("Project");
+		Corpus root = new Corpus();
+		root.setName("Root corpus");
+		Document d = new Document();
+		d.setName("New document");
+		d.setSourceText("Source text");
+		root.addChild(d);
+		project.addChild(root);
+		return project;
 	}
 
 	/*
@@ -167,10 +179,10 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				newRootCorpus.setName("Root corpus" + numberOfExistingRootCorpora);
 				corpusList.add(newRootCorpus);
 				getModel().setChildren(corpusList);
-				projectTreeViewer.setSelection(new StructuredSelection(newRootCorpus));
 				corpusNameText.selectAll();
 				corpusNameText.setFocus();
 				projectTreeViewer.refresh();
+				projectTreeViewer.setSelection(new StructuredSelection(newRootCorpus));
 			}
 		});
 		btnNewCorpus.setText("New root corpus");
@@ -180,13 +192,34 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 		projectTreeViewer = new TreeViewer(leftComposite, SWT.SINGLE);
 		new Label(leftComposite, SWT.NONE);
-//		IListProperty childrenList = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") });
-//		ObservableListTreeContentProvider provider = new ObservableListTreeContentProvider(childrenList.listFactory(), null);
-//		projectTreeViewer.setContentProvider(provider);
-//		projectTreeViewer.setLabelProvider(new ObservableMapLabelProvider(BeanProperties.value("name").observeDetail(provider.getKnownElements())));
+		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] {BeanProperties.list("children")});
+		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(childrenProperty.listFactory(), null);
+		projectTreeViewer.setContentProvider(contentProvider);
+		projectTreeViewer.setLabelProvider(new LabelProvider() {
+			
+			@Override
+			public Image getImage(Object element) {
+				if (element instanceof Corpus) {
+					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+				}
+				else if (element instanceof Document) {
+					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+				}
+				return null;
+			}
+			
+			@Override
+			public String getText(Object element) {
+				if (element instanceof ProjectNode) {
+					return ((ProjectNode) element).getName();
+				}
+				return null;
+			}			
+
+		});
 		projectTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 //		projectTreeViewer.setUseHashlookup(true);
-//		projectTreeViewer.setInput(getModel());
+		projectTreeViewer.setInput(getModel());
 
 //		projectTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 //
@@ -405,13 +438,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	public Corpus getModel() {
 		return model;
-	}
-
-	/**
-	 * @param model the model to set
-	 */
-	public void setModel(Corpus model) {
-		this.model = model;
 	}
 
 	/**

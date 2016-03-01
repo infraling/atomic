@@ -23,8 +23,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.ProjectCompiler;
-import org.corpus_tools.atomic.projects.ProjectData;
 import org.corpus_tools.atomic.projects.ProjectNode;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
@@ -33,7 +33,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 
 /**
- * Compiles a {@link SaltProject} from a {@link ProjectData} object.
+ * Compiles a {@link SaltProject} from a {@link Corpus} object.
  * This class is meant to be used with Salt version 2.1.1.
  * 
  * <p>
@@ -49,14 +49,14 @@ public class SaltProjectCompiler implements ProjectCompiler {
 	 */
 	private static final Logger log = LogManager.getLogger(SaltProjectCompiler.class);
 	
-	private ProjectData projectData = null;
+	private Corpus projectData = null;
 	private SaltFactory factory = SaltFactory.eINSTANCE;
 
 	/**
 	 * Constructor taking an instance of {@link ProjectData}
 	 * and setting the {@link #projectData} field.
 	 */
-	public SaltProjectCompiler(ProjectData projectData) {
+	public SaltProjectCompiler(Corpus projectData) {
 		setProjectData(projectData);
 	}
 
@@ -86,7 +86,7 @@ public class SaltProjectCompiler implements ProjectCompiler {
 
 		// Multi-threaded create corpusgraph and add structure for each corpus in getcorpora
 		Map<Thread, Runnable> threads = new HashMap<>();
-		for (ProjectNode rootCorpus : getProjectData().getCorpora()) {
+		for (ProjectNode rootCorpus : getProjectData().getChildren()) {
 			CorpusCreationRunnable runnable = new CorpusCreationRunnable(rootCorpus);
 			Thread worker = new Thread(runnable);
 			worker.setName("Worker thread for runnable creating structure for root corpus " + rootCorpus.getName());
@@ -113,14 +113,14 @@ public class SaltProjectCompiler implements ProjectCompiler {
 	 * @copydoc @see org.corpus_tools.atomic.projects.ProjectCompiler#setProjectData(org.corpus_tools.atomic.projects.ProjectData)
 	 */
 	@Override
-	public void setProjectData(ProjectData projectData) {
+	public void setProjectData(Corpus projectData) {
 		this.projectData = projectData;
 	}
 
 	/**
 	 * @return the projectData
 	 */
-	private ProjectData getProjectData() {
+	private Corpus getProjectData() {
 		return projectData;
 	}
 

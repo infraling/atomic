@@ -43,6 +43,6 @@ public interface ProjectCompiler {
 	 *
 	 * @param projectData
 	 */
-	void setProjectData(ProjectData projectData);
+	void setProjectData(Corpus projectData);
 
 }
