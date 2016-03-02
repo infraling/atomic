@@ -48,11 +48,17 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
+import org.eclipse.jface.databinding.wizard.WizardPageSupport;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.ComputedValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.validation.IValidator;
+import org.eclipse.core.databinding.validation.ValidationStatus;
+import org.eclipse.core.internal.databinding.validation.ValidatedObservableSet;
+import org.eclipse.core.runtime.IStatus;
 
 /**
  * A wizard page for the user to construct the structure of a project.
@@ -191,6 +197,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 		sashForm.setWeights(new int[] { 1, 1 });
 		bindingContext = initDataBindings();
+		WizardPageSupport.create(this, bindingContext);
 		initExtraBindings(bindingContext);
 	}
 
@@ -328,6 +335,28 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		IObservableValue sourceTextTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(sourceTextText);
 		IObservableValue sourceTextObserveTreeElement = BeanProperties.value("sourceText").observeDetail(projectTreeViewerSelection);
 		bindingContext.bindValue(sourceTextTextObserveWidget, sourceTextObserveTreeElement);
+		
+		// Binds the "Source text" text field to the 'sourceText' property of the selected element, iff the latter is of type Document.
+		IObservableValue projectNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(projectNameText);
+		IObservableValue projectNameObserveProjectNameText = BeanProperties.value("name").observe(getModel());
+		UpdateValueStrategy projectNameUpdateStrategy = new UpdateValueStrategy();
+		projectNameUpdateStrategy.setAfterGetValidator(new IValidator() {
+			
+			@Override
+			public IStatus validate(Object value) {
+				if (value instanceof String) {
+					String text = (String) value;
+					if (text == null || text.isEmpty()) {
+						return ValidationStatus.error("Project name cannot be empty!");
+					}
+					else {
+						return ValidationStatus.ok();
+					}
+				}
+				return null;
+			}
+		});
+		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, projectNameUpdateStrategy, null);
 		
 		return bindingContext;
 	}
