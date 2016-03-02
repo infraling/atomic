@@ -28,8 +28,8 @@ import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
 import org.corpus_tools.atomic.ui.api.ExtendedViewerSupport;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
@@ -51,15 +50,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
+
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.property.list.IListProperty;
-import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
-import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
-import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.ComputedValue;
@@ -74,7 +68,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
  */
 public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private DataBindingContext bindingContext;
-	private Text corpusNameText;
+	private Text nameText;
 	private Text addSubCorpusNameText;
 	private Text addDocumentNameText;
 	private Text documentNameText;
@@ -84,6 +78,12 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private Set<Control> corpusConstrols = new HashSet<>(), documentControls = new HashSet<>();
 	private TreeViewer projectTreeViewer;
 	private Button btnRemoveElement;
+	private Button btnNewDocument;
+	private Button btnNewSubCorpus;
+	private Group grpDocument;
+	private Label lblSourceText;
+	private Button browseSourceTextBtn;
+	private Label lblName;
 
 	/**
 	 * Default constructor calling the constructor {@link #NewAtomicProjectWizardPageProjectStructure(String)} with the default page name.
@@ -108,9 +108,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		project.setName("Project");
 		Corpus root = new Corpus();
 		root.setName("Root corpus");
-		Document d = new Document();
-		d.setName("Document");
-		root.addChild(d);
+//		Document d = new Document();
+//		d.setName("Document");
+//		root.addChild(d);
 		project.addChild(root);
 		return project;
 	}
@@ -156,7 +156,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		lblName_2.setText("Name:");
 
 		projectNameText = new Text(projectGroup, SWT.BORDER);
-		projectNameText.setText("New project");
 		projectNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		// Project contents
@@ -168,25 +167,61 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		sashForm.setLayoutData(gridDataSashForm);
 
 		Composite leftComposite = new Composite(sashForm, SWT.NONE);
-		leftComposite.setLayout(new GridLayout(2, false));
+		leftComposite.setLayout(new GridLayout(4, false));
 
-		final Button btnNewCorpus = new Button(leftComposite, SWT.NONE);
-		btnNewCorpus.addSelectionListener(new SelectionAdapter() {
+		final Button btnNewRootCorpus = new Button(leftComposite, SWT.NONE);
+		btnNewRootCorpus.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				List<ProjectNode> corpusList = getModel().getChildren();
 				String numberOfExistingRootCorpora = (getModel().getChildren().size() > 0) ? " " + String.valueOf(getModel().getChildren().size() + 1) : "";
 				Corpus newRootCorpus = new Corpus();
 				newRootCorpus.setName("Root corpus" + numberOfExistingRootCorpora);
-				corpusList.add(newRootCorpus);
-				getModel().setChildren(corpusList);
-				corpusNameText.selectAll();
-				corpusNameText.setFocus();
+				getModel().addChild(newRootCorpus);
+				nameText.selectAll();
+				nameText.setFocus();
 				projectTreeViewer.refresh();
 				projectTreeViewer.setSelection(new StructuredSelection(newRootCorpus));
 			}
 		});
-		btnNewCorpus.setText("New root corpus");
+		btnNewRootCorpus.setText("Add root corpus");
+		
+		btnNewSubCorpus = new Button(leftComposite, SWT.NONE);
+		btnNewSubCorpus.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Can only be corpus, otherwise button will be disabled due to extra binding
+				Corpus parent = (Corpus) getSelectedElement();
+				Corpus newSubCorpus = new Corpus();
+				newSubCorpus.setName("New subcorpus");
+				parent.addChild(newSubCorpus);
+				projectTreeViewer.setSelection(new StructuredSelection(newSubCorpus));
+				nameText.selectAll();
+				nameText.setFocus();
+				projectTreeViewer.refresh();
+				projectTreeViewer.expandAll();
+				projectTreeViewer.setSelection(new StructuredSelection(newSubCorpus));			}
+		});
+		btnNewSubCorpus.setText("Add subcorpus");
+
+		
+		btnNewDocument = new Button(leftComposite, SWT.NONE);
+		btnNewDocument.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Can only be corpus, otherwise button will be disabled due to extra binding
+				Corpus parent = (Corpus) getSelectedElement();
+				Document newDocument = new Document();
+				newDocument.setName("New document");
+				parent.addChild(newDocument);
+				projectTreeViewer.setSelection(new StructuredSelection(newDocument));
+				nameText.selectAll();
+				nameText.setFocus();
+				projectTreeViewer.refresh();
+				projectTreeViewer.expandAll();
+				projectTreeViewer.setSelection(new StructuredSelection(newDocument));
+			}
+		});
+		btnNewDocument.setText("Add document");
 		
 		btnRemoveElement = new Button(leftComposite, SWT.NONE);
 		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
@@ -204,7 +239,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 					parent = (Corpus) parentItem.getData();
 					index = parentItem.indexOf(selectedItem);
 				}
-
 				List<ProjectNode> list = new ArrayList<ProjectNode>(parent.getChildren());
 				list.remove(index);
 				parent.setChildren(list);
@@ -212,124 +246,54 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		});
 		btnRemoveElement.setText("Remove element");
 
-		projectTreeViewer = new TreeViewer(leftComposite, SWT.SINGLE);
+		projectTreeViewer = new TreeViewer(leftComposite, SWT.SINGLE | SWT.BORDER);
 		new Label(leftComposite, SWT.NONE);
-		projectTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		projectTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 		projectTreeViewer.expandAll();
 
 		Composite rightComposite = new Composite(sashForm, SWT.NONE);
-		rightComposite.setLayout(new GridLayout(1, false));
-
-		Group grpCorpus = new Group(rightComposite, SWT.NONE);
-		grpCorpus.setText("Corpus");
-		grpCorpus.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-		grpCorpus.setLayout(new GridLayout(3, false));
-
-		Label lblName = new Label(grpCorpus, SWT.NONE);
+		rightComposite.setLayout(new GridLayout(2, false));
+		
+		lblName = new Label(rightComposite, SWT.NONE);
 		lblName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblName.setText("Name:");
 
-		corpusNameText = new Text(grpCorpus, SWT.BORDER);
-		corpusNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		getCorpusControls().add(corpusNameText);
+		nameText = new Text(rightComposite, SWT.BORDER);
+		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		Button saveCorpusNameBtn = new Button(grpCorpus, SWT.NONE);
-		saveCorpusNameBtn.setText("Save");
-		getCorpusControls().add(saveCorpusNameBtn);
-		saveCorpusNameBtn.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-//				ProjectNode selectionParent = getCurrentSelectionParent();
-			}
-		});
-
-		Label lblAddSubcorpus = new Label(grpCorpus, SWT.NONE);
-		lblAddSubcorpus.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblAddSubcorpus.setText("Add subcorpus:");
-
-		addSubCorpusNameText = new Text(grpCorpus, SWT.BORDER);
-		addSubCorpusNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		getCorpusControls().add(addSubCorpusNameText);
-
-		Button addSubCorpusBtn = new Button(grpCorpus, SWT.NONE);
-		addSubCorpusBtn.setText("Add");
-		getCorpusControls().add(addSubCorpusBtn);
-		addSubCorpusBtn.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
-
-		Label lblAddDocument = new Label(grpCorpus, SWT.NONE);
-		lblAddDocument.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblAddDocument.setText("Add document:");
-
-		addDocumentNameText = new Text(grpCorpus, SWT.BORDER);
-		addDocumentNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		getCorpusControls().add(addDocumentNameText);
-
-		Button addDocumentBtn = new Button(grpCorpus, SWT.NONE);
-		addDocumentBtn.setText("Add");
-		getCorpusControls().add(addDocumentBtn);
-		addDocumentBtn.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
-
-		Group grpDocument = new Group(rightComposite, SWT.NONE);
-		grpDocument.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		grpDocument.setLayout(new GridLayout(3, false));
+		grpDocument = new Group(rightComposite, SWT.NONE);
+		grpDocument.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		grpDocument.setLayout(new GridLayout(2, false));
 		grpDocument.setText("Document");
 
-		Label lblName_1 = new Label(grpDocument, SWT.NONE);
-		lblName_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblName_1.setText("Name:");
-
-		documentNameText = new Text(grpDocument, SWT.BORDER);
-		documentNameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		getDocumentControls().add(documentNameText);
-
-		Button saveDocumentNameBtn = new Button(grpDocument, SWT.NONE);
-		saveDocumentNameBtn.setText("Save");
-		getDocumentControls().add(saveDocumentNameBtn);
-		saveDocumentNameBtn.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
-
-		Label lblSourceText = new Label(grpDocument, SWT.NONE);
+		lblSourceText = new Label(grpDocument, SWT.NONE);
 		lblSourceText.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
 		lblSourceText.setText("Source text:");
 
 		sourceTextText = new Text(grpDocument, SWT.BORDER | SWT.MULTI);
-		sourceTextText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		getDocumentControls().add(sourceTextText);
+		sourceTextText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
 		new Label(grpDocument, SWT.NONE);
 
-		Button browseSourceTextBtn = new Button(grpDocument, SWT.NONE);
+		browseSourceTextBtn = new Button(grpDocument, SWT.NONE);
 		browseSourceTextBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		browseSourceTextBtn.setText("Browse");
-		getDocumentControls().add(browseSourceTextBtn);
-
-		Button saveSourceTextBtn = new Button(grpDocument, SWT.NONE);
-		saveSourceTextBtn.setText("Save");
-		getDocumentControls().add(saveSourceTextBtn);
-		saveSourceTextBtn.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
 
 		sashForm.setWeights(new int[] { 1, 1 });
 		bindingContext = initDataBindings();
 		initExtraBindings(bindingContext);
+	}
+
+	/**
+	 * Returns the selected element in the project tree viewer.
+	 *
+	 * @return the selected element in the project tree viewer
+	 */
+	protected ProjectNode getSelectedElement() {
+		IStructuredSelection selection = (IStructuredSelection) projectTreeViewer.getSelection();
+		if (selection.isEmpty())
+			return null;
+		return (ProjectNode) selection.getFirstElement();
 	}
 
 	@Override
@@ -346,21 +310,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		shell.open();
 	}
 	
-	private ProjectNode getCurrentSelectionParent() {
-		ISelection selection = projectTreeViewer.getSelection();
-		if (selection instanceof ITreeSelection) {
-			ITreeSelection treeSelection = (ITreeSelection) selection;
-			Object selectionParent = treeSelection.getPaths()[0].getParentPath().getLastSegment();
-			if (selectionParent instanceof ProjectNode) {
-				return (ProjectNode) selectionParent;
-			}
-			else {
-				return null;
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * @return the model
 	 */
@@ -369,29 +318,15 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	}
 
 	/**
-	 * @return the corpusConstrols
-	 */
-	private Set<Control> getCorpusControls() {
-		return corpusConstrols;
-	}
-
-	/**
-	 * @return the documentControls
-	 */
-	private Set<Control> getDocumentControls() {
-		return documentControls;
-	}
-
-	/**
-	 * TODO: Description
+	 * Initializes the data bindings from model to widgets and returns the binding context.
 	 *
-	 * @return
+	 * @return bindingContext the binding context
 	 */
 	private DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		
 		IObservableValue treeViewerSelectionObserveSelection = ViewersObservables.observeSingleSelection(projectTreeViewer);
-		IObservableValue textTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(corpusNameText);//SWTObservables.observeText(beanText, SWT.Modify);
+		IObservableValue textTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(nameText);//SWTObservables.observeText(beanText, SWT.Modify);
 		IObservableValue treeViewerValueObserveDetailValue = BeanProperties.value("name").observeDetail(treeViewerSelectionObserveSelection);
 		bindingContext.bindValue(textTextObserveWidget, treeViewerValueObserveDetailValue);
 		
@@ -399,19 +334,45 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	}
 	
 	/**
-	 * TODO: Description
+	 * Adds extra bindings that are not "real" data bindings (i.e., enabled/disabled buttons, etc.)
 	 *
 	 * @param bindingContext2
 	 */
 	private void initExtraBindings(DataBindingContext dbc) {
+		// Observable value for selected element in tree viewer
 		final IObservableValue projectTreeViewerSelection = ViewersObservables.observeSingleSelection(projectTreeViewer);
-		IObservableValue projectElementSelected = new ComputedValue(Boolean.TYPE) {
+		
+		// Enable the "Add document" and "Add subcorpus" buttons only if the currently selected element in the tree is a Corpus
+		IObservableValue corpusSelected = new ComputedValue(Boolean.TYPE) {
+			protected Object calculate() {
+				return Boolean.valueOf(projectTreeViewerSelection.getValue() != null && projectTreeViewerSelection.getValue() instanceof Corpus);
+			}
+		};
+		dbc.bindValue(WidgetProperties.enabled().observe(btnNewDocument), corpusSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(btnNewSubCorpus), corpusSelected);
+		
+		// Enable the "Remove element" button only if the currently selected element in the tree is not null
+		IObservableValue anythingSelected = new ComputedValue(Boolean.TYPE) {
 			protected Object calculate() {
 				return Boolean.valueOf(projectTreeViewerSelection.getValue() != null);
 			}
 		};
-//		dbc.bindValue(WidgetProperties.enabled().observe(btnNewCorpus), projectElementSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(btnRemoveElement), anythingSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(lblName), anythingSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(nameText), anythingSelected);
 		
+		// Disable all document-relevant widgets when selected element is not of type Document
+		IObservableValue documentSelected = new ComputedValue(Boolean.TYPE) {
+			protected Object calculate() {
+				return Boolean.valueOf(projectTreeViewerSelection.getValue() != null && projectTreeViewerSelection.getValue() instanceof Document);
+			}
+		};
+		dbc.bindValue(WidgetProperties.enabled().observe(grpDocument), documentSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(sourceTextText), documentSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(lblSourceText), documentSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(browseSourceTextBtn), documentSelected);
+		
+		// Bind model to the project tree viewer
 		ExtendedViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.list("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"), ProjectTreeWizardLabelProvider.class);
 	}
 
