@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +26,7 @@ import java.util.Set;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
+import org.corpus_tools.atomic.ui.api.ExtendedViewerSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -107,6 +108,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		project.setName("Project");
 		Corpus root = new Corpus();
 		root.setName("Root corpus");
+		Document d = new Document();
+		d.setName("Document");
+		root.addChild(d);
 		project.addChild(root);
 		return project;
 	}
@@ -408,7 +412,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		};
 //		dbc.bindValue(WidgetProperties.enabled().observe(btnNewCorpus), projectElementSelected);
 		
-		ViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.list("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"));
+		ExtendedViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.list("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"), ProjectTreeWizardLabelProvider.class);
 	}
 
 
