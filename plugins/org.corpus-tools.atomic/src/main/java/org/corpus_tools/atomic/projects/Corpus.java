@@ -32,13 +32,13 @@ import org.eclipse.core.runtime.Assert;
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-/**
- * TODO Description
- *
- * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
- *
- */
 public class Corpus extends AbstractBean implements ProjectNode {
+	
+	/**
+	 * Property <code>isProjectDataObject</code>, a flag whether this Corpus instance is the root node
+	 * in the project structure tree, i.e., "the project". 
+	 */
+	private boolean isProjectDataObject = false;
 	
 	/**
 	 * Property <code>name</name>, readable and writable.
@@ -132,6 +132,20 @@ public class Corpus extends AbstractBean implements ProjectNode {
 		ProjectNode removedChild = newChildren.remove(indexOfChildToBeRemoved );
 		setChildren(newChildren);
 		return removedChild;
+	}
+
+	/**
+	 * @return whether the {@link Corpus} is "the project", i.e., the root node in the project structure tree containing all other elements
+	 */
+	public boolean isProjectDataObject() {
+		return isProjectDataObject;
+	}
+
+	/**
+	 * @param isProjectDataObject whether the {@link Corpus} is to be "the project", i.e., the root node in the project structure tree containing all other elements
+	 */
+	public void setProjectDataObject(boolean isProjectDataObject) {
+		this.isProjectDataObject = isProjectDataObject;
 	}
 
 }
