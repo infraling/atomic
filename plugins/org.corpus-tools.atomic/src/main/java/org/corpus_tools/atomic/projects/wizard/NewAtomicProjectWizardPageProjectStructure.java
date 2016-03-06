@@ -24,6 +24,7 @@ import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
 import org.corpus_tools.atomic.ui.api.ExtendedViewerSupport;
+import org.corpus_tools.atomic.ui.api.validation.NotEmptyStringOrNullValidator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -339,24 +340,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		// Binds the "Source text" text field to the 'sourceText' property of the selected element, iff the latter is of type Document.
 		IObservableValue projectNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(projectNameText);
 		IObservableValue projectNameObserveProjectNameText = BeanProperties.value("name").observe(getModel());
-		UpdateValueStrategy projectNameUpdateStrategy = new UpdateValueStrategy();
-		projectNameUpdateStrategy.setAfterGetValidator(new IValidator() {
-			
-			@Override
-			public IStatus validate(Object value) {
-				if (value instanceof String) {
-					String text = (String) value;
-					if (text == null || text.isEmpty()) {
-						return ValidationStatus.error("Project name cannot be empty!");
-					}
-					else {
-						return ValidationStatus.ok();
-					}
-				}
-				return null;
-			}
-		});
-		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, projectNameUpdateStrategy, null);
+		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, new UpdateValueStrategy().setAfterGetValidator(new NotEmptyStringOrNullValidator("Project name")), null);
 		
 		return bindingContext;
 	}
@@ -402,6 +386,16 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		
 		// Bind model to the project tree viewer
 		ExtendedViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.list("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"), ProjectTreeWizardLabelProvider.class);
+	}
+	
+	@Override
+	public boolean canFlipToNextPage() {
+		return getErrorMessage() == null;
+	}
+	
+	@Override
+	public boolean isPageComplete() {
+		return getErrorMessage() == null;
 	}
 
 	/**
