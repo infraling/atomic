@@ -46,7 +46,7 @@ public class NotEmptyStringOrNullValidator implements IValidator {
 	 */
 	@SuppressWarnings("unused")
 	private NotEmptyStringOrNullValidator() {
-		// TODO Auto-generated constructor stub
+		// Do nothing, will never be called.
 	}
 
 	/* 
