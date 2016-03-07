@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.List;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
@@ -56,10 +56,6 @@ import org.eclipse.jface.databinding.wizard.WizardPageSupport;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.ComputedValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.databinding.validation.IValidator;
-import org.eclipse.core.databinding.validation.ValidationStatus;
-import org.eclipse.core.internal.databinding.validation.ValidatedObservableSet;
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * A wizard page for the user to construct the structure of a project.
@@ -200,6 +196,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		bindingContext = initDataBindings();
 		WizardPageSupport.create(this, bindingContext);
 		initExtraBindings(bindingContext);
+		
+		// If selection is emtpy, element name validator is triggered.
+		projectTreeViewer.setSelection(new StructuredSelection(getModel().getChildren().get(0)));
 	}
 
 	/**
@@ -330,17 +329,18 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		// Binds the "Element name" text field to the 'name' property of the selected element. 
 		IObservableValue nameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(nameText);
 		IObservableValue nameObserveTreeElement = BeanProperties.value("name").observeDetail(projectTreeViewerSelection);
-		bindingContext.bindValue(nameTextObserveWidget, nameObserveTreeElement);
+		bindingContext.bindValue(nameTextObserveWidget, nameObserveTreeElement, new UpdateValueStrategy().setBeforeSetValidator(new NotEmptyStringOrNullValidator("Element name")), null);
 		
 		// Binds the "Source text" text field to the 'sourceText' property of the selected element, iff the latter is of type Document.
+		// NOTE: This binding has no validator. Source texts must be validated before can flip to net page.
 		IObservableValue sourceTextTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(sourceTextText);
 		IObservableValue sourceTextObserveTreeElement = BeanProperties.value("sourceText").observeDetail(projectTreeViewerSelection);
 		bindingContext.bindValue(sourceTextTextObserveWidget, sourceTextObserveTreeElement);
 		
-		// Binds the "Source text" text field to the 'sourceText' property of the selected element, iff the latter is of type Document.
+		// Binds the "Source text" text field to the 'name' property of the project.
 		IObservableValue projectNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(projectNameText);
 		IObservableValue projectNameObserveProjectNameText = BeanProperties.value("name").observe(getModel());
-		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, new UpdateValueStrategy().setAfterGetValidator(new NotEmptyStringOrNullValidator("Project name")), null);
+		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, new UpdateValueStrategy().setBeforeSetValidator(new NotEmptyStringOrNullValidator("Project name")), null);
 		
 		return bindingContext;
 	}
