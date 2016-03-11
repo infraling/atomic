@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.corpus_tools.atomic.internal.projects.DefaultProjectData;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
@@ -69,8 +68,9 @@ public class SaltProjectCompilerTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		DefaultProjectData data = new DefaultProjectData();
+		Corpus data = new Corpus();
 		data.setName("project");
+		data.setProjectDataObject(true);
 		Corpus c1 = new Corpus();
 		c1.setName("c1");
 		  Document d1 = new Document();
@@ -104,8 +104,8 @@ public class SaltProjectCompilerTest {
 		    c221.addChild(d221);
 		  c22.addChild(c221);
 		c2.addChild(c22);
-		data.addCorpus(c1);
-		data.addCorpus(c2);
+		data.addChild(c1);
+		data.addChild(c2);
 		
 		setFixture(new SaltProjectCompiler(data));
 	}
