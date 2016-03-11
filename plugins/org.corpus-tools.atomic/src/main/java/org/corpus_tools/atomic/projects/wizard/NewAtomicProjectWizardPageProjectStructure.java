@@ -19,7 +19,10 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
@@ -56,6 +59,7 @@ import org.eclipse.jface.databinding.wizard.WizardPageSupport;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.ComputedValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.runtime.Assert;
 
 /**
  * A wizard page for the user to construct the structure of a project.
@@ -197,8 +201,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		WizardPageSupport.create(this, bindingContext);
 		initExtraBindings(bindingContext);
 		
-		// If selection is emtpy, element name validator is triggered.
-		projectTreeViewer.setSelection(new StructuredSelection(getModel().getChildren().get(0)));
+		// If selection is emtpy, element name validator is triggered. Therefore, select first element
+		Assert.isNotNull(getModel().getChildren().iterator().next());
+		projectTreeViewer.setSelection(new StructuredSelection(getModel().getChildren().iterator().next()));
 	}
 
 	/**
@@ -272,18 +277,15 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				TreeItem selectedItem = projectTreeViewer.getTree().getSelection()[0];
 				TreeItem parentItem = selectedItem.getParentItem();
 				Corpus parent;
-				int index;
 				if (parentItem == null) {
 					parent = getModel();
-					index = projectTreeViewer.getTree().indexOf(selectedItem);
 				}
 				else {
 					parent = (Corpus) parentItem.getData();
-					index = parentItem.indexOf(selectedItem);
 				}
-				List<ProjectNode> list = new ArrayList<ProjectNode>(parent.getChildren());
-				list.remove(index);
-				parent.setChildren(list);
+				Set<ProjectNode> childrenSet = new LinkedHashSet<ProjectNode>(parent.getChildren());
+				childrenSet.remove(selectedItem.getData());
+				parent.setChildren(childrenSet);
 			}
 		});
 		btnRemoveElement.setText("Remove element");

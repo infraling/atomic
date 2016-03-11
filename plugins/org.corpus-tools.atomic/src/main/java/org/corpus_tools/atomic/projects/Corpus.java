@@ -18,8 +18,9 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.corpus_tools.atomic.models.AbstractBean;
 import org.eclipse.core.runtime.Assert;
@@ -48,13 +49,13 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	/**
 	 * Property <code>children</name>, readable and writable.
 	 */
-	private List<ProjectNode> children = null;
+	private Set<ProjectNode> children = null;
 	
 	/**
 	 * Default no-arg constructor (JavaBean compliance). 
 	 */
 	public Corpus() {
-		children = new ArrayList<>();
+		children = new LinkedHashSet<>();
 	}
 	
 	/* 
@@ -79,15 +80,15 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	 *
 	 * @return the corpus' children
 	 */
-	public List<ProjectNode> getChildren() {
+	public Set<ProjectNode> getChildren() {
 		return children;
 	}
 
 	/**
 	 * @param children the children to set
 	 */
-	public void setChildren(final List<ProjectNode> children) {
-		final List<ProjectNode> oldChildren = this.children;
+	public void setChildren(final Set<ProjectNode> children) {
+		final Set<ProjectNode> oldChildren = this.children;
 		this.children = children;
 		firePropertyChange("children", oldChildren, this.children);
 	}
@@ -106,7 +107,7 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	 */
 	public ProjectNode addChild(final ProjectNode child) {
 		Assert.isNotNull(child);
-		final List<ProjectNode> newChildren = getChildren();
+		final Set<ProjectNode> newChildren = getChildren();
 		newChildren.add(child);
 		setChildren(newChildren);
 		return child;
@@ -125,13 +126,12 @@ public class Corpus extends AbstractBean implements ProjectNode {
 	 * @return the removed node or null
 	 * @throws RuntimeException if childName is null
 	 */
-	public ProjectNode removeChild(final ProjectNode child) {
+	public boolean removeChild(final ProjectNode child) {
 		Assert.isNotNull(child);
-		final List<ProjectNode> newChildren = getChildren();
-		int indexOfChildToBeRemoved = newChildren.indexOf(child);
-		ProjectNode removedChild = newChildren.remove(indexOfChildToBeRemoved );
+		final Set<ProjectNode> newChildren = getChildren();
+		boolean childrenContainedRemovedChild = newChildren.remove(child);
 		setChildren(newChildren);
-		return removedChild;
+		return childrenContainedRemovedChild;
 	}
 
 	/**

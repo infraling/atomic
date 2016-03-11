@@ -92,12 +92,12 @@ public class CorpusTest {
 		getFixture().addChild(d1New);
 		// Should have 4 children now, in the order c1, d1, c2, d2
 		assertNotNull(getFixture().getChildren());
-		assertEquals(6, getFixture().getChildren().size());
+		assertEquals(5, getFixture().getChildren().size());
 		assertTrue(getFixture().getChildren().contains(c1));
 		assertTrue(getFixture().getChildren().contains(c2));
 		assertTrue(getFixture().getChildren().contains(d1));
 		assertTrue(getFixture().getChildren().contains(d2));
-		String[] nameArray = new String[] { "c1", "d1", "c2", "d2" , "c1", "d1"}; // This should be the correct order in getChildren()
+		String[] nameArray = new String[] { "c1", "d1", "c2", "d2" , "d1"}; // This should be the correct order in getChildren()
 		int i = 0;
 		for (ProjectNode child : getFixture().getChildren()) {
 			assertEquals(nameArray[i], child.getName());
@@ -138,10 +138,9 @@ public class CorpusTest {
 		assertTrue(getFixture().getChildren().contains(c2));
 		assertTrue(getFixture().getChildren().contains(d1));
 		assertTrue(getFixture().getChildren().contains(d2));
-		assertTrue(getFixture().getChildren().get(getFixture().getChildren().indexOf(d1)) instanceof Document);
-//		assertNotEquals("t1", ((Document) getFixture().getChildren().get(getFixture().getChildren().indexOf(d1))).getSourceText());
-		assertEquals("d1", getFixture().getChildren().get(getFixture().getChildren().indexOf(d1)).getName());
-//		assertEquals("t3", ((Document) getFixture().getChildren().get(getFixture().getChildren().indexOf(d1))).getSourceText());
+		assertNotEquals("t1", d1New.getSourceText());
+		assertEquals("d1", d1New.getName());
+		assertEquals("t3", d1New.getSourceText());
 	}
 
 	/**
@@ -173,10 +172,8 @@ public class CorpusTest {
 			i++;
 		}
 		// Remove last element
-		assertTrue(getFixture().getChildren().get(getFixture().getChildren().indexOf(d2)) instanceof Document);
-		ProjectNode d = getFixture().removeChild(d2);
-		assertEquals("d2", d.getName());
-		assertEquals("t2", ((Document) d).getSourceText());
+		assertTrue(d2 instanceof Document);
+		assertTrue(getFixture().removeChild(d2));
 		assertEquals(4, getFixture().getChildren().size());
 		assertFalse(getFixture().getChildren().contains(d2));
 		keysArray = new String[] { "c1", "d1", "c2", "c3" }; // sans d2
@@ -186,7 +183,7 @@ public class CorpusTest {
 			i++;
 		}
 		// Remove first element
-		assertEquals("c1", getFixture().removeChild(c1).getName());
+		assertTrue(getFixture().removeChild(c1));
 		assertEquals(3, getFixture().getChildren().size());
 		assertFalse(getFixture().getChildren().contains(c1));
 		keysArray = new String[] { "d1", "c2", "c3" }; // sans d2
@@ -196,7 +193,7 @@ public class CorpusTest {
 			i++;
 		}
 		// Remove middle element
-		assertEquals("c2", getFixture().removeChild(c2).getName());
+		assertTrue(getFixture().removeChild(c2));
 		assertEquals(2, getFixture().getChildren().size());
 		assertFalse(getFixture().getChildren().contains(c2));
 		keysArray = new String[] { "d1", "c3" }; // sans d2
@@ -207,16 +204,13 @@ public class CorpusTest {
 		}
 		// Remove last element
 		assertTrue(getFixture().getChildren().contains(c3));
-		assertEquals("c3", getFixture().removeChild(c3).getName());
+		assertTrue(getFixture().removeChild(c3));
 		assertEquals(1, getFixture().getChildren().size());
 		assertFalse(getFixture().getChildren().contains(c3));
 		assertEquals(1, getFixture().getChildren().size());
 		assertTrue(getFixture().getChildren().contains(d1));
 		// Remove last remaining element
-		ProjectNode d1Removed = getFixture().removeChild(d1);
-		assertTrue(d1Removed instanceof Document);
-		assertEquals("d1", d1Removed.getName());
-		assertEquals("t1", ((Document) d1Removed).getSourceText());
+		assertTrue(getFixture().removeChild(d1));
 		assertEquals(0, getFixture().getChildren().size());
 		assertNotNull(getFixture().getChildren());
 	}
