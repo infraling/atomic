@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.ui.api;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Constructor; 
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,11 +26,11 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.property.Properties;
-import org.eclipse.core.databinding.property.list.IListProperty;
+import org.eclipse.core.databinding.property.set.ISetProperty;
 import org.eclipse.core.databinding.property.value.IValueProperty;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.databinding.swt.DisplayRealm;
-import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableSetTreeContentProvider;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 
 /**
@@ -74,7 +74,7 @@ public class ExtendedViewerSupport {
 	 * @param labelProperty the property to use for labels
 	 * @param clazz the class of the label provider to use for generating label contents
 	 */
-	public static void bind(AbstractTreeViewer viewer, Object input, IListProperty childrenProperty, IValueProperty labelProperty, Class<? extends ObservableMapLabelProviderWithImageSupport> clazz) {
+	public static void bind(AbstractTreeViewer viewer, Object input, ISetProperty childrenProperty, IValueProperty labelProperty, Class<? extends ObservableMapLabelProviderWithImageSupport> clazz) {
 		bind(viewer, input, childrenProperty, new IValueProperty[] { labelProperty }, clazz);
 	}
 
@@ -89,9 +89,9 @@ public class ExtendedViewerSupport {
 	 * @param labelProperty the property to use for labels
 	 * @param labelProviderClazz the class of the label provider to use for generating label contents
 	 */
-	public static void bind(AbstractTreeViewer viewer, Object input, IListProperty childrenProperty, IValueProperty[] labelProperties, Class<? extends ObservableMapLabelProviderWithImageSupport> labelProviderClazz) throws RuntimeException {
+	public static void bind(AbstractTreeViewer viewer, Object input, ISetProperty childrenProperty, IValueProperty[] labelProperties, Class<? extends ObservableMapLabelProviderWithImageSupport> labelProviderClazz) throws RuntimeException {
 		Realm realm = DisplayRealm.getRealm(viewer.getControl().getDisplay());
-		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(childrenProperty.listFactory(realm), null);
+		ObservableSetTreeContentProvider contentProvider = new ObservableSetTreeContentProvider(childrenProperty.setFactory(realm), null);
 		if (viewer.getInput() != null)
 			viewer.setInput(null);
 		viewer.setContentProvider(contentProvider);

@@ -385,7 +385,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		dbc.bindValue(WidgetProperties.enabled().observe(browseSourceTextBtn), documentSelected);
 		
 		// Bind model to the project tree viewer
-		ExtendedViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.list("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"), ProjectTreeWizardLabelProvider.class);
+		ExtendedViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.set("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"), ProjectTreeWizardLabelProvider.class);
 	}
 	
 	@Override
