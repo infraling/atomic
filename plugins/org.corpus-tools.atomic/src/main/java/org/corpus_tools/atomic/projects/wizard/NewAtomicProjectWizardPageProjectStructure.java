@@ -90,6 +90,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private Label lblSourceText;
 	private Button browseSourceTextBtn;
 	private Label lblName;
+	private boolean doAllDocumentsHaveSourceTexts;
 	
 	/** 
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "NewAtomicProjectWizardPageProjectStructure".
@@ -202,22 +203,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 
 		sourceTextText = new Text(grpDocument, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
 		sourceTextText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		sourceTextText.addListener(SWT.Modify, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				Text t = (Text) event.widget;
-				Rectangle r1 = t.getClientArea();
-				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
-				Point p = t.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-				t.getHorizontalBar().setVisible(r2.width <= p.x);
-				t.getVerticalBar().setVisible(r2.height <= p.y);
-				if (event.type == SWT.Modify) {
-					t.getParent().layout(true);
-					t.showSelection();
-				}
-			}
-		});
-		
+
 		new Label(grpDocument, SWT.NONE);
 
 		browseSourceTextBtn = new Button(grpDocument, SWT.NONE);
@@ -447,21 +433,21 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		return getErrorMessage() == null && doAllDocumentsHaveSourceTexts(getModel());
+		doAllDocumentsHaveSourceTexts = true;
+		checkDoAllDocumentsHaveSourceTexts(getModel());
+		return getErrorMessage() == null && doAllDocumentsHaveSourceTexts;
 		// FIXME TODO: Idea: create a binding for something that always runs, add validator to check if all documents have source texts
 	}
 	
 	/**
 	 * Iterates over all children of a {@link Corpus} and, sets the
-	 * return value to false should a child <code>instanceof</code>
+	 * boolean field to false should a child <code>instanceof</code>
 	 * {@link Document} have an empty value or <code>null</code> for
 	 * its parameter {@link Document#getSourceText()}.
 	 *
 	 * @param The parent corpus
-	 * @return boolean whether all documents in the n-ary tree of children have a non-empty, non-<code>null</code> sourceText parameter
 	 */
-	private boolean doAllDocumentsHaveSourceTexts(Corpus parentCorpus) {
-		boolean doAllDocumentsHaveSourceTexts = true;
+	private void checkDoAllDocumentsHaveSourceTexts(Corpus parentCorpus) {
 		for (ProjectNode child : parentCorpus.getChildren()) {
 			if (child instanceof Document) {
 				String text = ((Document) child).getSourceText();
@@ -471,10 +457,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				}
 			}
 			else {
-				doAllDocumentsHaveSourceTexts((Corpus) child);
+				checkDoAllDocumentsHaveSourceTexts((Corpus) child);
 			}
 		}
-		return doAllDocumentsHaveSourceTexts;
 	}
 
 	@Override
