@@ -59,7 +59,6 @@ public class DocumentTest {
 		d.setSourceText("text");
 		assertEquals(d.getName(), getFixture().getName());
 		assertEquals(d.getSourceText(), getFixture().getSourceText());
-		assertNull(getFixture().getChildren());
 	}
 
 	/**
@@ -70,31 +69,6 @@ public class DocumentTest {
 		assertEquals("document", getFixture().getName());
 		getFixture().setName("dokument");
 		assertEquals("dokument", getFixture().getName());
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#getChildren()}.
-	 */
-	@Test
-	public void testGetChildren() {
-		assertNull(getFixture().getChildren());
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#addChild(org.corpus_tools.atomic.projects.ProjectNode)}.
-	 */
-	@Test
-	public void testAddChild() {
-		assertNull(getFixture().addChild(new Corpus()));
-		assertNull(getFixture().addChild(new Document()));
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.projects.Document#removeChild(java.lang.String)}.
-	 */
-	@Test
-	public void testRemoveChild() {
-		assertNull(getFixture().removeChild("x"));
 	}
 
 	/**
