@@ -23,8 +23,6 @@ package org.corpus_tools.atomic.projects;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.codebox.bean.JavaBeanTester;
-
 /**
  * Unit test for {@link Document}.
  *
@@ -77,15 +75,6 @@ public class DocumentTest {
 	@Test
 	public void testGetSourceText() {
 		assertEquals("text", getFixture().getSourceText());
-	}
-
-	@Test
-	public void testBeanFeatures() {
-		Document d = new Document();
-		d.setName("document");
-		d.setSourceText("text");
-		JavaBeanTester.builder(Document.class).loadData().testInstance(getFixture());
-		JavaBeanTester.builder(Document.class).loadData().testEquals(getFixture(), d);
 	}
 
 	/**

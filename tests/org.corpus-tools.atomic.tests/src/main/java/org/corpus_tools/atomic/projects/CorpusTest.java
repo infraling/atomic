@@ -18,12 +18,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects;
 
-import static org.junit.Assert.*;  
+import static org.junit.Assert.*;   
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.codebox.bean.JavaBeanTester;
 
 /**
  * Unit tests for {@link Corpus}.
@@ -231,14 +229,6 @@ public class CorpusTest {
 		assertEquals("corpus", getFixture().getName());
 		getFixture().setName("korpus");
 		assertEquals("korpus", getFixture().getName());
-	}
-
-	@Test
-	public void testBeanFeatures() {
-		Corpus c = new Corpus();
-		c.setName("corpus");
-		JavaBeanTester.builder(Corpus.class).loadData().testInstance(getFixture());
-		JavaBeanTester.builder(Corpus.class).loadData().testEquals(getFixture(), c);
 	}
 
 	/**
