@@ -18,11 +18,15 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
@@ -35,7 +39,11 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.custom.SashForm;
@@ -82,7 +90,12 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private Label lblSourceText;
 	private Button browseSourceTextBtn;
 	private Label lblName;
-
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "NewAtomicProjectWizardPageProjectStructure".
+	 */
+	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizardPageProjectStructure.class);
+	
 	/**
 	 * Default constructor calling the constructor {@link #NewAtomicProjectWizardPageProjectStructure(String)} with the default page name.
 	 */
@@ -187,14 +200,56 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		lblSourceText.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
 		lblSourceText.setText("Source text:");
 
-		sourceTextText = new Text(grpDocument, SWT.BORDER | SWT.MULTI);
+		sourceTextText = new Text(grpDocument, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
 		sourceTextText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		sourceTextText.addListener(SWT.Modify, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				Text t = (Text) event.widget;
+				Rectangle r1 = t.getClientArea();
+				Rectangle r2 = t.computeTrim(r1.x, r1.y, r1.width, r1.height);
+				Point p = t.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+				t.getHorizontalBar().setVisible(r2.width <= p.x);
+				t.getVerticalBar().setVisible(r2.height <= p.y);
+				if (event.type == SWT.Modify) {
+					t.getParent().layout(true);
+					t.showSelection();
+				}
+			}
+		});
 		
 		new Label(grpDocument, SWT.NONE);
 
 		browseSourceTextBtn = new Button(grpDocument, SWT.NONE);
 		browseSourceTextBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		browseSourceTextBtn.setText("Browse");
+		browseSourceTextBtn.setText("Bro&wse");
+		browseSourceTextBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Open FileBrowser and set returned text from file to sourceText text field
+				String sourceTextFilePath = getSourceTextFile();
+				String sourceText = null;
+				try {
+					sourceText = readFile(sourceTextFilePath, Charset.defaultCharset());
+				}
+				catch (IOException e1) {
+					log.error("Could not read file \"" + sourceTextFilePath + "\".", e1);
+					sourceTextText.setText("");
+				}
+				sourceTextText.setText(sourceText);
+			}
+
+			private String readFile(String path, Charset encoding) throws IOException {
+				byte[] encoded = Files.readAllBytes(Paths.get(path));
+				return new String(encoded, encoding);
+			}
+
+			private String getSourceTextFile() {
+				FileDialog dialog = new FileDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), SWT.OPEN);
+				dialog.setFilterExtensions(new String[] { "*.txt" });
+				return dialog.open();
+			}
+		});
 
 		sashForm.setWeights(new int[] { 1, 1 });
 		bindingContext = initDataBindings();
@@ -229,7 +284,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				nameText.setFocus();
 			}
 		});
-		btnNewRootCorpus.setText("Add root corpus");
+		btnNewRootCorpus.setText("Add root &corpus");
 		
 		btnNewSubCorpus = new Button(buttonComposite, SWT.NONE);
 		btnNewSubCorpus.addSelectionListener(new SelectionAdapter() {
@@ -248,7 +303,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				nameText.setFocus();
 			}
 		});
-		btnNewSubCorpus.setText("Add subcorpus");
+		btnNewSubCorpus.setText("Add &subcorpus");
 
 		
 		btnNewDocument = new Button(buttonComposite, SWT.NONE);
@@ -268,7 +323,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				nameText.setFocus();
 			}
 		});
-		btnNewDocument.setText("Add document");
+		btnNewDocument.setText("Add &document");
 		
 		btnRemoveElement = new Button(buttonComposite, SWT.NONE);
 		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
@@ -288,7 +343,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				parent.setChildren(childrenSet);
 			}
 		});
-		btnRemoveElement.setText("Remove element");
+		btnRemoveElement.setText("&Remove element");
 	}
 
 	/**
