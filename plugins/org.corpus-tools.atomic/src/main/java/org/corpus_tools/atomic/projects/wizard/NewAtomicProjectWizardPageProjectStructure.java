@@ -337,7 +337,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		IObservableValue sourceTextObserveTreeElement = BeanProperties.value("sourceText").observeDetail(projectTreeViewerSelection);
 		bindingContext.bindValue(sourceTextTextObserveWidget, sourceTextObserveTreeElement);
 		
-		// Binds the "Source text" text field to the 'name' property of the project.
+		// Binds the "Project name text" text field to the 'name' property of the project.
 		IObservableValue projectNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(projectNameText);
 		IObservableValue projectNameObserveProjectNameText = BeanProperties.value("name").observe(getModel());
 		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, new UpdateValueStrategy().setBeforeSetValidator(new NotEmptyStringOrNullValidator("Project name")), null);
@@ -390,9 +390,36 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		return getErrorMessage() == null;
+		return getErrorMessage() == null && doAllDocumentsHaveSourceTexts(getModel());
+		// FIXME TODO: Idea: create a binding for something that always runs, add validator to check if all documents have source texts
 	}
 	
+	/**
+	 * Iterates over all children of a {@link Corpus} and, sets the
+	 * return value to false should a child <code>instanceof</code>
+	 * {@link Document} have an empty value or <code>null</code> for
+	 * its parameter {@link Document#getSourceText()}.
+	 *
+	 * @param The parent corpus
+	 * @return boolean whether all documents in the n-ary tree of children have a non-empty, non-<code>null</code> sourceText parameter
+	 */
+	private boolean doAllDocumentsHaveSourceTexts(Corpus parentCorpus) {
+		boolean doAllDocumentsHaveSourceTexts = true;
+		for (ProjectNode child : parentCorpus.getChildren()) {
+			if (child instanceof Document) {
+				String text = ((Document) child).getSourceText();
+				if (text == null || text.isEmpty()) {
+					setErrorMessage("Document " + child.getName() + " has no source text!");
+					doAllDocumentsHaveSourceTexts = false;
+				}
+			}
+			else {
+				doAllDocumentsHaveSourceTexts((Corpus) child);
+			}
+		}
+		return doAllDocumentsHaveSourceTexts;
+	}
+
 	@Override
 	public boolean isPageComplete() {
 		return getErrorMessage() == null;
