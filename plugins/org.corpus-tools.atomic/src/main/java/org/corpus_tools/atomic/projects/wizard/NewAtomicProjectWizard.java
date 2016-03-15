@@ -39,6 +39,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	
 	private String postProcessingPage = null; // TODO FIXME
 	private NewAtomicProjectWizardPageProjectStructure structurePage = new NewAtomicProjectWizardPageProjectStructure();
+	private NewAtomicProjectWizardPagePreProcessing preProcessingPage = null;
 	
 	/*
 	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
@@ -52,6 +53,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public void addPages() {
 		addPage(getStructurePage());
+		setPreProcessingPage(new NewAtomicProjectWizardPagePreProcessing(getStructurePage()));	
+		addPage(getPreProcessingPage());
 	}
 
 	/* 
@@ -69,6 +72,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	 */
 	@Override
 	public boolean performFinish() {
+		// 
 		return false; // TODO FIXME
 	}
 	
@@ -82,6 +86,20 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	 */
 	private NewAtomicProjectWizardPageProjectStructure getStructurePage() {
 		return structurePage;
+	}
+
+	/**
+	 * @return the preProcessingPage
+	 */
+	public NewAtomicProjectWizardPagePreProcessing getPreProcessingPage() {
+		return preProcessingPage;
+	}
+
+	/**
+	 * @param preProcessingPage the preProcessingPage to set
+	 */
+	public void setPreProcessingPage(NewAtomicProjectWizardPagePreProcessing preProcessingPage) {
+		this.preProcessingPage = preProcessingPage;
 	}
 
 }
