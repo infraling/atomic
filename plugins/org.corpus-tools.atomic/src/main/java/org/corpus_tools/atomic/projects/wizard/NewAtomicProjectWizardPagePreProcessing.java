@@ -19,7 +19,9 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * TODO Description
@@ -47,8 +49,8 @@ public class NewAtomicProjectWizardPagePreProcessing extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		// TODO Auto-generated method stub
-
+		Label label = new Label(parent, SWT.NONE);
+		label.setText("Nothing to see here!");
 	}
 
 	/**

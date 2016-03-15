@@ -37,7 +37,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	 */
 	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizard.class);
 	
-	private String postProcessingPage = null; // TODO FIXME
 	private NewAtomicProjectWizardPageProjectStructure structurePage = new NewAtomicProjectWizardPageProjectStructure();
 	private NewAtomicProjectWizardPagePreProcessing preProcessingPage = null;
 	
@@ -53,8 +52,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public void addPages() {
 		addPage(getStructurePage());
-		setPreProcessingPage(new NewAtomicProjectWizardPagePreProcessing(getStructurePage()));	
-		addPage(getPreProcessingPage());
+//		setPreProcessingPage(new NewAtomicProjectWizardPagePreProcessing(getStructurePage()));	
+//		addPage(getPreProcessingPage());
 	}
 
 	/* 
