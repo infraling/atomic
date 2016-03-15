@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.SortedMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,6 +56,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
+
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -214,7 +218,30 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				String sourceTextFilePath = getSourceTextFile();
 				String sourceText = null;
 				try {
-					sourceText = readFile(sourceTextFilePath, Charset.defaultCharset());
+					Charset charset = null;
+					byte[] allBytesFromSourceTextFile = Files.readAllBytes(Paths.get(sourceTextFilePath));
+					CharsetDetector detector = new CharsetDetector();
+					detector.setText(allBytesFromSourceTextFile);
+					CharsetMatch match = detector.detect();
+					int confidence;
+					confidence = match.getConfidence();
+					log.info("Detected source file with charset " + match.getName() + " with a confidence of " + match.getConfidence() + ".");
+					if (confidence > 50) {
+						charset = Charset.availableCharsets().get(match.getName());
+						if (charset != null && charset instanceof Charset) {
+							log.info("Detected charset is in the list of available charset and will be used: " + charset + ".");
+							sourceText = readFile(allBytesFromSourceTextFile, charset);
+						}
+						else {
+							log.info("Detected charset cannot be used, defaulting to " + Charset.defaultCharset().displayName() + ".");
+							sourceText = readFile(allBytesFromSourceTextFile, Charset.defaultCharset());
+						}
+					}
+					else {
+						log.info("Confidence in detected charset < 50, defaulting to " + Charset.defaultCharset().displayName() + ".");
+						sourceText = readFile(allBytesFromSourceTextFile, Charset.defaultCharset());
+					}
+
 				}
 				catch (IOException e1) {
 					log.error("Could not read file \"" + sourceTextFilePath + "\".", e1);
@@ -223,9 +250,8 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				sourceTextText.setText(sourceText);
 			}
 
-			private String readFile(String path, Charset encoding) throws IOException {
-				byte[] encoded = Files.readAllBytes(Paths.get(path));
-				return new String(encoded, encoding);
+			private String readFile(byte[] bytes, Charset encoding) throws IOException {
+				return new String(bytes, encoding);
 			}
 
 			private String getSourceTextFile() {
