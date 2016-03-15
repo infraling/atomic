@@ -35,6 +35,12 @@
                mnemonic="F"
                tooltip="The File menu provides access to basic application funtionalities">
             <command
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New Project"
+                  mnemonic="P"
+                  style="push">
+            </command>
+            <command
                   commandId="org.corpus_tools.atomic.commands.switchWorkspace"
                   label="Switch Workspace"
                   mnemonic="W"
@@ -60,6 +66,25 @@
             </menu>
          </menu>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.corpus_tools.atomic.AtomicNewWizardCategory"
+            name="Atomic">
+      </category>
+      <primaryWizard
+            id="org.corpus_tools.atomic.newAtomicProjectWizard">
+      </primaryWizard>
+      <wizard
+            canFinishEarly="false"
+            category="org.corpus_tools.atomic.AtomicNewWizardCategory"
+            class="org.corpus_tools.atomic.projects.wizard.NewAtomicProjectWizard"
+            icon="icons/obj16/atomic.png"
+            id="org.corpus_tools.atomic.newAtomicProjectWizard"
+            name="New Atomic Project"
+            project="true">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -91,6 +116,11 @@
             commandId="org.corpus_tools.atomic.commands.switchWorkspace"
             schemeId="org.corpus_tools.atomic.keyscheme"
             sequence="M3+M2+W">
+      </key>
+      <key
+            commandId="org.eclipse.ui.newWizard"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="M1+N">
       </key>
    </extension>
    <extension

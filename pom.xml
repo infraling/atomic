@@ -13,6 +13,7 @@
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
 		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
 		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies/</pepper-dependencies-repo.url>
+		<atomic-test-dependencies-repo.url>https://dl.bintray.com/sdruskat/tests-p2/</atomic-test-dependencies-repo.url>
 	</properties>
 
 	<repositories>
@@ -33,6 +34,14 @@
 			<layout>p2</layout>
 			<url>${pepper-dependencies-repo.url}</url>
 		</repository>
+		
+		<repository>
+			<id>atomic-test-dependencies</id>
+			<layout>p2</layout>
+			<url>${atomic-test-dependencies-repo.url}</url>
+		</repository>
+
+		
 
 		<!-- <repository>
 			<id>pepper4eclipse</id>
