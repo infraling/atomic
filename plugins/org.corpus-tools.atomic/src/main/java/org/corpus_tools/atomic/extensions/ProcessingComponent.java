@@ -19,11 +19,17 @@
 package org.corpus_tools.atomic.extensions;
 
 /**
- * TODO Description
+ * An abstract class for processing components for corpus source texts.
+ * <p>
+ * This class is meant to be extended by clients implementing concrete
+ * processing components such as tokenizers, partitioners, taggers,
+ * parsers, etc. 
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class ProcessingComponent {
+public abstract class ProcessingComponent {
+	
+	public abstract Object processSourceText(String sourceText); // FIXME Check usefulness of returning an Object...
 
 }
