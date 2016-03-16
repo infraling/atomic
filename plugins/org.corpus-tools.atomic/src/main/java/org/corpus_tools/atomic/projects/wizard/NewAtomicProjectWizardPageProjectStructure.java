@@ -18,14 +18,15 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.IOException; 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.projects.Corpus;
@@ -70,13 +71,15 @@ import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.ComputedValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.Path;
 
 /**
  * A wizard page for the user to construct the structure of a project.
  * <p>
  * FIXME: SWTBot test this class!
- * 
- * @author Stephan Druskat <stephan.druskat@uni-jena.de>
+ *
+ * @author Stephan Druskat <mail@sdruskat.net>
+ *
  */
 public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private DataBindingContext bindingContext;
@@ -93,6 +96,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	private Button browseSourceTextBtn;
 	private Label lblName;
 	private boolean doAllDocumentsHaveSourceTexts;
+	private Button btnBulkUploadDocument;
 	
 	/** 
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "NewAtomicProjectWizardPageProjectStructure".
@@ -215,50 +219,25 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Open FileBrowser and set returned text from file to sourceText text field
-				String sourceTextFilePath = getSourceTextFile();
+				List<String> sourceTextFilePaths = getSourceTextFilesFromDialog(false);
+				if (sourceTextFilePaths != null && sourceTextFilePaths.size() == 1) {
+					String sourceTextFilePath = sourceTextFilePaths.get(0);
 				String sourceText = null;
 				try {
-					Charset charset = null;
-					byte[] allBytesFromSourceTextFile = Files.readAllBytes(Paths.get(sourceTextFilePath));
-					CharsetDetector detector = new CharsetDetector();
-					detector.setText(allBytesFromSourceTextFile);
-					CharsetMatch match = detector.detect();
-					int confidence;
-					confidence = match.getConfidence();
-					log.info("Detected source file with charset " + match.getName() + " with a confidence of " + match.getConfidence() + ".");
-					if (confidence > 50) {
-						charset = Charset.availableCharsets().get(match.getName());
-						if (charset != null && charset instanceof Charset) {
-							log.info("Detected charset is in the list of available charset and will be used: " + charset + ".");
-							sourceText = readFile(allBytesFromSourceTextFile, charset);
-						}
-						else {
-							log.info("Detected charset cannot be used, defaulting to " + Charset.defaultCharset().displayName() + ".");
-							sourceText = readFile(allBytesFromSourceTextFile, Charset.defaultCharset());
-						}
-					}
-					else {
-						log.info("Confidence in detected charset < 50, defaulting to " + Charset.defaultCharset().displayName() + ".");
-						sourceText = readFile(allBytesFromSourceTextFile, Charset.defaultCharset());
-					}
-
+					sourceText = readSourceTextFileFromPath(sourceTextFilePath);
 				}
 				catch (IOException e1) {
-					log.error("Could not read file \"" + sourceTextFilePath + "\".", e1);
+					log.error("Could not read file \"{}\".", sourceTextFilePath, e1);
 					sourceTextText.setText("");
 				}
 				sourceTextText.setText(sourceText);
+				}
+				else {
+					log.info("No document source file was selected. Operation canceled.");
+					return;
+				}
 			}
 
-			private String readFile(byte[] bytes, Charset encoding) throws IOException {
-				return new String(bytes, encoding);
-			}
-
-			private String getSourceTextFile() {
-				FileDialog dialog = new FileDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), SWT.OPEN);
-				dialog.setFilterExtensions(new String[] { "*.txt" });
-				return dialog.open();
-			}
 		});
 
 		sashForm.setWeights(new int[] { 1, 1 });
@@ -325,7 +304,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 				Document newDocument = new Document();
 				newDocument.setName("New document");
 				parent.addChild(newDocument);
-				projectTreeViewer.setSelection(new StructuredSelection(newDocument));
 				projectTreeViewer.refresh();
 				projectTreeViewer.expandAll();
 				projectTreeViewer.setSelection(new StructuredSelection(newDocument));
@@ -334,6 +312,53 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 			}
 		});
 		btnNewDocument.setText("Add &document");
+		
+		btnBulkUploadDocument = new Button(buttonComposite, SWT.NONE);
+		btnBulkUploadDocument.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TreeItem selectedItem = projectTreeViewer.getTree().getSelection()[0];
+				TreeItem parentItem = selectedItem.getParentItem();
+				Corpus parent;
+				if (parentItem == null) {
+					parent = getModel();
+				}
+				else {
+					parent = (Corpus) parentItem.getData();
+				}
+				Set<ProjectNode> childrenSet = new LinkedHashSet<ProjectNode>(parent.getChildren());
+				List<String> sourceTextFilePaths = getSourceTextFilesFromDialog(true);
+				if (sourceTextFilePaths != null) {
+					for (String filePath : sourceTextFilePaths) {
+						try {
+							String sourceText = readSourceTextFileFromPath(filePath);
+							String documentName = extractDocumentNameFromFilePathString(filePath);
+							// For all file paths, write one new document and add to parent
+							Document document = new Document();
+							document.setName(documentName);
+							document.setSourceText(sourceText);
+							// Has to be done this way otherwise the binding doesn't pick up the changes
+							childrenSet.add(document);
+							parent.setChildren(childrenSet);
+							childrenSet = new LinkedHashSet<ProjectNode>(parent.getChildren());
+						}
+						catch (IOException e1) {
+							log.error("Could not read file \"{}\".", filePath, e1);
+						}
+					}
+				}
+				else {
+					log.info("No document source file (or source files) was selected. Operation canceled.");
+					return;
+				}
+			}
+
+			private String extractDocumentNameFromFilePathString(String filePath) {
+				Path path = new Path(filePath);
+				return path.lastSegment().replaceAll("." + path.getFileExtension(), "");
+			}
+		});
+		btnBulkUploadDocument.setText("Bulk &upload documents");
 		
 		btnRemoveElement = new Button(buttonComposite, SWT.NONE);
 		btnRemoveElement.addSelectionListener(new SelectionAdapter() {
@@ -429,6 +454,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		};
 		dbc.bindValue(WidgetProperties.enabled().observe(btnNewDocument), corpusSelected);
 		dbc.bindValue(WidgetProperties.enabled().observe(btnNewSubCorpus), corpusSelected);
+		dbc.bindValue(WidgetProperties.enabled().observe(btnBulkUploadDocument), corpusSelected);
 		
 		// Enable the "Remove element" button only if the currently selected element in the tree is not null
 		IObservableValue anythingSelected = new ComputedValue(Boolean.TYPE) {
@@ -455,6 +481,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		ExtendedViewerSupport.bind(projectTreeViewer, getModel(), BeanProperties.set("children", Corpus.class), BeanProperties.value(ProjectNode.class, "name"), ProjectTreeWizardLabelProvider.class);
 	}
 	
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
+	 */
 	@Override
 	public boolean canFlipToNextPage() {
 		doAllDocumentsHaveSourceTexts = true;
@@ -486,6 +515,9 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		}
 	}
 
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
+	 */
 	@Override
 	public boolean isPageComplete() {
 		return getErrorMessage() == null;
@@ -496,6 +528,78 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	public Corpus getModel() {
 		return model;
+	}
+
+	/**
+	 * Reads the contents of a file, given a path and tries to detect the {@link Charset}
+	 * with the help of a {@link CharsetDetector}. Creates a new {@link String} from
+	 * the contents, with the detected or the default {@link Charset}, depending on
+	 * the confidence rate of the {@link CharsetMatch}. 
+	 *
+	 * @param sourceTextFilePath The path to the text file
+	 * @return a {@link String} with the {@link Charset}-encoded contents of the text file
+	 * @throws IOException when a file cannot be read
+	 */
+	private String readSourceTextFileFromPath(String sourceTextFilePath) throws IOException {
+		String sourceText;
+		Charset charset = null;
+		byte[] allBytesFromSourceTextFile = Files.readAllBytes(Paths.get(sourceTextFilePath));
+		CharsetDetector detector = new CharsetDetector();
+		detector.setText(allBytesFromSourceTextFile);
+		CharsetMatch match = detector.detect();
+		int confidence;
+		confidence = match.getConfidence();
+		log.info("Detected source file \"{}\" with charset {} with a confidence of {}.", sourceTextFilePath, match.getName(), match.getConfidence());
+		if (confidence > 50) {
+			charset = Charset.availableCharsets().get(match.getName());
+			if (charset != null && charset instanceof Charset) {
+				log.info("Detected charset is in the list of available charset and will be used for reading the file: {}.", charset);
+				sourceText = new String(allBytesFromSourceTextFile, charset);
+			}
+			else {
+				log.info("Detected charset cannot be used, defaulting to {}.", Charset.defaultCharset().displayName());
+				sourceText = new String(allBytesFromSourceTextFile, Charset.defaultCharset());
+			}
+		}
+		else {
+			log.info("Confidence in detected charset for \"{}\" < 50, defaulting to {}.", sourceTextFilePath, Charset.defaultCharset().displayName());
+			sourceText = new String(allBytesFromSourceTextFile, Charset.defaultCharset());
+		}
+		return sourceText;
+	}
+	
+	/**
+	 * Gets a {@link String} array {@link String}s representing file paths from a {@link FileDialog}. 
+	 * The dialog filters for files with the file extension "txt". The returned list can
+	 * <ul>
+	 * <li>contain one element, given that the parameter is false</li>
+	 * <li>contain n elements, given that the parameter is true</li>
+	 * <li>be null, when no files are selected of the {@link FileDialog} was cancelled.
+	 * </ul>
+	 *
+	 * @param allowMultipleFileSelection Whether the {@link FileDialog} should allow for the selection of more than one file
+	 * @return A {@link List} of {@link String}s which are paths to text files selected in the {@link FileDialog}
+	 */
+	private List<String> getSourceTextFilesFromDialog(boolean allowMultipleFileSelection) {
+		FileDialog dialog = allowMultipleFileSelection ? new FileDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), SWT.OPEN | SWT.MULTI) : 
+			new FileDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), SWT.OPEN | SWT.SINGLE);
+		dialog.setFilterExtensions(new String[] { "*.txt" });
+		List<String> files = new ArrayList<>();
+		if (dialog.open() != null) {
+			String[] names = dialog.getFileNames();
+			for (int i = 0, n = names.length; i < n; i++) {
+				StringBuffer buf = new StringBuffer(dialog.getFilterPath());
+				if (buf.charAt(buf.length() - 1) != File.separatorChar)
+					buf.append(File.separatorChar);
+				buf.append(names[i]);
+				files.add(buf.toString());
+				for (String file : files) {
+					System.err.println(file);
+				}
+			}
+			return files;
+		}
+		return null;
 	}
 
 }
