@@ -593,9 +593,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 					buf.append(File.separatorChar);
 				buf.append(names[i]);
 				files.add(buf.toString());
-				for (String file : files) {
-					System.err.println(file);
-				}
 			}
 			return files;
 		}
