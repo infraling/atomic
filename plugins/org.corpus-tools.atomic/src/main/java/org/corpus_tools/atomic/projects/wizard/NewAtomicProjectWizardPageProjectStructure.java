@@ -155,7 +155,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		getShell().setSize(size);
 		getShell().setLocation(x, 0);
 
-		Composite container = new Composite(parent, SWT.NULL);
+		Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
