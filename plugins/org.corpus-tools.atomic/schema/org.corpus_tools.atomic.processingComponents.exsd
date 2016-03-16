@@ -78,6 +78,23 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="category" use="required">
+            <annotation>
+               <documentation>
+                  The category of the processing component. Can only be one of the following:
+- TOKENIZER for tokenizers
+- PARTITIONER for partitioners, e.g., sentence detectors and similar
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="TOKENIZER">
+                  </enumeration>
+                  <enumeration value="PARTITIONER">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
       </complexType>
    </element>
 
