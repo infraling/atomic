@@ -16,7 +16,7 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.ui.api.validation;
+package org.corpus_tools.atomic.ui.validation;
 
 import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.core.databinding.validation.ValidationStatus;

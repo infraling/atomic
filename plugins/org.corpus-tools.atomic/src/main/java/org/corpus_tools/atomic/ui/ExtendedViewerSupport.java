@@ -16,7 +16,7 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.ui.api;
+package org.corpus_tools.atomic.ui;
 
 import java.lang.reflect.Constructor; 
 import java.lang.reflect.InvocationTargetException;

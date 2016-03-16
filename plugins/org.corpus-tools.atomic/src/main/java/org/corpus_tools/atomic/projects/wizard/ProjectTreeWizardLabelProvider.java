@@ -20,7 +20,7 @@ package org.corpus_tools.atomic.projects.wizard;
 
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
-import org.corpus_tools.atomic.ui.api.ObservableMapLabelProviderWithImageSupport;
+import org.corpus_tools.atomic.ui.ObservableMapLabelProviderWithImageSupport;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
