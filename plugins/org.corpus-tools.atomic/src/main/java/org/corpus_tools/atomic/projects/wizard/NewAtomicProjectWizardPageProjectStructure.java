@@ -113,6 +113,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		/*
 		 * FIXME TODO: Add context-sensitive help to Atomic, the the "?" button will show in the wizard. Add the following description to a help "window" of sorts: Every corpus must have a name and can contain n (sub-) corpora and n
 		 * documents. Every document must have a name and must contain one source text. Must include Eclipse Help plugin for this.
+		 * Cf. https://www.eclipse.org/forums/index.php/t/150622/, http://stackoverflow.com/questions/7322489/cant-put-content-behind-swt-wizard-help-button, etc. 
 		 */
 	}
 

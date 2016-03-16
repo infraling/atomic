@@ -77,7 +77,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	
 	@Override
 	public String getWindowTitle() {
-		return "New Project";
+		return "New Atomic Project";
 	}
 
 	/**
