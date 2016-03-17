@@ -44,6 +44,10 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
  * need to handle the {@link SDocument} itself</li>
  * <li>Override both methods for maximum flexibility.</li>
  * <p>
+ * Clients of this class subscribe to using {@link String} as
+ * their input type, and {@link List<String>} as their output
+ * type.
+ * <p>
  * This class is meant to be used with Salt 2.1.1.
  * <p>
  * @see <a href="https://github.com/korpling/salt/releases/tag/salt-2.1.1">Salt version 2.1.1</a>
@@ -78,7 +82,7 @@ public abstract class Tokenizer implements ProcessingComponent<String, List<Stri
 			throw new ProcessingException("The processed document's document graph does not have an STextualDS!", new NullPointerException());
 		}
 		for (STextualDS sTextualDS : documentGraph.getSTextualDSs()) {
-			String documentSourceText = sTextualDS.getSText(); // We assume that there is only one STextualDS in the SDocumentGraph
+			String documentSourceText = sTextualDS.getSText();
 			List<String> tokens = tokenize(documentSourceText);
 
 			// Adapted from de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.impl.SDocumentGraphImpl
@@ -89,10 +93,10 @@ public abstract class Tokenizer implements ProcessingComponent<String, List<Stri
 				for (int i = 0; i < documentSourceTextChars.length; i++) {
 					if ((tokens.get(tokenCounter).length() < 1) || (tokens.get(tokenCounter).substring(0, 1).equals(String.valueOf(documentSourceTextChars[i])))) { // first letter matches
 						StringBuffer pattern = new StringBuffer();
-						for (int y = 0; y < tokens.get(tokenCounter).length(); y++) {// compute pattern in text
+						for (int y = 0; y < tokens.get(tokenCounter).length(); y++) {
 							pattern.append(documentSourceTextChars[i + y]);
 						}
-						if (tokens.get(tokenCounter).hashCode() == pattern.toString().hashCode()) {// pattern found
+						if (tokens.get(tokenCounter).hashCode() == pattern.toString().hashCode()) {
 							int start = i;
 							int end = i + documentSourceText.length() + tokens.get(tokenCounter).length();
 

@@ -28,6 +28,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * usually be made on the {@link SDocument}s {@link SDocumentGraph},
  * but can also be made on the {@link SDocument} itself.
  * <p>
+ * The formal type parameters define the input type and output type used 
+ * to restrict parameter and return values for methods customized for
+ * specific processing component types. Cf., for example, the
+ * abstract classes in sub-package <i>processingcomponent</i> of
+ * this package.
+ * <p>
  * Note that <b>clients should not implement this interface directly</b>, 
  * but instead extend one of the abstract classes in package 
  * org.corpus_tools.atomic.extensions.processingcomponents.
