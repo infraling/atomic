@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.corpus_tools.atomic.processingComponents.custom" name="Custom processing components for corpora" schema="schema/org.corpus_tools.atomic.processingComponents.custom.exsd"/>
+   <extension-point id="org.corpus_tools.atomic.processingComponents.tokenizers" name="Tokenizer components for corpora" schema="schema/org.corpus_tools.atomic.processingComponents.tokenizers.exsd"/>
 
    <extension
          id="org.corpus_tools.atomic.application"

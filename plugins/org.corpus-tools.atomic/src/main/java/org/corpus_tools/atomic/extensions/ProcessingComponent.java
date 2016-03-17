@@ -39,7 +39,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public interface ProcessingComponent {
+public interface ProcessingComponent<InputType, OutputType> {
 
 	/**
 	 * Manipulates a given {@link SDocument}. The term "manipulation"

@@ -16,27 +16,37 @@
  * Contributors:
  *     Stephan Druskat - initial API and implementation
  *******************************************************************************/
-package org.corpus_tools.atomic.extensions.processingcomponents;
+package org.corpus_tools.atomic.extensions;
 
-import org.corpus_tools.atomic.extensions.ProcessingComponent;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import org.corpus_tools.atomic.exceptions.AtomicException;
 
 /**
- * An abstraction of a custom processing component. Clients must work
- * directly on an instance of {@link SDocument}. This allows for maximum
- * implementation flexibility, but requires knowledge about Salt models.
+ * An exception that is thrown when something in the 
+ * processing phase of a {@link ProcessingComponent}
+ * goes wrong.
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-@SuppressWarnings("rawtypes")
-public abstract class CustomProcessingComponent implements ProcessingComponent {
+public class ProcessingException extends AtomicException {
 
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#processDocument(de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument)
+	/**
+	 * 
 	 */
-	@Override
-	public abstract void processDocument(SDocument document);
+	private static final long serialVersionUID = -1156757477745165635L;
 
+	/**
+	 * 
+	 */
+	public ProcessingException() {
+		super();
+	}
+	
+	public ProcessingException(String s) {
+		super(s);
+	}
+	
+	public ProcessingException(String s, Throwable e) {
+		super(s, e);
+	}
 }
