@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Stephan Druskat
+ * Copyright 2016 Stephan Druskat 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,36 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+
 /**
- * An abstract class for processing components for corpus source texts.
+ * A processing component is a component (usually an NLP component)
+ * that - abstractly put - manipulates a corpus. In terms of types,
+ * implementations of {@link ProcessingComponent}s take an instance
+ * of {@link SDocument} and manipulate it. The manipulation will
+ * usually be made on the {@link SDocument}s {@link SDocumentGraph},
+ * but can also be made on the {@link SDocument} itself.
  * <p>
- * This class is meant to be extended by clients implementing concrete
- * processing components such as tokenizers, partitioners, taggers,
- * parsers, etc. 
+ * Note that <b>clients should not implement this interface directly</b>, 
+ * but instead extend one of the abstract classes in package 
+ * org.corpus_tools.atomic.extensions.processingcomponents.
+ * <p>
+ * <i>Acknowledgements:</i> I'd like to thank Thomas Krause for pointing
+ * me in the right direction concerning the type structure for this 
+ * functionality.
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public abstract class ProcessingComponent {
-	
-	public abstract Object processSourceText(String sourceText); // FIXME Check usefulness of returning an Object...
+public interface ProcessingComponent {
 
+	/**
+	 * Manipulates a given {@link SDocument}. The term "manipulation"
+	 * in this context is unrestricted, i.e., it can mean diverse
+	 * types of manipulation from partition detection to parsing.
+	 *
+	 * @param document The document to process
+	 */
+	public void processDocument(SDocument document);
+	
 }

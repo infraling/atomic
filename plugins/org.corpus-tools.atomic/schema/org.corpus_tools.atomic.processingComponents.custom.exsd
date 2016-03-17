@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="processingComponent"/>
+            <element ref="customProcessingComponent"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,10 +47,10 @@
       </complexType>
    </element>
 
-   <element name="processingComponent">
+   <element name="customProcessingComponent">
       <annotation>
          <documentation>
-            A processing component
+            A custom processing component
          </documentation>
       </annotation>
       <complexType>
@@ -71,26 +71,22 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The class implementing the processing component
+                  The class implementing the custom processing component
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.corpus_tools.atomic.extensions.ProcessingComponent:"/>
+                  <meta.attribute kind="java" basedOn="org.corpus_tools.atomic.extensions.processingcomponents.CustomProcessingComponent:"/>
                </appinfo>
             </annotation>
          </attribute>
          <attribute name="category" use="required">
             <annotation>
                <documentation>
-                  The category of the processing component. Can only be one of the following:
-- TOKENIZER for tokenizers
-- PARTITIONER for partitioners, e.g., sentence detectors and similar
+                  The category of the custom processing component must always be &quot;custom&quot;.
                </documentation>
             </annotation>
             <simpleType>
                <restriction base="string">
-                  <enumeration value="TOKENIZER">
-                  </enumeration>
-                  <enumeration value="PARTITIONER">
+                  <enumeration value="custom">
                   </enumeration>
                </restriction>
             </simpleType>

@@ -52,8 +52,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public void addPages() {
 		addPage(getStructurePage());
-//		setPreProcessingPage(new NewAtomicProjectWizardPagePreProcessing(getStructurePage()));	
-//		addPage(getPreProcessingPage());
+		setPreProcessingPage(new NewAtomicProjectWizardPagePreProcessing(getStructurePage()));	
+		addPage(getPreProcessingPage());
 	}
 
 	/* 

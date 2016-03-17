@@ -20,6 +20,7 @@ package org.corpus_tools.atomic.projects.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -49,8 +50,11 @@ public class NewAtomicProjectWizardPagePreProcessing extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		Label label = new Label(parent, SWT.NONE);
+		Composite control = new Composite(parent, SWT.NONE);
+		control.setLayout(new RowLayout());
+		Label label = new Label(control, SWT.NONE);
 		label.setText("Nothing to see here!");
+		setControl(control);
 	}
 
 	/**
