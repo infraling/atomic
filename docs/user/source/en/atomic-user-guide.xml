@@ -1,0 +1,1036 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+	version="5.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xl="http://www.w3.org/1999/xlink">
+	<info>
+		<title>Atomic User Guide v0.2</title>
+		<author>
+			<personname>Stephan Druskat</personname>
+		</author>
+		<author>
+			<orgname>Friedrich Schiller University Jena</orgname>
+		</author>
+		<copyright>
+			<year>2015</year>
+			<holder>
+				Friedrich Schiller University Jena
+			</holder>
+		</copyright>
+	</info>
+	<sect1>
+		<title>Getting started</title>
+		<para>This guide gives a workflow example for annotating a corpus with
+			Atomic.
+		</para>
+		<sect2>
+			<title>Resources</title>
+			<para>
+				If you want to know more about Atomic, please refer to the
+				<link xl:href="http://corpus-tools.org/atomic">Atomic website</link>
+				.
+			</para>
+			<para>
+				If you want to receive notifications about upcoming changes, new
+				releases, etc., or get in touch with other Atomic users, please
+				subscribe to the
+				<link xl:href="https://lserv.uni-jena.de/mailman/listinfo/atomic-user">Atomic Users mailing list
+					(atomic-user@listserv.uni-jena.de)</link>
+				.
+			</para>
+			<para>
+				If you have suggestions, feature requests, problems, or want to file
+				a bug report, please create a new issue at
+				<link xl:href="https://github.com/infraling/atomic/issues">Atomic's issue tracker at github.com</link>
+				. When reporting bugs, please don't forget to mention the version of
+				Atomic you are using, and your operating system and architecture
+				(e.g., Windows 7, 64 bit).
+			</para>
+			<para>
+				Atomic is open source under the
+				<link xl:href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</link>
+				, and you can find the source code at
+				<link xl:href="https://github.com/infraling/atomic">github.com/infraling/atomic</link>
+				.
+			</para>
+			<para>
+				If you want to learn about Salt (Atomic's data model), or Pepper,
+				the converter framework for linguistic formats (included in Atomic),
+				please go to
+				<link xl:href="https://korpling.german.hu-berlin.de/saltnpepper/">the SaltNPepper homepage</link>
+				.
+			</para>
+		</sect2>
+		<sect2>
+			<title>The workspace</title>
+			<para>In Atomic, workspaces can be defined. A workspace is a physical
+				location (i.e., path on the file system) where Atomic stores
+				projects, folders and files. You are
+				asked to pick a workspace
+				location when running Atomic for the first
+				time, and each subsequent
+				time you run the application if you
+				haven't activated the option to
+				remember the workspace.
+			</para>
+		</sect2>
+
+		<sect2>
+			<title>Creating a project</title>
+			<para>There are two ways to create a project in Atomic:</para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						<xref linkend="new_project" />
+						from scratch, providing the corpus
+						text.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<xref linkend="import_corpus" />
+						from one of the formats which can be read
+						by Pepper.
+					</para>
+				</listitem>
+			</itemizedlist>
+			<sect3 xml:id="new_project" xreflabel="Create a new project">
+				<title>Create a new project</title>
+				<para>
+					To create a new Atomic project, open the
+					<emphasis>New Project Wizard</emphasis>, either by going to
+					<menuchoice>
+						<guimenu>File</guimenu>
+						<guisubmenu>New Project</guisubmenu>
+					</menuchoice>, or by pressing
+					<emphasis>CTRL + N</emphasis>. In the wizard, choose
+					<emphasis>New Atomic Project</emphasis>.
+				</para>
+				<figure xml:id="figure_new_project_wizard">
+					<title>The New Project Wizard at Step 2.</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="resources/new_project.png"
+								scalefit="1" width="100%" contentdepth="100%" />
+						</imageobject>
+						<textobject>
+							<phrase>The New Project Wizard at Step 2.</phrase>
+						</textobject>
+					</mediaobject>
+				</figure>
+				<para>
+					In the next step (cf.
+					<xref linkend="figure_new_project_wizard" />), fill in the project name,
+					and
+					<itemizedlist>
+						<listitem>
+							<para>
+								choose a
+								<emphasis>.txt</emphasis>
+								file containing the corpus text and select the file's
+								encoding,
+								or
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								enter the corpus text via the text field provided after clicking
+								the
+								<emphasis>...</emphasis>
+								button.
+							</para>
+						</listitem>
+					</itemizedlist>
+					Finally, choose the tokenizer that should be used to tokenize the
+					corpus text (currently, only the TreeTagger Tokenizer is
+					available), and press
+					<emphasis>Finish</emphasis>.
+				</para>
+				<para>The corpus text will now be tokenized, and the project
+					created.
+				</para>
+			</sect3>
+			<sect3 xml:id="import_corpus" xreflabel="Import an existing corpus">
+				<title>Import an existing corpus</title>
+				<para>
+					In order to import an existing corpus, right-click into the
+					<emphasis>Navigation</emphasis> window and choose
+					<menuchoice>
+						<guimenuitem>Import ...</guimenuitem>
+					</menuchoice> from the pop-up menu. In the Import Wizard, choose
+					<menuchoice>
+						<guimenu>Atomic</guimenu>
+						<guisubmenu>Corpus Import</guisubmenu>
+					</menuchoice>.
+					Follow the instructions provided by the Import Wizard to import a
+					corpus from one of the supported formats. These are currently:
+					CoNLL, EXMARaLDA, Elan, MMAX2, PAULA, RelANNIS, SaltXML,
+					Treetagger, UAM. The corpus will be imported, and wrapped in a new
+					project.
+				</para>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Annotation with the Annotation Graph Editor</title>
+			<para>
+				To open a corpus document of your choice in the Annotation Graph
+				Editor, double-click the file containing the respective corpus
+				document in the Navigation view. Should you have opened this file
+				with another editor before, Atomic will have remembered the editor
+				the file was opened with last. In this case, right-click onto the
+				file, and choose
+				<menuchoice>
+					<guimenu>Open With</guimenu>
+					<guisubmenu>Annotation Graph Editor</guisubmenu>
+				</menuchoice> from the pop-up menu.
+				<figure xml:id="figure_annotation_graph_editor">
+					<title>Atomic application window with Annotation Graph Editor.
+					</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="resources/app_window.png" scalefit="1"
+								width="100%" contentdepth="100%" />
+						</imageobject>
+						<textobject>
+							<phrase>Atomic application window with Annotation Graph Editor.
+							</phrase>
+						</textobject>
+					</mediaobject>
+				</figure>
+			</para>
+			<para>Opening a corpus document file with the Annotation Graph Editor will also open a new perspective, the <emphasis>Annotation Graph Perspective</emphasis>.
+			Perspectives consist of a number of GUI elements (views or editors), which are ordered in a specific way, optimized for a specific task.
+			The Annotation Graph Perspective consists of the Annotation Graph Editor (6), which is accompanied by three automatically opened views:
+			<itemizedlist>
+			<listitem>
+			(2) <emphasis>The Sentence View:</emphasis> Displays a numbered list of sentences making up the corpus document. You can select sentences for display in the editor by checking the checkbox next to it. Multiple sentences can be displayed. However, rendering large annotation graphs is an expensive operation and consequently may slow down Atomic. Therefore, be cautious about how many sentences you want to display at any one time.
+			</listitem>
+			<listitem>
+			(3) <emphasis>The Level View:</emphasis> Displays a) a combo box where the active level can be set, b) a button to create a new level, c) a numbered list of existing levels, and additionally the option "NO ASSIGNED LEVEL". When an existing level is selected in the combo box, all newly created annotation graph elements are assigned to this level. When clicking the "[+] Add new level" button, you can enter a name for the level. Newly created levels are automatically set active, and set visible in the Annotation Graph Editor. Checking an existing level in the level list makes its elements visible in the Annotation Graph Editor. Again, be cautious that trying to display large numbers of levels over large numbers of sentences may significantly slow down Atomic. The levels for an element are displayed in a pop-up when hovering over the element figure in the Annotation Graph Editor.
+			</listitem>
+			<listitem>
+			(4) <emphasis>The Linked Sentences View:</emphasis> Displays a list of sentences the currently selected (i.e., highlighted) sentence in the Sentence View is linked to. "Linked" in this case means that there exist annotation graph elements which are linked to one or more other sentences via a chain of one or more edges. In order to display linked sentences alongside the selected sentence, simply check them in the Sentence View. <emphasis>Please note:</emphasis> Annotation graph elements which are part of a link chain between sentences are <emphasis>only</emphasis> displayed if all linked sentences are also displayed. E.g., an edge between a node exclusively dominating sentence X and a node exclusively dominating sentence Y will only be displayed when both sentence X and sentence Y are also displayed. 
+			</listitem>
+			</itemizedlist>
+			Additionally, the Annotation Graph Perspective reserves space for the Atomical Console (5). <xref linkend="atomical_annotation_elements">Cf. the section about annotating with AtomicAL.</xref> All views can be closed. They can be re-opened via <menuchoice>
+						<guimenu>View</guimenu>
+					</menuchoice> menu.  
+			</para>
+			<para>
+			You can switch between perspectives via the <emphasis>Perspective Bar (1)</emphasis>. The <emphasis>Navigation Perspective</emphasis> contains the <emphasis>Navigation View</emphasis>, which you can use to navigate through projects.
+			</para>
+			<sect3>
+				<title>Tool-based annotation</title>
+				<para>The Annotation Graph Editor includes a tools palette which can
+					be used for tool-based annotation. The following paragraphs
+					describe how to use the tools in the palette to create an
+					annotation graph for the corpus document.
+				</para>
+				<sect4>
+					<title>Keyboard navigation</title>
+					<para>The Annotation Graph Editor can be navigated via the keyboard using the following keys.</para>
+					<itemizedlist>
+						<listitem>
+							<para><emphasis>Arrows (Left, Right, Up, Down)</emphasis>: Change the currently selected element.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Shift-Arrows</emphasis>: Extend the currently selected element to include the elements to the left, the right, above, or below.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Ctrl-Arrows</emphasis>: Move focus to a different element without changing the
+selection.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Ctrl-Shift-Arrows</emphasis>: Scroll the GEF viewer left, right, up, or down.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Alt-Down Arrow</emphasis>: Change the currently selected element to be the first
+nested element within the element that currently has focus.
+							</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>Alt-Up Arrow</emphasis>: Change the currently selected element to be the parent
+element containing the element that currently has focus.</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>/, \</emphasis>: Change the selection to be a connection associated with the element
+with focus. Repeatedly pressing either of these keys cycles the current
+selection forward or backward through the connections associated with
+the element with focus.
+							</para>
+						</listitem>
+						<listitem>
+							<para><emphasis>?, |</emphasis>: Extend the selection to include connections associated with the element with focus.</para>
+						</listitem>
+					</itemizedlist>
+				</sect4>
+				<sect4>
+					<title>Creating nodes</title>
+					<para>Click on the Structure Tool or the Span Tool in order to
+						create a new node. Then, either drag-and-drop the tool onto a
+						position of your choice in the editing area, or click on the
+						editing area at the position of your choice.
+					</para>
+					<para>Drag-and-drop will
+						create the node, but will not open the
+						annotation field for direct
+						annotation of the newly created node.
+						Click-and-point will create
+						the node and open the annotation field
+						for direct annotation of the
+						node.
+					</para>
+					<para>Alternatively, you can use the keyboard shortcuts <emphasis>CTRL + 1</emphasis> to create spans, and
+					<emphasis>CTRL + 0</emphasis> to create structures.
+					</para>
+					<para>If you have selected any nodes in the editing area before
+						using a node tool or keyboard shortcut, the new node will be created, and edges will be
+						created from it to all of the selected nodes.
+					</para>
+					<para>
+						When using the Structure Tool or CTRL + 0, the type of the newly created edges
+						will be
+						<emphasis>dominance relation</emphasis>.
+					</para>
+					<para>
+						When using the Span Tool or CTRL + 1, the type of the newly created edges will
+						be
+						<emphasis>spanning relation</emphasis>, and edges will only be created to selected nodes of type
+						<emphasis>token</emphasis>, as spanning relations only accept tokens as target nodes.
+					</para>
+				</sect4>
+				<sect4>
+					<title>Creating edges</title>
+					<para>To create an edge, click on the respective tool, then click
+						on
+						the node that should be the source of the edge, and subsequently
+						on
+						the node that should be the target of the edge.
+					</para>
+					<para>
+						The edge will be created, but the annotation field will not
+						automatically open. In order to annotate edges, please see
+						<xref linkend="annotation_elements" />.
+					</para>
+				</sect4>
+				<sect4 xml:id="annotation_elements" xreflabel="Annotation of elements">
+					<title>Annotation of elements</title>
+					<para>
+						In the Annotation Graph Editor, annotations have a
+						<emphasis>key</emphasis>
+						and a
+						<emphasis>value</emphasis>, and optionally can be assigned to a
+						<emphasis>namespace</emphasis>. Annotations are entered in the annotation field using either of
+						the following patterns.
+						<screen>
+							[namespace]::[key]:[value]
+							[key]:[value]
+						</screen>
+						[Key] and [value] are shown directly on the element, the namespace
+						is shown in a pop-up when hovering over an annotation.
+					</para>
+					<para>
+						Please note that Atomic has some <emphasis>reserved keys</emphasis> for annotation. These reserved keys
+						represent keys for specific annotations. For a more detailed explanation and a 
+						list of reserved keys, cf. <xref linkend="reference_reserved_words" />.  
+					</para>
+					<para>
+						Elements (i.e., nodes as well as edges) can be annotated by
+						selecting the element via the mouse or
+						the keyboard's arrow
+						buttons,
+						and then either clicking on it once,
+						or pressing
+						<emphasis>Return</emphasis>.
+					</para>
+					<para>
+						This action will open the annotation field for direct editing.
+						You
+						can enter one or more annotations, with one annotation per line.
+						To
+						add a line-break, press
+						<emphasis>Return</emphasis>.
+						To commit the annotations, press
+						<emphasis>CTRL + Return</emphasis>. To abort editing the annotations, press
+						<emphasis>ESC</emphasis>.
+					</para>
+					<para>
+						To edit a single existing annotation on an element, select the
+						annotation by mouse or keyboard, and either click on it, or press
+						<emphasis>Return</emphasis>. This will open the single annotation field. Change the
+						annotation, and press
+						<emphasis>Return</emphasis>
+						to commit it. Press
+						<emphasis>ESC</emphasis>
+						to abort the editing process.
+					</para>
+				</sect4>
+				<sect4>
+					<title>Deleting elements and annotations</title>
+					<para>
+						In order to delete elements and annotations, select the respective
+						element(s) or annotation(s) per mouse or keyboard and either press
+						<emphasis>DEL</emphasis>
+						or click the delete symbol in the menu bar.
+					</para>
+				</sect4>
+			</sect3>
+			<sect3 xml:id="atomical_annotation">
+				<title>Command-line-based annotation with AtomicAL</title>
+				<para>Atomic provides the native annotation language Atomic
+					Annotation Language (AtomicAL) for rapid command-line annotation.
+				</para>
+				<para>
+					The AtomicAL console is available when an editor with AtomicAL
+					support is open. The AtomicAL console can be opened via the menu:
+					<menuchoice>
+						<guimenu>View</guimenu>
+						<guisubmenu>AtomicAL Console</guisubmenu>
+					</menuchoice>. The AtomicAL console displays the name of the document it is
+					currently working on as well as the first few characters of the
+					corpus text.
+				</para>
+				<para>
+					For a complete list of available commands, see
+					<xref linkend="reference_atomical" />.
+				</para>
+				<para>Please note that Atomic has some <emphasis>reserved keys</emphasis> for annotation. These reserved keys
+						represent keys for specific annotations. For a more detailed explanation and a 
+						list of reserved keys, cf. <xref linkend="reference_reserved_words" />.  
+				</para>
+				<sect4>
+					<title>Creating nodes</title>
+					<para>
+						To create a new structure node, use the
+						<emphasis>n</emphasis>
+						command. It takes as arguments
+						<itemizedlist>
+							<listitem>
+								<para>one or more annotations in one of the following forms.
+								</para>
+							</listitem>
+						</itemizedlist>
+						<screen>
+							[key]:[value]
+							[namespace]::[key]:[value]
+						</screen>
+						Example:
+						<screen>n syntax::cat:NP lemma:Atomic</screen>
+					</para>
+					<para>
+						To create a new span node, use the
+						<emphasis>s</emphasis>
+						command. It takes as arguments
+						<itemizedlist>
+							<listitem>
+								<para>one or more annotations in one of the following forms.
+								</para>
+							</listitem>
+						</itemizedlist>
+						<screen>
+							[key]:[value]
+							[namespace]::[key]:[value]
+						</screen>
+						Example:
+						<screen>s coref::reftype:group text:"The board"</screen>
+					</para>
+
+				</sect4>
+				<sect4>
+					<title>Creating edges</title>
+					<para>
+						To create a new edge, use the
+						<emphasis>e</emphasis>
+						command. It takes as arguments
+						<itemizedlist>
+							<listitem>
+								<para>
+									an edge type flag, which defines the
+									type of the edge to be
+									created
+								</para>
+								<para>
+									For a list of valid flags see
+									<xref linkend="reference_atomical_edge_types" />. Also see there for an explanation of how edge type flags are
+									re-used.
+								</para>
+							</listitem>
+							<listitem>
+								<para>
+									exactly one source node, referenced via its ID
+								</para>
+							</listitem>
+							<listitem>
+								<para>
+									exactly one target node, referenced via its ID
+								</para>
+							</listitem>
+							<listitem>
+								<para>one or more annotations in one of the following forms.
+								</para>
+							</listitem>
+						</itemizedlist>
+						<screen>
+							[key]:[value]
+							[namespace]::[key]:[value]
+						</screen>
+						Example:
+						<screen>e -p n2 n1 coref::coreftype:anaph</screen>
+					</para>
+				</sect4>
+				<sect4 xml:id="atomical_annotation_elements">
+					<title>Annotation of elements</title>
+					<para>
+						To annotate elements, use the
+						<emphasis>a</emphasis>
+						command. It takes as arguments
+						<itemizedlist>
+							<listitem>
+								<para>
+									an element or a list of elements or a set of elements or a
+									combination of the three
+								</para>
+							</listitem>
+							<listitem>
+								<para>
+									one or more annotations in one of the following forms,
+									where the last one (an annotation with a null value) marks an
+									existing annotation with key [key] for deletion.
+								</para>
+							</listitem>
+						</itemizedlist>
+						<screen>
+							[key]:[value]
+							[namespace]::[key]:[value]
+							[key]:
+						</screen>
+						Example:
+						<screen>a n1 n3 t2..t5 d3 o4 x: y:y z::z:z</screen>
+					</para>
+				</sect4>
+				<sect4>
+					<title>Deleting elements and annotations</title>
+					<para>
+						For the deletion of annotations, see
+						<xref linkend="atomical_annotation_elements" />.
+					</para>
+					<para>
+						To delete elements, use the
+						<emphasis>d</emphasis>
+						command. It takes as arguments
+						<itemizedlist>
+							<listitem>
+								<para>
+									an element or a list of elements or a set of elements or a
+									combination of the three
+								</para>
+							</listitem>
+						</itemizedlist>
+						Example:
+						<screen>d n1..n5 d1 o3</screen>
+					</para>
+				</sect4>
+			</sect3>
+		</sect2>
+		<sect2>
+			<title>Updates</title>
+			<para>If your computer is connected to the internet, Atomic will automatically check 
+			for available updates on startup. If updates are available, you will be notified and have the option 
+			to install the available updates. Installed updates will be available after the next restart of the application. You will also be prompted to restart once the
+			 installation of updates is completed.</para>
+		</sect2>
+	</sect1>
+	<sect1>
+		<title>Reference</title>
+		<sect2 xml:id="reference_reserved_words" xreflabel="Reserved keys">
+			<title>Reserved keys</title>
+			<para>Atomic knows some reserved keys which represent keys for specific annotations.
+			One example is the annotation of <emphasis>element type</emphasis>, which is represented
+			internally as a specific data type (as a Salt STYPE to be specific).</para>
+			<para>However, while reserved keys are necessary to have, they may comfortably be re-defined
+			in Atomic via the application preferences. It is possibly to overwrite these preferences on a
+			per-project-basis as well, e.g., in case a reserved key collides with tagset necessities. The latter is done from the Project Properties. To edit
+			the application preferences, go to <menuchoice>
+						<guimenu>Options</guimenu>
+						<guisubmenu>Preferences
+						</guisubmenu>
+					</menuchoice>. To edit a project's properties and overwrite the application-wide preferences, richt-click 
+					onto the project in the Navigation view, and choose <menuchoice>
+						<guimenu>Properties</guimenu>
+					</menuchoice> or press <emphasis>Alt + Enter</emphasis>, then navigate to the <emphasis>Reserved keys</emphasis> section.</para>
+					<table frame='all' xml:id="reference_reserved_words_table">
+				<title>Reserved keys in Atomic</title>
+				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+					<colspec colname='c1' colwidth="1*" />
+					<colspec colname='c2' colwidth="1*" />
+					<thead>
+						<row>
+							<entry>Annotation type</entry>
+							<entry>Reserved key (default)</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>Element type (represented as STYPE in the data model)</entry>
+							<entry>t</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</sect2>
+		<sect2 xml:id="reference_atomical" xreflabel="AtomicAL reference">
+			<title>AtomicAL</title>
+			<para>
+				Note that some AtomicAL commands can be issued not only for single
+				elements, but also for sets of elements where all elements are of
+				the same type and have subsequent IDs. The following command, for
+				example, groups all tokens from
+				<emphasis>t1</emphasis>
+				to
+				<emphasis>t5</emphasis>
+				(i.e.,
+				<emphasis>t1</emphasis>, <emphasis>t2</emphasis>, <emphasis>t3</emphasis>, <emphasis>t4</emphasis>, and
+				<emphasis>t5</emphasis>) under a new parent structure node, which is annotated with
+				<emphasis>cat:NP</emphasis>.
+				<screen>p t1..t5 cat:NP</screen>
+			</para>
+			<para>
+				Also note that whenever a command takes
+				<emphasis>[key]:[value]</emphasis>
+				or
+				<emphasis>[key]:</emphasis>
+				commands, these can be grouped. I.e., to annotate element
+				<emphasis>n1</emphasis>
+				with annotations
+				<emphasis>x:x</emphasis>, <emphasis>y:y</emphasis>	and
+				<emphasis>z:z</emphasis>, you can do so in one single command, as shown below.
+				<screen>a n1 x:x y:y z:z</screen>
+			</para>
+			<table frame='all'>
+				<title>AtomicAL commands</title>
+				<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+					<!-- <colspec colname='c1' colwidth="1*" /> <colspec colname='c2' colwidth="1*" 
+						/> <colspec colname='c2' colwidth="1*" /> -->
+					<thead>
+						<row>
+							<entry>Command</entry>
+							<entry>Arguments</entry>
+							<entry>
+								Syntax example
+								<footnote>
+									<para>
+										For reasons of readability, namespace annotations have been
+										left out completely. Please note that whenever a command can
+										take a
+										<emphasis>[key]:[value]</emphasis>, it can also take a
+										<emphasis>[namespace]::[key]:[value]</emphasis>
+										argument.
+									</para>
+								</footnote>
+							</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>help (Show help)</entry>
+							<entry></entry>
+							<entry>help</entry>
+						</row>
+						<row>
+							<entry>clear (Clear the console)</entry>
+							<entry></entry>
+							<entry>clear</entry>
+						</row>
+						<row>
+							<entry>n (New structure node)</entry>
+							<entry>[key]:[value]</entry>
+							<entry>n pos:np</entry>
+						</row>
+						<row>
+							<entry>s (New span node)</entry>
+							<entry>
+								[element] [element] [key]:[value]
+								<sbr />
+								[element]..[element] [key]:[value]
+							</entry>
+							<entry>
+								s t1 t2 t3 cat:NP
+								<sbr />
+								s t1..t10 cat:NP
+							</entry>
+						</row>
+						<row>
+							<entry>e (New edge)</entry>
+							<entry>
+								-[type]
+								<footnote>
+									<para>
+										Cf.
+										<xref linkend="reference_atomical_edge_types" />. Also note that if a flag has been set in an
+										<emphasis>e</emphasis>
+										command before, this flag can be re-used in subsequent uses of
+										the command, i.e., the edge type flag remains active until a
+										new flag is explicitly set. In order to re-use the active
+										flag, don't specify a flag with the command (e.g.,
+										<emphasis>e n1 n2</emphasis>).
+									</para>
+								</footnote>
+								[source] [target] [key]:[value]
+							</entry>
+							<entry>
+								e -d n1 t3 cat:NP
+							</entry>
+						</row>
+						<row>
+							<entry>a (Annotate)</entry>
+							<entry>
+								[element] [key]:[value]
+								<sbr />
+								[element] [key]:
+							</entry>
+							<entry>
+								a n1 pos:np
+								<sbr />
+								(Deletes the annotation with key [key])
+							</entry>
+						</row>
+						<row>
+							<entry>d (Delete element)</entry>
+							<entry>
+								d [element] [element]
+								<sbr />
+								d [element]..[element]
+							</entry>
+							<entry>
+								d n1 n2 n3
+								<sbr />
+								d n1..n10
+							</entry>
+						</row>
+						<row>
+							<entry>p (Group under new parent)</entry>
+							<entry>
+								p [element] [element] [key:val]
+								<sbr />
+								p [element]..[element] [key:val]
+							</entry>
+							<entry>
+								p n1 n2 cat:NP
+								<sbr />
+								p n1..n8 cat:NP
+							</entry>
+						</row>
+						<row>
+							<entry>l (Set active level)</entry>
+							<entry>
+								l [level index]<footnote>
+									<para>
+										The level index is the number the level is assigned to in the <emphasis>Level View</emphasis>.
+									</para>
+								</footnote>
+							</entry>
+							<entry>
+								l 13
+							</entry> 
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+
+			<table frame='all' xml:id="reference_atomical_edge_types">
+				<title>AtomicAL edge type flags</title>
+				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+					<colspec colname='c1' colwidth="1*" />
+					<colspec colname='c2' colwidth="1*" />
+					<thead>
+						<row>
+							<entry>Flag</entry>
+							<entry>Edge type</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>d</entry>
+							<entry>Dominance relation</entry>
+						</row>
+						<row>
+							<entry>s</entry>
+							<entry>Spanning relation</entry>
+						</row>
+						<row>
+							<entry>p</entry>
+							<entry>Pointing relation</entry>
+						</row>
+						<row>
+							<entry>o</entry>
+							<entry>Order relation</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</sect2>
+		<sect2 xml:id="reference_install_new_plugins" xreflabel="Plugin installation reference">
+			<title>Install new plugins</title>
+			<para>In Atomic, you can very easily add new functionality to the
+				application yourself, at runtime. This is done by installing
+				additional plugins in Atomic. There are generally two way to achieve
+				this, depending on how the plugin is being made available:
+			</para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						<xref linkend="reference_marketplace" />
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<xref linkend="reference_p2" />
+					</para>
+				</listitem>
+			</itemizedlist>
+			<sect3 xml:id="reference_marketplace" xreflabel="Install new plugins via the Eclipse Marketplace">
+				<title>Install new plugins via the Eclipse Marketplace</title>
+				<para>
+					The
+					<link xl:href="http://marketplace.eclipse.org/">Eclipse Marketplace</link>
+					is a platform for third-party Eclipse-based solutions, i.e.,
+					plugins
+					(or complete applications). Plugins available from the
+					marketplace
+					can be consumed by any Eclipse-based application, such
+					as Atomic.
+					Searching the marketplace and installing software from it
+					is
+					achieved via the
+					<link linkend="figure.figure_marketplace">Eclipse Marketplace client</link>
+					included in Atomic.
+				</para>
+				<figure xml:id="figure.figure_marketplace">
+					<title>The Eclipse Marketplace client.</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata scalefit="1" width="100%" contentdepth="100%"
+								align="center" valign="middle" format="PNG"
+								fileref="resources/marketplace.png" />
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<para>
+					In order to install a new plugin, go to
+					<menuchoice>
+						<guimenu>Options</guimenu>
+						<guisubmenu>Install new plugins from Eclipse Marketplace
+						</guisubmenu>
+					</menuchoice>. This will open the Eclipse Marketplace client. Its use is fairly
+					self-explanatory. You can browse different categories, or search
+					for plugins. Once you have found a plugin you want to install,
+					simply click the provided install button next to the search result,
+					and follow the instructions.
+				</para>
+				<sect4>
+					<title>Example: Install XML editing support in Atomic</title>
+					<para>
+						If you are working on corpus annotations available in an XML
+						dialect, such as SaltXML which is used in Atomic, you may want to
+						be able to edit the source files comfortably with a dedicated XML
+						editor. There is a variety of solutions available from the Eclipse
+						Marketplace, including
+						<link
+							xl:href="http://marketplace.eclipse.org/content/xmlespresso-xml-editor-eclipse-plugin">XMLEspresso</link>, which can automatically generate grammars for unknown XML
+						schemas and DTDs. To install this plugin, do the following.
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>Open the Eclipse Marketplace Client (see above).</para>
+						</listitem>
+						<listitem>
+							<para>
+								Search for "<emphasis>xmlespresso</emphasis>". The first result should be the XMLEspresso plugin.
+							</para>
+						</listitem>
+						<listitem>
+							<para>Click the install button.</para>
+						</listitem>
+						<listitem>
+							<para>
+								The EM client will calculate requirements and dependencies. Once
+								its finished, review the items that you want to install and
+								click
+								<emphasis>Next</emphasis>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>Read the license and accept it.</para>
+						</listitem>
+						<listitem>
+							<para>
+								Atomic will now install XMLEspresso. Once its finished, you wil
+								be
+								prompted to restart Atomic. Click
+								<emphasis>Restart Now</emphasis>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Once Atomic is restarted, XMLEspresso is installed and
+								accessible via
+								right-click on an XML, or .salt, file in the
+								Navigation View, and the
+								<menuchoice>
+									<guimenu>Open With</guimenu>
+									<guisubmenu>Other ...</guisubmenu>
+								</menuchoice>
+								menu item.
+							</para>
+						</listitem>
+					</itemizedlist>
+				</sect4>
+			</sect3>
+			<sect3 xml:id="reference_p2" xreflabel="Install new plugins from a p2 repository">
+				<title>Install new plugins from a p2 repository</title>
+				<para>
+					Atomic can install plugins from p2 repositories, e.g., when they
+					are not available via the
+					<link linkend="reference_marketplace">Eclipse Marketplace</link>. All of the plugins provided by Eclipse are available from the
+					official Eclipse Software Site. Third-party plugins may have their
+					own update sites, usually specified on the plugins homepage. Atomic
+					includes an Install Wizard
+					to search the available plugins and
+					install them as needed. You can
+					access it via
+					<menuchoice>
+						<guimenu>Options</guimenu>
+						<guisubmenu>Install new plugins from p2 repository</guisubmenu>
+					</menuchoice>. In the Wizard you have to provide the URL of a p2 repository
+					(Atomic already includes the reference to the official Eclipse
+					repository). Select the
+					<emphasis>Software Site for additional Eclipse plugins</emphasis>
+					from the
+					<emphasis>Work with:</emphasis>
+					field, and wait until the contents are fully loaded. The plugins
+					are shown in categories, but you can switch categorization off in
+					the self-explanatory
+					<link linkend="figure.p2">Install Wizard</link>
+					as well.
+				</para>
+				<para>
+					For further information on how to install plugins from a p2
+					repository, cf.
+					<xref linkend="ex_p2" xrefstyle="template:%n" />.
+				</para>
+				<figure xml:id="figure.p2">
+					<title>Atomic's Install Wizard.</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata scalefit="1" width="100%" contentdepth="100%"
+								align="center" valign="middle" format="PNG" fileref="resources/p2.png" />
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<sect4 xml:id="ex_p2" xreflabel="Example: Install Git support in Atomic">
+					<title>Example: Install Git support in Atomic</title>
+					<para>In order to be able to version your corpora and annotations,
+						and enable them for collaborative work, you may want to use a
+						versioning system such as git, Subversion, or similar. And in
+						order to be
+						able to use these CVS from within Atomic, you may want
+						to have CVS
+						integration in the application itself instead of having
+						to use an
+						external command line. There are at least one (or more)
+						plugins
+						for this purpose available from the Eclipse p2 repository
+						for all
+						major
+						version control systems.
+					</para>
+					<para>
+						In the case of git, the plugin you would want to install is
+						<emphasis>Eclipse EGit</emphasis>. To install this plugin, do the following.
+					</para>
+					<itemizedlist>
+						<listitem>
+							<para>Open the Install Wizard (see above).</para>
+						</listitem>
+						<listitem>
+							<para>
+								Select the p2 repository to work with, in this case
+								<emphasis>Software Site for additional Eclipse plugins
+								</emphasis>
+								at
+								<link xl:href="http://download.eclipse.org/releases/indigo">http://download.eclipse.org/releases/indigo
+								</link>. This is the default site and is already defined in Atomic.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Search for "<emphasis>egit</emphasis>", or browse the category
+								<emphasis>Collaboration</emphasis>
+								until you find the entry
+								"<emphasis>Eclipse EGit</emphasis>".
+							</para>
+						</listitem>
+						<listitem>
+							<para>Check the checkbox next to the plugin name.</para>
+						</listitem>
+						<listitem>
+							<para>
+								Click
+								<emphasis>Next</emphasis>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								The wizard will calculate requirements and dependencies. Once
+								its finished, review the items that you want to install and
+								click
+								<emphasis>Next</emphasis>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>Read the license and accept it.</para>
+						</listitem>
+						<listitem>
+							<para>
+								Atomic will now install EGit.
+								Once its finished, you will be
+								prompted to restart Atomic. Click
+								<emphasis>Restart Now</emphasis>.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								Once Atomic is restarted, EGit is installed and accessible via
+								right-click on a project in the Navigation View (cf.
+								<xref linkend="figure.egit_1" />). You can
+								now use EGit to version your corpus documents or any
+								other files
+								you have in your workspace. For more information on
+								how to use
+								EGit, please refer to the
+								<link xl:href="http://wiki.eclipse.org/EGit/User_Guide">EGit User Guide</link>.
+							</para>
+						</listitem>
+
+					</itemizedlist>
+					<figure xml:id="figure.egit_1">
+						<title>Sharing an Atomic project to a git repository.</title>
+						<mediaobject>
+							<imageobject>
+								<imagedata scalefit="1" width="100%" contentdepth="100%"
+									align="center" valign="middle" format="PNG" fileref="resources/egit_1.png" />
+							</imageobject>
+						</mediaobject>
+					</figure>
+					<figure xml:id="figure.egit_2">
+						<title>Configure a git repository in Atomic.</title>
+						<mediaobject>
+							<imageobject>
+								<imagedata scalefit="1" width="100%" contentdepth="100%"
+									align="center" valign="middle" format="PNG" fileref="resources/egit_2.png" />
+							</imageobject>
+						</mediaobject>
+					</figure>
+				</sect4>
+			</sect3>
+		</sect2>
+	</sect1>
+</article>
