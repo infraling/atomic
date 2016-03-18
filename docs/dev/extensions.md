@@ -20,4 +20,4 @@ See below for a list of extension points and their description.
 References
 ----------
 
-<a name="eclipse-plugins"></a>Clayberg, E. and Rubel, D. (2009). Eclipse Plug-ins. Addison-Wesley Professional, Boston, Mass., 3rd edition.
+<a name="eclipse-plugins"></a>Clayberg, E. and Rubel, D. (2009). *Eclipse Plug-ins*. Addison-Wesley Professional, Boston, Mass., 3rd edition.
