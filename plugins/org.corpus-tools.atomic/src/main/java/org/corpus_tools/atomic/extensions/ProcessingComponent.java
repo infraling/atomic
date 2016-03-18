@@ -25,7 +25,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * that - abstractly put - manipulates a corpus. In terms of types,
  * implementations of {@link ProcessingComponent}s take an instance
  * of {@link SDocument} and manipulate it. The manipulation will
- * usually be made on the {@link SDocument}s {@link SDocumentGraph},
+ * usually be made on the {@link SDocument}'s {@link SDocumentGraph},
  * but can also be made on the {@link SDocument} itself.
  * <p>
  * The formal type parameters define the input type and output type used 

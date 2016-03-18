@@ -31,7 +31,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 
 /**
- * A semi-abstract tokenizer for raw corpus document source texts. This class
+ * A semi-abstract tokenizer for raw corpus document source texts, working on
+ * input of type {@link String} and providing output of type {@link List<String>}. This class
  * provides a default implementation for {@link #processDocument(SDocument)} which
  * uses the {@link List<String>} returned by {@link #tokenize(String)} to
  * create tokens for all {@link STextualDS}s in the {@link SDocument}s
