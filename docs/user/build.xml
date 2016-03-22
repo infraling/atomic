@@ -5,5 +5,6 @@
 	<property name="docbook.xml.language" value="en" />
 		
 	<import file="./docbook_5-0.xml" />
+	<!--<import file="${net.sourceforge.dep4e.resources}/ant/docbook_5-0.xml" />-->
 	
 </project>

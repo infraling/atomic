@@ -1,45 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="DocBook 5.0 Processing">
-	
+
 	<!-- Properties -->
 	<property name="dir.classpath.xslt" value="${net.sourceforge.dep4e.resources}/xslt-classpath" />
 	<property name="dir.docbook.xml" value="${basedir}/source/${docbook.xml.language}" />
 	<property name="dir.docbook.xsl" value="${net.sourceforge.dep4e.resources}/docbook-xsl-ns" />
 	<property name="dir.target" value="${basedir}/target/${docbook.xml.language}" />
-	
+
 	<property name="docbook.xml.file" value="${docbook.xml.filename}.xml" />
-	
+
 	<property name="docbook.xsl.catalog" value="${dir.docbook.xsl}/catalog.xml" />
-		
+
 	<property name="docbook.xsl.eclipse" value="${dir.docbook.xsl}/eclipse/eclipse3.xsl" />
 	<property name="dir.assets.eclipse" value="${net.sourceforge.dep4e.resources}/assets" />
-	
+
 	<property name="docbook.xsl.epub3" value="${dir.docbook.xsl}/epub3/chunk.xsl" />
 	<property name="dir.assets.epub3" value="${net.sourceforge.dep4e.resources}/assets" />
-	
+
 	<property name="docbook.xsl.html5" value="${dir.docbook.xsl}/xhtml5/onechunk.xsl" />
 	<property name="dir.assets.html5" value="${net.sourceforge.dep4e.resources}/assets" />
-	
+
 	<property name="docbook.xsl.xsl-fo" value="${dir.docbook.xsl}/fo/docbook.xsl" />
 	<property name="dir.assets.xsl-fo" value="${net.sourceforge.dep4e.resources}/assets" />
-	
+
 	<property name="fop.user.configuration.file" value="${net.sourceforge.dep4e.resources}/fop-user-configuration.xml" />
-	
+
+	<!-- Custom properties -->
+	<property name="plugin.dir" value="${basedir}/../../plugins/org.corpus-tools.atomic/"/>
+	<property name="help.dir" value="${plugin.dir}/doc/help/"/>
+	<property name="toc.file" value="${plugin.dir}/toc.xml"/>
+
 	<!-- Classpath -->
 	<path id="classpath.xslt">
 		<fileset dir="${dir.classpath.xslt}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	
+
 	<!-- Tasks -->
 	<taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop" classpathref="classpath.xslt" />
-		
+
 	<!-- Targets -->
 	<target name="All" depends="Clean, Eclipse, EPUB 3, HTML5, PDF" description="Generate all output formats" />
-		
+
 	<target name="Clean" description="Delete the target directory">
 		<delete dir="${basedir}/target" />
+		<delete dir="${help.dir}" />
+		<delete file="${toc.file}" />
 	</target>
 
 	<target name="Eclipse" depends="Clean" description="Generate an Eclipse Help System Content Plugin" >
@@ -67,18 +74,25 @@
 			<param name="callout.graphics.path" expression="assets/images/callouts/" />
 		</xslt>
 		<delete file="${dir.target}/eclipse/${docbook.xml.filename}.tmp" />
-		<copy todir="${dir.target}/eclipse/assets">
+		<copy todir="${help.dir}/assets">
 			<fileset dir="${dir.assets.eclipse}/">
 				<include name="**/*" />
 			</fileset>
 		</copy>
-		<copy todir="${dir.target}/eclipse/resources" flatten="true">
+		<copy todir="${help.dir}/resources" flatten="true">
 			<fileset dir="${dir.docbook.xml}/">
 				<include name="**/resources/**/*" />
 			</fileset>
 		</copy>
+		<copy todir="${help.dir}" flatten="true">
+			<fileset dir="${dir.target}/">
+				<include name="**/*.html" />
+				<include name="**/toc.xml" />
+				<include name="**/index.xml" />
+			</fileset>
+		</copy>
 	</target>
-	
+
 	<target name="EPUB 3" depends="Clean" description="Generate an EPUB 3 eBook file">
 		<xslt style="${docbook.xsl.epub3}" basedir="${dir.docbook.xml}" includes="**/${docbook.xml.file}" destdir="${dir.target}/epub" extension=".tmp" classpathref="classpath.xslt" force="true" >
 			<sysproperty key="xml.parsers.SAXParserFactory" value="org.apache.xerces.jaxp.SAXParserFactoryImpl" />
@@ -120,7 +134,7 @@
 		</zip>
 		<delete dir="${dir.target}/epub" />
 	</target>
-	
+
 	<target name="HTML5" depends="Clean" description="Generate a HTML5 file" >
 		<xslt style="${docbook.xsl.html5}" basedir="${dir.docbook.xml}" includes="**/${docbook.xml.file}" destdir="${dir.target}/html5" extension=".tmp" classpathref="classpath.xslt" force="true" >
 			<sysproperty key="xml.parsers.SAXParserFactory" value="org.apache.xerces.jaxp.SAXParserFactoryImpl" />
@@ -163,7 +177,7 @@
 			</fileset>
 		</copy>
 	</target>
-			
+
 	<target name="PDF" depends="XSL-FO" description="Generate a PDF file" >
 		<fop format="application/pdf" basedir="${dir.target}/xsl-fo" outdir="${dir.target}" force="true" messagelevel="verbose" throwexceptions="true" userconfig="${fop.user.configuration.file}" >
 			<fileset dir="${dir.target}">
@@ -176,21 +190,21 @@
 			</fileset>
 		</move>
 	</target>
-	
+
 	<target name="XSL-FO" depends="Clean" description="Generate a XSL-FO file">
 		<delete dir="${dir.target}/xsl-fo" />
 		<xslt style="${docbook.xsl.xsl-fo}" basedir="${dir.docbook.xml}" includes="**/${docbook.xml.file}" destdir="${dir.target}/xsl-fo" extension=".fo" classpathref="classpath.xslt" force="true" >
-			
+
 			<sysproperty key="javax.xml.transform.TransformerFactory" value="com.icl.saxon.TransformerFactoryImpl" />
 			<sysproperty key="org.apache.xerces.xni.parser.XMLParserConfiguration" value="org.apache.xerces.parsers.XIncludeParserConfiguration" />
 			<sysproperty key="xslthl.config" value="file://${dir.docbook.xsl}/highlighting/xslthl-config.xml" />
 			<sysproperty key="xml.parsers.SAXParserFactory" value="org.apache.xerces.jaxp.SAXParserFactoryImpl" />
 			<sysproperty key="xml.catalog.files" value="${docbook.xsl.catalog}" />
 			<sysproperty key="xml.catalog.prefer" value="system"/>
-			
+
 			<param if="docbook.collection.glossary" name="glossary.collection" expression="${docbook.collection.glossary}" />
 			<param if="docbook.collection.bibliography" name="bibliography.collection" expression="${docbook.collection.bibliography}" />
-			
+
 			<param name="keep.relative.image.uris" expression="1" />
 			<param name="fop.extensions" expression="0"/>
 			<param name="fop1.extensions" expression="1"/>
@@ -204,7 +218,7 @@
 			<param name="callout.graphics" expression="1" />
 			<param name="callout.graphics.extension" expression=".svg" />
 			<param name="callout.graphics.path" expression="assets/images/callouts/" />
-			
+
 		</xslt>
 		<copy todir="${dir.target}/xsl-fo/resources" flatten="true" >
 			<fileset dir="${dir.docbook.xml}/">
@@ -217,5 +231,5 @@
 			</fileset>
 		</copy>
 	</target>
-	
+
 </project>
