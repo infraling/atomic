@@ -130,6 +130,11 @@
             schemeId="org.corpus_tools.atomic.keyscheme"
             sequence="M1+N">
       </key>
+      <key
+            commandId="org.eclipse.ui.help.displayHelp"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="F1">
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.views">
