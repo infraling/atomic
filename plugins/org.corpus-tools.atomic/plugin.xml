@@ -66,6 +66,12 @@
                   mnemonic="U"
                   tooltip="Provides a menu for updating Atomic or parts of it.">
             </menu>
+            <command
+                  commandId="org.eclipse.ui.help.displayHelp"
+                  label="Help Contents"
+                  mnemonic="H"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -399,6 +405,19 @@
             activityId="org.corpus_tools.atomic.activity.doNotUse"
             pattern=".*/org.eclipse.ui.wizards.export.*">
 	  </activityPatternBinding>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="doc/help/toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.index">
+      <index
+            file="doc/help/index.xml">
+      </index>
    </extension>
 
 </plugin>
