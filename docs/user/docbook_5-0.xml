@@ -92,11 +92,7 @@
 			</fileset>
 		</copy>
 		<!-- Fix toc.xml -->
-		<!--Example: <replaceregexp file="${basedir}/src/site/markdown/manual.md"
-                                               match="```.*"
-                                               replace=""
-                                               byline="true"/>
-		-->
+		<replaceregexp file="${help.dir}/toc.xml" match="(\w*.html)" replace="doc/help/\$1" byline="true" />
 	</target>
 
 	<target name="EPUB 3" depends="Clean" description="Generate an EPUB 3 eBook file">
