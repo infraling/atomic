@@ -19,8 +19,9 @@
 package org.corpus_tools.atomic.extensions.processingcomponents.ui;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponent;
-import org.eclipse.jface.wizard.Wizard;
+import org.corpus_tools.atomic.extensions.processingcomponents.CustomProcessingComponent;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.widgets.Composite;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
@@ -37,11 +38,47 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public interface ProcessingComponentWizardPage<ProcessingComponentType> {
+public abstract class ProcessingComponentWizardPage extends WizardPage {
+
+	/**
+	 * @param pageName
+	 */
+	protected ProcessingComponentWizardPage(String pageName) {
+		super(pageName);
+		// TODO Auto-generated constructor stub
+	}
+
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	public void createControl(Composite parent) {
+		// TODO Auto-generated method stub
+
+	}
 	
 	/**
+	 * Returns an instance of the {@link ProcessingComponent} to be used. The
+	 * configuration of the {@link ProcessingComponent} should be implemented
+	 * here, i.e., user input from this page should be applied, and 
+	 * the readily configured {@link ProcessingComponent} returned.
+	 * <p>
+	 * Pseudo-code example:
+	 * <pre>
+	 * {@code
+	 * ProcessingComponent pc = new ExampleTokenizer();
+	 * pc.setRegex(this.regexField.getText());
+	 * return pc;
+	 * }
+	 * </pre>
+	 *
+	 * @return the readily configured processing component
+	 */
+	public abstract CustomProcessingComponent getConfiguredProcessingComponent();
+
+	/**
 	 * Is passed an {@link SDocument} in its initial state (e.g., as
-	 * returned from another {@link ProcessingComponent}, and returns
+	 * returned from another {@link ProcessingComponent}), and returns
 	 * the same {@link SDocument} in its transformed state after it has
 	 * been processed by the respective processing component of the
 	 * respective type.
@@ -60,10 +97,17 @@ public interface ProcessingComponentWizardPage<ProcessingComponentType> {
 	 * // document is now (sentence segmented and) tokenized.
 	 * }
 	 * </pre>
-	 *
+	 * <p>
+	 * Note that <b>clients should not implement this interface directly</b>, 
+	 * but instead extend one of the abstract classes in package 
+	 * org.corpus_tools.atomic.extensions.processingcomponents.ui.
+	 * 
 	 * @param inputDocument The input document
 	 * @return the output document
 	 */
-	public SDocument getProcessingComponentOutput(SDocument inputDocument);
-	
+	public SDocument getProcessingComponentOutput(SDocument inputDocument) {
+		getConfiguredProcessingComponent().processDocument(inputDocument);
+		return inputDocument;
+	}
+
 }
