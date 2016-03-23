@@ -100,13 +100,9 @@ public abstract class ProcessingComponentWizardPage extends WizardPage {
 	 * // document is now (sentence segmented and) tokenized.
 	 * }
 	 * </pre>
-	 * <p>
-	 * Note that <b>clients should not implement this interface directly</b>, 
-	 * but instead extend one of the abstract classes in package 
-	 * org.corpus_tools.atomic.extensions.processingcomponents.ui.
 	 * 
 	 * @param inputDocument The input document
-	 * @return the output document
+	 * @return the transformed input document
 	 */
 	public SDocument getProcessingComponentOutput(SDocument inputDocument) {
 		getConfiguredProcessingComponent().processDocument(inputDocument);
