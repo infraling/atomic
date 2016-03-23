@@ -31,9 +31,12 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * the "New Wizard". The page is responsible for
  * <ul>
  * <li>Creating the GUI components for the wizard page</li>
- * <li>Collecting preferences and operating instructions for its ProcessingComponentType,
+ * <li>Collecting preferences and operating instructions for "its" {@link ProcessingComponent},
  * passing them to the component, and supply the component's output via a getter method</li>
  * </ul>
+ * Clients must override {@link #getConfiguredProcessingComponent()} and can 
+ * optionally override {@link #getProcessingComponentOutput(SDocument)} if
+ * more complex processing - outside of the component itself - is needed.
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
