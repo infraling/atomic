@@ -17,6 +17,11 @@ Atomic offers a number of **extension points**, i.e., a "socket" where you can p
 
 See below for a list of extension points and their description.
 
+Processing components
+---------------------
+
+Note that if you want to extend Atomic with a type of processing component for which no abstract class exists yet, please report an issue at https://github.com/infraling/atomic/issues rather than simple extend CustomProcessingComponent. This helps your users in finding your component (as they will be listed by type in GUIs), and helps us in keeping Atomic and its extension possibilities state-of-the-art. Many thanks!
+
 References
 ----------
 
