@@ -424,5 +424,13 @@
             file="doc/help/index.xml">
       </index>
    </extension>
+   <extension
+         point="org.corpus_tools.atomic.processingComponents.tokenizers">
+      <tokenizerComponent
+            category="tokenizer"
+            class="org.corpus_tools.atomic.extensions.processingcomponents.impl.SimpleSaltTokenizer"
+            name="Simple TreeTagger-based Tokenizer">
+      </tokenizerComponent>
+   </extension>
 
 </plugin>

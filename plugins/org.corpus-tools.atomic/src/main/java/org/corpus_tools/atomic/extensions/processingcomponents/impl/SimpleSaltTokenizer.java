@@ -45,30 +45,6 @@ public class SimpleSaltTokenizer extends Tokenizer {
 	private static final String UID = "de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer.simple";
 
 	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Simple TreeTagger-based Tokenizer";
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return "A tokenizer based on the TreeTagger tokenizer by Helmut Schmid (see <a href=\"http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/\">http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/</a>). This is a no frills implementation working on abbreviation sets for English, French, Italian and German.";// Supports language-based sets of abbreviations and tokenizations of segments of documents. Default support for English, French, Italian and German.";
-	}
-
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#getUID()
-	 */
-	@Override
-	public String getUID() {
-		return SimpleSaltTokenizer.UID;
-	}
-
-	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer#tokenize(java.lang.String)
 	 */
 	@Override
