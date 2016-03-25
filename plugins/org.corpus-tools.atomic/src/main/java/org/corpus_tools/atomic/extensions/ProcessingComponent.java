@@ -28,6 +28,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * usually be made on the {@link SDocument}'s {@link SDocumentGraph},
  * but can also be made on the {@link SDocument} itself.
  * <p>
+ * FIXME: Refactor top pop-up in extension point! 
  * {@link ProcessingComponent}s need a name, a description, and a unique,
  * path-style ID, where
  * <ul>
@@ -67,28 +68,5 @@ public interface ProcessingComponent<InputType, OutputType> {
 	 * @param document The document to process
 	 */
 	public void processDocument(SDocument document);
-	
-	/**
-	 * Returns the component's name.
-	 *
-	 * @return the components name
-	 */
-	public String getName();
-	
-	/**
-	 * Returns a brief, comprehensive description of the
-	 * component's functionality.
-	 *
-	 * @return the component's description
-	 */
-	public String getDescription();
-	
-	/**
-	 * Returns the unique, path-like identifier for
-	 * the component.
-	 *
-	 * @return the unique identifier
-	 */
-	public String getUID();
 	
 }
