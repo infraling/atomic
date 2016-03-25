@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Label;
  * <p>@author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class NewAtomicProjectWizardPagePreProcessing extends WizardPage {
+public class NewAtomicProjectWizardPageProcessingPipeline extends WizardPage {
 	
 	private NewAtomicProjectWizardPageProjectStructure projectStructurePage;
 
@@ -38,7 +38,7 @@ public class NewAtomicProjectWizardPagePreProcessing extends WizardPage {
 	 * @param projectStructurePage 
 	 * 
 	 */
-	public NewAtomicProjectWizardPagePreProcessing(NewAtomicProjectWizardPageProjectStructure projectStructurePage) {
+	public NewAtomicProjectWizardPageProcessingPipeline(NewAtomicProjectWizardPageProjectStructure projectStructurePage) {
 		super("Pre-process the corpus");
 		this.setProjectStructurePage(projectStructurePage);
 		setTitle("Pre-process the corpus");
@@ -50,11 +50,11 @@ public class NewAtomicProjectWizardPagePreProcessing extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		Composite control = new Composite(parent, SWT.NONE);
-		control.setLayout(new RowLayout());
-		Label label = new Label(control, SWT.NONE);
+		Composite container = new Composite(parent, SWT.NONE);
+		container.setLayout(new Gr);
+		Label label = new Label(container, SWT.NONE);
 		label.setText("Nothing to see here!");
-		setControl(control);
+		setControl(container);
 	}
 
 	/**
