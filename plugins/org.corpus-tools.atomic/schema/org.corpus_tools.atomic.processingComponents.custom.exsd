@@ -54,10 +54,10 @@
          </documentation>
       </annotation>
       <complexType>
-         <attribute name="id" type="string">
+         <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  A unique, path-style identifier, may be used in APIs to identify the component, e.g., &quot;org.corpus_tools.tokenizers.treetaggerlike&quot;.
                </documentation>
             </annotation>
          </attribute>
@@ -90,13 +90,6 @@
                   </enumeration>
                </restriction>
             </simpleType>
-         </attribute>
-         <attribute name="uid" type="string" use="required">
-            <annotation>
-               <documentation>
-                  A unique, path-style identifier, may be used in APIs to identify the component, e.g., &quot;org.corpus_tools.tokenizers.treetaggerlike&quot;.
-               </documentation>
-            </annotation>
          </attribute>
          <attribute name="description" type="string" use="required">
             <annotation>
