@@ -111,6 +111,16 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="resultsView" type="string">
+            <annotation>
+               <documentation>
+                  A view that displays the outcome of processing with this component.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
