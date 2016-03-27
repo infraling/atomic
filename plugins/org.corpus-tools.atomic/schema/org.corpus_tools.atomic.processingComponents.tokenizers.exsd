@@ -111,6 +111,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="creator" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the creator of this processing component, either an institution (university, department, research centre) or an individual.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
