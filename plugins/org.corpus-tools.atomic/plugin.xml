@@ -429,6 +429,7 @@
       <tokenizerComponent
             category="tokenizer"
             class="org.corpus_tools.atomic.extensions.processingcomponents.impl.SimpleSaltTokenizer"
+            creator="Humboldt-Universität zu Berlin"
             description="A tokenizer based on the TreeTagger tokenizer by Helmut Schmid (see &lt;a href=\&quot;http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/\&quot;&gt;http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/&lt;/a&gt;). This is a no frills implementation working on abbreviation sets for English, French, Italian and German.&quot;;// Supports language-based sets of abbreviations and tokenizations of segments of documents. Default support for English, French, Italian and German."
             id="org.corpus_tools.atomic.extensions.processingcomponents.impl.SimpleSaltTokenizer"
             name="Simple TreeTagger-based Tokenizer">
