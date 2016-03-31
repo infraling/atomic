@@ -51,6 +51,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizardPageTokenization.class);
 	
 	private NewAtomicProjectWizardPageProjectStructure projectStructurePage;
+	private IConfigurationElement tokenizer = null;
 
 	/**
 	 * @param projectStructurePage 
@@ -82,7 +83,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		Label separator = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
 	    separator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
-		IConfigurationElement[] tokenizers = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
+		final IConfigurationElement[] tokenizers = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
 		
 		Label tokenizerLabel = new Label(container, SWT.NONE);
 		tokenizerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -104,6 +105,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		}
 		if (tokenizerCombo.getItemCount() > 0) {
 			tokenizerCombo.select(0);
+			setTokenizer(tokenizers[0]);
 		}
 		
 		Label creatorLabel = new Label(container, SWT.NONE);
@@ -146,6 +148,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				descriptionLabel.setText(tokenizerDescriptionList.get(index));
 				creatorText.setText(tokenizerCreatorList.get(index));
 				configurableButton.setSelection(tokenizerIsConfigurableList.get(index));
+				setTokenizer(tokenizers[index]);
 				container.layout();
 			}
 		});
@@ -165,6 +168,20 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	private void setProjectStructurePage(NewAtomicProjectWizardPageProjectStructure projectStructurePage) {
 		this.projectStructurePage = projectStructurePage;
+	}
+
+	/**
+	 * @return the tokenizer
+	 */
+	public IConfigurationElement getTokenizer() {
+		return tokenizer;
+	}
+
+	/**
+	 * @param tokenizer the tokenizer to set
+	 */
+	private void setTokenizer(IConfigurationElement tokenizer) {
+		this.tokenizer = tokenizer;
 	}
 
 }
