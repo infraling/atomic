@@ -38,7 +38,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizard.class);
 	
 	private NewAtomicProjectWizardPageProjectStructure structurePage = new NewAtomicProjectWizardPageProjectStructure();
-	private NewAtomicProjectWizardPageProcessingPipeline preProcessingPage = null;
+	private NewAtomicProjectWizardPageTokenization preProcessingPage = null;
 	
 	/*
 	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
@@ -52,7 +52,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public void addPages() {
 		addPage(getStructurePage());
-		setPreProcessingPage(new NewAtomicProjectWizardPageProcessingPipeline(getStructurePage()));	
+		setPreProcessingPage(new NewAtomicProjectWizardPageTokenization(getStructurePage()));	
 		addPage(getPreProcessingPage());
 	}
 
@@ -90,14 +90,14 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	/**
 	 * @return the preProcessingPage
 	 */
-	public NewAtomicProjectWizardPageProcessingPipeline getPreProcessingPage() {
+	public NewAtomicProjectWizardPageTokenization getPreProcessingPage() {
 		return preProcessingPage;
 	}
 
 	/**
 	 * @param preProcessingPage the preProcessingPage to set
 	 */
-	public void setPreProcessingPage(NewAtomicProjectWizardPageProcessingPipeline preProcessingPage) {
+	public void setPreProcessingPage(NewAtomicProjectWizardPageTokenization preProcessingPage) {
 		this.preProcessingPage = preProcessingPage;
 	}
 
