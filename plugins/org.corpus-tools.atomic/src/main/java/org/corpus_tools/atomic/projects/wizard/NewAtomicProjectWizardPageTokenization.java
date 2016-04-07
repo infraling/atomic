@@ -173,12 +173,8 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				createTokenizerControls(composite_2);
 				descriptionGroup.layout();
 				container.layout();
-				
-                // DO THIS:
-                scrolledComposite.layout(true, true);
+				scrolledComposite.layout(true, true);
                 scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-                // .. and it will work
-
 			}
 		});
 
@@ -218,7 +214,11 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 * @param areaContainer
 	 */
 	private void createTokenizerControls(final Composite areaContainer) {
-		Group group = new Group(areaContainer, SWT.BORDER);
+		final Composite tokenizerArea = new Composite(areaContainer, SWT.BORDER_DOT);
+		tokenizerArea.setLayout(new GridLayout(3, false));
+		tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		
+		Group group = new Group(tokenizerArea, SWT.BORDER);
 		group.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 		GridLayout tokCompLayout = new GridLayout(2, false);
 //		tokCompLayout.verticalSpacing = 30;
