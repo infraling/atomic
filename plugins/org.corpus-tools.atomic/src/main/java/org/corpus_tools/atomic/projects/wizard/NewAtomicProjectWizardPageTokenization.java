@@ -19,6 +19,7 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +33,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -69,8 +69,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 
 	private ArrayList<Boolean> tokenizerIsConfigurableList;
 
-	private Composite container;
-	
 	/**
 	 * @param projectStructurePage 
 	 * 
@@ -87,20 +85,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		container = new Composite(parent, SWT.NONE);
-		GridLayout containerLayout = new GridLayout(2, false);
-		containerLayout.verticalSpacing = 30;
-		container.setLayout(containerLayout);
-		
-		
-		Label label = new Label(container, SWT.WRAP);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
-		label.setText("The basic annotatable unit in Atomic's data model is the token, hence in order to create annotations at all, the corpus documents must be tokenized.\n"
-				+ "Please pick the tokenizer that should be used to tokenize all documents in the corpus. Note that tokens can be added or removed, and completely new token layers created later.");
-		
-		Label separator = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
-	    separator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		
+		// Set up local vars
 		// FIXME: Put all in one data structure (Map?)
 		tokenizerNameList = new ArrayList<>();
 		tokenizerDescriptionList = new ArrayList<>();
@@ -112,6 +97,20 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			tokenizerCreatorList.add(i, tokenizers[i].getAttribute("creator"));
 			tokenizerIsConfigurableList.add(i, tokenizers[i].getAttribute("wizardPage") != null);
 		}
+		final ArrayList<Composite> activeTokenizerWidgets = new ArrayList<>();
+				
+		final Composite container = new Composite(parent, SWT.NONE);
+		GridLayout containerLayout = new GridLayout(2, false);
+		containerLayout.verticalSpacing = 30;
+		container.setLayout(containerLayout);
+		
+		Label infoLabel = new Label(container, SWT.WRAP);
+		infoLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
+		infoLabel.setText("The basic annotatable unit in Atomic's data model is the token, hence in order to create annotations at all, the corpus documents must be tokenized.\n"
+				+ "Please pick the tokenizer that should be used to tokenize all documents in the corpus. Note that tokens can be added or removed, and completely new token layers created later.");
+		
+		Label separator = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
+	    separator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		final Group descriptionGroup = new Group(container, SWT.NONE);
 		descriptionGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
@@ -147,63 +146,45 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
 
-        final Composite composite = new Composite(scrolledComposite, SWT.NONE);
-        composite.setLayout(new GridLayout(2, false));
-        scrolledComposite.setContent(composite);
-        scrolledComposite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        final Composite intermediateComposite = new Composite(scrolledComposite, SWT.NONE);
+        intermediateComposite.setLayout(new GridLayout(2, false));
+        scrolledComposite.setContent(intermediateComposite);
+        scrolledComposite.setSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         
-        final Composite composite_2 = new Composite(composite, SWT.NONE);
-        composite_2.setLayout(new GridLayout(3, false));
-        composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-
-
+        final Composite tokenizerCompositeContainer = new Composite(intermediateComposite, SWT.NONE);
+        tokenizerCompositeContainer.setLayout(new GridLayout(3, false));
+        tokenizerCompositeContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		
 		tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-//				numberOfTokenizersToApply = Integer.parseInt(((Spinner) e.widget).getText()); // 5
-//				for (Composite c : tokenizerAreaList) {
-//						c.dispose();
-//				}
-//				tokenizerAreaList.clear();
-//				for (int i = 0; i < numberOfTokenizersToApply; i++) {
-//					Composite newArea = createTokenizerArea(tokenizers, composite_2);
-//					tokenizerAreaList.add(newArea);
-//				}
-				createTokenizerControls(composite_2);
-				descriptionGroup.layout();
+				Spinner spinner = (Spinner) e.widget;
+				int spinnerValue = Integer.parseInt(spinner.getText());
+				int numberOfActiveTokenizerWidgets = activeTokenizerWidgets.size();
+				int indexOfFirstWidgetToRemove = numberOfActiveTokenizerWidgets - spinnerValue;
+				if (spinnerValue < numberOfActiveTokenizerWidgets) {
+					for (Composite compositeToClear : activeTokenizerWidgets.subList(numberOfActiveTokenizerWidgets - indexOfFirstWidgetToRemove, numberOfActiveTokenizerWidgets)) {
+						compositeToClear.dispose();
+					}
+					activeTokenizerWidgets.subList(numberOfActiveTokenizerWidgets - indexOfFirstWidgetToRemove, numberOfActiveTokenizerWidgets).clear();
+				}
+				else if (spinnerValue > numberOfActiveTokenizerWidgets) { // Add
+					int numberOfWidgetsToAdd = (spinnerValue - numberOfActiveTokenizerWidgets);
+					for (int i = 0; i < numberOfWidgetsToAdd; i++) {
+						activeTokenizerWidgets.add(createTokenizerControls(tokenizerCompositeContainer, container, activeTokenizerWidgets.size() + 1));
+					}
+				}
+				else return;
+
 				container.layout();
 				scrolledComposite.layout(true, true);
-                scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+                scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 			}
 		});
 
-//		final Composite tokenizerContainer = new Composite(container, SWT.NONE);
-//		tokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-//		tokenizerContainer.setLayout(new FillLayout());
-//
-//		final ScrolledComposite scrolledComposite = new ScrolledComposite(tokenizerContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-//		scrolledComposite.setExpandHorizontal(true);
-//		scrolledComposite.setExpandVertical(true);
-//		
-//		final Composite tokenizerComposite = new Composite(scrolledComposite, SWT.NONE);
-//		tokenizerComposite.setLayout(new GridLayout(1, false));
-//		scrolledComposite.setContent(tokenizerComposite);
-//        scrolledComposite.setSize(tokenizerComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-//		
-//        tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				createTokenizerControls(tokenizerComposite);
-//				scrolledComposite.layout(true, true);
-//				scrolledComposite.setSize(tokenizerContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-////				container.layout();
-//			}
-//		});
-//		
-		/////////////////////////////////////////////////////////////////////////////////////
-		
-		createTokenizerControls(composite_2);
+		if (activeTokenizerWidgets.isEmpty()) {
+			activeTokenizerWidgets.add(createTokenizerControls(tokenizerCompositeContainer, container, 1));
+		}
 
 		setControl(container);
 	}
@@ -212,8 +193,9 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 * TODO: Description
 	 *
 	 * @param areaContainer
+	 * @param i 
 	 */
-	private void createTokenizerControls(final Composite areaContainer) {
+	private Composite createTokenizerControls(final Composite areaContainer, final Composite parent, int i) {
 		final Composite tokenizerArea = new Composite(areaContainer, SWT.BORDER_DOT);
 		tokenizerArea.setLayout(new GridLayout(3, false));
 		tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -221,20 +203,14 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		Group group = new Group(tokenizerArea, SWT.BORDER);
 		group.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 		GridLayout tokCompLayout = new GridLayout(2, false);
-//		tokCompLayout.verticalSpacing = 30;
 		tokCompLayout.marginHeight = 20;
 		tokCompLayout.marginWidth = 20;
 		group.setLayout(tokCompLayout);
-		group.setText("TOKENIZER");
-		
-//		final Composite composite = new Composite(container, SWT.BORDER);
-//		GridLayout tokCompLayout = new GridLayout(2, false);
-//		tokCompLayout.verticalSpacing = 30;
-//		composite.setLayout(tokCompLayout);
+		group.setText("Tokenizer");
 		
 		Label tokenizerLabel = new Label(group, SWT.NONE);
 		tokenizerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		tokenizerLabel.setText("Tokenizer:");
+		tokenizerLabel.setText("Tokenizer " + i + ":");
 		final Combo tokenizerCombo = new Combo(group, SWT.DROP_DOWN | SWT.READ_ONLY);
 		tokenizerCombo.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
 		for (int j = 0; j < tokenizerNameList.size(); j++) {
@@ -274,9 +250,10 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				configurableButton.setSelection(tokenizerIsConfigurableList.get(index));
 				setTokenizer(tokenizers[index]);
 				areaContainer.layout();
-				container.layout();
+				parent.layout();
 			}
 		});
+		return tokenizerArea;
 	}
 
 	/**
