@@ -156,7 +156,6 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		getShell().setLocation(x, 0);
 
 		Composite container = new Composite(parent, SWT.NONE);
-		setControl(container);
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
 
@@ -249,6 +248,10 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		// If selection is emtpy, element name validator is triggered. Therefore, select first element
 		Assert.isNotNull(getModel().getChildren().iterator().next());
 		projectTreeViewer.setSelection(new StructuredSelection(getModel().getChildren().iterator().next()));
+		
+		// Set the main control for this page
+		setControl(container);
+		projectNameText.setFocus();
 	}
 
 	/**
