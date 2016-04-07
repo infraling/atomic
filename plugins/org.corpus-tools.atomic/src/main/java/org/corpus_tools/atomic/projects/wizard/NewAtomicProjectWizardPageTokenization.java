@@ -137,33 +137,78 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		tokenizersSpinner.setIncrement(1);
 		tokenizersSpinner.setSelection(1);
 		tokenizersSpinner.setPageIncrement(5);
-		tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				container.layout();
-			}
-		});
-
 		
 		// Composites
 		final Composite tokenizerContainer = new Composite(container, SWT.NONE);
 		tokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		tokenizerContainer.setLayout(new FillLayout());
+		
+		final ScrolledComposite scrolledComposite = new ScrolledComposite(tokenizerContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
 
+        final Composite composite = new Composite(scrolledComposite, SWT.NONE);
+        composite.setLayout(new GridLayout(2, false));
+        scrolledComposite.setContent(composite);
+        scrolledComposite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        
+        final Composite composite_2 = new Composite(composite, SWT.NONE);
+        composite_2.setLayout(new GridLayout(3, false));
+        composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+
+
+		
+		tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+//				numberOfTokenizersToApply = Integer.parseInt(((Spinner) e.widget).getText()); // 5
+//				for (Composite c : tokenizerAreaList) {
+//						c.dispose();
+//				}
+//				tokenizerAreaList.clear();
+//				for (int i = 0; i < numberOfTokenizersToApply; i++) {
+//					Composite newArea = createTokenizerArea(tokenizers, composite_2);
+//					tokenizerAreaList.add(newArea);
+//				}
+				createTokenizerControls(composite_2);
+				descriptionGroup.layout();
+				container.layout();
+				
+                // DO THIS:
+                scrolledComposite.layout(true, true);
+                scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+                // .. and it will work
+
+			}
+		});
+
+//		final Composite tokenizerContainer = new Composite(container, SWT.NONE);
+//		tokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+//		tokenizerContainer.setLayout(new FillLayout());
+//
 //		final ScrolledComposite scrolledComposite = new ScrolledComposite(tokenizerContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 //		scrolledComposite.setExpandHorizontal(true);
 //		scrolledComposite.setExpandVertical(true);
-		
-		final Composite tokenizerComposite = new Composite(tokenizerContainer, SWT.NONE);
-//		GridLayout tokCompLayout = new GridLayout(2, false);
-//		tokCompLayout.verticalSpacing = 30;
-		tokenizerComposite.setLayout(new RowLayout(SWT.VERTICAL));
-		
-		
+//		
+//		final Composite tokenizerComposite = new Composite(scrolledComposite, SWT.NONE);
+//		tokenizerComposite.setLayout(new GridLayout(1, false));
+//		scrolledComposite.setContent(tokenizerComposite);
+//        scrolledComposite.setSize(tokenizerComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+//		
+//        tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				createTokenizerControls(tokenizerComposite);
+//				scrolledComposite.layout(true, true);
+//				scrolledComposite.setSize(tokenizerContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+////				container.layout();
+//			}
+//		});
+//		
 		/////////////////////////////////////////////////////////////////////////////////////
 		
-		createTokenizerControls(tokenizerComposite);
-		
+		createTokenizerControls(composite_2);
+
 		setControl(container);
 	}
 
@@ -174,6 +219,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	private void createTokenizerControls(final Composite areaContainer) {
 		Group group = new Group(areaContainer, SWT.BORDER);
+		group.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 		GridLayout tokCompLayout = new GridLayout(2, false);
 //		tokCompLayout.verticalSpacing = 30;
 		tokCompLayout.marginHeight = 20;
