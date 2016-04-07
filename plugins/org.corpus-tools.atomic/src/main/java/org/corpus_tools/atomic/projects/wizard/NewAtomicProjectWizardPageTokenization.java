@@ -19,10 +19,9 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.extensions.processingcomponents.ProcessingComponentMetaData;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
@@ -42,7 +41,8 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO Description
+ * A wizard page that lets the user choose one or more tokenizers that
+ * will be used to create tokenizations on the documents of a corpus.
  *
  * <p>@author Stephan Druskat <mail@sdruskat.net>
  *
@@ -57,17 +57,9 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	private NewAtomicProjectWizardPageProjectStructure projectStructurePage;
 	private IConfigurationElement tokenizer = null;
 
-	private ArrayList<String> tokenizerNameList;
-
-	private ArrayList<String> tokenizerCreatorList;
-	
 	final private IConfigurationElement[] tokenizers = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
 
 	private Label descriptionLabel;
-
-	private ArrayList<String> tokenizerDescriptionList;
-
-	private ArrayList<Boolean> tokenizerIsConfigurableList;
 
 	/**
 	 * @param projectStructurePage 
@@ -85,17 +77,9 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		// Set up local vars
-		// FIXME: Put all in one data structure (Map?)
-		tokenizerNameList = new ArrayList<>();
-		tokenizerDescriptionList = new ArrayList<>();
-		tokenizerCreatorList = new ArrayList<>();
-		tokenizerIsConfigurableList = new ArrayList<>();
+		final ArrayList<ProcessingComponentMetaData> metaDataList = new ArrayList<>();
 		for (int i = 0; i < tokenizers.length; i++) {
-			tokenizerNameList.add(i, tokenizers[i].getAttribute("name"));
-			tokenizerDescriptionList.add(i, tokenizers[i].getAttribute("description"));
-			tokenizerCreatorList.add(i, tokenizers[i].getAttribute("creator"));
-			tokenizerIsConfigurableList.add(i, tokenizers[i].getAttribute("wizardPage") != null);
+			metaDataList.add(i, new ProcessingComponentMetaData().bulkCompleteFields(tokenizers[i]));
 		}
 		final ArrayList<Composite> activeTokenizerWidgets = new ArrayList<>();
 				
@@ -122,11 +106,8 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 
 		descriptionLabel = new Label(descriptionGroup, SWT.WRAP);
 		descriptionLabel.setLayoutData(new GridData(SWT.HORIZONTAL, SWT.TOP, true, false, 1, 1));
-		descriptionLabel.setText(tokenizerDescriptionList.get(0));
+		descriptionLabel.setText(metaDataList. get(0).getDescription());
 		
-		/////////////////////////////////////////////////////////////////////////////////////
-		
-		// Spinner
 	    Label spinnerLabel = new Label(container, SWT.NONE);
 	    spinnerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		spinnerLabel.setText("Number of tokenizers to apply to corpus:");
@@ -137,7 +118,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		tokenizersSpinner.setSelection(1);
 		tokenizersSpinner.setPageIncrement(5);
 		
-		// Composites
 		final Composite tokenizerContainer = new Composite(container, SWT.NONE);
 		tokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		tokenizerContainer.setLayout(new FillLayout());
@@ -171,7 +151,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				else if (spinnerValue > numberOfActiveTokenizerWidgets) { // Add
 					int numberOfWidgetsToAdd = (spinnerValue - numberOfActiveTokenizerWidgets);
 					for (int i = 0; i < numberOfWidgetsToAdd; i++) {
-						activeTokenizerWidgets.add(createTokenizerControls(tokenizerCompositeContainer, container, activeTokenizerWidgets.size() + 1));
+						activeTokenizerWidgets.add(createTokenizerControls(tokenizerCompositeContainer, container, (activeTokenizerWidgets.size() + 1), metaDataList));
 					}
 				}
 				else return;
@@ -183,19 +163,31 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		});
 
 		if (activeTokenizerWidgets.isEmpty()) {
-			activeTokenizerWidgets.add(createTokenizerControls(tokenizerCompositeContainer, container, 1));
+			activeTokenizerWidgets.add(createTokenizerControls(tokenizerCompositeContainer, container, 1, metaDataList));
 		}
 
 		setControl(container);
 	}
 
 	/**
-	 * TODO: Description
+	 * Constructs a {@link Composite} containing widgets to select the 
+	 * tokenizer to use, and info about the selected tokenizer:
+	 * <p>
+	 * <ul>
+	 * <li>a combo box to choose the tokenizer from</li>
+	 * <li>a text field displaying the creator of the selected tokenizer</li>
+	 * <li>a checkbox showing whether the tokenizer is configurable via a
+	 * dedicated wizard page</i>
+	 * </ul>
+	 * <p>
+	 * Returns the constructed {@link Composite}.
 	 *
 	 * @param areaContainer
-	 * @param i 
+	 * @param parent
+	 * @param placeInListOfTokenizers
+	 * @return the constructed composite containing the respective widgets for one tokenizer
 	 */
-	private Composite createTokenizerControls(final Composite areaContainer, final Composite parent, int i) {
+	private Composite createTokenizerControls(final Composite areaContainer, final Composite parent, int placeInListOfTokenizers, final ArrayList<ProcessingComponentMetaData> metaDataList) {
 		final Composite tokenizerArea = new Composite(areaContainer, SWT.BORDER_DOT);
 		tokenizerArea.setLayout(new GridLayout(3, false));
 		tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -210,11 +202,11 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		
 		Label tokenizerLabel = new Label(group, SWT.NONE);
 		tokenizerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		tokenizerLabel.setText("Tokenizer " + i + ":");
+		tokenizerLabel.setText("Tokenizer " + placeInListOfTokenizers + ":");
 		final Combo tokenizerCombo = new Combo(group, SWT.DROP_DOWN | SWT.READ_ONLY);
 		tokenizerCombo.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
-		for (int j = 0; j < tokenizerNameList.size(); j++) {
-			tokenizerCombo.add(tokenizerNameList.get(j), j);
+		for (int j = 0; j < metaDataList.size(); j++) {
+			tokenizerCombo.add(metaDataList.get(j).getName(), j);
 		}
 		if (tokenizerCombo.getItemCount() > 0) {
 			tokenizerCombo.select(0);
@@ -226,7 +218,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		creatorLabel.setText("Creator:");
 		final Text creatorText = new Text(group, SWT.READ_ONLY);
 		creatorText.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
-		creatorText.setText(tokenizerCreatorList.get(tokenizerCombo.getSelectionIndex()));
+		creatorText.setText(metaDataList.get(tokenizerCombo.getSelectionIndex()).getCreator());
 		
 		Label configurableLabel = new Label(group, SWT.NONE);
 		configurableLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -245,9 +237,10 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int index = tokenizerCombo.getSelectionIndex();
-				descriptionLabel.setText(tokenizerDescriptionList.get(index));
-				creatorText.setText(tokenizerCreatorList.get(index));
-				configurableButton.setSelection(tokenizerIsConfigurableList.get(index));
+				ProcessingComponentMetaData metaData = metaDataList.get(index);
+				descriptionLabel.setText(metaData.getDescription());
+				creatorText.setText(metaData.getCreator());
+				configurableButton.setSelection(metaData.isConfigurable());
 				setTokenizer(tokenizers[index]);
 				areaContainer.layout();
 				parent.layout();
