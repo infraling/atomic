@@ -53,6 +53,18 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	private NewAtomicProjectWizardPageProjectStructure projectStructurePage;
 	private IConfigurationElement tokenizer = null;
 
+	private ArrayList<String> tokenizerNameList;
+
+	private ArrayList<String> tokenizerCreatorList;
+	
+	final private IConfigurationElement[] tokenizers = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
+
+	private Label descriptionLabel;
+
+	private ArrayList<String> tokenizerDescriptionList;
+
+	private ArrayList<Boolean> tokenizerIsConfigurableList;
+	
 	/**
 	 * @param projectStructurePage 
 	 * 
@@ -83,12 +95,11 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		Label separator = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
 	    separator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
-		final IConfigurationElement[] tokenizers = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
-		
-		ArrayList<String> tokenizerNameList = new ArrayList<>();
-		final ArrayList<String> tokenizerDescriptionList = new ArrayList<>();
-		final ArrayList<String> tokenizerCreatorList = new ArrayList<>();
-		final ArrayList<Boolean> tokenizerIsConfigurableList = new ArrayList<>();
+		// FIXME: Put all in one data structure (Map?)
+		tokenizerNameList = new ArrayList<>();
+		tokenizerDescriptionList = new ArrayList<>();
+		tokenizerCreatorList = new ArrayList<>();
+		tokenizerIsConfigurableList = new ArrayList<>();
 		for (int i = 0; i < tokenizers.length; i++) {
 			tokenizerNameList.add(i, tokenizers[i].getAttribute("name"));
 			tokenizerDescriptionList.add(i, tokenizers[i].getAttribute("description"));
@@ -104,10 +115,21 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		descriptionGroup.setLayout(descriptionGroupLayout);
 		descriptionGroup.setText("Description");
 
-		final Label descriptionLabel = new Label(descriptionGroup, SWT.WRAP);
+		descriptionLabel = new Label(descriptionGroup, SWT.WRAP);
 		descriptionLabel.setLayoutData(new GridData(SWT.HORIZONTAL, SWT.TOP, true, false, 1, 1));
 		descriptionLabel.setText(tokenizerDescriptionList.get(0));
 		
+		createTokenizerControls(container);
+		
+		setControl(container);
+	}
+
+	/**
+	 * TODO: Description
+	 *
+	 * @param container
+	 */
+	private void createTokenizerControls(final Composite container) {
 		Label tokenizerLabel = new Label(container, SWT.NONE);
 		tokenizerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		tokenizerLabel.setText("Tokenizer:");
@@ -152,8 +174,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				container.layout();
 			}
 		});
-		
-		setControl(container);
 	}
 
 	/**
