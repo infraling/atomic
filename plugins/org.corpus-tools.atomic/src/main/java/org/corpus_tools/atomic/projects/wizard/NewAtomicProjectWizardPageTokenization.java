@@ -26,15 +26,19 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -64,6 +68,8 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	private ArrayList<String> tokenizerDescriptionList;
 
 	private ArrayList<Boolean> tokenizerIsConfigurableList;
+
+	private Composite container;
 	
 	/**
 	 * @param projectStructurePage 
@@ -81,7 +87,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		final Composite container = new Composite(parent, SWT.NONE);
+		container = new Composite(parent, SWT.NONE);
 		GridLayout containerLayout = new GridLayout(2, false);
 		containerLayout.verticalSpacing = 30;
 		container.setLayout(containerLayout);
@@ -113,13 +119,50 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		descriptionGroupLayout.marginHeight = 10;
 		descriptionGroupLayout.marginWidth = 10;
 		descriptionGroup.setLayout(descriptionGroupLayout);
-		descriptionGroup.setText("Description");
+		descriptionGroup.setText("Description of currently selected tokenizer");
 
 		descriptionLabel = new Label(descriptionGroup, SWT.WRAP);
 		descriptionLabel.setLayoutData(new GridData(SWT.HORIZONTAL, SWT.TOP, true, false, 1, 1));
 		descriptionLabel.setText(tokenizerDescriptionList.get(0));
 		
-		createTokenizerControls(container);
+		/////////////////////////////////////////////////////////////////////////////////////
+		
+		// Spinner
+	    Label spinnerLabel = new Label(container, SWT.NONE);
+	    spinnerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		spinnerLabel.setText("Number of tokenizers to apply to corpus:");
+		Spinner tokenizersSpinner = new Spinner(container, SWT.BORDER);
+		tokenizersSpinner.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		tokenizersSpinner.setMinimum(1);
+		tokenizersSpinner.setIncrement(1);
+		tokenizersSpinner.setSelection(1);
+		tokenizersSpinner.setPageIncrement(5);
+		tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				container.layout();
+			}
+		});
+
+		
+		// Composites
+		final Composite tokenizerContainer = new Composite(container, SWT.NONE);
+		tokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		tokenizerContainer.setLayout(new FillLayout());
+
+//		final ScrolledComposite scrolledComposite = new ScrolledComposite(tokenizerContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+//		scrolledComposite.setExpandHorizontal(true);
+//		scrolledComposite.setExpandVertical(true);
+		
+		final Composite tokenizerComposite = new Composite(tokenizerContainer, SWT.NONE);
+//		GridLayout tokCompLayout = new GridLayout(2, false);
+//		tokCompLayout.verticalSpacing = 30;
+		tokenizerComposite.setLayout(new RowLayout(SWT.VERTICAL));
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////////
+		
+		createTokenizerControls(tokenizerComposite);
 		
 		setControl(container);
 	}
@@ -127,13 +170,26 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	/**
 	 * TODO: Description
 	 *
-	 * @param container
+	 * @param areaContainer
 	 */
-	private void createTokenizerControls(final Composite container) {
-		Label tokenizerLabel = new Label(container, SWT.NONE);
+	private void createTokenizerControls(final Composite areaContainer) {
+		Group group = new Group(areaContainer, SWT.BORDER);
+		GridLayout tokCompLayout = new GridLayout(2, false);
+//		tokCompLayout.verticalSpacing = 30;
+		tokCompLayout.marginHeight = 20;
+		tokCompLayout.marginWidth = 20;
+		group.setLayout(tokCompLayout);
+		group.setText("TOKENIZER");
+		
+//		final Composite composite = new Composite(container, SWT.BORDER);
+//		GridLayout tokCompLayout = new GridLayout(2, false);
+//		tokCompLayout.verticalSpacing = 30;
+//		composite.setLayout(tokCompLayout);
+		
+		Label tokenizerLabel = new Label(group, SWT.NONE);
 		tokenizerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		tokenizerLabel.setText("Tokenizer:");
-		final Combo tokenizerCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		final Combo tokenizerCombo = new Combo(group, SWT.DROP_DOWN | SWT.READ_ONLY);
 		tokenizerCombo.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
 		for (int j = 0; j < tokenizerNameList.size(); j++) {
 			tokenizerCombo.add(tokenizerNameList.get(j), j);
@@ -143,17 +199,17 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			setTokenizer(tokenizers[0]);
 		}
 		
-		Label creatorLabel = new Label(container, SWT.NONE);
+		Label creatorLabel = new Label(group, SWT.NONE);
 		creatorLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		creatorLabel.setText("Creator:");
-		final Text creatorText = new Text(container, SWT.READ_ONLY);
+		final Text creatorText = new Text(group, SWT.READ_ONLY);
 		creatorText.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
 		creatorText.setText(tokenizerCreatorList.get(tokenizerCombo.getSelectionIndex()));
 		
-		Label configurableLabel = new Label(container, SWT.NONE);
+		Label configurableLabel = new Label(group, SWT.NONE);
 		configurableLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		configurableLabel.setText("Configurable:");
-		final Button configurableButton = new Button(container, SWT.CHECK);
+		final Button configurableButton = new Button(group, SWT.CHECK);
 		configurableButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		configurableButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -171,6 +227,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				creatorText.setText(tokenizerCreatorList.get(index));
 				configurableButton.setSelection(tokenizerIsConfigurableList.get(index));
 				setTokenizer(tokenizers[index]);
+				areaContainer.layout();
 				container.layout();
 			}
 		});
