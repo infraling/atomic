@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * A wizard page that lets the user choose one or more tokenizers that
- * will be used to create tokenizations on the documents of a corpus.
+ * will be used to create tokenization layers on the documents of a corpus.
  *
  * <p>@author Stephan Druskat <mail@sdruskat.net>
  *
