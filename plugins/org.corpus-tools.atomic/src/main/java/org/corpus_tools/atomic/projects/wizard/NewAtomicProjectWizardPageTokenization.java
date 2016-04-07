@@ -85,11 +85,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		
 		final IConfigurationElement[] tokenizers = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
 		
-		Label tokenizerLabel = new Label(container, SWT.NONE);
-		tokenizerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		tokenizerLabel.setText("Tokenizer:");
-		final Combo tokenizerCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		tokenizerCombo.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
 		ArrayList<String> tokenizerNameList = new ArrayList<>();
 		final ArrayList<String> tokenizerDescriptionList = new ArrayList<>();
 		final ArrayList<String> tokenizerCreatorList = new ArrayList<>();
@@ -100,6 +95,24 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			tokenizerCreatorList.add(i, tokenizers[i].getAttribute("creator"));
 			tokenizerIsConfigurableList.add(i, tokenizers[i].getAttribute("wizardPage") != null);
 		}
+		
+		final Group descriptionGroup = new Group(container, SWT.NONE);
+		descriptionGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
+		GridLayout descriptionGroupLayout = new GridLayout(1, true);
+		descriptionGroupLayout.marginHeight = 10;
+		descriptionGroupLayout.marginWidth = 10;
+		descriptionGroup.setLayout(descriptionGroupLayout);
+		descriptionGroup.setText("Description");
+
+		final Label descriptionLabel = new Label(descriptionGroup, SWT.WRAP);
+		descriptionLabel.setLayoutData(new GridData(SWT.HORIZONTAL, SWT.TOP, true, false, 1, 1));
+		descriptionLabel.setText(tokenizerDescriptionList.get(0));
+		
+		Label tokenizerLabel = new Label(container, SWT.NONE);
+		tokenizerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		tokenizerLabel.setText("Tokenizer:");
+		final Combo tokenizerCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
+		tokenizerCombo.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
 		for (int j = 0; j < tokenizerNameList.size(); j++) {
 			tokenizerCombo.add(tokenizerNameList.get(j), j);
 		}
@@ -128,19 +141,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				log.debug("Caught selection event on \"Configurable\" check box and nullified it (i.e., restored the previous state, {}).", btn.getSelection());
 			}
 		});
-		
-		final Group descriptionGroup = new Group(container, SWT.NONE);
-		descriptionGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
-		GridLayout descriptionGroupLayout = new GridLayout(1, true);
-		descriptionGroupLayout.marginHeight = 10;
-		descriptionGroupLayout.marginWidth = 10;
-		descriptionGroup.setLayout(descriptionGroupLayout);
-		descriptionGroup.setText("Description");
-
-		final Label descriptionLabel = new Label(descriptionGroup, SWT.WRAP);
-		descriptionLabel.setLayoutData(new GridData(SWT.HORIZONTAL, SWT.TOP, true, false, 1, 1));
-		descriptionLabel.setText(tokenizerDescriptionList.get(tokenizerCombo.getSelectionIndex()));
-		
 		tokenizerCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
