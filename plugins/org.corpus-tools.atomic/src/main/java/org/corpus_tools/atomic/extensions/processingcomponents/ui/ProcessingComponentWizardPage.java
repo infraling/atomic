@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
+// TODO FIXME: Change to return one or more Processing Components!
+
 /**
  * A {@link ProcessingComponentWizardPage} provides a GUI, embedded
  * in a {@link WizardPage} for an Eclipse JFace {@link Wizard}, e.g.,
@@ -46,7 +48,7 @@ public abstract class ProcessingComponentWizardPage extends WizardPage {
 	/**
 	 * @param pageName
 	 */
-	protected ProcessingComponentWizardPage(String pageName) {
+	public ProcessingComponentWizardPage(String pageName) {
 		super(pageName);
 		// TODO Auto-generated constructor stub
 	}
@@ -56,8 +58,10 @@ public abstract class ProcessingComponentWizardPage extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		// TODO Auto-generated method stub
-
+		/*
+		 * TODO: This is the method where all the SWT/JFace widgets go that are
+		 * needed for creating the custom wizard page.
+		 */
 	}
 	
 	/**
