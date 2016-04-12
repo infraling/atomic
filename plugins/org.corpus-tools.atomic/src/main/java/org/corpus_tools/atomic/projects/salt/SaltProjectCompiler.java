@@ -79,7 +79,7 @@ public class SaltProjectCompiler implements ProjectCompiler {
 	 * @return the complete {@link SaltProject}
 	 */
 	@Override
-	public Object run() {
+	public SaltProject run() {
 		SaltProject project = factory.createSaltProject();
 		project.setSName(getProjectData().getName());
 		log.trace("Created a SaltProject and set its name to {}.", projectData.getName());
