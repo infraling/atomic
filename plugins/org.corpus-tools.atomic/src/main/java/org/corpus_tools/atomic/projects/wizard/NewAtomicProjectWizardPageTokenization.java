@@ -26,17 +26,31 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.processingcomponents.ProcessingComponentMetaData;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
@@ -50,17 +64,6 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class NewAtomicProjectWizardPageTokenization extends WizardPage {
-	
-	/* TODO:
-	 * ####################################################
-	 * 
-	 * Create new class for tokenizer widget, that has a
-	 * field for the type of tokenizer. Thus, the widget list
-	 * at the same time contains the actual tokenizer to pass
-	 * on as well!
-	 *  
-	 *  ####################################################
-	 */
 	
 	/** 
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "NewAtomicProjectWizardPageTokenization".
@@ -122,67 +125,256 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		descriptionLabel.setLayoutData(new GridData(SWT.HORIZONTAL, SWT.TOP, true, false, 1, 1));
 		descriptionLabel.setText(metaDataList. get(0).getDescription());
 		
-	    Label spinnerLabel = new Label(container, SWT.NONE);
-	    spinnerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		spinnerLabel.setText("Number of tokenizers to apply to corpus:");
-		Spinner tokenizersSpinner = new Spinner(container, SWT.BORDER);
-		tokenizersSpinner.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		tokenizersSpinner.setMinimum(1);
-		tokenizersSpinner.setIncrement(1);
-		tokenizersSpinner.setSelection(1);
-		tokenizersSpinner.setPageIncrement(5);
+		// #####################################################################
 		
-		final Composite tokenizerContainer = new Composite(container, SWT.NONE);
-		tokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		tokenizerContainer.setLayout(new FillLayout());
+		final Canvas canvas = new Canvas(container, SWT.BORDER);
+		canvas.setLayout(new GridLayout());
+		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+		final Control[] children = createChildren(canvas);
+
+		for (final Control control : children)
+			addDragListener(control);
+
+		addDropListener(canvas);
 		
-		final ScrolledComposite scrolledComposite = new ScrolledComposite(tokenizerContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-        scrolledComposite.setExpandHorizontal(true);
-        scrolledComposite.setExpandVertical(true);
 
-        final Composite intermediateComposite = new Composite(scrolledComposite, SWT.NONE);
-        intermediateComposite.setLayout(new GridLayout(2, false));
-        scrolledComposite.setContent(intermediateComposite);
-        scrolledComposite.setSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-        
-        final Composite tokenizerCompositeContainer = new Composite(intermediateComposite, SWT.NONE);
-        tokenizerCompositeContainer.setLayout(new GridLayout(3, false));
-        tokenizerCompositeContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		final Canvas canvas2 = new Canvas(container, SWT.BORDER);
+		canvas2.setLayout(new GridLayout());
+		canvas2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+		final Control[] children2 = createChildren(canvas2);
+
+		for (final Control control : children2)
+			addDragListener(control);
+
+		addDropListener(canvas2);
+
 		
-		tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Spinner spinner = (Spinner) e.widget;
-				int spinnerValue = Integer.parseInt(spinner.getText());
-				int numberOfActiveTokenizerWidgets = getActiveTokenizerWidgets().size();
-				int indexOfFirstWidgetToRemove = numberOfActiveTokenizerWidgets - spinnerValue;
-				if (spinnerValue < numberOfActiveTokenizerWidgets) {
-					for (Composite compositeToClear : getActiveTokenizerWidgets().subList(numberOfActiveTokenizerWidgets - indexOfFirstWidgetToRemove, numberOfActiveTokenizerWidgets)) {
-						compositeToClear.dispose();
-					}
-					getActiveTokenizerWidgets().subList(numberOfActiveTokenizerWidgets - indexOfFirstWidgetToRemove, numberOfActiveTokenizerWidgets).clear();
-					updateTokenizerSet();
-				}
-				else if (spinnerValue > numberOfActiveTokenizerWidgets) { // Add
-					int numberOfWidgetsToAdd = (spinnerValue - numberOfActiveTokenizerWidgets);
-					for (int i = 0; i < numberOfWidgetsToAdd; i++) {
-						getActiveTokenizerWidgets().add(createTokenizerControls(tokenizerCompositeContainer, container, (getActiveTokenizerWidgets().size() + 1), metaDataList));
-					}
-				}
-				else return;
+		// #####################################################################
+		
+//	    Label spinnerLabel = new Label(container, SWT.NONE);
+//	    spinnerLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//		spinnerLabel.setText("Number of tokenizers to apply to corpus:");
+//		Spinner tokenizersSpinner = new Spinner(container, SWT.BORDER);
+//		tokenizersSpinner.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//		tokenizersSpinner.setMinimum(1);
+//		tokenizersSpinner.setIncrement(1);
+//		tokenizersSpinner.setSelection(1);
+//		tokenizersSpinner.setPageIncrement(5);
+		
+//		final Composite tokenizerContainer = new Composite(container, SWT.NONE);
+//		tokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+//		tokenizerContainer.setLayout(new FillLayout());
+//		
+//		final ScrolledComposite scrolledComposite = new ScrolledComposite(tokenizerContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+//        scrolledComposite.setExpandHorizontal(true);
+//        scrolledComposite.setExpandVertical(true);
+//
+//        final Composite intermediateComposite = new Composite(scrolledComposite, SWT.NONE);
+//        intermediateComposite.setLayout(new GridLayout(2, false));
+//        scrolledComposite.setContent(intermediateComposite);
+//        scrolledComposite.setSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+//        
+//        final Composite tokenizerCompositeContainer = new Composite(intermediateComposite, SWT.NONE);
+//        tokenizerCompositeContainer.setLayout(new GridLayout(3, false));
+//        tokenizerCompositeContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+//        
+//        for (IConfigurationElement tokenizer : tokenizers) {
+//        	final Composite tokenizerArea = new Composite(tokenizerCompositeContainer, SWT.BORDER_DOT);
+//    		tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+//    		tokenizerArea.setLayout(new GridLayout(4, false));
+//    		
+//    		Button activateTokenizerBtn = new Button(tokenizerArea, SWT.CHECK);
+//    		activateTokenizerBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//    		
+//    		Label name = new Label(tokenizerArea, SWT.NONE);
+//    		name.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//    		name.setText(tokenizer.getAttribute("name"));
+//    		
+//    		if (tokenizer.getAttribute("wizardPage") != null) {
+//    			Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
+//    			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//    			showInfoBtn.setText("Show details");
+//    			
+//    			Button configureBtn = new Button(tokenizerArea, SWT.PUSH);
+//    			configureBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//    			configureBtn.setText("Configure");
+//    		}
+//    		else {
+//    			Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
+//    			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+//    			showInfoBtn.setText("Show details");		
+//    		}
+//    		
+//        }
+//		
+//		tokenizersSpinner.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				Spinner spinner = (Spinner) e.widget;
+//				int spinnerValue = Integer.parseInt(spinner.getText());
+//				int numberOfActiveTokenizerWidgets = getActiveTokenizerWidgets().size();
+//				int indexOfFirstWidgetToRemove = numberOfActiveTokenizerWidgets - spinnerValue;
+//				if (spinnerValue < numberOfActiveTokenizerWidgets) {
+//					for (Composite compositeToClear : getActiveTokenizerWidgets().subList(numberOfActiveTokenizerWidgets - indexOfFirstWidgetToRemove, numberOfActiveTokenizerWidgets)) {
+//						compositeToClear.dispose();
+//					}
+//					getActiveTokenizerWidgets().subList(numberOfActiveTokenizerWidgets - indexOfFirstWidgetToRemove, numberOfActiveTokenizerWidgets).clear();
+//					updateTokenizerSet();
+//				}
+//				else if (spinnerValue > numberOfActiveTokenizerWidgets) { // Add
+//					int numberOfWidgetsToAdd = (spinnerValue - numberOfActiveTokenizerWidgets);
+//					for (int i = 0; i < numberOfWidgetsToAdd; i++) {
+//						getActiveTokenizerWidgets().add(createTokenizerControls(tokenizerCompositeContainer, container, (getActiveTokenizerWidgets().size() + 1), metaDataList));
+//					}
+//				}
+//				else return;
+//
+//				container.layout();
+//				scrolledComposite.layout(true, true);
+//                scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+//                
+//			}
+//		});
 
-				container.layout();
-				scrolledComposite.layout(true, true);
-                scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-                
-			}
-		});
-
-		if (getActiveTokenizerWidgets().isEmpty()) {
-			getActiveTokenizerWidgets().add(createTokenizerControls(tokenizerCompositeContainer, container, 1, metaDataList));
-		}
+//		if (getActiveTokenizerWidgets().isEmpty()) {
+//			getActiveTokenizerWidgets().add(createTokenizerControls(tokenizerCompositeContainer, container, 1, metaDataList));
+//		}
 
 		setControl(container);
+	}
+	
+	/**
+	 * TODO: Description
+	 *
+	 * @param canvas
+	 * @return
+	 */
+	private Control[] createChildren(Canvas canvas) {
+		ArrayList<Control> controls = new ArrayList<>();
+		for (int i = 0; i < tokenizers.length; i++) {
+			IConfigurationElement tokenizer = tokenizers[i];
+        	final Composite tokenizerArea = new Composite(canvas, SWT.BORDER);
+        	tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+    		tokenizerArea.setLayout(new GridLayout(4, false));
+    		
+    		Button activateTokenizerBtn = new Button(tokenizerArea, SWT.CHECK);
+    		activateTokenizerBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+    		controls.add(activateTokenizerBtn);
+    		
+    		Label name = new Label(tokenizerArea, SWT.NONE);
+    		name.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+    		name.setText(tokenizer.getAttribute("name"));
+    		controls.add(name);
+    		
+    		if (tokenizer.getAttribute("wizardPage") != null) {
+    			Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
+    			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+    			showInfoBtn.setText("Show details");
+    			controls.add(showInfoBtn);
+    			
+    			Button configureBtn = new Button(tokenizerArea, SWT.PUSH);
+    			configureBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+    			configureBtn.setText("Configure");
+    			controls.add(configureBtn);
+    		}
+    		else {
+    			Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
+    			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+    			showInfoBtn.setText("Show details");
+    			controls.add(showInfoBtn);
+    		}
+    		controls.add(tokenizerArea);
+        }
+
+		return controls.toArray(new Control[controls.size()]);
+	}
+
+	private void addDragListener(final Control control) {
+		// Step 1: Get JFace's LocalSelectionTransfer instance
+		final LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
+
+		final DragSourceAdapter dragAdapter = new DragSourceAdapter() {
+			@Override
+			public void dragSetData(final DragSourceEvent event) {
+				// Step 2: On drag events, create a new JFace StructuredSelection
+				// with the dragged control.
+//				if (control instanceof Composite) {
+					transfer.setSelection(new StructuredSelection(control));
+//				}
+//				else {
+//					transfer.setSelection(new StructuredSelection(control.getParent()));
+//				}
+			}
+		};
+		final DragSource dragSource;
+//		if (control instanceof Composite) {
+//
+			dragSource = new DragSource(control, DND.DROP_MOVE | DND.DROP_COPY);
+//		}
+//		else {
+//			System.err.println(control.getClass());
+//			dragSource = new DragSource(control.getParent(), DND.DROP_MOVE | DND.DROP_COPY);
+//		}
+		dragSource.setTransfer(new Transfer[] { transfer });
+		dragSource.addDragListener(dragAdapter);
+	}
+
+	private void addDropListener(final Composite parent) {
+		final LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
+
+		final DropTargetAdapter dragAdapter = new DropTargetAdapter() {
+			@Override
+			public void drop(final DropTargetEvent event) {
+				// Step 1: Get first element from the StructuredSelection
+				final Control droppedObj = (Control) ((StructuredSelection) transfer.getSelection()).getFirstElement();
+
+				// Step 2: Get that control's parent from which it's being dragged
+				final Composite oldParent;
+				if (droppedObj instanceof Composite) {
+				oldParent = droppedObj.getParent();}
+				else {
+					oldParent = droppedObj.getParent().getParent();
+				}
+
+				// If we drag and drop on the same parent, do nothing
+				if (oldParent == parent)
+					return;
+
+				// Step 3: Figure out what are we dropping
+				// This may be done in the dropAccept implementation
+				// if (droppedObj instanceof Label)
+				// {
+				// final Label droppedLabel = (Label) droppedObj;
+				// droppedLabel.setParent(parent); // Change parent
+				// }
+				//
+				// if (droppedObj instanceof Button)
+				// {
+				// final Button droppedButton = (Button) droppedObj;
+				// droppedButton.setParent(parent); // Change parent
+				// }
+
+				if (droppedObj instanceof Composite) {
+					final Composite droppedButton = (Composite) droppedObj;
+					droppedButton.setParent(parent); // Change parent
+				}
+				else {
+					final Composite droppedButton = (Composite) droppedObj.getParent();
+					droppedButton.setParent(parent); // Change parent
+				}
+
+				// Step 4: Tell all parent that the layout has changed
+				// This is not necessary, but it looks nicer.
+				oldParent.layout();
+				parent.layout();
+			}
+		};
+
+		final DropTarget dropTarget = new DropTarget(parent, DND.DROP_MOVE | DND.DROP_COPY);
+		dropTarget.setTransfer(new Transfer[] { transfer });
+		dropTarget.addDropListener(dragAdapter);
 	}
 
 	/**
@@ -211,7 +403,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		tokenizerArea.setLayout(new GridLayout(3, false));
 		tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
-		Group group = new Group(tokenizerArea, SWT.BORDER);
+		final Group group = new Group(tokenizerArea, SWT.BORDER);
 		group.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 		GridLayout tokCompLayout = new GridLayout(2, false);
 		tokCompLayout.marginHeight = 20;
@@ -251,6 +443,12 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				log.debug("Caught selection event on \"Configurable\" check box and nullified it (i.e., restored the previous state, {}).", btn.getSelection());
 			}
 		});
+		
+		final Button configureButton = new Button(group, SWT.PUSH);
+		configureButton.setBounds(0, 0, 0, 0);
+		configureButton.setSize(0, 0);
+		configureButton.setVisible(false);
+		
 		tokenizerCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -259,11 +457,24 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				descriptionLabel.setText(metaData.getDescription());
 				creatorText.setText(metaData.getCreator());
 				configurableButton.setSelection(metaData.isConfigurable());
+				if (metaData.isConfigurable()) {
+					configureButton.setParent(group);
+					configureButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+					configureButton.setText("Configure");
+					configureButton.setVisible(true);
+				}
+				else {
+					configureButton.setLayoutData(null);
+					configureButton.setText("");
+					configureButton.setBounds(0, 0, 0, 0);
+					configureButton.setSize(0, 0);
+					configureButton.setVisible(false);
+				}
 				areaContainer.layout();
 				parent.layout();
 				
 				tokenizerArea.setData(tokenizers[index]);
-				updateTokenizerSet();
+				updateTokenizerSet(tokenizers[index]);
 			}
 		});
 		return tokenizerArea;
@@ -272,13 +483,15 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	/**
 	 * Updates the set of tokenizers by clearing it and re-filling
 	 * it from the <code>data</code> fields of the active tokenizer widgets. 
+	 * @param tokenizers2 
 	 *
 	 */
-	private void updateTokenizerSet() {
+	private void updateTokenizerSet(IConfigurationElement tokenizer) {
 		getTokenizerSet().clear();
 		for (Composite activeTokenizerWidgets : getActiveTokenizerWidgets()) {
 			getTokenizerSet().add((IConfigurationElement) activeTokenizerWidgets.getData());
 		}
+		getTokenizerSet().add(tokenizer);
 	}
 
 	/**
@@ -306,15 +519,24 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 * 
 	 * @return the activeTokenizerWidgets
 	 */
-	public ArrayList<Composite> getActiveTokenizerWidgets() {
+	private ArrayList<Composite> getActiveTokenizerWidgets() {
 		return activeTokenizerWidgets;
 	}
 
 	/**
 	 * @return the tokenizerSet
 	 */
-	public LinkedHashSet<IConfigurationElement> getTokenizerSet() {
+	private LinkedHashSet<IConfigurationElement> getTokenizerSet() {
 		return tokenizerSet;
+	}
+	
+	/**
+	 * Returns an array of all tokenizers to be used.
+	 *
+	 * @return the array of tokenizeex
+	 */
+	public IConfigurationElement[] getTokenizers() {
+		return (IConfigurationElement[]) getTokenizerSet().toArray();
 	}
 
 }
