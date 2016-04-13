@@ -76,8 +76,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	private final ArrayList<Composite> activeTokenizerWidgets = new ArrayList<>();
 	private final LinkedHashSet<IConfigurationElement> tokenizerSet = new LinkedHashSet<>();
 
-	private ArrayList<Object> layoutChain;
-
 	/**
 	 * @param projectStructurePage 
 	 * 
@@ -94,7 +92,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		layoutChain = new ArrayList<>();
 		final ArrayList<ProcessingComponentMetaData> metaDataList = new ArrayList<>();
 		for (int i = 0; i < tokenizers.length; i++) {
 			metaDataList.add(i, new ProcessingComponentMetaData().bulkCompleteFields(tokenizers[i]));
@@ -151,8 +148,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			tokenizerCompositeContainer.setLayout(new GridLayout());
 			tokenizerCompositeContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 			
-			layoutChain.addAll(Arrays.asList((new Control[]{tokenizerCompositeContainer, container, scrolledComposite, intermediateComposite})));
-			
 		// Inside c1_2
 			final ScrolledComposite scrolledComposite2 = new ScrolledComposite(c1_2, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 			scrolledComposite2.setExpandHorizontal(true);
@@ -166,7 +161,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			final Composite tokenizerCompositeContainer2 = new Composite(intermediateComposite2, SWT.NONE);
 			tokenizerCompositeContainer2.setLayout(new GridLayout());
 			tokenizerCompositeContainer2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-			layoutChain.addAll(Arrays.asList((new Control[]{tokenizerCompositeContainer2, container, scrolledComposite2, intermediateComposite2})));
 		
 		addDropListener(tokenizerCompositeContainer, container, scrolledComposite, intermediateComposite, tokenizerCompositeContainer2, scrolledComposite2, intermediateComposite2);
 		addDropListener(tokenizerCompositeContainer2, container, scrolledComposite2, intermediateComposite2, tokenizerCompositeContainer, scrolledComposite, intermediateComposite);
@@ -301,7 +295,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 * @param parent2 
 	 * @return
 	 */
-	private Control[] createChildren(Composite parent, Composite container, ScrolledComposite scrolledComposite, Composite intermediateComposite, Composite parent2, ScrolledComposite scrolledComposite2, Composite intermediateComposite2) {
+	private Control[] createChildren(final Composite parent, final Composite container, ScrolledComposite scrolledComposite, Composite intermediateComposite, Composite parent2, ScrolledComposite scrolledComposite2, Composite intermediateComposite2) {
 		ArrayList<Control> controls = new ArrayList<>();
 		
 		for (int x = 0; x<10; x++) {
@@ -309,6 +303,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		for (int i = 0; i < tokenizers.length; i++) {
 			IConfigurationElement tokenizer = tokenizers[i];
         	final Composite tokenizerArea = new Composite(parent, SWT.BORDER);
+        	tokenizerArea.setData(tokenizer);
         	tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     		tokenizerArea.setLayout(new GridLayout(4, false));
     		
@@ -321,23 +316,26 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
     		name.setText(tokenizer.getAttribute("name"));
     		controls.add(name);
     		
+    		Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
+			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+			showInfoBtn.setText("Show details");
+			showInfoBtn.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					descriptionLabel.setText(((IConfigurationElement) ((Control) e.widget).getParent().getData()).getAttribute("description"));
+					parent.layout();
+					container.layout();
+				}
+			});
+			controls.add(showInfoBtn);
+    		
     		if (tokenizer.getAttribute("wizardPage") != null) {
-    			Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
-    			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-    			showInfoBtn.setText("Show details");
-    			controls.add(showInfoBtn);
-    			
     			Button configureBtn = new Button(tokenizerArea, SWT.PUSH);
     			configureBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
     			configureBtn.setText("Configure");
     			controls.add(configureBtn);
     		}
-    		else {
-    			Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
-    			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-    			showInfoBtn.setText("Show details");
-    			controls.add(showInfoBtn);
-    		}
+
     		controls.add(tokenizerArea);
         }
 		
