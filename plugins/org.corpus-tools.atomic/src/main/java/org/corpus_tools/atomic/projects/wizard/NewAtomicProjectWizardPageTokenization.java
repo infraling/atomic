@@ -307,10 +307,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
         	tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     		tokenizerArea.setLayout(new GridLayout(4, false));
     		
-    		Button activateTokenizerBtn = new Button(tokenizerArea, SWT.CHECK);
-    		activateTokenizerBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-    		controls.add(activateTokenizerBtn);
-    		
     		Label name = new Label(tokenizerArea, SWT.NONE);
     		name.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
     		name.setText(tokenizer.getAttribute("name"));
@@ -334,6 +330,19 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
     			configureBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
     			configureBtn.setText("Configure");
     			controls.add(configureBtn);
+    			
+        		final Button isConfiguredBtn = new Button(tokenizerArea, SWT.CHECK);
+        		isConfiguredBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        		isConfiguredBtn.setSelection(true);
+        		isConfiguredBtn.addSelectionListener(new SelectionAdapter() {
+        			@Override
+        			public void widgetSelected(SelectionEvent e) {
+        				Button btn = (Button) e.widget;
+        				btn.setSelection(!isConfiguredBtn.getSelection());
+        				log.debug("Caught selection event on \"is configured?\" check box and nullified it (i.e., restored the previous state, {}).", btn.getSelection());
+        			}
+        		});
+        		controls.add(isConfiguredBtn);
     		}
 
     		controls.add(tokenizerArea);
