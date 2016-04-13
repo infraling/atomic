@@ -318,7 +318,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
     		
     		Button showInfoBtn = new Button(tokenizerArea, SWT.PUSH);
 			showInfoBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-			showInfoBtn.setText("Show details");
+			showInfoBtn.setText("Show description");
 			showInfoBtn.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
