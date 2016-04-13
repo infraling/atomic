@@ -19,6 +19,7 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.processingcomponents.ProcessingComponentMetaData;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
@@ -46,14 +46,11 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -79,6 +76,8 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	private final ArrayList<Composite> activeTokenizerWidgets = new ArrayList<>();
 	private final LinkedHashSet<IConfigurationElement> tokenizerSet = new LinkedHashSet<>();
 
+	private ArrayList<Object> layoutChain;
+
 	/**
 	 * @param projectStructurePage 
 	 * 
@@ -95,6 +94,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		layoutChain = new ArrayList<>();
 		final ArrayList<ProcessingComponentMetaData> metaDataList = new ArrayList<>();
 		for (int i = 0; i < tokenizers.length; i++) {
 			metaDataList.add(i, new ProcessingComponentMetaData().bulkCompleteFields(tokenizers[i]));
@@ -126,30 +126,74 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		descriptionLabel.setText(metaDataList. get(0).getDescription());
 		
 		// #####################################################################
+		Composite c1 = new Composite(container, SWT.BORDER);
+		c1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		c1.setLayout(new GridLayout(2, true));
+
+		Composite c1_1 = new Composite(c1, SWT.BORDER);
+		c1_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		c1_1.setLayout(new FillLayout());
+		Composite c1_2 = new Composite(c1, SWT.BORDER);
+		c1_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		c1_2.setLayout(new FillLayout());
 		
-		final Canvas canvas = new Canvas(container, SWT.BORDER);
-		canvas.setLayout(new GridLayout());
-		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-
-		final Control[] children = createChildren(canvas);
-
-		for (final Control control : children)
-			addDragListener(control);
-
-		addDropListener(canvas);
+		// Inside c1_1
+			final ScrolledComposite scrolledComposite = new ScrolledComposite(c1_1, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+			scrolledComposite.setExpandHorizontal(true);
+			scrolledComposite.setExpandVertical(true);
+	
+			final Composite intermediateComposite = new Composite(scrolledComposite, SWT.NONE);
+			intermediateComposite.setLayout(new GridLayout(2, false));
+			scrolledComposite.setContent(intermediateComposite);
+			scrolledComposite.setSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	
+			final Composite tokenizerCompositeContainer = new Composite(intermediateComposite, SWT.NONE);
+			tokenizerCompositeContainer.setLayout(new GridLayout());
+			tokenizerCompositeContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+			
+			layoutChain.addAll(Arrays.asList((new Control[]{tokenizerCompositeContainer, container, scrolledComposite, intermediateComposite})));
+			
+		// Inside c1_2
+			final ScrolledComposite scrolledComposite2 = new ScrolledComposite(c1_2, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+			scrolledComposite2.setExpandHorizontal(true);
+			scrolledComposite2.setExpandVertical(true);
+	
+			final Composite intermediateComposite2 = new Composite(scrolledComposite2, SWT.NONE);
+			intermediateComposite2.setLayout(new GridLayout(2, false));
+			scrolledComposite2.setContent(intermediateComposite2);
+			scrolledComposite2.setSize(intermediateComposite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	
+			final Composite tokenizerCompositeContainer2 = new Composite(intermediateComposite2, SWT.NONE);
+			tokenizerCompositeContainer2.setLayout(new GridLayout());
+			tokenizerCompositeContainer2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+			layoutChain.addAll(Arrays.asList((new Control[]{tokenizerCompositeContainer2, container, scrolledComposite2, intermediateComposite2})));
 		
-
-		final Canvas canvas2 = new Canvas(container, SWT.BORDER);
-		canvas2.setLayout(new GridLayout());
-		canvas2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-
-		final Control[] children2 = createChildren(canvas2);
-
-		for (final Control control : children2)
+		addDropListener(tokenizerCompositeContainer, container, scrolledComposite, intermediateComposite, tokenizerCompositeContainer2, scrolledComposite2, intermediateComposite2);
+		addDropListener(tokenizerCompositeContainer2, container, scrolledComposite2, intermediateComposite2, tokenizerCompositeContainer, scrolledComposite, intermediateComposite);
+		final Control[] children = createChildren(tokenizerCompositeContainer, container, scrolledComposite, intermediateComposite, tokenizerCompositeContainer2, scrolledComposite2, intermediateComposite2);
+		for (final Control control : children) {
 			addDragListener(control);
+		}
+	
 
-		addDropListener(canvas2);
+		
+//		final Composite availableTokenizers = new Composite(c1, SWT.BORDER);
+//		availableTokenizers.setLayout(new GridLayout());
+//		availableTokenizers.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		final Control[] children = createChildren(availableTokenizers);
+//		for (final Control control : children) {
+//			addDragListener(control);
+//		}
+//		addDropListener(availableTokenizers);
 
+//		final Composite tokenizersToUse = new Composite(c1, SWT.BORDER);
+//		tokenizersToUse.setLayout(new GridLayout());
+//		tokenizersToUse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		final Control[] children2 = createChildren(tokenizersToUse);
+//		for (final Control control : children2) {
+//			addDragListener(control);
+//		}
+//		addDropListener(tokenizersToUse);
 		
 		// #####################################################################
 		
@@ -248,14 +292,23 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	/**
 	 * TODO: Description
 	 *
-	 * @param canvas
+	 * @param parent
+	 * @param intermediateComposite 
+	 * @param scrolledComposite 
+	 * @param container 
+	 * @param intermediateComposite2 
+	 * @param scrolledComposite2 
+	 * @param parent2 
 	 * @return
 	 */
-	private Control[] createChildren(Canvas canvas) {
+	private Control[] createChildren(Composite parent, Composite container, ScrolledComposite scrolledComposite, Composite intermediateComposite, Composite parent2, ScrolledComposite scrolledComposite2, Composite intermediateComposite2) {
 		ArrayList<Control> controls = new ArrayList<>();
+		
+		for (int x = 0; x<10; x++) {
+		
 		for (int i = 0; i < tokenizers.length; i++) {
 			IConfigurationElement tokenizer = tokenizers[i];
-        	final Composite tokenizerArea = new Composite(canvas, SWT.BORDER);
+        	final Composite tokenizerArea = new Composite(parent, SWT.BORDER);
         	tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     		tokenizerArea.setLayout(new GridLayout(4, false));
     		
@@ -287,6 +340,16 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
     		}
     		controls.add(tokenizerArea);
         }
+		
+		}
+		
+		parent.layout();
+		parent2.layout();
+		container.layout();
+		scrolledComposite.layout(true, true);
+		scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		scrolledComposite2.layout(true, true);
+		scrolledComposite2.setMinSize(intermediateComposite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 		return controls.toArray(new Control[controls.size()]);
 	}
@@ -321,7 +384,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		dragSource.addDragListener(dragAdapter);
 	}
 
-	private void addDropListener(final Composite parent) {
+	private void addDropListener(final Composite parent, final Composite container, final ScrolledComposite scrolledComposite, final Composite intermediateComposite, final Composite parent2, final ScrolledComposite scrolledComposite2, final Composite intermediateComposite2) {
 		final LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
 
 		final DropTargetAdapter dragAdapter = new DropTargetAdapter() {
@@ -369,6 +432,12 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				// This is not necessary, but it looks nicer.
 				oldParent.layout();
 				parent.layout();
+				parent2.layout();
+				container.layout();
+				scrolledComposite.layout(true, true);
+				scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				scrolledComposite2.layout(true, true);
+				scrolledComposite2.setMinSize(intermediateComposite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 			}
 		};
 
