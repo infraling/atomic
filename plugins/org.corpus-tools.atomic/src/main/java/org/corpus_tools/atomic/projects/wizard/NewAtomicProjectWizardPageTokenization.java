@@ -298,8 +298,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	private Control[] createChildren(final Composite parent, final Composite container, ScrolledComposite scrolledComposite, Composite intermediateComposite, Composite parent2, ScrolledComposite scrolledComposite2, Composite intermediateComposite2) {
 		ArrayList<Control> controls = new ArrayList<>();
 		
-		for (int x = 0; x<10; x++) {
-		
 		for (int i = 0; i < tokenizers.length; i++) {
 			IConfigurationElement tokenizer = tokenizers[i];
         	final Composite tokenizerArea = new Composite(parent, SWT.BORDER);
@@ -347,8 +345,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 
     		controls.add(tokenizerArea);
         }
-		
-		}
 		
 		parent.layout();
 		parent2.layout();
