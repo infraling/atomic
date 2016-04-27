@@ -23,7 +23,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 /**
  * A simple bean-like class holding meta-data about a
  * processing component. This class needs to have
- * all the fields available in the schema of the 
+ * all the fields available in the extension point schema
+ * for 
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *

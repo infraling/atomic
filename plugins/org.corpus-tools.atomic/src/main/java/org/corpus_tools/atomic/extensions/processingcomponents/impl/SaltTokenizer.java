@@ -22,52 +22,56 @@ import java.util.List;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
  * Wraps the tokenizer included in Salt ({@link de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer})
  * in a processing component of type {@link Tokenizer}. 
- * Only works with the simplest of tokenize methods without 
- * arguments, i.e., checks against the included default 
- * abbreviation sets for English, German, Italian and French.
+ * Provides configuration for abbreviation sets.
  * <p>
- * A customizable version of this tokenizer is implemented in {@link org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer}
+ * A simple version of this tokenizer is implemented in {@link org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer}
  * This class is meant to be used with Salt version 2.1.1.
  * 
  * <p>
  * @see <a href="https://github.com/korpling/salt/releases/tag/salt-2.1.1">Salt version 2.1.1</a>
  * @see <a href="http://corpus-tools.org/salt">http://corpus-tools.org/salt</a>
- *
+ * 
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class SimpleSaltTokenizer extends Tokenizer {
-
+public class SaltTokenizer extends Tokenizer {
+	
 	public static final String UID = "de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer.simple";
+	
+	private SaltTokenizerConfiguration configuration = null;
+
+	/**
+	 * 
+	 */
+	public SaltTokenizer() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer#tokenize(java.lang.String)
 	 */
 	@Override
 	public List<String> tokenize(String rawSourceText) {
-		// Not implemented because the wrapped tokenizer works on instances of the Salt model itself per default.
+		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer#processDocument(de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument)
-	 */
-	@Override
-	public void processDocument(SDocument document) {
-		document.getSDocumentGraph().tokenize();
 	}
 
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#getConfiguration()
 	 */
 	@Override
-	public ProcessingComponentConfiguration<SimpleSaltTokenizer> getConfiguration() {
-		return null;
+	public ProcessingComponentConfiguration<SaltTokenizer> getConfiguration() {
+		return configuration;
 	}
 
+	/**
+	 * @param configuration the configuration to set
+	 */
+	public void setConfiguration(SaltTokenizerConfiguration configuration) {
+		this.configuration = configuration;
+	}
 }

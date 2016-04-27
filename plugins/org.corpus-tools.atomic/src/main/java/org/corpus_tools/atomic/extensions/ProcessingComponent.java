@@ -56,4 +56,11 @@ public interface ProcessingComponent<InputType, OutputType> {
 	 */
 	public void processDocument(SDocument document);
 	
+	/**
+	 * Returns the configuration of type {@link ProcessingComponentConfiguration}
+	 * for the {@link ProcessingComponent}.
+	 *
+	 * @return the configuration
+	 */
+	public ProcessingComponentConfiguration<?> getConfiguration();
 }
