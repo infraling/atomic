@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
  * Wraps the tokenizer included in Salt ({@link de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer})
@@ -50,18 +49,10 @@ public class SimpleSaltTokenizer extends Tokenizer {
 	 */
 	@Override
 	public List<String> tokenize(String rawSourceText) {
-		// Not implemented because the wrapped tokenizer works on instances of the Salt model itself per default.
-		return null;
+		de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer saltTokenizer = new de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer();
+		return saltTokenizer.tokenizeToString(rawSourceText, null);
 	}
 	
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer#processDocument(de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument)
-	 */
-	@Override
-	public void processDocument(SDocument document) {
-		document.getSDocumentGraph().tokenize();
-	}
-
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#getConfiguration()
 	 */
