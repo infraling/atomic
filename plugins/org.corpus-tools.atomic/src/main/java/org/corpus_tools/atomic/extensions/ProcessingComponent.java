@@ -58,7 +58,12 @@ public interface ProcessingComponent<InputType, OutputType> {
 	
 	/**
 	 * Returns the configuration of type {@link ProcessingComponentConfiguration}
-	 * for the {@link ProcessingComponent}.
+	 * for the {@link ProcessingComponent}. 
+	 * <p>
+	 * <b>Note:</b> This method is also used
+	 * for checking the "type" of the {@link ProcessingComponent}, i.e., 
+	 * whether it has a configuration or not. If it is an unconfigurable
+	 * component, {@link #getConfiguration()} must return null.  
 	 *
 	 * @return the configuration
 	 */

@@ -23,6 +23,10 @@ import java.util.List;
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+
 /**
  * Wraps the tokenizer included in Salt ({@link de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer})
  * in a processing component of type {@link Tokenizer}. 
@@ -56,8 +60,37 @@ public class SaltTokenizer extends Tokenizer {
 	 */
 	@Override
 	public List<String> tokenize(String rawSourceText) {
-		// TODO Auto-generated method stub
+		/** Not implemented because the wrapped tokenizer works on instances of the Salt model itself per default. */
 		return null;
+	}
+	
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer#processDocument(de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument)
+	 */
+	@Override
+	public void processDocument(SDocument document) {
+		SDocumentGraph graph = document.getSDocumentGraph();
+		if (getConfiguration() != null) {
+			de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer tokenizer = new de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer();
+			tokenizer.setsDocumentGraph(document.getSDocumentGraph());
+			if (graph.getSTextualDSs().size() > 0) {
+				for (STextualDS sTextualDS : graph.getSTextualDSs()) {
+					if (sTextualDS != null) {
+						// FIXME TODO: Add check for options in config
+						// Language code
+						// Abbreviations
+						if (getConfiguration() instanceof SaltTokenizerConfiguration) {
+							SaltTokenizerConfiguration config = (SaltTokenizerConfiguration) getConfiguration();
+							tokenizer.addAbbreviation(config.getLanguageCode(), config.getAbbreviations());
+							tokenizer.tokenize(sTextualDS, config.getLanguageCode());
+						}
+					}
+				}
+			}
+		}
+		else {
+			document.getSDocumentGraph().tokenize();
+		}
 	}
 
 	/* 

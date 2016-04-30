@@ -18,6 +18,8 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions.processingcomponents.impl;
 
+import java.util.HashSet;
+
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 
 import com.neovisionaries.i18n.LanguageCode;
@@ -33,6 +35,11 @@ public class SaltTokenizerConfiguration implements ProcessingComponentConfigurat
 	private SaltTokenizer tokenizer;
 	
 	private LanguageCode languageCode = null;
+	
+	private HashSet<String> abbreviations = null;
+
+	// TODO: Add as soon as Clitics are merged into Salt
+//	private Clitics clitics = null;
 
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration#getConfiguredComponent()
@@ -61,6 +68,20 @@ public class SaltTokenizerConfiguration implements ProcessingComponentConfigurat
 	 */
 	public void setLanguageCode(LanguageCode languageCode) {
 		this.languageCode = languageCode;
+	}
+
+	/**
+	 * @return the abbreviations
+	 */
+	public HashSet<String> getAbbreviations() {
+		return abbreviations;
+	}
+
+	/**
+	 * @param abbreviations the abbreviations to set
+	 */
+	public void setAbbreviations(HashSet<String> abbreviations) {
+		this.abbreviations = abbreviations;
 	}
 
 }
