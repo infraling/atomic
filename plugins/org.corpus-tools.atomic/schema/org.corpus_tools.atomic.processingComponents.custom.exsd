@@ -101,13 +101,13 @@
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="wizardPage" type="string">
+         <attribute name="configurationControls" type="string">
             <annotation>
                <documentation>
-                  A wizard page to collect configuration information for the custom processing component.
+                  A UI composite containing widgets to collect configuration information for the custom processing component.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentWizardPage:"/>
+                  <meta.attribute kind="java" basedOn="org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls:"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -116,6 +116,16 @@
                <documentation>
                   The name of the creator of this processing component, either an institution (university, department, research centre) or an individual.
                </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="configuration" type="string">
+            <annotation>
+               <documentation>
+                  A configuration class for this custom processing component.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
