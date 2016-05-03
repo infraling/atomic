@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponent;
 import org.corpus_tools.atomic.extensions.ProcessingException;
+import org.corpus_tools.atomic.extensions.SaltProcessingComponent;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
@@ -57,7 +58,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public abstract class Tokenizer implements ProcessingComponent<String, List<String>> {
+public abstract class Tokenizer extends SaltProcessingComponent implements ProcessingComponent<String, List<String>> {
 	
 	// FIXME: Needs unit tests!
 
