@@ -69,37 +69,4 @@ public interface ProcessingComponent<InputType, OutputType> {
 	 */
 	public ProcessingComponentConfiguration<?> getConfiguration();
 	
-	/**
-	 * Processing components create model elements (nodes,
-	 * edges and annotations) in the underlying Salt model.
-	 * It makes sense to "file" the output of each component
-	 * in a separate layer, or add it to an existing layer.
-	 * FIXME: Implement AbstractProcessingComponent
-	 * which implements this with the default of the
-	 * PC name (+ simpleclassname)
-	 * <p>
-	 * In the former case, clients can provide a designated
-	 * name for the layer which will contain the output
-	 * of the processing component (i.e., the model elements).
-	 *
-	 * @return
-	 */
-	public String getDesignatedLayerName();
-	
-	/**
-	 * Processing components create model elements (nodes,
-	 * edges and annotations) in the underlying Salt model.
-	 * It makes sense to "file" the output of each component
-	 * in a separate layer, or add it to an existing layer.
-	 * FIXME: Implement AbstractProcessingComponent
-	 * which implements this with the default of the
-	 * PC name (+ simpleclassname)
-	 * <p>
-	 * In the latter case, clients can provide the ID of the
-	 * target layer  which will contain the output
-	 * of the processing component (i.e., the model elements).
-	 *
-	 * @return
-	 */
-	public String getTargetLayerId();
 }
