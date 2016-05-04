@@ -18,23 +18,12 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -54,7 +43,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizard.class);
 	
 	private NewAtomicProjectWizardPageProjectStructure structurePage = new NewAtomicProjectWizardPageProjectStructure();
-	private NewAtomicProjectWizardPageTokenization tokenizationPage = null;
+	private NewAtomicProjectWizardPageTokenization tokenizationPage = new NewAtomicProjectWizardPageTokenization();
 	
 	/*
 	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
@@ -68,7 +57,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public void addPages() {
 		addPage(getStructurePage());
-		setTokenizationPage(new NewAtomicProjectWizardPageTokenization(getStructurePage()));	
 		addPage(getTokenizationPage());
 	}
 

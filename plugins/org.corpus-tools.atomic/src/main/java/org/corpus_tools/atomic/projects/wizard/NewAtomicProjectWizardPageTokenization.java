@@ -53,12 +53,14 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
@@ -83,7 +85,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	
 	private Composite targetTokenizerContainer;
 
-	private Composite tokenizerSourceContainer;
+	private Composite sourceTokenizerContainer;
 
 	/**
 	 * @param projectStructurePage
@@ -156,9 +158,9 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		leftScrolledComposite.setContent(leftIntermediateComposite);
 		leftScrolledComposite.setSize(leftIntermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-		tokenizerSourceContainer = new Composite(leftIntermediateComposite, SWT.NONE);
-		tokenizerSourceContainer.setLayout(new GridLayout());
-		tokenizerSourceContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		sourceTokenizerContainer = new Composite(leftIntermediateComposite, SWT.NONE);
+		sourceTokenizerContainer.setLayout(new GridLayout());
+		sourceTokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		final ScrolledComposite rightScrolledComposite = new ScrolledComposite(rightScrollContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		rightScrolledComposite.setExpandHorizontal(true);
@@ -220,9 +222,9 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		
 		// ###############################################
 		
-		addDropListener(tokenizerSourceContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
-		addDropListener(targetTokenizerContainer, container, rightScrolledComposite, rightIntermediateComposite, tokenizerSourceContainer, leftScrolledComposite, leftIntermediateComposite);
-		final Control[] children = createChildren(tokenizerSourceContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
+		addDropListener(sourceTokenizerContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
+		addDropListener(targetTokenizerContainer, container, rightScrolledComposite, rightIntermediateComposite, sourceTokenizerContainer, leftScrolledComposite, leftIntermediateComposite);
+		final Control[] children = createChildren(sourceTokenizerContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
 		for (final Control control : children) {
 			addDragListener(control);
 		}
@@ -377,169 +379,105 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				final Control droppedTokenizerComposite = (Control) ((StructuredSelection) transfer.getSelection()).getFirstElement();
 				final Composite source;
 				final Composite target = parent;
+				boolean isComposite = false;
 				
 				if (droppedTokenizerComposite instanceof Composite) { // I.e., the dragged object is the whole composite
 					source = droppedTokenizerComposite.getParent();
+					isComposite = true;
 				}
 				else {
 					source = droppedTokenizerComposite.getParent().getParent();
 				}
 				
-				if (source == tokenizerSourceContainer && target == targetTokenizerContainer) {
-					System.err.println("ADD :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
+				if (source == sourceTokenizerContainer && target == targetTokenizerContainer) {
+					if (isComposite) {
+						droppedTokenizerComposite.setParent(targetTokenizerContainer);
+						System.err.println("ADD :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
+					}
+					else {
+						droppedTokenizerComposite.getParent().setParent(targetTokenizerContainer);
+						System.err.println("ADD :" + ((Label) droppedTokenizerComposite.getParent().getChildren()[0]).getText());
+					}
 				}
-				else if (source == targetTokenizerContainer && source == tokenizerSourceContainer) {
-					System.err.println("REMOVE :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
+				else if (source == targetTokenizerContainer && target == sourceTokenizerContainer) {
+					if (isComposite) {
+						droppedTokenizerComposite.setParent(sourceTokenizerContainer);
+						System.err.println("REMOVE :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
+					}
+					else {
+						droppedTokenizerComposite.getParent().setParent(sourceTokenizerContainer);
+						System.err.println("REMOVE :" + ((Label) droppedTokenizerComposite.getParent().getChildren()[0]).getText());
+					}
 				}
 				else if (source == target) {
-					System.err.println("REORDER :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
-				}
-
-				// Step 2: Get that control's parent from which it's being dragged
-				// FIXME: REMOVE ADDS bei OLD = NEW parent
-				// FIXME: Somehow below doesn't work, drag nur bei composite
-//				final Composite oldParent;
-//				if (droppedObj instanceof TokenizerComposite) {
-//					oldParent = droppedObj.getParent();
-//					tokenizer = (IConfigurationElement) droppedObj.getData();
-//					droppedObj.setParent(parent);
-//					System.err.println(((Label) ((TokenizerComposite) droppedObj).getChildren()[0]).getText());
-//				}
-//				else {
-//					oldParent = droppedObj.getParent().getParent();
-//					if (droppedObj.getParent() instanceof TokenizerComposite) {
-//						tokenizer = (IConfigurationElement) droppedObj.getParent().getData();
-//					}
-//					droppedObj.getParent().setParent(parent);
-//					System.err.println(((Label) ((TokenizerComposite) droppedObj.getParent()).getChildren()[0]).getText());
-//				}
-//				
-//
-//				// If we drag and drop on the same parent, do nothing
-//				if (oldParent == parent) {
-//					reOrder(event, droppedObj, parent);
-////					return;
-//				}
-//
-//				// Step 3: Figure out what are we dropping
-//				// This may be done in the dropAccept implementation
-//				// if (droppedObj instanceof Label)
-//				// {
-//				// final Label droppedLabel = (Label) droppedObj;
-//				// droppedLabel.setParent(parent); // Change parent
-//				// }
-//				//
-//				// if (droppedObj instanceof Button)
-//				// {
-//				// final Button droppedButton = (Button) droppedObj;
-//				// droppedButton.setParent(parent); // Change parent
-//				// }
-//
-////				if (droppedObj instanceof Composite) {
-////					final Composite droppedButton = (Composite) droppedObj;
-////					droppedButton.setParent(parent); // Change parent
-////				}
-////				else {
-////					final Composite droppedButton = (Composite) droppedObj.getParent();
-////					droppedButton.setParent(parent); // Change parent
-////				}
-//
-//				// Step 4: Tell all parent that the layout has changed
-//				// This is not necessary, but it looks nicer.
-//				oldParent.layout();
-//				parent.layout();
-//				parent2.layout();
-//				container.layout();
-//				scrolledComposite.layout(true, true);
-//				scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-//				scrolledComposite2.layout(true, true);
-//				scrolledComposite2.setMinSize(intermediateComposite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-//				
-//				if (parent == targetTokenizerContainer) {
-//					try {
-//						getTokenizersToUse().add((Tokenizer) tokenizer.createExecutableExtension("class"));
-//						log.info("Added tokenizer of type \"{}\" to the list of availableTokenizerExtensions to use on the project.", tokenizer.getAttribute("name"));
-//					}
-//					catch (CoreException e) {
-//						log.error("Could not add a tokenizer of type {} to the list of availableTokenizerExtensions to use on the project: ", tokenizer.getAttribute("name"), e);
-//					}
-//				}
-//				else if (parent == tokenizerSourceContainer) {
-//					Iterator<Tokenizer> iterator = getTokenizersToUse().iterator();
-//					while (iterator.hasNext()) {
-//						Tokenizer tokenizerToRemove = iterator.next();
-//						if (tokenizer.getAttribute("class").equals(tokenizerToRemove.getClass().getName())) {
-//							iterator.remove();
-//							log.info("Removed tokenizer of type \"{}\" from the list of availableTokenizerExtensions to use on the project.", tokenizer.getAttribute("name"));
-//						}
-//					}
-//				}
-			}
-
-			private void reOrder(DropTargetEvent event, Control droppedObj, Composite parent) {
-				Control[] children = parent.getChildren();
-				for (int i = 0; i < children.length; i++) {
-					if (children[i] instanceof Composite && children[i] != droppedObj) {
-						Control child = children[i];
-						System.err.println(event.y + " " +  (parent.toDisplay(child.getLocation()).y + (child.getBounds().height / 2)));
-						if (event.y <= (parent.toDisplay(child.getLocation()).y + (child.getBounds().height / 2))) {
-							droppedObj.moveAbove(child);
-							break;
-						}
-//						else if (i != (children.length - 1) 
-//								&& (event.y > (parent.toDisplay(child.getLocation()).y + (child.getBounds().height / 2))) 
-//								&& (event.y <= (parent.toDisplay(children[i + 1].getLocation()).y + (children[i + 1].getBounds().height / 2)))) {
-//							droppedObj.moveAbove(children[i + 1]);
-//							break;
-//						}
-//						else if (i == (children.length - 1)
-//								&& (event.y > (parent.toDisplay(child.getLocation()).y + (child.getBounds().height / 2)))) {
-//							droppedObj.moveBelow(child);
-//							break;
-//						}
+					if (isComposite) {
+						reOrder(event, droppedTokenizerComposite);
+						System.err.println("REORDER :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
+					}
+					else {
+						System.err.println("\n\n----------------------REORDER :" + ((Label) droppedTokenizerComposite.getParent().getChildren()[0]).getText());
+						reOrder(event, droppedTokenizerComposite.getParent());
 					}
 				}
 				
-//				for (Control tokenizerComposite : parent.getChildren()) {
-//					if (tokenizerComposite instanceof TokenizerComposite && tokenizerComposite != droppedObj) {
-//						if (event.y < (parent.toDisplay(tokenizerComposite.getLocation()).y + (tokenizerComposite.getBounds().height / 2))) {
-//							System.err.println("MOVE UP");
-//							// FIXME: Reicht nicht! Muss genau hit testen, ob nud worauf das trifft,
-//							// dann direkt darüber!
-//						}
-//					}
-//				}
-//				TreeMap<Integer, TokenizerComposite> map = new TreeMap<>();
-//				for (Control tokenizerComposite : parent.getChildren()) {
-//					if (tokenizerComposite instanceof TokenizerComposite) {
-//						map.put(parent.toDisplay(tokenizerComposite.getLocation()).y, (TokenizerComposite) tokenizerComposite);
-//						System.err.println("y = " + parent.toDisplay(tokenizerComposite.getLocation()).y);
-//					}
-//					for (Entry<Integer, TokenizerComposite> entry : map.entrySet()) {
-//						if (event.y > (entry.getKey() + (entry.getValue().getBounds().height / 2))) {
-//							System.err.println(((IConfigurationElement) entry.getValue().getData()).getAttribute("name"));
-//							System.err.println(event.y + " ?> " + entry.getKey());//(entry.getKey() + (entry.getValue().getBounds().height / 2)));
-////							System.err.println(event.y + " ?> " + parent.toDisplay(entry.getValue().getLocation()).y);
-//							System.err.println("Higher than " + entry.getValue());
-//							droppedObj.moveAbove(tokenizerComposite);
-//						}
-//						else {
-//							droppedObj.moveBelow(tokenizerComposite);
-//						}
-//					}
-//				}
-////				List<Tokenizer> orderedTokenizers = getTokenizersToUse();
-//				int itemTop = 0;
-//				int dropY = event.y - parent.toDisplay(parent.getLocation()).y;
-//				for (int i = 0; i < targetTokenizerContainer.getChildren().length; i++) {
-//					if (dropY >= itemTop && dropY <= itemTop + targetTokenizerContainer.getItemHeight())
-//                    {
-//                        targetItemIndex = documentList.getTopIndex() + i + "";
-//                    }
-//                    itemTop += documentList.getItemHeight();
-//				}
-//				
-				
+				source.layout();
+				target.layout();
+				parent2.layout();
+				container.layout();
+				scrolledComposite.layout(true, true);
+				scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				scrolledComposite2.layout(true, true);
+				scrolledComposite2.setMinSize(intermediateComposite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			}
+
+			private void reOrder(DropTargetEvent event, Control droppedTokenizerComposite) {
+				Control[] children = targetTokenizerContainer.getChildren();
+				Control firstChild = children[0];
+				Control lastChild = children[children.length - 1];
+				int dropY = targetTokenizerContainer.toControl(event.x, event.y).y;
+				int topFirstChild = firstChild.getLocation().y;
+				int bottomLastChild = (lastChild.getLocation().y + lastChild.getBounds().height);
+				if (dropY < topFirstChild) {
+					droppedTokenizerComposite.moveAbove(firstChild);
+					System.err.println("--- TOP DROP");
+				}
+				else if (dropY > bottomLastChild) {
+					droppedTokenizerComposite.moveBelow(lastChild);
+					System.err.println("--- BOTTOM DROP");
+				}
+				else {
+					loopThroughChildren:
+					for (int i = 0; i < children.length; i++) {
+						Control child = children[i];
+						if (child == droppedTokenizerComposite) {
+							continue;
+						}
+						Control nextChild = null;
+						boolean isLastChild = (i == (children.length - 1));
+						int center = child.getLocation().y + (child.getBounds().height / 2);
+						if (!isLastChild) {
+							nextChild = children[i + 1];
+						}
+						if (dropY < center) {
+							droppedTokenizerComposite.moveAbove(child);
+							System.err.println("--- ABOVE-CENTER DROP");
+							break loopThroughChildren;
+						}
+						else if (nextChild != null && nextChild instanceof Composite && dropY > center) {
+							int nextChildCenter = nextChild.getLocation().y + (nextChild.getBounds().height / 2);
+							if (dropY < nextChildCenter) {
+								droppedTokenizerComposite.moveBelow(child);
+								System.err.println("--- IN-BETWEEN DROP");
+								break loopThroughChildren;
+							}
+						}
+						else if (nextChild == null && dropY > center) {
+							droppedTokenizerComposite.moveBelow(child);
+							System.err.println("--- BELOW LAST CHILD'S CENTER DROP");
+							break loopThroughChildren;
+						}
+					}
+				}
 			}
 		};
 
