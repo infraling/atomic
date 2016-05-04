@@ -18,8 +18,11 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -81,7 +84,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		for (SDocument document : project.getSCorpusGraphs().get(0).getSDocuments()) {
 			System.err.println("DOCUMENT: " + document.getSDocumentGraph().getSTextualDSs().get(0).getSText());
 		}
-		orderedTokenizers = getTokenizationPage().getTokenizerConfigurationElements();
+		List<Tokenizer> orderedTokenizers = getTokenizationPage().getTokenizers();
 		return false; // TODO FIXME
 	}
 	
