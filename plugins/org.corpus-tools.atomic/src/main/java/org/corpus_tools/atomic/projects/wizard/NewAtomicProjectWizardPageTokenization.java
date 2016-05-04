@@ -19,16 +19,7 @@
 package org.corpus_tools.atomic.projects.wizard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map.Entry;
-
-import javax.swing.plaf.synth.SynthSliderUI;
-
-import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,15 +43,12 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
@@ -77,12 +65,13 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	 */
 	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizardPageTokenization.class);
 
+	private static final String CONFIGURATION_ELEMENT = "Configuration element";
+	private static final String TOKENIZER_OBJECT = "Tokenizer object";
+
 	final private IConfigurationElement[] availableTokenizerExtensions = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
 
 	private Label descriptionLabel;
 
-	private final List<Tokenizer> tokenizersToUse = new ArrayList<>();
-	
 	private Composite targetTokenizerContainer;
 
 	private Composite sourceTokenizerContainer;
@@ -175,53 +164,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		targetTokenizerContainer.setLayout(new GridLayout());
 		targetTokenizerContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		//################################################
-//		Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-//	    DragSource source = new DragSource(documentList, DND.DROP_MOVE | DND.DROP_COPY);
-//	    source.setTransfer(types);
-//		DropTarget target = new DropTarget(targetTokenizerContainer, DND.DROP_MOVE | DND.DROP_COPY
-//	            | DND.DROP_DEFAULT);
-//	    target.setTransfer(types);
-//	    target.addDropListener(new DropTargetAdapter()
-//	    {
-//	        @Override
-//	        public void dragEnter(DropTargetEvent event)
-//	        {
-//	            if (event.detail == DND.DROP_DEFAULT)
-//	            {
-//	                event.detail = (event.operations & DND.DROP_COPY) != 0 ? DND.DROP_COPY
-//	                        : DND.DROP_NONE;
-//	            }
-//
-//	            // Allow dropping text only
-//	            for (int i = 0, n = event.dataTypes.length; i < n; i++)
-//	            {
-//	                if (TextTransfer.getInstance().isSupportedType(event.dataTypes[i]))
-//	                {
-//	                    event.currentDataType = event.dataTypes[i];
-//	                }
-//	            }
-//	        }
-//
-//	        @Override
-//	        public void dragOver(DropTargetEvent event)
-//	        {
-//	            event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
-//	        }
-//
-//	        @Override
-//	        public void drop(DropTargetEvent event)
-//	        {
-//	            if (TextTransfer.getInstance().isSupportedType(event.currentDataType))
-//	            {
-//	                  //HELP: How to get the element were the drop occurs and swap it with the draged element.
-//	            }
-//	        }
-//	    });
-		
-		
-		// ###############################################
-		
 		addDropListener(sourceTokenizerContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
 		addDropListener(targetTokenizerContainer, container, rightScrolledComposite, rightIntermediateComposite, sourceTokenizerContainer, leftScrolledComposite, leftIntermediateComposite);
 		final Control[] children = createChildren(sourceTokenizerContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
@@ -264,11 +206,11 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			IConfigurationElement tokenizer = availableTokenizerExtensions[i];
 			boolean isTokenizerConfigurable = (tokenizer.getAttribute("configuration") != null && !tokenizer.getAttribute("configuration").isEmpty());
 			final Composite tokenizerArea = new Composite(parent, SWT.BORDER);
-        	tokenizerArea.setData(tokenizer);
-        		tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-    		tokenizerArea.setLayout(new GridLayout(6, false));
-    		
-    		Label name = new Label(tokenizerArea, SWT.NONE);
+			tokenizerArea.setData(CONFIGURATION_ELEMENT, tokenizer);
+			tokenizerArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+			tokenizerArea.setLayout(new GridLayout(6, false));
+
+			Label name = new Label(tokenizerArea, SWT.NONE);
     		name.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
     		name.setText(tokenizer.getAttribute("name"));
     		controls.add(name);
@@ -279,7 +221,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			showInfoBtn.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					descriptionLabel.setText(((IConfigurationElement) ((Control) e.widget).getParent().getData()).getAttribute("description"));
+					descriptionLabel.setText(((IConfigurationElement) ((Control) e.widget).getParent().getData(CONFIGURATION_ELEMENT)).getAttribute("description"));
 					parent.layout();
 					container.layout();
 				}
@@ -327,32 +269,22 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		return controls.toArray(new Control[controls.size()]);
 	}
 
+	/**
+	 * Adds a drag listener of type to a control.
+	 *
+	 * @param control
+	 */
 	private void addDragListener(final Control control) {
-		// Step 1: Get JFace's LocalSelectionTransfer instance
 		final LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
 
 		final DragSourceAdapter dragAdapter = new DragSourceAdapter() {
 			@Override
 			public void dragSetData(final DragSourceEvent event) {
-				// Step 2: On drag events, create a new JFace StructuredSelection
-				// with the dragged control.
-				// if (control instanceof Composite) {
 				transfer.setSelection(new StructuredSelection(control));
-				// }
-				// else {
-				// transfer.setSelection(new StructuredSelection(control.getParent()));
-				// }
 			}
 		};
 		final DragSource dragSource;
-		// if (control instanceof Composite) {
-		//
 		dragSource = new DragSource(control, DND.DROP_MOVE | DND.DROP_COPY);
-		// }
-		// else {
-		// System.err.println(control.getClass());
-		// dragSource = new DragSource(control.getParent(), DND.DROP_MOVE | DND.DROP_COPY);
-		// }
 		dragSource.setTransfer(new Transfer[] { transfer });
 		dragSource.addDragListener(dragAdapter);
 	}
@@ -372,10 +304,12 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		final LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
 
 		final DropTargetAdapter dragAdapter = new DropTargetAdapter() {
+			/* 
+			 * @copydoc @see org.eclipse.swt.dnd.DropTargetAdapter#drop(org.eclipse.swt.dnd.DropTargetEvent)
+			 */
 			@Override
 			public void drop(final DropTargetEvent event) {
 				IConfigurationElement tokenizer = null; 
-				
 				final Control droppedTokenizerComposite = (Control) ((StructuredSelection) transfer.getSelection()).getFirstElement();
 				final Composite source;
 				final Composite target = parent;
@@ -383,41 +317,46 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				
 				if (droppedTokenizerComposite instanceof Composite) { // I.e., the dragged object is the whole composite
 					source = droppedTokenizerComposite.getParent();
+					tokenizer = (IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT);
 					isComposite = true;
 				}
 				else {
 					source = droppedTokenizerComposite.getParent().getParent();
+					tokenizer = (IConfigurationElement) droppedTokenizerComposite.getParent().getData(CONFIGURATION_ELEMENT);
 				}
 				
 				if (source == sourceTokenizerContainer && target == targetTokenizerContainer) {
 					if (isComposite) {
 						droppedTokenizerComposite.setParent(targetTokenizerContainer);
-						System.err.println("ADD :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
 					}
 					else {
 						droppedTokenizerComposite.getParent().setParent(targetTokenizerContainer);
-						System.err.println("ADD :" + ((Label) droppedTokenizerComposite.getParent().getChildren()[0]).getText());
+					}
+					try {
+						droppedTokenizerComposite.setData(TOKENIZER_OBJECT, ((IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT)).createExecutableExtension("class"));
+						log.info("Added tokenizer of type \"{}\" to list of tokenizers to apply.", tokenizer.getAttribute("name"));
+					}
+					catch (CoreException e) {
+						log.error("Could not add a tokenizer of type \"{}\" to the list of tokenizers to use:", tokenizer.getAttribute("name"), e);
 					}
 				}
 				else if (source == targetTokenizerContainer && target == sourceTokenizerContainer) {
 					if (isComposite) {
 						droppedTokenizerComposite.setParent(sourceTokenizerContainer);
-						System.err.println("REMOVE :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
 					}
 					else {
 						droppedTokenizerComposite.getParent().setParent(sourceTokenizerContainer);
-						System.err.println("REMOVE :" + ((Label) droppedTokenizerComposite.getParent().getChildren()[0]).getText());
 					}
+					log.info("Removed tokenizer of type \"{}\" from list of tokenizers to apply, but keeping the configuration.", tokenizer.getAttribute("name"));
 				}
 				else if (source == target) {
 					if (isComposite) {
-						reOrder(event, droppedTokenizerComposite);
-						System.err.println("REORDER :" + ((Label) ((Composite) droppedTokenizerComposite).getChildren()[0]).getText());
+						reOrder(event, (Composite) droppedTokenizerComposite);
 					}
 					else {
-						System.err.println("\n\n----------------------REORDER :" + ((Label) droppedTokenizerComposite.getParent().getChildren()[0]).getText());
 						reOrder(event, droppedTokenizerComposite.getParent());
 					}
+					log.info("Reordered the list of tokenizers to apply. No model objects changed, as ordering event applies to GUI widgets only.");
 				}
 				
 				source.layout();
@@ -430,7 +369,15 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				scrolledComposite2.setMinSize(intermediateComposite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 			}
 
-			private void reOrder(DropTargetEvent event, Control droppedTokenizerComposite) {
+			/**
+			 * Reorders the tokenizer widgets upon a drop event
+			 * in the target tokenizer container.
+			 *
+			 * @param event
+			 * @param droppedTokenizerComposite
+			 */
+			private void reOrder(DropTargetEvent event, Composite droppedTokenizerComposite) {
+				String name = ((Label) droppedTokenizerComposite.getChildren()[0]).getText();
 				Control[] children = targetTokenizerContainer.getChildren();
 				Control firstChild = children[0];
 				Control lastChild = children[children.length - 1];
@@ -439,11 +386,11 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				int bottomLastChild = (lastChild.getLocation().y + lastChild.getBounds().height);
 				if (dropY < topFirstChild) {
 					droppedTokenizerComposite.moveAbove(firstChild);
-					System.err.println("--- TOP DROP");
+					log.debug("Moved \"{}\" to the top of the list of tokenizers to apply.", name);
 				}
 				else if (dropY > bottomLastChild) {
 					droppedTokenizerComposite.moveBelow(lastChild);
-					System.err.println("--- BOTTOM DROP");
+					log.debug("Moved \"{}\" to the bottom of the list of tokenizers to apply.", name);
 				}
 				else {
 					loopThroughChildren:
@@ -458,22 +405,23 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 						if (!isLastChild) {
 							nextChild = children[i + 1];
 						}
+						String childName = ((Label) ((Composite) child).getChildren()[0]).getText();
 						if (dropY < center) {
 							droppedTokenizerComposite.moveAbove(child);
-							System.err.println("--- ABOVE-CENTER DROP");
+							log.debug("Moved \"{}\" above \"{}\" in the list of tokenizers to apply.", name, childName);
 							break loopThroughChildren;
 						}
 						else if (nextChild != null && nextChild instanceof Composite && dropY > center) {
 							int nextChildCenter = nextChild.getLocation().y + (nextChild.getBounds().height / 2);
 							if (dropY < nextChildCenter) {
 								droppedTokenizerComposite.moveBelow(child);
-								System.err.println("--- IN-BETWEEN DROP");
+								log.debug("Moved \"{}\" below \"{}\" in the list of tokenizers to apply.", name, childName);
 								break loopThroughChildren;
 							}
 						}
 						else if (nextChild == null && dropY > center) {
 							droppedTokenizerComposite.moveBelow(child);
-							System.err.println("--- BELOW LAST CHILD'S CENTER DROP");
+							log.debug("Moved \"{}\" below \"{}\" to the very bottom of the list of tokenizers to apply.", name, childName);
 							break loopThroughChildren;
 						}
 					}
@@ -487,29 +435,18 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	}
 
 	/**
-	 * @return the tokenizersToUse
+	 * Constructs a list of tokenizers to apply to corpus documents
+	 * from the list of child widgets in the target container.
+	 *
+	 * @return tokenizerList the list of tokenizers
 	 */
-	private List<Tokenizer> getTokenizersToUse() {
-		return tokenizersToUse;
+	public List<Tokenizer> getTokenizers() {
+		List<Tokenizer> tokenizerList = new ArrayList<>();
+		Control[] children = targetTokenizerContainer.getChildren();
+		for (int i = 0; i < children.length; i++) {
+			tokenizerList.add((Tokenizer) children[i].getData(TOKENIZER_OBJECT));
+		}
+		return tokenizerList;
 	}
-
-//	/**
-//	 * A tokenizer composite references exactly one tokenizer.
-//	 * This class is intended to be used for <code>instanceof</code> checks
-//	 * only, and is <b>not</b> intended to be sub-classed. 
-//	 *
-//	 * @author Stephan Druskat <mail@sdruskat.net>
-//	 */
-//	public class TokenizerComposite extends Composite {
-//
-//		/**
-//		 * @param parent
-//		 * @param style
-//		 */
-//		public TokenizerComposite(Composite parent, int style) {
-//			super(parent, style);
-//		}
-//
-//	}
 
 }
