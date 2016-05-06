@@ -25,12 +25,14 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
@@ -69,7 +71,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	@Override
 	public boolean canFinish() {
 		// TODO Auto-generated method stub
-		return (false && super.canFinish());
+//		return (false && super.canFinish());
+		return true;
 	}
 	
 	/*
@@ -81,10 +84,16 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		// TODO: Compile SaltProject form projectData
 		SaltProjectCompiler compiler = new SaltProjectCompiler(projectData);
 		SaltProject project = compiler.run();
-		for (SDocument document : project.getSCorpusGraphs().get(0).getSDocuments()) {
-			System.err.println("DOCUMENT: " + document.getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		}
 		List<Tokenizer> orderedTokenizers = getTokenizationPage().getTokenizers();
+		for (SCorpusGraph corpusGraph : project.getSCorpusGraphs()) {
+			for (SDocument document : corpusGraph.getSDocuments()) {
+				for (Tokenizer tokenizer : orderedTokenizers) {
+					tokenizer.processDocument(document);
+				}
+			}
+		}
+
+		project.saveSaltProject(URI.createFileURI(System.getProperty("user.home")));
 		return false; // TODO FIXME
 	}
 	

@@ -23,13 +23,11 @@ import java.util.List;
 import org.corpus_tools.atomic.extensions.ProcessingComponent;
 import org.corpus_tools.atomic.extensions.ProcessingException;
 import org.corpus_tools.atomic.extensions.SaltProcessingComponent;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
  * A semi-abstract tokenizer for raw corpus document source texts, working on
@@ -85,33 +83,41 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 		}
 		for (STextualDS sTextualDS : documentGraph.getSTextualDSs()) {
 			String documentSourceText = sTextualDS.getSText();
-			List<String> tokens = tokenize(documentSourceText);
+			List<String> stringTokens = tokenize(documentSourceText);
+			
+			// Create char array
+			char[] charText = documentSourceText.toCharArray();
+			int tokenCounter = 0;
 
-			// Adapted from de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.impl.SDocumentGraphImpl
-			if ((tokens != null) && (tokens.size() > 0)) {
-				EList<SToken> tokenEList = null;
-				char[] documentSourceTextChars = documentSourceText.toCharArray();
-				int tokenCounter = 0;
-				for (int i = 0; i < documentSourceTextChars.length; i++) {
-					if ((tokens.get(tokenCounter).length() < 1) || (tokens.get(tokenCounter).substring(0, 1).equals(String.valueOf(documentSourceTextChars[i])))) { // first letter matches
-						StringBuffer pattern = new StringBuffer();
-						for (int y = 0; y < tokens.get(tokenCounter).length(); y++) {
-							pattern.append(documentSourceTextChars[i + y]);
+			// Iterate char array
+			for (int i = 0; i < charText.length; i++) {
+				if ((stringTokens.get(tokenCounter).length() < 1) || (stringTokens.get(tokenCounter).substring(0, 1).equals(String.valueOf(charText[i])))) {
+					StringBuffer pattern = new StringBuffer();
+
+					// Iterate through length of one String token
+					for (int y = 0; y < stringTokens.get(tokenCounter).length(); y++) {
+						// For the length of the String token, add all chars
+						pattern.append(charText[i + y]);
+					}
+					if (stringTokens.get(tokenCounter).hashCode() == pattern.toString().hashCode()) {
+						// Pattern is exactly like current string token
+						int start = i;
+						int end = i + stringTokens.get(tokenCounter).length();
+
+						SToken sTok = documentGraph.createSToken(sTextualDS, start, end);
+					
+						// Add token to layer
+						SLayer layer;
+						if ((layer = getTargetLayer(document)) != null && documentGraph.getSLayers().contains(layer)) {
+							if (layer.getSName() == null || layer.getSName().isEmpty()) {
+								layer.setSName(getTargetLayerName(document));
+							}
+							layer.getSNodes().add(sTok);
 						}
-						if (tokens.get(tokenCounter).hashCode() == pattern.toString().hashCode()) {
-							int start = i;
-							int end = i + documentSourceText.length() + tokens.get(tokenCounter).length();
-
-							SToken sTok = documentGraph.createSToken(sTextualDS, start, end);
-							if (tokenEList == null) {
-								tokenEList = new BasicEList<SToken>();
-							}
-							tokenEList.add(sTok);
-							i = i + tokens.get(tokenCounter).length() - 1;
-							tokenCounter++;
-							if (tokenCounter >= tokens.size()) {
-								break;
-							}
+						i = i + stringTokens.get(tokenCounter).length() - 1;
+						tokenCounter++;
+						if (tokenCounter >= stringTokens.size()) {
+							break;
 						}
 					}
 				}

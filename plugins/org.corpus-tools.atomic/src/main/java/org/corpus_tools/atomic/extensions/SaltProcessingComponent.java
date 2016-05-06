@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
@@ -56,53 +57,55 @@ public class SaltProcessingComponent {
 	 *
 	 * @return the designated layer name
 	 */
-	public String getTargetLayerName() {
+	public String getTargetLayerName(SDocument document) {
 		if (targetLayerName == null || targetLayerName.isEmpty()) {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtensionPoint[] points = registry.getExtensionPoints();
 			for (int i = 0; i < points.length; i++) {
 				for (IConfigurationElement element : points[i].getConfigurationElements()) {
 					if (element.getAttribute("class") != null && element.getAttribute("class").equals(this.getClass().getName())) {
-						return getIdPrefix() + element.getAttribute("name");
+						return getIdPrefix(document) + element.getAttribute("name");
 					}
 				}
 			}
 		}
-		return getIdPrefix() + targetLayerName;
+		return getIdPrefix(document) + targetLayerName;
 	}
 
 	/**
 	 * Returns the fragment part of the ID URI concatenated
-	 * with "::" to make the name unique.
+	 * with ":" to make the name unique.
+	 * @param document 
 	 *
-	 * @return the ID prefix (ID URI fragment + "::")
+	 * @return the ID prefix (ID + ":")
 	 */
-	private String getIdPrefix() {
-		return getTargetLayer().getSElementPath().fragment() + "::";
+	private String getIdPrefix(SDocument document) {
+		return getTargetLayer(document).getSId() + ":";
 	}
 
 	/**
-	 * @param targetLayerName the targetLayerName to set
-	 */
-	public void setTargetLayerName(String targetLayerName) {
-		this.targetLayerName = targetLayerName;
-	}
-
-	/**
+	 * @param document 
 	 * @return the targetLayer
 	 */
-	public SLayer getTargetLayer() {
+	public SLayer getTargetLayer(SDocument document) {
 		if (targetLayer == null) {
-			setTargetLayer(SaltFactory.eINSTANCE.createSLayer());
+			SLayer layer = SaltFactory.eINSTANCE.createSLayer();
+			document.getSDocumentGraph().addSLayer(layer);
+			targetLayer = layer;
 		}
 		return targetLayer;
 	}
 
 	/**
-	 * @param targetLayer the targetLayer to set
+	 * Sets an instance of {@link SLayer} and its designated name
+	 * as the target layer for output of this {@link SaltProcessingComponent}.
+	 * 
+ 	 * @param targetLayer The SLayer that is to be filled with the output of this processing component
+	 * @param name The name of the designated target layer
 	 */
-	public void setTargetLayer(SLayer targetLayer) {
+	public void setTargetLayer(SLayer targetLayer, String name) {
 		this.targetLayer = targetLayer;
+		this.targetLayerName = name;
 	}
 
 }
