@@ -19,18 +19,27 @@
 package org.corpus_tools.atomic.extensions;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
+
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
  * This class provides handy methods and default implementations
  * for Salt-based implementations of {@link ProcessingComponent}.
- *
+ * This class is meant to be used with Salt version 2.1.1.
+ * <p>
+ * @see <a href="https://github.com/korpling/salt/releases/tag/salt-2.1.1">Salt version 2.1.1</a>
+ * @see <a href="http://corpus-tools.org/salt">http://corpus-tools.org/salt</a>
+ * 
  * @author Stephan Druskat <mail@sdruskat.net>
- *
  */
 public class SaltProcessingComponent {
 
-	private String designatedLayerName = null;
-	private String targetLayerId = null;
+	private String targetLayerName = null;
+	private SLayer targetLayer = null;
 
 	/**
 	 * Processing components create model elements (nodes,
@@ -47,42 +56,53 @@ public class SaltProcessingComponent {
 	 *
 	 * @return the designated layer name
 	 */
-	public String getDesignatedLayerName(IConfigurationElement configurationElement) {
-		if (designatedLayerName == null || designatedLayerName.isEmpty()) {
-			return configurationElement.getAttribute("name");
+	public String getTargetLayerName() {
+		if (targetLayerName == null || targetLayerName.isEmpty()) {
+			IExtensionRegistry registry = Platform.getExtensionRegistry();
+			IExtensionPoint[] points = registry.getExtensionPoints();
+			for (int i = 0; i < points.length; i++) {
+				for (IConfigurationElement element : points[i].getConfigurationElements()) {
+					if (element.getAttribute("class") != null && element.getAttribute("class").equals(this.getClass().getName())) {
+						return getIdPrefix() + element.getAttribute("name");
+					}
+				}
+			}
 		}
-		else return designatedLayerName;
+		return getIdPrefix() + targetLayerName;
 	}
 
 	/**
-	 * Processing components create model elements (nodes,
-	 * edges and annotations) in the underlying Salt model.
-	 * It makes sense to "file" the output of each component
-	 * in a separate layer, or add it to an existing layer.
-	 * <p>
-	 * In the latter case, clients can provide the ID of the
-	 * target layer  which will contain the output
-	 * of the processing component (i.e., the model elements).
+	 * Returns the fragment part of the ID URI concatenated
+	 * with "::" to make the name unique.
 	 *
-	 * @return
+	 * @return the ID prefix (ID URI fragment + "::")
 	 */
-	public String getTargetLayerId() {
-		return targetLayerId;
+	private String getIdPrefix() {
+		return getTargetLayer().getSElementPath().fragment() + "::";
 	}
 
 	/**
-	 * @param designatedLayerName the designatedLayerName to set
+	 * @param targetLayerName the targetLayerName to set
 	 */
-	public void setDesignatedLayerName(String designatedLayerName) {
-		this.designatedLayerName = designatedLayerName;
+	public void setTargetLayerName(String targetLayerName) {
+		this.targetLayerName = targetLayerName;
 	}
 
 	/**
-	 * @param targetLayerId the targetLayerId to set
+	 * @return the targetLayer
 	 */
-	public void setTargetLayerId(String targetLayerId) {
-		this.targetLayerId = targetLayerId;
+	public SLayer getTargetLayer() {
+		if (targetLayer == null) {
+			setTargetLayer(SaltFactory.eINSTANCE.createSLayer());
+		}
+		return targetLayer;
 	}
 
-	
+	/**
+	 * @param targetLayer the targetLayer to set
+	 */
+	public void setTargetLayer(SLayer targetLayer) {
+		this.targetLayer = targetLayer;
+	}
+
 }
