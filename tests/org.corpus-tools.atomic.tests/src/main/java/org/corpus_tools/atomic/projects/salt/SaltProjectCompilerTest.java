@@ -120,6 +120,7 @@ public class SaltProjectCompilerTest {
 		SaltProject project = (SaltProject) retVal;
 		assertEquals(1, project.getSCorpusGraphs().size());
 		SCorpusGraph corpusGraph = project.getSCorpusGraphs().get(0);
+		assertEquals(5, corpusGraph.getSCorpora().size());
 		List<String> corpusNames = new ArrayList<>();
 		for (SCorpus corpus : corpusGraph.getSCorpora()) {
 			corpusNames.add(corpus.getSName());
