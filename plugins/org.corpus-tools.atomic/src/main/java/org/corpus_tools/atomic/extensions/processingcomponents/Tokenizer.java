@@ -80,7 +80,7 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 			throw new ProcessingException("The processed document does not have an SDocumentGraph!", new NullPointerException());
 		}
 		SDocumentGraph documentGraph = document.getSDocumentGraph();
-		if (documentGraph.getSTextualDSs().get(0) == null) {
+		if (documentGraph.getSTextualDSs().size() > 0 && documentGraph.getSTextualDSs().get(0) == null) {
 			throw new ProcessingException("The processed document's document graph does not have an STextualDS!", new NullPointerException());
 		}
 		for (STextualDS sTextualDS : documentGraph.getSTextualDSs()) {
