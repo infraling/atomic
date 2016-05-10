@@ -23,8 +23,10 @@ import java.util.List;
 import org.corpus_tools.atomic.extensions.ProcessingComponent;
 import org.corpus_tools.atomic.extensions.ProcessingException;
 import org.corpus_tools.atomic.extensions.SaltProcessingComponent;
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
@@ -88,6 +90,7 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 			// Create char array
 			char[] charText = documentSourceText.toCharArray();
 			int tokenCounter = 0;
+			SToken previousToken = null;
 
 			// Iterate char array
 			for (int i = 0; i < charText.length; i++) {
@@ -104,7 +107,16 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 						int start = i;
 						int end = i + stringTokens.get(tokenCounter).length();
 
-						SToken sTok = documentGraph.createSToken(sTextualDS, start, end);
+						SToken token = documentGraph.createSToken(sTextualDS, start, end);
+						
+						// Add SOrderRelation from previous to this token if previous token is not null
+						if (previousToken != null) {
+							SOrderRelation orderRelation = SaltFactory.eINSTANCE.createSOrderRelation();
+							orderRelation.setSTarget(token);
+							orderRelation.setSSource(previousToken);
+							documentGraph.addSRelation(orderRelation);
+						}
+						previousToken = token;
 					
 						// Add token to layer
 						SLayer layer;
@@ -112,7 +124,7 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 							if (layer.getSName() == null || layer.getSName().isEmpty()) {
 								layer.setSName(getTargetLayerName(document));
 							}
-							layer.getSNodes().add(sTok);
+							layer.getSNodes().add(token);
 						}
 						i = i + stringTokens.get(tokenCounter).length() - 1;
 						tokenCounter++;

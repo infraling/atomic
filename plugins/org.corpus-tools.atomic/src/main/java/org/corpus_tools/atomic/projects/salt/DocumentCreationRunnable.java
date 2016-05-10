@@ -35,6 +35,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
  */
 public class DocumentCreationRunnable implements Runnable {
 	
+	// FIXME: Needs unit tests!
+	
 	/** 
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "DocumentCreationRunnable".
 	 */
