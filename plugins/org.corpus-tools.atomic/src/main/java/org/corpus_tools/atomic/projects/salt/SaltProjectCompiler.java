@@ -19,8 +19,8 @@
 package org.corpus_tools.atomic.projects.salt;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.projects.Corpus;
@@ -31,6 +31,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 
 /**
  * Compiles a {@link SaltProject} from a {@link Corpus} object.
@@ -103,8 +105,20 @@ public class SaltProjectCompiler implements ProjectCompiler {
 			}
 		}
 		// Add all created SCorpusGraphs to the project
+		SCorpusGraph corpusGraph = SaltFactory.eINSTANCE.createSCorpusGraph();
+		corpusGraph.setSName("corpus-graph" + project.getSName());
+		project.getSCorpusGraphs().add(corpusGraph);
 		for (Runnable runnable : threads.values()) {
-			project.getSCorpusGraphs().add(((CorpusCreationRunnable) runnable).getCorpusGraph());
+			corpusGraph.addSNode(((CorpusCreationRunnable) runnable).getRootCorpus());
+			List<SCorpus[]> subCorpora = ((CorpusCreationRunnable) runnable).getSubCorpora();
+			for (int i = 0; i < subCorpora.size(); i++) {
+				corpusGraph.addSSubCorpus(subCorpora.get(i)[0], subCorpora.get(i)[1]);
+			}
+			List<SNode[]> documents = ((CorpusCreationRunnable) runnable).getDocuments();
+			System.err.println("LENGHTS " + documents.size());
+			for (int i = 0; i < documents.size(); i++) {
+				corpusGraph.addSDocument(((SCorpus) documents.get(i)[0]), ((SDocument) documents.get(i)[1]));
+			}
 		}
 		return project;
 	}

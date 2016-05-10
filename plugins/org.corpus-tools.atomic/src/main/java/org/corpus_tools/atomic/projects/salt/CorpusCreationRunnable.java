@@ -18,8 +18,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.salt;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +34,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 
 /**
  * Creates a root corpus of type {@link SCorpus}, and adds the relevant nodes
@@ -42,23 +45,24 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  */
 public class CorpusCreationRunnable implements Runnable {
 	
-	private Map<Thread, Runnable> documentThreads = new HashMap<>();
+	private final Map<Thread, Runnable> documentThreads = new HashMap<>();
 	
 	/** 
 	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "CorpusCreationRunnable".
 	 */
 	private static final Logger log = LogManager.getLogger(CorpusCreationRunnable.class);
 	
-	private ProjectNode rootCorpus = null;
-	private SCorpusGraph corpusGraph = null;
+	private ProjectNode rootCorpusData = null;
+	private SCorpus rootCorpus = null;
 	private SaltFactory factory = SaltFactory.eINSTANCE;
+	private final List<SCorpus[]> subCorpora = new ArrayList<>();
+	private final List<SNode[]> documents = new ArrayList<>();
 
 	/**
 	 * 
 	 */
-	public CorpusCreationRunnable(ProjectNode rootCorpus) {
-		setRootCorpus(rootCorpus);
-		setCorpusGraph(factory.createSCorpusGraph());
+	public CorpusCreationRunnable(ProjectNode rootCorpusData) {
+		setRootCorpusData(rootCorpusData);
 	}
 
 	/* 
@@ -66,9 +70,8 @@ public class CorpusCreationRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		log.trace("Creating the corpus graph and corpus structure for the root corpus {}.", rootCorpus.getName());
-		getCorpusGraph().setSId("corpus-graph-" + rootCorpus.getName().replaceAll(" ", "_"));
-		createCorpusStructure(getRootCorpus(), null);
+		log.trace("Creating the corpus graph and corpus structure for the root corpus {}.", rootCorpusData.getName());
+		createCorpusStructure(getRootCorpusData(), null);
 		/* 
 		 * At this point, all corpora exist in the structure, so now create
 		 * all documents!
@@ -86,10 +89,10 @@ public class CorpusCreationRunnable implements Runnable {
 			}
 			for (Runnable runnable : getDocumentThreads().values()) {
 				DocumentCreationRunnable documentRunnable = (DocumentCreationRunnable) runnable;
-				getCorpusGraph().addSDocument(documentRunnable.getsCorpus(), documentRunnable.getsDocument()); 
+				getDocuments().add(new SNode[]{documentRunnable.getsCorpus(), documentRunnable.getsDocument()});
 			}
 		}
-		log.trace("Finished creating the corpus structure for root corpus {}.", getRootCorpus().getName());
+		log.trace("Finished creating the corpus structure for root corpus {}.", getRootCorpusData().getName());
 	}
 	
 	/**
@@ -118,10 +121,6 @@ public class CorpusCreationRunnable implements Runnable {
 			final NullPointerException e = new NullPointerException("Corpus data is null!");
 			throw log.throwing(e);
 		}
-		else if (getCorpusGraph() == null) {
-			final NullPointerException e = new NullPointerException("Corpus graph is null!");
-			throw log.throwing(e);
-		}
 
 		/* 
 		 * Create the corpus in the corpus graph.
@@ -133,10 +132,10 @@ public class CorpusCreationRunnable implements Runnable {
 		SCorpus corpus = factory.createSCorpus();
 		corpus.setSName(corpusData.getName());
 		if (parentCorpus == null) {
-			getCorpusGraph().addSNode(corpus);
+			setRootCorpus(corpus);
 		}
 		else {
-			getCorpusGraph().addSSubCorpus(parentCorpus, corpus);
+			getSubCorpora().add(new SCorpus[]{parentCorpus, corpus});
 		}
 
 		for (ProjectNode child : ((Corpus) corpusData).getChildren()) {
@@ -144,7 +143,7 @@ public class CorpusCreationRunnable implements Runnable {
 			if (child instanceof Document && !workedDocs.contains(child)) {
 				DocumentCreationRunnable runnable = new DocumentCreationRunnable(corpus, (Document) child);
 				Thread worker = new Thread(runnable);
-				worker.setName("Worker thread for runnable creating structure for root corpus " + rootCorpus.getName());
+				worker.setName("Worker thread for runnable creating structure for root corpus " + rootCorpusData.getName());
 				getDocumentThreads().put(worker, runnable);
 				workedDocs.add((Document) child);
 			}
@@ -159,31 +158,17 @@ public class CorpusCreationRunnable implements Runnable {
 	}
 	
 	/**
-	 * @return the rootCorpus
+	 * @return the rootCorpusData
 	 */
-	private ProjectNode getRootCorpus() {
-		return rootCorpus;
+	private ProjectNode getRootCorpusData() {
+		return rootCorpusData;
 	}
 
 	/**
-	 * @param rootCorpus the rootCorpus to set
+	 * @param rootCorpusData the rootCorpusData to set
 	 */
-	private void setRootCorpus(ProjectNode rootCorpus) {
-		this.rootCorpus = rootCorpus;
-	}
-
-	/**
-	 * @return the corpusGraph
-	 */
-	public SCorpusGraph getCorpusGraph() {
-		return corpusGraph;
-	}
-
-	/**
-	 * @param corpusGraph the corpusGraph to set
-	 */
-	private void setCorpusGraph(SCorpusGraph corpusGraph) {
-		this.corpusGraph = corpusGraph;
+	private void setRootCorpusData(ProjectNode rootCorpusData) {
+		this.rootCorpusData = rootCorpusData;
 	}
 
 	/**
@@ -191,6 +176,34 @@ public class CorpusCreationRunnable implements Runnable {
 	 */
 	private Map<Thread, Runnable> getDocumentThreads() {
 		return documentThreads;
+	}
+
+	/**
+	 * @return the rootCorpus
+	 */
+	public SCorpus getRootCorpus() {
+		return rootCorpus;
+	}
+
+	/**
+	 * @param rootCorpus the rootCorpus to set
+	 */
+	public void setRootCorpus(SCorpus rootCorpus) {
+		this.rootCorpus = rootCorpus;
+	}
+
+	/**
+	 * @return the subCorpora
+	 */
+	public List<SCorpus[]> getSubCorpora() {
+		return subCorpora;
+	}
+
+	/**
+	 * @return the documents
+	 */
+	public List<SNode[]> getDocuments() {
+		return documents;
 	}
 
 }

@@ -18,19 +18,14 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.salt;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.*; 
 
-import java.util.ArrayList;
-import java.util.Collections;
-
+import java.util.List;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SRelation;
 
 /**
  * Unit tests for {@link CorpusCreationRunnable}.
@@ -72,22 +67,13 @@ public class CorpusCreationRunnableTest {
 	@Test
 	public void testRun() {
 		getFixture().run();
-		SCorpusGraph corpusGraph = getFixture().getCorpusGraph();
-		assertNotNull(corpusGraph);
-		assertEquals(3, corpusGraph.getSCorpora().size());
-		assertNotNull(corpusGraph.getSRootCorpus());
-		assertEquals(1, corpusGraph.getSRootCorpus().size());
-		assertEquals("c1", corpusGraph.getSRootCorpus().get(0).getSName());
-		assertEquals(2, corpusGraph.getSRootCorpus().get(0).getOutgoingSRelations().size());
-		ArrayList<String> subCorpusNames = new ArrayList<>();
-		for (SRelation outgoing : corpusGraph.getSRootCorpus().get(0).getOutgoingSRelations()) {
-			assertTrue(outgoing instanceof SCorpusRelation);
-			assertTrue(outgoing.getSTarget() instanceof SCorpus);
-			subCorpusNames.add(outgoing.getSTarget().getSName());
+		assertNotNull(getFixture().getRootCorpus());
+		assertEquals("c1", getFixture().getRootCorpus().getSName());
+		final List<SCorpus[]> subCorpora = getFixture().getSubCorpora();
+		assertEquals(2, subCorpora.size());
+		for (int i = 0; i < subCorpora.size(); i++) {
+			assertEquals("c1" + String.valueOf(i + 2), subCorpora.get(i)[1].getSName());
 		}
-		Collections.sort(subCorpusNames);
-		assertEquals("c12", subCorpusNames.get(0));
-		assertEquals("c13", subCorpusNames.get(1));
 	}
 
 	/**

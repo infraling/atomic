@@ -118,54 +118,38 @@ public class SaltProjectCompilerTest {
 		Object retVal = getFixture().run();
 		assertTrue(retVal instanceof SaltProject);
 		SaltProject project = (SaltProject) retVal;
-		assertEquals(2, project.getSCorpusGraphs().size());
-		// Assert that one corpus graph includes 4 corpora, the other has 1
-		SCorpusGraph corpusGraphC1 = null;
-		SCorpusGraph corpusGraphC2 = null;
-		for (SCorpusGraph corpusGraph : project.getSCorpusGraphs()) {
-			if (corpusGraph.getSCorpora().size() == 1) {
-				corpusGraphC1 = corpusGraph;
-			}
-			else {
-				corpusGraphC2 = corpusGraph;
-			}
+		assertEquals(1, project.getSCorpusGraphs().size());
+		SCorpusGraph corpusGraph = project.getSCorpusGraphs().get(0);
+		List<String> corpusNames = new ArrayList<>();
+		for (SCorpus corpus : corpusGraph.getSCorpora()) {
+			corpusNames.add(corpus.getSName());
 		}
-		assertEquals(1, corpusGraphC1.getSCorpora().size());
-		assertEquals(4, corpusGraphC2.getSCorpora().size());
-		// Assert that the corpus names are correct
-		assertEquals("c1", corpusGraphC1.getSCorpora().get(0).getSName());
-		List<String> corpusNamesC2 = new ArrayList<>();
-		for (SCorpus corpus : corpusGraphC2.getSCorpora()) {
-			corpusNamesC2.add(corpus.getSName());
-		}
-		Collections.sort(corpusNamesC2);
-		assertEquals("c2", corpusNamesC2.get(0));
-		assertEquals("c21", corpusNamesC2.get(1));
-		assertEquals("c22", corpusNamesC2.get(2));
-		assertEquals("c221", corpusNamesC2.get(3));
+		Collections.sort(corpusNames);
+		assertEquals("c1", corpusNames.get(0));
+		assertEquals("c2", corpusNames.get(1));
+		assertEquals("c21", corpusNames.get(2));
+		assertEquals("c22", corpusNames.get(3));
+		assertEquals("c221", corpusNames.get(4));
 		// Assert that the corpora contain the right number of documents and right documents
-		assertEquals(2, corpusGraphC1.getSDocuments().size());
-		SDocument[] documentsC1 = new SDocument[2];
-		for (SDocument document : corpusGraphC1.getSDocuments()) {
-			documentsC1[Integer.parseInt(document.getSName().substring(1)) - 1] = document;
+		for (SDocument doc : corpusGraph.getSDocuments()) {
+			System.err.println(doc.getSName());
 		}
-		assertEquals("d1", documentsC1[0].getSName());
-		assertEquals("d2", documentsC1[1].getSName());
-		assertEquals("t1", documentsC1[0].getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals("t2", documentsC1[1].getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		
-		assertEquals(3, corpusGraphC2.getSDocuments().size());
-		Map<String, SDocument> documentsC2Map = new HashMap<>();
-		for (SDocument document : corpusGraphC2.getSDocuments()) {
-			documentsC2Map.put(document.getSName(), document);
+		assertEquals(5, corpusGraph.getSDocuments().size());
+		Map<String, SDocument> documentsMap = new HashMap<>();
+		for (SDocument document : corpusGraph.getSDocuments()) {
+			documentsMap.put(document.getSName(), document);
 		}
-		assertEquals(3, documentsC2Map.size());
-		assertTrue(documentsC2Map.containsKey("d211"));
-		assertTrue(documentsC2Map.containsKey("d212"));
-		assertTrue(documentsC2Map.containsKey("d221"));
-		assertEquals("t211", documentsC2Map.get("d211").getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals("t212", documentsC2Map.get("d212").getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals("t221", documentsC2Map.get("d221").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals(5, documentsMap.size());
+		assertTrue(documentsMap.containsKey("d1"));
+		assertTrue(documentsMap.containsKey("d2"));
+		assertTrue(documentsMap.containsKey("d211"));
+		assertTrue(documentsMap.containsKey("d212"));
+		assertTrue(documentsMap.containsKey("d221"));
+		assertEquals("t1", documentsMap.get("d1").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t2", documentsMap.get("d2").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t211", documentsMap.get("d211").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t212", documentsMap.get("d212").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t221", documentsMap.get("d221").getSDocumentGraph().getSTextualDSs().get(0).getSText());
 	}
 
 	/**
