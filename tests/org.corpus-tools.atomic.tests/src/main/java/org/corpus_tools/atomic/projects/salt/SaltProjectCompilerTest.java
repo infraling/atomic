@@ -132,9 +132,6 @@ public class SaltProjectCompilerTest {
 		assertEquals("c22", corpusNames.get(3));
 		assertEquals("c221", corpusNames.get(4));
 		// Assert that the corpora contain the right number of documents and right documents
-		for (SDocument doc : corpusGraph.getSDocuments()) {
-			System.err.println(doc.getSName());
-		}
 		assertEquals(5, corpusGraph.getSDocuments().size());
 		Map<String, SDocument> documentsMap = new HashMap<>();
 		for (SDocument document : corpusGraph.getSDocuments()) {

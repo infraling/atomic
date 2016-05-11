@@ -22,17 +22,19 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
+import org.eclipse.emf.common.util.EList;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Edge;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 
 /**
  * A unit test for {@link Tokenizer}.
@@ -74,6 +76,7 @@ public class TokenizerTest {
 		SDocumentGraph documentGraph = factory.createSDocumentGraph();
 		document.setSDocumentGraph(documentGraph);
 		documentGraph.createSTextualDS("Ride the dragon towards the crimson eye!");
+		setDocument(document);
 	}
 
 	/**
@@ -81,12 +84,30 @@ public class TokenizerTest {
 	 */
 	@Test
 	public void testProcessDocument() {
-		SaltFactory factory = SaltFactory.eINSTANCE;
-		SDocument document = factory.createSDocument();
-		SDocumentGraph documentGraph = factory.createSDocumentGraph();
-		document.setSDocumentGraph(documentGraph);
-		assertNotNull(document.getSDocumentGraph());
-		getFixture().processDocument(document);
+		assertEquals("Ride the dragon towards the crimson eye!", getDocument().getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		getFixture().processDocument(getDocument());
+		SDocumentGraph graph = getDocument().getSDocumentGraph();
+		EList<SToken> tokens = graph.getSTokens();
+		assertTrue(graph.getSTokens().size() == 8);
+		assertEquals("Ride", graph.getSText(tokens.get(0)));
+		assertEquals("the", graph.getSText(tokens.get(1)));
+		assertEquals("dragon", graph.getSText(tokens.get(2)));
+		assertEquals("towards", graph.getSText(tokens.get(3)));
+		assertEquals("the", graph.getSText(tokens.get(4)));
+		assertEquals("crimson", graph.getSText(tokens.get(5)));
+		assertEquals("eye", graph.getSText(tokens.get(6)));
+		assertEquals("!", graph.getSText(tokens.get(7)));
+		SToken previousToken = null;
+		for (SToken token : tokens) {
+			if (previousToken != null) {
+				for (Edge edge : graph.getInEdges(token.getSId())) {
+					if (edge instanceof SOrderRelation) {
+						assertTrue(((SOrderRelation) edge).getSSource() == previousToken);
+					}
+				}
+			}
+			previousToken = token;
+		}
 	}
 
 	/**
