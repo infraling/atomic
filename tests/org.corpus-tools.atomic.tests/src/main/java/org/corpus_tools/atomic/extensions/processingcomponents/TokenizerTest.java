@@ -109,7 +109,7 @@ public class TokenizerTest {
 			previousToken = token;
 		}
 	}
-
+	
 	/**
 	 * @return the fixture
 	 */
