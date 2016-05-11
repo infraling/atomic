@@ -115,7 +115,6 @@ public class SaltProjectCompiler implements ProjectCompiler {
 				corpusGraph.addSSubCorpus(subCorpora.get(i)[0], subCorpora.get(i)[1]);
 			}
 			List<SNode[]> documents = ((CorpusCreationRunnable) runnable).getDocuments();
-			System.err.println("LENGHTS " + documents.size());
 			for (int i = 0; i < documents.size(); i++) {
 				corpusGraph.addSDocument(((SCorpus) documents.get(i)[0]), ((SDocument) documents.get(i)[1]));
 			}
