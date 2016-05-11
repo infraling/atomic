@@ -82,6 +82,7 @@ public class SaltTokenizer extends Tokenizer {
 						if (getConfiguration() instanceof SaltTokenizerConfiguration) {
 							SaltTokenizerConfiguration config = (SaltTokenizerConfiguration) getConfiguration();
 							tokenizer.addAbbreviation(config.getLanguageCode(), config.getAbbreviations());
+							// FIXME CLITICS!
 							tokenizer.tokenize(sTextualDS, config.getLanguageCode());
 						}
 					}
