@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import org.corpus_tools.salt.common.SDocument;
 
 /**
  * A processing component is a component (usually an NLP component)

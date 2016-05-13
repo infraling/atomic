@@ -18,14 +18,13 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions;
 
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.core.SLayer;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
  * This class provides handy methods and default implementations
@@ -80,7 +79,7 @@ public class SaltProcessingComponent {
 	 * @return the ID prefix (ID + ":")
 	 */
 	private String getIdPrefix(SDocument document) {
-		return getTargetLayer(document).getSId() + ":";
+		return getTargetLayer(document).getId() + ":";
 	}
 
 	/**
@@ -89,8 +88,8 @@ public class SaltProcessingComponent {
 	 */
 	public SLayer getTargetLayer(SDocument document) {
 		if (targetLayer == null) {
-			SLayer layer = SaltFactory.eINSTANCE.createSLayer();
-			document.getSDocumentGraph().addSLayer(layer);
+			SLayer layer = SaltFactory.getFactory().createSLayer();
+			document.getDocumentGraph().addLayer(layer);
 			targetLayer = layer;
 		}
 		return targetLayer;
