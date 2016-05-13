@@ -22,10 +22,9 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 import org.corpus_tools.atomic.projects.Corpus;
+import org.corpus_tools.salt.common.SCorpus;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 
 /**
  * Unit tests for {@link CorpusCreationRunnable}.
@@ -68,11 +67,11 @@ public class CorpusCreationRunnableTest {
 	public void testRun() {
 		getFixture().run();
 		assertNotNull(getFixture().getRootCorpus());
-		assertEquals("c1", getFixture().getRootCorpus().getSName());
+		assertEquals("c1", getFixture().getRootCorpus().getName());
 		final List<SCorpus[]> subCorpora = getFixture().getSubCorpora();
 		assertEquals(2, subCorpora.size());
 		for (int i = 0; i < subCorpora.size(); i++) {
-			assertEquals("c1" + String.valueOf(i + 2), subCorpora.get(i)[1].getSName());
+			assertEquals("c1" + String.valueOf(i + 2), subCorpora.get(i)[1].getName());
 		}
 	}
 

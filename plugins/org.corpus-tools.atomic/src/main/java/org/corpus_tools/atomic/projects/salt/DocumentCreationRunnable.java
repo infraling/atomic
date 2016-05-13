@@ -21,10 +21,10 @@ package org.corpus_tools.atomic.projects.salt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.projects.Document;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.STextualDS;
 
 /**
  * Creates a corpus document of type {@link SDocument}, and adds the features
@@ -69,13 +69,12 @@ public class DocumentCreationRunnable implements Runnable {
 	 */
 	public void run() {
 		log.entry(getDocumentData());
-		SaltFactory factory = SaltFactory.eINSTANCE;
-		setsDocument(factory.createSDocument());
-		getsDocument().setSName(getDocumentData().getName());
-		getsDocument().setSDocumentGraph(factory.createSDocumentGraph());
-		STextualDS sourceText = factory.createSTextualDS();
-		sourceText.setSText(getDocumentData().getSourceText());
-		getsDocument().getSDocumentGraph().addSNode(sourceText);
+		setsDocument(SaltFactory.createSDocument());
+		getsDocument().setName(getDocumentData().getName());
+		getsDocument().setDocumentGraph(SaltFactory.createSDocumentGraph());
+		STextualDS sourceText = SaltFactory.createSTextualDS();
+		sourceText.setText(getDocumentData().getSourceText());
+		getsDocument().getDocumentGraph().addNode(sourceText);
 		log.exit(getsDocument());
 	}
 

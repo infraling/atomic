@@ -27,13 +27,12 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.pepper.cli.PepperStarterConfiguration;
+import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.common.PepperUtil;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Constants;
 import com.google.common.base.Splitter;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguration;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperUtil;
 
 /**
  * This class represents all properties that Pepper as used in Atomic

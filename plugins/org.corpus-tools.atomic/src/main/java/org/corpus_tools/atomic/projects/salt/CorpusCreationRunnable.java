@@ -30,11 +30,9 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.core.SNode;
 
 /**
  * Creates a root corpus of type {@link SCorpus}, and adds the relevant nodes
@@ -54,7 +52,6 @@ public class CorpusCreationRunnable implements Runnable {
 	
 	private ProjectNode rootCorpusData = null;
 	private SCorpus rootCorpus = null;
-	private SaltFactory factory = SaltFactory.eINSTANCE;
 	private final List<SCorpus[]> subCorpora = new ArrayList<>();
 	private final List<SNode[]> documents = new ArrayList<>();
 
@@ -81,7 +78,7 @@ public class CorpusCreationRunnable implements Runnable {
 				thread.start();
 				try {
 					thread.join();
-					log.trace("Document thread for document {} has finished.", ((DocumentCreationRunnable) getDocumentThreads().get(thread)).getsDocument().getSName());
+					log.trace("Document thread for document {} has finished.", ((DocumentCreationRunnable) getDocumentThreads().get(thread)).getsDocument().getName());
 				}
 				catch (InterruptedException e) {
 					log.error("Document creation thread has been interrupted!", e);
@@ -129,8 +126,8 @@ public class CorpusCreationRunnable implements Runnable {
 		 * only continued if the argument is of that type,
 		 * cf. below
 		 */
-		SCorpus corpus = factory.createSCorpus();
-		corpus.setSName(corpusData.getName());
+		SCorpus corpus = SaltFactory.createSCorpus();
+		corpus.setName(corpusData.getName());
 		if (parentCorpus == null) {
 			setRootCorpus(corpus);
 		}

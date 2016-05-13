@@ -25,15 +25,14 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
+import org.corpus_tools.salt.common.SCorpusGraph;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SaltProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
  * A wizard for creating new Atomic (i.e., Salt) projects.
@@ -85,8 +84,8 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		SaltProjectCompiler compiler = new SaltProjectCompiler(projectData);
 		SaltProject project = compiler.run();
 		List<Tokenizer> orderedTokenizers = getTokenizationPage().getTokenizers();
-		for (SCorpusGraph corpusGraph : project.getSCorpusGraphs()) {
-			for (SDocument document : corpusGraph.getSDocuments()) {
+		for (SCorpusGraph corpusGraph : project.getCorpusGraphs()) {
+			for (SDocument document : corpusGraph.getDocuments()) {
 				for (Tokenizer tokenizer : orderedTokenizers) {
 					tokenizer.processDocument(document);
 				}

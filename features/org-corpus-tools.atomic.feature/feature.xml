@@ -28,8 +28,6 @@
       <import plugin="org.eclipse.ui.navigator.resources" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="javax.xml"/>
       <import plugin="com.lmax.disruptor" version="3.3.2" match="greaterOrEqual"/>
-      <import plugin="de.hu_berlin.german.korpling.saltnpepper.pepper-lib" version="2.1.2" match="greaterOrEqual"/>
-      <import plugin="de.hu_berlin.german.korpling.saltnpepper.pepper-framework" version="2.1.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi.services" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.common" version="2.11.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
@@ -45,6 +43,8 @@
       <import plugin="org.eclipse.aether.transport.http" version="1.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.aether.util" version="1.0.1" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.lang3"/>
+      <import plugin="org.corpus-tools.pepper-framework"/>
+      <import plugin="org.corpus-tools.pepper-lib"/>
    </requires>
 
    <plugin

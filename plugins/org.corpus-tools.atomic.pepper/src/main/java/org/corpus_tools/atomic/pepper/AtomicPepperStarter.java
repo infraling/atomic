@@ -20,9 +20,7 @@ package org.corpus_tools.atomic.pepper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
+import org.corpus_tools.pepper.connectors.PepperConnector;
 
 /**
  * This class configures and starts an instance of {@link Pepper} (implemented in

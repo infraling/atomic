@@ -49,7 +49,7 @@ public class SimpleSaltTokenizer extends Tokenizer {
 	 */
 	@Override
 	public List<String> tokenize(String rawSourceText) {
-		de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer saltTokenizer = new de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer();
+		org.corpus_tools.salt.common.tokenizer.Tokenizer saltTokenizer = new org.corpus_tools.salt.common.tokenizer.Tokenizer();
 		return saltTokenizer.tokenizeToString(rawSourceText, null);
 	}
 	

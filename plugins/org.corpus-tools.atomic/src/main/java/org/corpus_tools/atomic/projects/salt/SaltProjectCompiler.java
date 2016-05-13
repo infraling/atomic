@@ -26,13 +26,12 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.ProjectCompiler;
 import org.corpus_tools.atomic.projects.ProjectNode;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SCorpusGraph;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SaltProject;
+import org.corpus_tools.salt.core.SNode;
 
 /**
  * Compiles a {@link SaltProject} from a {@link Corpus} object.
@@ -52,7 +51,6 @@ public class SaltProjectCompiler implements ProjectCompiler {
 	private static final Logger log = LogManager.getLogger(SaltProjectCompiler.class);
 	
 	private Corpus projectData = null;
-	private SaltFactory factory = SaltFactory.eINSTANCE;
 
 	/**
 	 * Constructor taking an instance of {@link ProjectData}
@@ -82,8 +80,8 @@ public class SaltProjectCompiler implements ProjectCompiler {
 	 */
 	@Override
 	public SaltProject run() {
-		SaltProject project = factory.createSaltProject();
-		project.setSName(getProjectData().getName());
+		SaltProject project = SaltFactory.createSaltProject();
+		project.setName(getProjectData().getName());
 		log.trace("Created a SaltProject and set its name to {}.", projectData.getName());
 
 		// Multi-threaded create corpusgraph and add structure for each corpus in getcorpora
@@ -105,18 +103,18 @@ public class SaltProjectCompiler implements ProjectCompiler {
 			}
 		}
 		// Add all created SCorpusGraphs to the project
-		SCorpusGraph corpusGraph = SaltFactory.eINSTANCE.createSCorpusGraph();
-		corpusGraph.setSName("corpus-graph" + project.getSName());
-		project.getSCorpusGraphs().add(corpusGraph);
+		SCorpusGraph corpusGraph = SaltFactory.createSCorpusGraph();
+		corpusGraph.setName("corpus-graph" + project.getName());
+		project.addCorpusGraph(corpusGraph);
 		for (Runnable runnable : threads.values()) {
-			corpusGraph.addSNode(((CorpusCreationRunnable) runnable).getRootCorpus());
+			corpusGraph.addNode(((CorpusCreationRunnable) runnable).getRootCorpus());
 			List<SCorpus[]> subCorpora = ((CorpusCreationRunnable) runnable).getSubCorpora();
 			for (int i = 0; i < subCorpora.size(); i++) {
-				corpusGraph.addSSubCorpus(subCorpora.get(i)[0], subCorpora.get(i)[1]);
+				corpusGraph.addSubCorpus(subCorpora.get(i)[0], subCorpora.get(i)[1]);
 			}
 			List<SNode[]> documents = ((CorpusCreationRunnable) runnable).getDocuments();
 			for (int i = 0; i < documents.size(); i++) {
-				corpusGraph.addSDocument(((SCorpus) documents.get(i)[0]), ((SDocument) documents.get(i)[1]));
+				corpusGraph.addDocument(((SCorpus) documents.get(i)[0]), ((SDocument) documents.get(i)[1]));
 			}
 		}
 		return project;

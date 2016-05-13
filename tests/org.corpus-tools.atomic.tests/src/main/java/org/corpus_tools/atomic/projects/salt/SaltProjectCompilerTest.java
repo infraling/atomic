@@ -29,13 +29,12 @@ import java.util.Map;
 import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SCorpusGraph;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SaltProject;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
  * Unit test for {@link SaltProjectCompiler}.
@@ -118,12 +117,12 @@ public class SaltProjectCompilerTest {
 		Object retVal = getFixture().run();
 		assertTrue(retVal instanceof SaltProject);
 		SaltProject project = (SaltProject) retVal;
-		assertEquals(1, project.getSCorpusGraphs().size());
-		SCorpusGraph corpusGraph = project.getSCorpusGraphs().get(0);
-		assertEquals(5, corpusGraph.getSCorpora().size());
+		assertEquals(1, project.getCorpusGraphs().size());
+		SCorpusGraph corpusGraph = project.getCorpusGraphs().get(0);
+		assertEquals(5, corpusGraph.getCorpora().size());
 		List<String> corpusNames = new ArrayList<>();
-		for (SCorpus corpus : corpusGraph.getSCorpora()) {
-			corpusNames.add(corpus.getSName());
+		for (SCorpus corpus : corpusGraph.getCorpora()) {
+			corpusNames.add(corpus.getName());
 		}
 		Collections.sort(corpusNames);
 		assertEquals("c1", corpusNames.get(0));
@@ -132,10 +131,10 @@ public class SaltProjectCompilerTest {
 		assertEquals("c22", corpusNames.get(3));
 		assertEquals("c221", corpusNames.get(4));
 		// Assert that the corpora contain the right number of documents and right documents
-		assertEquals(5, corpusGraph.getSDocuments().size());
+		assertEquals(5, corpusGraph.getDocuments().size());
 		Map<String, SDocument> documentsMap = new HashMap<>();
-		for (SDocument document : corpusGraph.getSDocuments()) {
-			documentsMap.put(document.getSName(), document);
+		for (SDocument document : corpusGraph.getDocuments()) {
+			documentsMap.put(document.getName(), document);
 		}
 		assertEquals(5, documentsMap.size());
 		assertTrue(documentsMap.containsKey("d1"));
@@ -143,11 +142,11 @@ public class SaltProjectCompilerTest {
 		assertTrue(documentsMap.containsKey("d211"));
 		assertTrue(documentsMap.containsKey("d212"));
 		assertTrue(documentsMap.containsKey("d221"));
-		assertEquals("t1", documentsMap.get("d1").getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals("t2", documentsMap.get("d2").getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals("t211", documentsMap.get("d211").getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals("t212", documentsMap.get("d212").getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals("t221", documentsMap.get("d221").getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("t1", documentsMap.get("d1").getDocumentGraph().getTextualDSs().get(0).getText());
+		assertEquals("t2", documentsMap.get("d2").getDocumentGraph().getTextualDSs().get(0).getText());
+		assertEquals("t211", documentsMap.get("d211").getDocumentGraph().getTextualDSs().get(0).getText());
+		assertEquals("t212", documentsMap.get("d212").getDocumentGraph().getTextualDSs().get(0).getText());
+		assertEquals("t221", documentsMap.get("d221").getDocumentGraph().getTextualDSs().get(0).getText());
 	}
 
 	/**

@@ -23,13 +23,13 @@ import java.util.List;
 import org.corpus_tools.atomic.extensions.ProcessingComponent;
 import org.corpus_tools.atomic.extensions.ProcessingException;
 import org.corpus_tools.atomic.extensions.SaltProcessingComponent;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SOrderRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SOrderRelation;
+import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.common.SToken;
+import org.corpus_tools.salt.core.SLayer;
 
 /**
  * A semi-abstract tokenizer for raw corpus document source texts, working on
@@ -76,15 +76,15 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 	 */
 	@Override
 	public void processDocument(SDocument document) {
-		if (document.getSDocumentGraph() == null) {
+		if (document.getDocumentGraph() == null) {
 			throw new ProcessingException("The processed document does not have an SDocumentGraph!", new NullPointerException());
 		}
-		SDocumentGraph documentGraph = document.getSDocumentGraph();
-		if (documentGraph.getSTextualDSs().size() > 0 && documentGraph.getSTextualDSs().get(0) == null) {
+		SDocumentGraph documentGraph = document.getDocumentGraph();
+		if (documentGraph.getTextualDSs().size() > 0 && documentGraph.getTextualDSs().get(0) == null) {
 			throw new ProcessingException("The processed document's document graph does not have an STextualDS!", new NullPointerException());
 		}
-		for (STextualDS sTextualDS : documentGraph.getSTextualDSs()) {
-			String documentSourceText = sTextualDS.getSText();
+		for (STextualDS sTextualDS : documentGraph.getTextualDSs()) {
+			String documentSourceText = sTextualDS.getText();
 			List<String> stringTokens = tokenize(documentSourceText);
 			
 			// Create char array
@@ -107,24 +107,24 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 						int start = i;
 						int end = i + stringTokens.get(tokenCounter).length();
 
-						SToken token = documentGraph.createSToken(sTextualDS, start, end);
+						SToken token = documentGraph.createToken(sTextualDS, start, end);
 						
 						// Add SOrderRelation from previous to this token if previous token is not null
 						if (previousToken != null) {
-							SOrderRelation orderRelation = SaltFactory.eINSTANCE.createSOrderRelation();
-							orderRelation.setSTarget(token);
-							orderRelation.setSSource(previousToken);
-							documentGraph.addSRelation(orderRelation);
+							SOrderRelation orderRelation = SaltFactory.createSOrderRelation();
+							orderRelation.setTarget(token);
+							orderRelation.setSource(previousToken);
+							documentGraph.addRelation(orderRelation);
 						}
 						previousToken = token;
 					
 						// Add token to layer
 						SLayer layer;
-						if ((layer = getTargetLayer(document)) != null && documentGraph.getSLayers().contains(layer)) {
-							if (layer.getSName() == null || layer.getSName().isEmpty()) {
-								layer.setSName(getTargetLayerName(document));
+						if ((layer = getTargetLayer(document)) != null && documentGraph.getLayers().contains(layer)) {
+							if (layer.getName() == null || layer.getName().isEmpty()) {
+								layer.setName(getTargetLayerName(document));
 							}
-							layer.getSNodes().add(token);
+							layer.addNode(token);
 						}
 						i = i + stringTokens.get(tokenCounter).length() - 1;
 						tokenCounter++;

@@ -38,20 +38,18 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.pepper.cli.PepperStarterConfiguration;
+import org.corpus_tools.pepper.cli.exceptions.PepperOSGiException;
+import org.corpus_tools.pepper.cli.exceptions.PepperOSGiFrameworkPluginException;
+import org.corpus_tools.pepper.cli.exceptions.PepperPropertyException;
+import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.connectors.impl.PepperOSGiConnector;
+import org.corpus_tools.pepper.core.PepperOSGiRunner;
+import org.corpus_tools.pepper.exceptions.PepperConfigurationException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.PepperStarterConfiguration;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.exceptions.PepperOSGiException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.exceptions.PepperOSGiFrameworkPluginException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.cli.exceptions.PepperPropertyException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.Pepper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.PepperConfiguration;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.impl.PepperOSGiConnector;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.core.PepperOSGiRunner;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperConfigurationException;
 
 /**
  * This class is an implementation of {@link Pepper}. It bridges between 

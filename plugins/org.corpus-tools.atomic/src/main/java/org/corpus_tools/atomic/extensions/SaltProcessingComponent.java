@@ -88,7 +88,7 @@ public class SaltProcessingComponent {
 	 */
 	public SLayer getTargetLayer(SDocument document) {
 		if (targetLayer == null) {
-			SLayer layer = SaltFactory.getFactory().createSLayer();
+			SLayer layer = SaltFactory.createSLayer();
 			document.getDocumentGraph().addLayer(layer);
 			targetLayer = layer;
 		}

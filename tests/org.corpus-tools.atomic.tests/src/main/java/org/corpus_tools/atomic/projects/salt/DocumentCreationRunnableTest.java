@@ -21,12 +21,11 @@ package org.corpus_tools.atomic.projects.salt;
 import static org.junit.Assert.*;
 
 import org.corpus_tools.atomic.projects.Document;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SDocument;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
  * Unit tests for {@link DocumentCreationRunnable}.
@@ -45,9 +44,9 @@ public class DocumentCreationRunnableTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		SCorpus corpus = SaltFactory.eINSTANCE.createSCorpus();
+		SCorpus corpus = SaltFactory.createSCorpus();
 		corpus.setId("12345");
-		corpus.setSName("corpus");
+		corpus.setName("corpus");
 		Document d = new Document();
 		d.setName("document");
 		d.setSourceText("sourceText");
@@ -64,10 +63,10 @@ public class DocumentCreationRunnableTest {
 		SCorpus corpus = getFixture().getsCorpus();
 		assertNotNull(corpus);
 		assertNotNull(document);
-		assertEquals("12345", corpus.getSId());
-		assertEquals("corpus", corpus.getSName());
-		assertEquals("document", document.getSName());
-		assertEquals("sourceText", document.getSDocumentGraph().getSTextualDSs().get(0).getSText());
+		assertEquals("12345", corpus.getId());
+		assertEquals("corpus", corpus.getName());
+		assertEquals("document", document.getName());
+		assertEquals("sourceText", document.getDocumentGraph().getTextualDSs().get(0).getText());
 	}
 
 	/**

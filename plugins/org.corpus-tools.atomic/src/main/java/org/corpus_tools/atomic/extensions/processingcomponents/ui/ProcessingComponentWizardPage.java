@@ -20,10 +20,9 @@ package org.corpus_tools.atomic.extensions.processingcomponents.ui;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponent;
 import org.corpus_tools.atomic.extensions.processingcomponents.CustomProcessingComponent;
+import org.corpus_tools.salt.common.SDocument;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 // TODO FIXME: Change to return one or more Processing Components!
 

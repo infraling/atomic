@@ -19,8 +19,7 @@
 package org.corpus_tools.atomic.extensions.processingcomponents;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponent;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
+import org.corpus_tools.salt.common.SDocument;
 
 /**
  * An abstraction of a custom processing component. Clients must work

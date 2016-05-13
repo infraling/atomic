@@ -22,10 +22,9 @@ import java.util.List;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.STextualDS;
 
 /**
  * Wraps the tokenizer included in Salt ({@link de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer})
@@ -69,12 +68,12 @@ public class SaltTokenizer extends Tokenizer {
 	 */
 	@Override
 	public void processDocument(SDocument document) {
-		SDocumentGraph graph = document.getSDocumentGraph();
+		SDocumentGraph graph = document.getDocumentGraph();
 		if (getConfiguration() != null) {
-			de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer tokenizer = new de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer();
-			tokenizer.setsDocumentGraph(document.getSDocumentGraph());
-			if (graph.getSTextualDSs().size() > 0) {
-				for (STextualDS sTextualDS : graph.getSTextualDSs()) {
+			org.corpus_tools.salt.common.tokenizer.Tokenizer tokenizer = new org.corpus_tools.salt.common.tokenizer.Tokenizer();
+			tokenizer.setsDocumentGraph(document.getDocumentGraph());
+			if (graph.getTextualDSs().size() > 0) {
+				for (STextualDS sTextualDS : graph.getTextualDSs()) {
 					if (sTextualDS != null) {
 						// FIXME TODO: Add check for options in config
 						// Language code
@@ -90,7 +89,7 @@ public class SaltTokenizer extends Tokenizer {
 			}
 		}
 		else {
-			document.getSDocumentGraph().tokenize();
+			document.getDocumentGraph().tokenize();
 		}
 	}
 

@@ -20,13 +20,12 @@ package org.corpus_tools.atomic.extensions;
 
 import static org.junit.Assert.*;
 
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.core.SLayer;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
  * Unit tests for {@link SaltProcessingComponent}.
@@ -47,11 +46,10 @@ public class SaltProcessingComponentTest {
 	@Before
 	public void setUp() throws Exception {
 		setFixture(new SaltProcessingComponent());
-		SaltFactory factory = SaltFactory.eINSTANCE;
-		SDocument document = factory.createSDocument();
-		SDocumentGraph documentGraph = factory.createSDocumentGraph();
-		document.setSDocumentGraph(documentGraph);
-		documentGraph.createSTextualDS("Ride the dragon towards the crimson eye!");
+		SDocument document = SaltFactory.createSDocument();
+		SDocumentGraph documentGraph = SaltFactory.createSDocumentGraph();
+		document.setDocumentGraph(documentGraph);
+		documentGraph.createTextualDS("Ride the dragon towards the crimson eye!");
 		setDocument(document);
 	}
 
@@ -60,9 +58,9 @@ public class SaltProcessingComponentTest {
 	 */
 	@Test
 	public void testGetTargetLayerNameDefault() {
-		SLayer layer = SaltFactory.eINSTANCE.createSLayer();
+		SLayer layer = SaltFactory.createSLayer();
 		getFixture().setTargetLayer(layer, "Name");
-		assertEquals(layer.getSId() + ":Name", getFixture().getTargetLayerName(getDocument()));
+		assertEquals(layer.getId() + ":Name", getFixture().getTargetLayerName(getDocument()));
 	}
 	
 	/**

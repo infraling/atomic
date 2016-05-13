@@ -36,6 +36,7 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.pepper.AtomicPepperConfiguration;
 import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
 import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
+import org.corpus_tools.pepper.connectors.PepperConnector;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -44,8 +45,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.connectors.PepperConnector;
 
 /**
  * A class handling the updates of Pepper modules.
