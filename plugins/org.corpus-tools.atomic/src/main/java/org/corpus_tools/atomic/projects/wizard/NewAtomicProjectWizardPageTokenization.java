@@ -92,7 +92,6 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	public void createControl(Composite parent) {
 		final ArrayList<ProcessingComponentMetaData> metaDataList = new ArrayList<>();
 		for (int i = 0; i < availableTokenizerExtensions.length; i++) {
-			System.err.println(availableTokenizerExtensions[i].getAttribute("name"));
 			metaDataList.add(i, new ProcessingComponentMetaData().bulkCompleteFields(availableTokenizerExtensions[i]));
 		}
 
@@ -167,12 +166,22 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		
 		addDropListener(sourceTokenizerContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
 		addDropListener(targetTokenizerContainer, container, rightScrolledComposite, rightIntermediateComposite, sourceTokenizerContainer, leftScrolledComposite, leftIntermediateComposite);
-		final Control[] children = createChildren(sourceTokenizerContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
-		for (final Control control : children) {
+		Control[] children = createChildren(sourceTokenizerContainer, container, leftScrolledComposite, leftIntermediateComposite, targetTokenizerContainer, rightScrolledComposite, rightIntermediateComposite);
+		for (Control control : children) {
 			addDragListener(control);
 		}
-		System.err.println(container);
+
 		setControl(container);
+
+		// Refresh everything once
+		parent.layout(true);
+		container.layout(true);
+		sourceTokenizerContainer.layout(true);
+		targetTokenizerContainer.layout(true);
+		leftScrolledComposite.layout(true);
+		leftScrolledComposite.setMinSize(leftIntermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		rightScrolledComposite.layout(true);
+		rightScrolledComposite.setMinSize(rightIntermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	/**
