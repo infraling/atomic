@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
 		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
-		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies/</pepper-dependencies-repo.url>
+		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-3.0.2/</pepper-dependencies-repo.url>
 		<atomic-test-dependencies-repo.url>https://dl.bintray.com/sdruskat/tests-p2/</atomic-test-dependencies-repo.url>
 	</properties>
 
@@ -39,6 +39,12 @@
 			<id>atomic-test-dependencies</id>
 			<layout>p2</layout>
 			<url>${atomic-test-dependencies-repo.url}</url>
+		</repository>
+		
+		<repository>
+			<id>orbit-drops</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150821153341/repository/</url>
 		</repository>
 
 		

@@ -92,6 +92,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 	public void createControl(Composite parent) {
 		final ArrayList<ProcessingComponentMetaData> metaDataList = new ArrayList<>();
 		for (int i = 0; i < availableTokenizerExtensions.length; i++) {
+			System.err.println(availableTokenizerExtensions[i].getAttribute("name"));
 			metaDataList.add(i, new ProcessingComponentMetaData().bulkCompleteFields(availableTokenizerExtensions[i]));
 		}
 
@@ -170,7 +171,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		for (final Control control : children) {
 			addDragListener(control);
 		}
-
+		System.err.println(container);
 		setControl(container);
 	}
 

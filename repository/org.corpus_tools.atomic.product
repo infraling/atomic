@@ -128,8 +128,8 @@
 
    <features>
       <feature id="org.corpus_tools.atomic.feature" version="0.3.0.qualifier"/>
-      <feature id="org.eclipse.rcp" version="4.5.1.v20150904-0015"/>
-      <feature id="org.eclipse.equinox.p2.extras.feature" version="1.2.100.v20150601-1708"/>
+      <feature id="org.eclipse.rcp" version="4.5.2.v20160212-1500"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature" version="1.2.101.v20160129-0947"/>
    </features>
 
    <configurations>
