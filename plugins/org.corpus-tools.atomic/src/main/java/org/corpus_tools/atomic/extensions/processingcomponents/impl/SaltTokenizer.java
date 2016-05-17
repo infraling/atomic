@@ -76,12 +76,11 @@ public class SaltTokenizer extends Tokenizer {
 				for (STextualDS sTextualDS : graph.getTextualDSs()) {
 					if (sTextualDS != null) {
 						// FIXME TODO: Add check for options in config
-						// Language code
-						// Abbreviations
+						// TODO: Add clitics as soon as they are available in a Salt release
 						if (getConfiguration() instanceof SaltTokenizerConfiguration) {
 							SaltTokenizerConfiguration config = (SaltTokenizerConfiguration) getConfiguration();
 							tokenizer.addAbbreviation(config.getLanguageCode(), config.getAbbreviations());
-							// FIXME CLITICS!
+							// TODO tokenizer.addClitics(config.getLanguageCode(), config.getClitics());
 							tokenizer.tokenize(sTextualDS, config.getLanguageCode());
 						}
 					}
