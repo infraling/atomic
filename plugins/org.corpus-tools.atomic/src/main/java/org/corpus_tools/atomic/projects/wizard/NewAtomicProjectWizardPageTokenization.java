@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.ProcessingComponentMetaData;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.eclipse.core.runtime.CoreException;
@@ -67,6 +68,8 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 
 	private static final String CONFIGURATION_ELEMENT = "Configuration element";
 	private static final String TOKENIZER_OBJECT = "Tokenizer object";
+
+	private static final String CONFIGURE_BUTTON_TEXT = "Configure";
 
 	final private IConfigurationElement[] availableTokenizerExtensions = Platform.getExtensionRegistry().getConfigurationElementsFor("org.corpus_tools.atomic.processingComponents.tokenizers");
 
@@ -213,7 +216,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 		ArrayList<Control> controls = new ArrayList<>();
 		
 		for (int i = 0; i < availableTokenizerExtensions.length; i++) {
-			IConfigurationElement tokenizer = availableTokenizerExtensions[i];
+			final IConfigurationElement tokenizer = availableTokenizerExtensions[i];
 			boolean isTokenizerConfigurable = (tokenizer.getAttribute("configuration") != null && !tokenizer.getAttribute("configuration").isEmpty());
 			final Composite tokenizerArea = new Composite(parent, SWT.BORDER);
 			tokenizerArea.setData(CONFIGURATION_ELEMENT, tokenizer);
@@ -241,7 +244,8 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			if (isTokenizerConfigurable) {
     			Button configureBtn = new Button(tokenizerArea, SWT.PUSH);
     			configureBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-    			configureBtn.setText("Configure");
+    			configureBtn.setText(CONFIGURE_BUTTON_TEXT);
+    			configureBtn.setEnabled(false);
     			controls.add(configureBtn);
     			
     			Label empty = new Label(tokenizerArea, SWT.NONE);
@@ -253,7 +257,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
     			
         		final Button isConfiguredBtn = new Button(tokenizerArea, SWT.CHECK);
         		isConfiguredBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        		isConfiguredBtn.setSelection(true);
+        		isConfiguredBtn.setSelection(false);
         		isConfiguredBtn.addSelectionListener(new SelectionAdapter() {
         			@Override
         			public void widgetSelected(SelectionEvent e) {
@@ -263,6 +267,21 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
         			}
         		});
         		controls.add(isConfiguredBtn);
+        		
+        		// Add listener to configureBtn now only, as it need isConfiguredButton to exist.
+        		configureBtn.addSelectionListener(new SelectionAdapter() {
+    				@Override
+    				public void widgetSelected(SelectionEvent e) {
+    					try {
+							ProcessingComponentConfiguration<?> configuration = (ProcessingComponentConfiguration<?>) tokenizer.createExecutableExtension("configuration");
+						}
+						catch (CoreException e1) {
+							log.error("Could not create an executable extension for tokenizer configuration {}!", tokenizer.getAttribute("configuration"), e1);
+						}
+    					
+//    					tokenizerArea.getData(TOKENIZER_OBJECT).setConfiguration()
+    				}	
+    			});
     		}
 
     		controls.add(tokenizerArea);
@@ -324,18 +343,32 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				final Composite source;
 				final Composite target = parent;
 				boolean isComposite = false;
+				Button configureButton = null;
 				
 				if (droppedTokenizerComposite instanceof Composite) { // I.e., the dragged object is the whole composite
 					source = droppedTokenizerComposite.getParent();
 					tokenizer = (IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT);
 					isComposite = true;
+					for (Control child : ((Composite) droppedTokenizerComposite).getChildren()) {
+						if (child instanceof Button && ((Button) child).getText().equals(CONFIGURE_BUTTON_TEXT)) {
+							configureButton = (Button) child;
+						}
+					}
 				}
 				else {
 					source = droppedTokenizerComposite.getParent().getParent();
 					tokenizer = (IConfigurationElement) droppedTokenizerComposite.getParent().getData(CONFIGURATION_ELEMENT);
+					for (Control child : droppedTokenizerComposite.getParent().getChildren()) {
+						if (child instanceof Button && ((Button) child).getText().equals(CONFIGURE_BUTTON_TEXT)) {
+							configureButton = (Button) child;
+						}
+					}
 				}
 				
 				if (source == sourceTokenizerContainer && target == targetTokenizerContainer) {
+					if (configureButton != null) {
+						configureButton.setEnabled(true);
+					}
 					if (isComposite) {
 						droppedTokenizerComposite.setParent(targetTokenizerContainer);
 					}
@@ -343,7 +376,12 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 						droppedTokenizerComposite.getParent().setParent(targetTokenizerContainer);
 					}
 					try {
-						droppedTokenizerComposite.setData(TOKENIZER_OBJECT, ((IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT)).createExecutableExtension("class"));
+						if (isComposite) {
+							droppedTokenizerComposite.setData(TOKENIZER_OBJECT, ((IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT)).createExecutableExtension("class"));
+						}
+						else {
+							droppedTokenizerComposite.getParent().setData(TOKENIZER_OBJECT, ((IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT)).createExecutableExtension("class"));
+						}
 						log.info("Added tokenizer of type \"{}\" to list of tokenizers to apply.", tokenizer.getAttribute("name"));
 					}
 					catch (CoreException e) {
@@ -351,6 +389,9 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 					}
 				}
 				else if (source == targetTokenizerContainer && target == sourceTokenizerContainer) {
+					if (configureButton != null) {
+						configureButton.setEnabled(false);
+					}
 					if (isComposite) {
 						droppedTokenizerComposite.setParent(sourceTokenizerContainer);
 					}

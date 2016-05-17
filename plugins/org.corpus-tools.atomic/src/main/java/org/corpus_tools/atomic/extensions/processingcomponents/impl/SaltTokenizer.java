@@ -44,7 +44,7 @@ import org.corpus_tools.salt.common.STextualDS;
  */
 public class SaltTokenizer extends Tokenizer {
 	
-	public static final String UID = "de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer.simple";
+	public static final String UID = "de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer";
 	
 	private SaltTokenizerConfiguration configuration = null;
 

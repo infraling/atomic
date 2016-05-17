@@ -18,11 +18,45 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions;
 
+import org.corpus_tools.atomic.models.AbstractBean;
+
 /**
  * Implementations of this interface provide a link between
  * {@link ProcessingComponent}s and user interfaces.
- * They must be public and configurable, e.g., through
- * implementing them as Beans.
+ * They must be public and configurable, which is why via
+ * the extension point for processing components they must
+ * also extend {@link AbstractBean}.
+ * <p>
+ * Please note that implementing an {@link AbstractBean}
+ * also places constraints on the way that implementations
+ * can be structured. Two points especially are to be adhered to.
+ * <p>
+ * <b>The implementation must have a no-arg constructor!</b><br/>
+ * Initialization tasks, such as creating new collection objects
+ * will take place in this constructor, e.g.
+ * <code><pre>
+ * private List<String> list = null;
+ * 
+ * public MyProcessingComponentConfiguration() {
+ *     list = new ArrayList<>();
+ * }
+ * </pre></code>
+ * <p>
+ * <b>All fields must be readable and writable <em>properties</em>
+ * in Java Bean terminology</b><br/>
+ * They must be private fields initialized as <code>null</code>. 
+ * Their getters and setters must be public, and setters must call 
+ * {@link AbstractBean#firePropertyChange(String, Object, Object)}
+ * and should be implemented along the following lines.
+ * <code><pre>
+ * private String myProperty = null;
+ * 
+ * public void setMyProperty(final String myProperty) {
+ *     final String oldMyProperty = this.myProperty;
+ *     this.myProperty = myProperty;
+ *     firePropertyChange("myProperty", oldMyProperty, this.myProperty);
+ * }
+ * </pre></code>
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
@@ -36,5 +70,12 @@ public interface ProcessingComponentConfiguration<ConfiguredProcessingComponent>
 	 * @return the configured {@link ProcessingComponent} object.
 	 */
 	public ConfiguredProcessingComponent getConfiguredComponent();
+	
+	/**
+	 * Sets the configured processing component type. 
+	 *
+	 * @param component
+	 */
+	public void setConfiguredComponent(ConfiguredProcessingComponent component);
 	
 }

@@ -438,6 +438,7 @@
             category="tokenizer"
             class="org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer"
             configuration="org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizerConfiguration"
+            configurationControls="org.corpus_tools.atomic.extensions.processingcomponents.ui.impl.SaltTokenizerConfigurationControls"
             creator="Humboldt-Universität zu Berlin"
             description="A tokenizer based on the TreeTagger tokenizer by Helmut Schmid (see http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/). It can be configured with language and an abbreviation set."
             id="org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer"

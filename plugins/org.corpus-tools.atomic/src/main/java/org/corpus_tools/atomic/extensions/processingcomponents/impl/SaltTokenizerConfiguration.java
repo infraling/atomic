@@ -21,27 +21,31 @@ package org.corpus_tools.atomic.extensions.processingcomponents.impl;
 import java.util.HashSet;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
+import org.corpus_tools.atomic.models.AbstractBean;
 
 import com.neovisionaries.i18n.LanguageCode;
 
 /**
- * TODO Description
+ * A configuration bean for {@link SaltTokenizer}s.
  *
  * @author Stephan Druskat <mail@sdruskat.net>
- *
  */
-public class SaltTokenizerConfiguration implements ProcessingComponentConfiguration<SaltTokenizer> {
+public class SaltTokenizerConfiguration extends AbstractBean implements ProcessingComponentConfiguration<SaltTokenizer> {
 
-	private SaltTokenizer tokenizer;
-	
+	private SaltTokenizer tokenizer = null;
+
 	private LanguageCode languageCode = null;
-	
+
 	private HashSet<String> abbreviations = null;
+	
+	/**
+	 * No-args constructor (for Java bean compliance). 
+	 */
+	public SaltTokenizerConfiguration() {
+		// TODO Auto-generated constructor stub
+	}
 
-	// TODO: Add as soon as Clitics are merged into Salt
-//	private Clitics clitics = null;
-
-	/* 
+	/*
 	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration#getConfiguredComponent()
 	 */
 	@Override
@@ -49,11 +53,12 @@ public class SaltTokenizerConfiguration implements ProcessingComponentConfigurat
 		return tokenizer;
 	}
 
-	/**
-	 * @param tokenizer the tokenizer to set
+	/*
+	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration#setConfiguredComponent(java.lang.Object)
 	 */
-	public void setTokenizer(SaltTokenizer tokenizer) {
-		this.tokenizer = tokenizer;
+	@Override
+	public void setConfiguredComponent(SaltTokenizer component) {
+		this.tokenizer = component;
 	}
 
 	/**
@@ -67,7 +72,9 @@ public class SaltTokenizerConfiguration implements ProcessingComponentConfigurat
 	 * @param languageCode the languageCode to set
 	 */
 	public void setLanguageCode(LanguageCode languageCode) {
+		final LanguageCode oldLanguageCode = this.languageCode;
 		this.languageCode = languageCode;
+		firePropertyChange("languageCode", oldLanguageCode, this.languageCode);
 	}
 
 	/**
@@ -81,7 +88,9 @@ public class SaltTokenizerConfiguration implements ProcessingComponentConfigurat
 	 * @param abbreviations the abbreviations to set
 	 */
 	public void setAbbreviations(HashSet<String> abbreviations) {
+		final HashSet<String> oldAbbreviations = this.abbreviations;
 		this.abbreviations = abbreviations;
+		firePropertyChange("abbreviations", oldAbbreviations, this.abbreviations);
 	}
 
 }

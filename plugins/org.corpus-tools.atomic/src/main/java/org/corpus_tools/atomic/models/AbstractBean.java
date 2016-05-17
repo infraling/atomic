@@ -67,7 +67,7 @@ public abstract class AbstractBean {
 	 * @param oldValue Old value of the property
 	 * @param newValue New value of the property
 	 */
-	protected void firePropertyChange(final String propertyName, final Object oldValue, final Object newValue) {
+	public void firePropertyChange(final String propertyName, final Object oldValue, final Object newValue) {
 		propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
 	}
 

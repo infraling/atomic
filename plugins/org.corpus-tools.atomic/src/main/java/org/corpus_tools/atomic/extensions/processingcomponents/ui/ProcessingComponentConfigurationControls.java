@@ -55,6 +55,6 @@ public abstract class ProcessingComponentConfigurationControls extends Composite
 	 * This is where SWT widgets/JFace viewers are added.
 	 *
 	 */
-	abstract void addControls();
+	public abstract void addControls();
 
 }
