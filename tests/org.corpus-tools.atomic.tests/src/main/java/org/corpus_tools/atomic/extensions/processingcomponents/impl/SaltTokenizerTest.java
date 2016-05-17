@@ -57,7 +57,7 @@ public class SaltTokenizerTest {
 		SDocument document = SaltFactory.createSDocument();
 		SDocumentGraph documentGraph = SaltFactory.createSDocumentGraph();
 		document.setDocumentGraph(documentGraph);
-		documentGraph.createTextualDS("Ride the orig. dragon towards the m.f. crimson eye!");
+		documentGraph.createTextualDS("Proceeds the orig. Weedian: m.f. Nazareth!");
 		setDocument(document);
 	}
 
@@ -74,22 +74,20 @@ public class SaltTokenizerTest {
 	 */
 	@Test
 	public void testProcessDocument() {
-		assertEquals("Ride the orig. dragon towards the m.f. crimson eye!", getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
+		assertEquals("Proceeds the orig. Weedian: m.f. Nazareth!", getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
 		getFixture().processDocument(getDocument());
 		SDocumentGraph graph = getDocument().getDocumentGraph();
 		List<SToken> tokens = graph.getTokens();
-		assertEquals(11, graph.getTokens().size());
-		assertEquals("Ride", graph.getText(tokens.get(0)));
+		assertEquals(9, graph.getTokens().size());
+		assertEquals("Proceeds", graph.getText(tokens.get(0)));
 		assertEquals("the", graph.getText(tokens.get(1)));
 		assertEquals("orig", graph.getText(tokens.get(2)));
 		assertEquals(".", graph.getText(tokens.get(3)));
-		assertEquals("dragon", graph.getText(tokens.get(4)));
-		assertEquals("towards", graph.getText(tokens.get(5)));
-		assertEquals("the", graph.getText(tokens.get(6)));
-		assertEquals("m.f.", graph.getText(tokens.get(7)));
-		assertEquals("crimson", graph.getText(tokens.get(8)));
-		assertEquals("eye", graph.getText(tokens.get(9)));
-		assertEquals("!", graph.getText(tokens.get(10)));
+		assertEquals("Weedian", graph.getText(tokens.get(4)));
+		assertEquals(":", graph.getText(tokens.get(5)));
+		assertEquals("m.f.", graph.getText(tokens.get(6)));
+		assertEquals("Nazareth", graph.getText(tokens.get(7)));
+		assertEquals("!", graph.getText(tokens.get(8)));
 		SToken previousToken = null;
 		for (SToken token : tokens) {
 			if (previousToken != null) {
@@ -108,22 +106,20 @@ public class SaltTokenizerTest {
 	 */
 	@Test
 	public void testProcessDocumentWithConfiguration() {
-		assertEquals("Ride the orig. dragon towards the m.f. crimson eye!", getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
+		assertEquals("Proceeds the orig. Weedian: m.f. Nazareth!", getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
 		getFixture().setConfiguration(createTokenizerConfiguration());
 		getFixture().processDocument(getDocument());
 		SDocumentGraph graph = getDocument().getDocumentGraph();
 		List<SToken> tokens = graph.getTokens();
-		assertTrue(graph.getTokens().size() == 10);
-		assertEquals("Ride", graph.getText(tokens.get(0)));
+		assertTrue(graph.getTokens().size() == 8);
+		assertEquals("Proceeds", graph.getText(tokens.get(0)));
 		assertEquals("the", graph.getText(tokens.get(1)));
 		assertEquals("orig.", graph.getText(tokens.get(2)));
-		assertEquals("dragon", graph.getText(tokens.get(3)));
-		assertEquals("towards", graph.getText(tokens.get(4)));
-		assertEquals("the", graph.getText(tokens.get(5)));
-		assertEquals("m.f.", graph.getText(tokens.get(6)));
-		assertEquals("crimson", graph.getText(tokens.get(7)));
-		assertEquals("eye", graph.getText(tokens.get(8)));
-		assertEquals("!", graph.getText(tokens.get(9)));
+		assertEquals("Weedian", graph.getText(tokens.get(3)));
+		assertEquals(":", graph.getText(tokens.get(4)));
+		assertEquals("m.f.", graph.getText(tokens.get(5)));
+		assertEquals("Nazareth", graph.getText(tokens.get(6)));
+		assertEquals("!", graph.getText(tokens.get(7)));
 		SToken previousToken = null;
 		for (SToken token : tokens) {
 			if (previousToken != null) {
