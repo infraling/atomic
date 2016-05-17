@@ -107,7 +107,7 @@ public class SaltTokenizerTest {
 	@Test
 	public void testProcessDocumentWithConfiguration() {
 		assertEquals("Proceeds the orig. Weedian: m.f. Nazareth!", getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
-		getFixture().setConfiguration(createTokenizerConfiguration());
+		getFixture().setConfiguration(createTokenizerConfiguration(true));
 		getFixture().processDocument(getDocument());
 		SDocumentGraph graph = getDocument().getDocumentGraph();
 		List<SToken> tokens = graph.getTokens();
@@ -134,13 +134,82 @@ public class SaltTokenizerTest {
 	}
 	
 	/**
+	 * Test method for {@link org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer#processDocument(org.corpus_tools.salt.common.SDocument)}.
+	 */
+	@Test
+	public void testProcessDocumentWithAbbreviationlessConfiguration() {
+		assertEquals("Proceeds the orig. Weedian: m.f. Nazareth!", getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
+		getFixture().setConfiguration(createTokenizerConfiguration(false));
+		getFixture().processDocument(getDocument());
+		SDocumentGraph graph = getDocument().getDocumentGraph();
+		List<SToken> tokens = graph.getTokens();
+		assertTrue(graph.getTokens().size() == 9);
+		assertEquals("Proceeds", graph.getText(tokens.get(0)));
+		assertEquals("the", graph.getText(tokens.get(1)));
+		assertEquals("orig", graph.getText(tokens.get(2)));
+		assertEquals(".", graph.getText(tokens.get(3)));
+		assertEquals("Weedian", graph.getText(tokens.get(4)));
+		assertEquals(":", graph.getText(tokens.get(5)));
+		assertEquals("m.f.", graph.getText(tokens.get(6)));
+		assertEquals("Nazareth", graph.getText(tokens.get(7)));
+		assertEquals("!", graph.getText(tokens.get(8)));
+		SToken previousToken = null;
+		for (SToken token : tokens) {
+			if (previousToken != null) {
+				for (SRelation<?, ?> edge : token.getInRelations()) {
+					if (edge instanceof SOrderRelation) {
+						assertTrue(((SOrderRelation) edge).getSource() == previousToken);
+					}
+				}
+			}
+			previousToken = token;
+		}
+	}
+	
+	/**
+	 * Test method for {@link org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer#processDocument(org.corpus_tools.salt.common.SDocument)}.
+	 */
+	@Test
+	public void testProcessDocumentWithEmptyConfiguration() {
+		assertEquals("Proceeds the orig. Weedian: m.f. Nazareth!", getDocument().getDocumentGraph().getTextualDSs().get(0).getText());
+		getFixture().setConfiguration(new SaltTokenizerConfiguration());
+		getFixture().processDocument(getDocument());
+		SDocumentGraph graph = getDocument().getDocumentGraph();
+		List<SToken> tokens = graph.getTokens();
+		assertTrue(graph.getTokens().size() == 9);
+		assertEquals("Proceeds", graph.getText(tokens.get(0)));
+		assertEquals("the", graph.getText(tokens.get(1)));
+		assertEquals("orig", graph.getText(tokens.get(2)));
+		assertEquals(".", graph.getText(tokens.get(3)));
+		assertEquals("Weedian", graph.getText(tokens.get(4)));
+		assertEquals(":", graph.getText(tokens.get(5)));
+		assertEquals("m.f.", graph.getText(tokens.get(6)));
+		assertEquals("Nazareth", graph.getText(tokens.get(7)));
+		assertEquals("!", graph.getText(tokens.get(8)));
+		SToken previousToken = null;
+		for (SToken token : tokens) {
+			if (previousToken != null) {
+				for (SRelation<?, ?> edge : token.getInRelations()) {
+					if (edge instanceof SOrderRelation) {
+						assertTrue(((SOrderRelation) edge).getSource() == previousToken);
+					}
+				}
+			}
+			previousToken = token;
+		}
+	}
+	
+	/**
 	 * Creates a {@link SaltTokenizerConfiguration} object and fills it with parameters
+	 * @param b 
 	 *
 	 * @return
 	 */
-	private SaltTokenizerConfiguration createTokenizerConfiguration() {
+	private SaltTokenizerConfiguration createTokenizerConfiguration(boolean addAbreviations) {
 		SaltTokenizerConfiguration config = new SaltTokenizerConfiguration();
-		config.setAbbreviations(new HashSet<String>(Arrays.asList("orig.", "m.f.")));
+		if (addAbreviations) {
+			config.setAbbreviations(new HashSet<String>(Arrays.asList("orig.", "m.f.")));
+		}
 		config.setLanguageCode(LanguageCode.aa);
 		return config;
 	}

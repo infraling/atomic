@@ -18,6 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions.processingcomponents.impl;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
@@ -79,9 +80,17 @@ public class SaltTokenizer extends Tokenizer {
 						// TODO: Add clitics as soon as they are available in a Salt release
 						if (getConfiguration() instanceof SaltTokenizerConfiguration) {
 							SaltTokenizerConfiguration config = (SaltTokenizerConfiguration) getConfiguration();
-							tokenizer.addAbbreviation(config.getLanguageCode(), config.getAbbreviations());
+							HashSet<String> abbreviations;
+							if ((abbreviations = config.getAbbreviations()) != null && !abbreviations.isEmpty()) {
+								tokenizer.addAbbreviation(config.getLanguageCode(), abbreviations);
+							}
 							// TODO tokenizer.addClitics(config.getLanguageCode(), config.getClitics());
-							tokenizer.tokenize(sTextualDS, config.getLanguageCode());
+							if (config.getLanguageCode() != null) {
+								tokenizer.tokenize(sTextualDS, config.getLanguageCode());
+							}
+							else {
+								document.getDocumentGraph().tokenize();
+							}
 						}
 					}
 				}

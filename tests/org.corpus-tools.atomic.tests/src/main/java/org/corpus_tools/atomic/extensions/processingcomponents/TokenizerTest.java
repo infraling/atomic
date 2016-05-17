@@ -31,7 +31,6 @@ import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SOrderRelation;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SRelation;
-import org.eclipse.emf.common.util.EList;
 import org.junit.Before;
 import org.junit.Test;
 
