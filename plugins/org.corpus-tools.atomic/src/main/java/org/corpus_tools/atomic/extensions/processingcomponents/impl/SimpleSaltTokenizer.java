@@ -18,9 +18,8 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions.processingcomponents.impl;
 
-import java.util.List;
+import java.util.List; 
 
-import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 
 /**
@@ -53,12 +52,4 @@ public class SimpleSaltTokenizer extends Tokenizer {
 		return saltTokenizer.tokenizeToString(rawSourceText, null);
 	}
 	
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#getConfiguration()
-	 */
-	@Override
-	public ProcessingComponentConfiguration<SimpleSaltTokenizer> getConfiguration() {
-		return null;
-	}
-
 }

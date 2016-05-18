@@ -21,6 +21,10 @@ package org.corpus_tools.atomic.extensions.processingcomponents.impl;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.exceptions.AtomicException;
+import org.corpus_tools.atomic.extensions.ConfigurableProcessingComponent;
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.corpus_tools.salt.common.SDocument;
@@ -42,9 +46,14 @@ import org.corpus_tools.salt.common.STextualDS;
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class SaltTokenizer extends Tokenizer {
+public class SaltTokenizer extends Tokenizer implements ConfigurableProcessingComponent {
 	
 	public static final String UID = "de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer";
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "SaltTokenizer".
+	 */
+	private static final Logger log = LogManager.getLogger(SaltTokenizer.class);
 	
 	private SaltTokenizerConfiguration configuration = null;
 
@@ -109,10 +118,15 @@ public class SaltTokenizer extends Tokenizer {
 		return configuration;
 	}
 
-	/**
-	 * @param configuration the configuration to set
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.extensions.ConfigurableProcessingComponent#setConfiguration(org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration)
 	 */
-	public void setConfiguration(SaltTokenizerConfiguration configuration) {
-		this.configuration = configuration;
+	@Override
+	public void setConfiguration(ProcessingComponentConfiguration<?> configuration) {
+		if (configuration instanceof SaltTokenizerConfiguration) {
+			this.configuration = (SaltTokenizerConfiguration) configuration;
+			return;
+		}
+		log.error("Configuration for {} is not of type {}!", this.getClass().getSimpleName(), SaltTokenizerConfiguration.class, new AtomicException());
 	}
 }

@@ -18,13 +18,12 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions.processingcomponents;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.*; 
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.common.SDocumentGraph;
@@ -53,14 +52,6 @@ public class TokenizerTest {
 	@Before
 	public void setUp() throws Exception {
 		Tokenizer tokenizer = new Tokenizer() {
-			
-			@Override
-			public ProcessingComponentConfiguration<?> getConfiguration() {
-				// TODO Auto-generated method stub
-				// FIXME: Add real configuration
-				return null;
-			}
-			
 			@Override
 			public List<String> tokenize(String rawSourceText) {
 				List<String> stringTokens = new ArrayList<>();

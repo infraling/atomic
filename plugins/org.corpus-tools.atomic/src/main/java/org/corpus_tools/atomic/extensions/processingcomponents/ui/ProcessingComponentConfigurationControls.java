@@ -77,7 +77,7 @@ public abstract class ProcessingComponentConfigurationControls {
 	}
 	
 	/**
-	 * TODO: Description
+	 * Helper method to set property data on a control.
 	 *
 	 * @param control
 	 * @param property

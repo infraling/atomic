@@ -18,16 +18,14 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
+import org.corpus_tools.atomic.extensions.ConfigurableProcessingComponent;
 import org.corpus_tools.atomic.extensions.processingcomponents.ProcessingComponentMetaData;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
-import org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizerConfiguration;
-import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
@@ -279,15 +277,12 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 						TokenizerConfigurationDialog dialog = new TokenizerConfigurationDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), tokenizer);
     					int status = dialog.open();
     					if (status == IStatus.OK) {
-    						System.err.println(((SaltTokenizerConfiguration) dialog.getConfiguration()).getAbbreviations());
-    						System.err.println(((SaltTokenizerConfiguration) dialog.getConfiguration()).getLanguageCode());
+    						((ConfigurableProcessingComponent) tokenizerArea.getData(TOKENIZER_OBJECT)).setConfiguration(dialog.getConfiguration());
     					}
-    					
-//    					FIXME tokenizerArea.getData(TOKENIZER_OBJECT).setConfiguration()
+    					isConfiguredBtn.setSelection(true);
     				}	
     			});
     		}
-
     		controls.add(tokenizerArea);
         }
 		

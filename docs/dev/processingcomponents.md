@@ -4,6 +4,8 @@ Processing components
 Extending Atomic with new processing components
 -----------------------------------------------
 
+Processing components that should be configurable must not only extend the functionality-specific abstract class but also the interface `org.corpus_tools.atomic.extensions.ConfigurableProcesingComponent`.
+
 Property names of processing component configuration classes - which are Java Beans - must be externalized.
 In order to do so, run the String Externalization Wizard on the class implementing ProcessingComponentConfiguration.
 Give the accessor and properties file a meaningful name, we suggest "ConfigurationProperties.java" and "configuration.properties".
