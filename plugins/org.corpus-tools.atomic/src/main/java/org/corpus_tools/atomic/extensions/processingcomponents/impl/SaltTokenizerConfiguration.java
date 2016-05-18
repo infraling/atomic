@@ -41,9 +41,7 @@ public class SaltTokenizerConfiguration extends AbstractBean implements Processi
 	/**
 	 * No-args constructor (for Java bean compliance). 
 	 */
-	public SaltTokenizerConfiguration() {
-		// TODO Auto-generated constructor stub
-	}
+	public SaltTokenizerConfiguration() {}
 
 	/*
 	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration#getConfiguredComponent()

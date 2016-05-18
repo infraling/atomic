@@ -43,6 +43,12 @@ import org.eclipse.swt.widgets.Shell;
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
+/**
+ * TODO Description
+ *
+ * @author Stephan Druskat <mail@sdruskat.net>
+ *
+ */
 public class TokenizerConfigurationDialog extends Dialog {
 	
 	/** 
@@ -102,7 +108,8 @@ public class TokenizerConfigurationDialog extends Dialog {
 		try {
 			controls = tokenizer.createExecutableExtension("configurationControls");
 			if (controls instanceof ProcessingComponentConfigurationControls) {
-				((ProcessingComponentConfigurationControls) controls).execute(composite, SWT.NONE);
+				Composite controlsComposite = ((ProcessingComponentConfigurationControls) controls).execute(composite, SWT.NONE);
+				initDataBindings(configuration, controlsComposite);
 			}
 		}
 		catch (CoreException e) {
@@ -115,6 +122,17 @@ public class TokenizerConfigurationDialog extends Dialog {
         sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
         return parent; 
+	}
+
+	/**
+	 * Parses the children of composite and creates databinding for each
+	 *
+	 * @param configuration
+	 * @param composite
+	 */
+	private void initDataBindings(ProcessingComponentConfiguration<?> configuration, Composite composite) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
