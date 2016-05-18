@@ -56,7 +56,7 @@ public abstract class ProcessingComponentConfigurationControls {
 	/**
 	 * This is where SWT widgets/JFace viewers are added.
 	 * FIXME: Complete JavaDoc:
-	 * - 
+	 * - Note that initDataBindings must be implemented!
 	 * 
 	 * @param none 
 	 * @param composite 
@@ -70,11 +70,10 @@ public abstract class ProcessingComponentConfigurationControls {
 	 * @param parent The parent {@link Composite}
 	 * @param style An {@link SWT} style bit
 	 */
-	public Composite execute(Composite parent, int style) {
+	public void execute(Composite parent, int style) {
 		Composite composite = new Composite(parent, style);
 		composite.setLayout(new GridLayout(4, false));
 		addControls(composite, SWT.NONE);
-		return composite;
 	}
 	
 	/**
@@ -86,63 +85,5 @@ public abstract class ProcessingComponentConfigurationControls {
 	public void setProperty(Control control, String property) {
 		control.setData("property", property);
 	}
-	
-	/** FIXME ADD initBindings()! Cf. PageProjectStructure!
-	 * 
-	 * Along the lines of this cos its no wizard:
-	 * 
-	 *  private void bindValues() {
-    // The DataBindingContext object will manage the databindings
-    // Lets bind it
-    DataBindingContext ctx = new DataBindingContext();
-    IObservableValue widgetValue = WidgetProperties.text(SWT.Modify)
-        .observe(firstName);
-    IObservableValue modelValue = BeanProperties.value(Person.class,
-        "firstName").observe(person);
-    ctx.bindValue(widgetValue, modelValue);
-
-    // Bind the age including a validator
-    widgetValue = WidgetProperties.text(SWT.Modify).observe(ageText);
-    modelValue = BeanProperties.value(Person.class, "age").observe(person);
-    // add an validator so that age can only be a number
-    IValidator validator = new IValidator() {
-      @Override
-      public IStatus validate(Object value) {
-        if (value instanceof Integer) {
-          String s = String.valueOf(value);
-          if (s.matches("\\d*")) {
-            return ValidationStatus.ok();
-          }
-        }
-        return ValidationStatus.error("Not a number");
-      }
-    };
-
-    UpdateValueStrategy strategy = new UpdateValueStrategy();
-    strategy.setBeforeSetValidator(validator);
-
-    Binding bindValue = ctx.bindValue(widgetValue, modelValue, strategy,
-        null);
-    // add some decorations
-    ControlDecorationSupport.create(bindValue, SWT.TOP | SWT.LEFT);
-
-    widgetValue = WidgetProperties.selection().observe(marriedButton);
-    modelValue = BeanProperties.value(Person.class, "married").observe(person);
-    ctx.bindValue(widgetValue, modelValue);
-
-    widgetValue = WidgetProperties.selection().observe(genderCombo);
-    modelValue = BeanProperties.value("gender").observe(person);
-
-    ctx.bindValue(widgetValue, modelValue);
-
-    // address field is bound to the Ui
-    widgetValue = WidgetProperties.text(SWT.Modify).observe(countryText);
-
-    modelValue = BeanProperties.value(Person.class, "address.country")
-        .observe(person);
-    ctx.bindValue(widgetValue, modelValue);
-
-  }
-	 */
 
 }

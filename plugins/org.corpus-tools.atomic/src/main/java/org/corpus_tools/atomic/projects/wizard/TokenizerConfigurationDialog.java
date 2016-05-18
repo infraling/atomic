@@ -20,18 +20,12 @@ package org.corpus_tools.atomic.projects.wizard;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration; 
-import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
+import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
+import org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizerConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
-import org.corpus_tools.atomic.ui.validation.NotEmptyStringOrNullValidator;
-import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.corpus_tools.atomic.extensions.processingcomponents.ui.impl.SaltTokenizerConfigurationControls;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
-import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -69,9 +63,8 @@ public class TokenizerConfigurationDialog extends Dialog {
 	/**
 	 * 
 	 */
-	public TokenizerConfigurationDialog(Shell parentShell, IConfigurationElement tokenizer, ProcessingComponentConfiguration<?> configuration) {
+	public TokenizerConfigurationDialog(Shell parentShell, IConfigurationElement tokenizer) {
 		super(parentShell);
-		this.configuration = configuration;
 		this.tokenizer = tokenizer;
 	}
 	
@@ -114,13 +107,14 @@ public class TokenizerConfigurationDialog extends Dialog {
 		Object controls = null;
 		try {
 			controls = tokenizer.createExecutableExtension("configurationControls");
+			((SaltTokenizerConfigurationControls) controls).setConfiguration((SaltTokenizerConfiguration) tokenizer.createExecutableExtension("configuration"));
 			if (controls instanceof ProcessingComponentConfigurationControls) {
-				Composite controlsComposite = ((ProcessingComponentConfigurationControls) controls).execute(composite, SWT.NONE);
-				initDataBindings(configuration, controlsComposite);
+				((ProcessingComponentConfigurationControls) controls).execute(composite, SWT.NONE);
+				setConfiguration(((SaltTokenizerConfigurationControls) controls).getConfiguration());
 			}
 		}
 		catch (CoreException e) {
-			log.error("Could not create an executable extension for {}!", tokenizer.getAttribute("configurationControls"), e);
+			log.error("Could not create an executable extension!", e);
 		}
 
         sc.setContent(composite);
@@ -132,36 +126,17 @@ public class TokenizerConfigurationDialog extends Dialog {
 	}
 
 	/**
-	 * Parses the children of composite and creates databinding for each.
-	 * Must be called explicitly by clients.
-	 *
-	 * @param configuration
-	 * @param composite
-	 */
-	private void initDataBindings(ProcessingComponentConfiguration<?> configuration, Composite composite) {
-		DataBindingContext bindingContext = new DataBindingContext();
-		for (Control control : composite.getChildren()) {
-			String data;
-			if ((data = (String) control.getData("property")) != null) {
-				if (control instanceof Composite) { // I.e., Combo, etc.
-					IObservableValue widgetValue = WidgetProperties.selection().observe(control);
-					IObservableValue modelValue = BeanProperties.value(configuration.getClass(), data).observe(configuration);
-					bindingContext.bindValue(widgetValue, modelValue);
-				}
-				else {
-					IObservableValue widgetValue = WidgetProperties.text(SWT.Modify).observe(control);
-					IObservableValue modelValue = BeanProperties.value(configuration.getClass(), data).observe(configuration);
-					bindingContext.bindValue(widgetValue, modelValue);
-				}
-			}
-		}
-	}
-
-	/**
 	 * @return the configuration
 	 */
 	public ProcessingComponentConfiguration<?> getConfiguration() {
 		return configuration;
+	}
+
+	/**
+	 * @param configuration the configuration to set
+	 */
+	private void setConfiguration(ProcessingComponentConfiguration<?> configuration) {
+		this.configuration = configuration;
 	}
 
 }

@@ -57,7 +57,7 @@ import org.corpus_tools.atomic.models.AbstractBean;
  *     firePropertyChange("myProperty", oldMyProperty, this.myProperty);
  * }
  * </pre></code>
- *
+ * 
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
