@@ -18,24 +18,27 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.databinding.converters;
 
+import java.util.HashSet;
+import java.util.StringTokenizer;
+
 import org.eclipse.core.databinding.conversion.Converter;
 
-import com.neovisionaries.i18n.LanguageCode;
-
 /**
- * A converter for mapping a String to a {@link LanguageCode}.
+ * A converter for mapping an String with line breaks to
+ * a {@link HashSet}, with one trimmed line sans the line break going to
+ * one HashSet entry. 
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class StringToLanguageCodeConverter extends Converter {
+public class LinebrokenStringToHashSetConverter extends Converter {
 
 	/**
 	 * @param fromType
 	 * @param toType
 	 */
-	public StringToLanguageCodeConverter(Object fromType, Object toType) {
-		super(String.class, LanguageCode.class);
+	public LinebrokenStringToHashSetConverter(Object fromType, Object toType) {
+		super(String.class, HashSet.class);
 	}
 
 	/* 
@@ -44,13 +47,34 @@ public class StringToLanguageCodeConverter extends Converter {
 	@Override
 	public Object convert(Object fromObject) {
 		if (fromObject instanceof String) {
-			for (LanguageCode code : LanguageCode.values()) {
-				if (code.getName().equals((String) fromObject)) {
-					return code;
-				}
+			String string = (String) fromObject;
+			HashSet<String> set = new HashSet<>(countLines(string));
+			StringTokenizer tokenizer = new StringTokenizer(string, "\n");
+			while(tokenizer.hasMoreTokens()) {
+			   set.add(tokenizer.nextToken());
 			}
+			return set;
 		}
 		return null;
+	}
+
+	/**
+	 * Counts the number of "\n"-delimited lines in a String.
+	 *
+	 * @param string
+	 * @return number of lines in parameter
+	 */
+	private int countLines(String string) {
+
+		if (string == null || string.isEmpty()) {
+			return 0;
+		}
+		int lines = 1;
+		int pos = 0;
+		while ((pos = string.indexOf("\n", pos) + 1) != 0) {
+			lines++;
+		}
+		return lines;
 	}
 
 }

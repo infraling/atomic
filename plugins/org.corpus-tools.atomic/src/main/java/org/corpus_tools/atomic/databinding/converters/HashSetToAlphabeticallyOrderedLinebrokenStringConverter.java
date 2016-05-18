@@ -18,37 +18,47 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.databinding.converters;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.TreeSet;
+
 import org.eclipse.core.databinding.conversion.Converter;
 
-import com.neovisionaries.i18n.LanguageCode;
-
 /**
- * A converter for mapping a String to a {@link LanguageCode}.
+ * A converter for mapping the entries of a {@link HashSet} to an
+ * alphabetically ordered String, with one value from the {@link HashSet}
+ * per line.
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class StringToLanguageCodeConverter extends Converter {
+public class HashSetToAlphabeticallyOrderedLinebrokenStringConverter extends Converter {
 
 	/**
 	 * @param fromType
 	 * @param toType
 	 */
-	public StringToLanguageCodeConverter(Object fromType, Object toType) {
-		super(String.class, LanguageCode.class);
+	public HashSetToAlphabeticallyOrderedLinebrokenStringConverter(Object fromType, Object toType) {
+		super(HashSet.class, String.class);
 	}
 
 	/* 
 	 * @copydoc @see org.eclipse.core.databinding.conversion.IConverter#convert(java.lang.Object)
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Object convert(Object fromObject) {
-		if (fromObject instanceof String) {
-			for (LanguageCode code : LanguageCode.values()) {
-				if (code.getName().equals((String) fromObject)) {
-					return code;
-				}
+		if (fromObject instanceof HashSet) {
+			StringBuilder builder = new StringBuilder();
+			TreeSet orderedSet = new TreeSet<>();
+			orderedSet.addAll((HashSet) fromObject);
+			Iterator iterator = orderedSet.iterator();
+			while (iterator.hasNext()) {
+				Object object = (Object) iterator.next();
+				builder.append(object.toString() + "\n");
 			}
+			String string = builder.toString();
+			return string.substring(string.length() - 2, string.length() - 1).trim().equals("\n") ? string.substring(0, string.length() - 2).trim() : string.trim(); 
 		}
 		return null;
 	}

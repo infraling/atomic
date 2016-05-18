@@ -23,19 +23,19 @@ import org.eclipse.core.databinding.conversion.Converter;
 import com.neovisionaries.i18n.LanguageCode;
 
 /**
- * A converter for mapping a String to a {@link LanguageCode}.
+ * A converter for mapping a {@link LanguageCode} to a String.
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class StringToLanguageCodeConverter extends Converter {
+public class LanguageCodeToStringConverter extends Converter {
 
 	/**
 	 * @param fromType
 	 * @param toType
 	 */
-	public StringToLanguageCodeConverter(Object fromType, Object toType) {
-		super(String.class, LanguageCode.class);
+	public LanguageCodeToStringConverter(Object fromType, Object toType) {
+		super(LanguageCode.class, String.class);
 	}
 
 	/* 
@@ -43,12 +43,8 @@ public class StringToLanguageCodeConverter extends Converter {
 	 */
 	@Override
 	public Object convert(Object fromObject) {
-		if (fromObject instanceof String) {
-			for (LanguageCode code : LanguageCode.values()) {
-				if (code.getName().equals((String) fromObject)) {
-					return code;
-				}
-			}
+		if (fromObject instanceof LanguageCode) {
+			return ((LanguageCode) fromObject).getName();
 		}
 		return null;
 	}
