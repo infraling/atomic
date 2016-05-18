@@ -18,9 +18,13 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions.processingcomponents.ui.impl;
 
-import org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer;
+import org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer; 
 import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -33,24 +37,30 @@ import org.eclipse.swt.widgets.Label;
  */
 public class SaltTokenizerConfigurationControls extends ProcessingComponentConfigurationControls {
 	
-	private Composite parent = null;
-
-	/**
-	 * @param parent
-	 * @param style
-	 */
-	public SaltTokenizerConfigurationControls(Composite parent, int style) {
-		super(parent, style);
-		this.parent = parent;
-	}
-
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls#addControls()
 	 */
 	@Override
-	public void addControls() {
+	public void addControls(Composite parent, int style) {
+		// FIXME: Implement properly!
+		Button button = new Button(parent, SWT.PUSH);
+		button.setLayoutData(new GridData(SWT.TOP, SWT.CENTER, false, false, 2, 1));
+		button.setText("Button from " + this.getClass().getSimpleName());
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.err.println("Bingo!");
+			}
+		});
 		Label label = new Label(parent, SWT.NONE);
-		label.setText("Label from " + this.getClass().getSimpleName());
+		label.setText("Label 1");
+		label.setLayoutData(new GridData(SWT.TOP, SWT.CENTER, false, false, 2, 1));
+		Label label2 = new Label(parent, SWT.NONE);
+		label2.setText("Label 2");
+		label2.setLayoutData(new GridData(SWT.TOP, SWT.CENTER, false, false, 1, 1));
+		Label label3 = new Label(parent, SWT.NONE);
+		label3.setText("Label 3");
+		label3.setLayoutData(new GridData(SWT.TOP, SWT.CENTER, false, false, 1, 1));
 	}
 
 }

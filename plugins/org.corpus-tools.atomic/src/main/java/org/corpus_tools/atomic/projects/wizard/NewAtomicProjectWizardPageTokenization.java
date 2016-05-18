@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.ProcessingComponentMetaData;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
+import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -50,6 +51,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
@@ -272,14 +274,17 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
         		configureBtn.addSelectionListener(new SelectionAdapter() {
     				@Override
     				public void widgetSelected(SelectionEvent e) {
+    					ProcessingComponentConfiguration<?> configuration = null;
     					try {
-							ProcessingComponentConfiguration<?> configuration = (ProcessingComponentConfiguration<?>) tokenizer.createExecutableExtension("configuration");
+							configuration = (ProcessingComponentConfiguration<?>) tokenizer.createExecutableExtension("configuration");
 						}
 						catch (CoreException e1) {
 							log.error("Could not create an executable extension for tokenizer configuration {}!", tokenizer.getAttribute("configuration"), e1);
 						}
+						TokenizerConfigurationDialog dialog = new TokenizerConfigurationDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), tokenizer, configuration);
+    					dialog.open();
     					
-//    					tokenizerArea.getData(TOKENIZER_OBJECT).setConfiguration()
+//    					FIXME tokenizerArea.getData(TOKENIZER_OBJECT).setConfiguration()
     				}	
     			});
     		}
@@ -430,6 +435,10 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			private void reOrder(DropTargetEvent event, Composite droppedTokenizerComposite) {
 				String name = ((Label) droppedTokenizerComposite.getChildren()[0]).getText();
 				Control[] children = targetTokenizerContainer.getChildren();
+				if (children.length == 0) {
+					log.info("Aborting reordering list of tokenizers, as there are no other children in the container.");					
+					return;
+				}
 				Control firstChild = children[0];
 				Control lastChild = children[children.length - 1];
 				int dropY = targetTokenizerContainer.toControl(event.x, event.y).y;

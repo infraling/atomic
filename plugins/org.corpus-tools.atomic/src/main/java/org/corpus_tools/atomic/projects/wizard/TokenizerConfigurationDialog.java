@@ -18,10 +18,20 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration; 
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
+import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -33,17 +43,85 @@ import org.eclipse.swt.widgets.Shell;
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class TokenizerConfigurationDialog extends InputDialog {
+public class TokenizerConfigurationDialog extends Dialog {
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "TokenizerConfigurationDialog".
+	 */
+	private static final Logger log = LogManager.getLogger(TokenizerConfigurationDialog.class);
+	
+	private ProcessingComponentConfiguration<?> configuration = null;
+	private IConfigurationElement tokenizer;
 
 	/**
-	 * @param parentShell
-	 * @param dialogTitle
-	 * @param dialogMessage
-	 * @param initialValue
-	 * @param validator
+	 * 
 	 */
-	public TokenizerConfigurationDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue, IInputValidator validator) {
-		super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
+	public TokenizerConfigurationDialog(Shell parentShell, IConfigurationElement tokenizer, ProcessingComponentConfiguration<?> configuration) {
+		super(parentShell);
+		this.configuration = configuration;
+		this.tokenizer = tokenizer;
+	}
+	
+	/* 
+	 * @copydoc @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+	 */
+	@Override
+	protected void configureShell(Shell newShell) {
+		super.configureShell(newShell);
+		newShell.setText("Configuration of " + tokenizer.getAttribute("name"));
+	}
+
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.Dialog#getInitialSize()
+	 */
+	@Override
+	protected Point getInitialSize() {
+		return this.getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+	}
+	
+
+	@Override
+	protected boolean isResizable() {
+		return true;
+	}
+	
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	protected Control createDialogArea(Composite parent) {
+		Composite content = (Composite) super.createDialogArea(parent);
+        content.setLayout(new FillLayout());
+
+		ScrolledComposite sc = new ScrolledComposite(content, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+
+        Composite composite = new Composite(sc, SWT.NONE);
+        composite.setLayout(new FillLayout());
+
+		Object controls = null;
+		try {
+			controls = tokenizer.createExecutableExtension("configurationControls");
+			if (controls instanceof ProcessingComponentConfigurationControls) {
+				((ProcessingComponentConfigurationControls) controls).execute(composite, SWT.NONE);
+			}
+		}
+		catch (CoreException e) {
+			log.error("Could not create an executable extension for {}!", tokenizer.getAttribute("configurationControls"), e);
+		}
+
+        sc.setContent(composite);
+        sc.setExpandHorizontal(true);
+        sc.setExpandVertical(true);
+        sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+        return parent; 
+	}
+
+	/**
+	 * @return the configuration
+	 */
+	public ProcessingComponentConfiguration<?> getConfiguration() {
+		return configuration;
 	}
 
 }
