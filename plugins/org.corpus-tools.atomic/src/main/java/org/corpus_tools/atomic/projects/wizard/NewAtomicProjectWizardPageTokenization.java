@@ -29,6 +29,7 @@ import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -282,7 +283,10 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 							log.error("Could not create an executable extension for tokenizer configuration {}!", tokenizer.getAttribute("configuration"), e1);
 						}
 						TokenizerConfigurationDialog dialog = new TokenizerConfigurationDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), tokenizer, configuration);
-    					dialog.open();
+    					int status = dialog.open();
+    					if (status == IStatus.OK) {
+    						System.err.println(dialog.getConfiguration());
+    					}
     					
 //    					FIXME tokenizerArea.getData(TOKENIZER_OBJECT).setConfiguration()
     				}	

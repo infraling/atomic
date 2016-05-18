@@ -72,7 +72,7 @@ public class SaltTokenizerConfiguration extends AbstractBean implements Processi
 	public void setLanguageCode(LanguageCode languageCode) {
 		final LanguageCode oldLanguageCode = this.languageCode;
 		this.languageCode = languageCode;
-		firePropertyChange("languageCode", oldLanguageCode, this.languageCode);
+		firePropertyChange(ProcessingComponentConfigurationProperties.SaltTokenizerConfiguration_languageCode, oldLanguageCode, this.languageCode);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class SaltTokenizerConfiguration extends AbstractBean implements Processi
 	public void setAbbreviations(HashSet<String> abbreviations) {
 		final HashSet<String> oldAbbreviations = this.abbreviations;
 		this.abbreviations = abbreviations;
-		firePropertyChange("abbreviations", oldAbbreviations, this.abbreviations);
+		firePropertyChange(ProcessingComponentConfigurationProperties.SaltTokenizerConfiguration_abbreviations, oldAbbreviations, this.abbreviations);
 	}
 
 }

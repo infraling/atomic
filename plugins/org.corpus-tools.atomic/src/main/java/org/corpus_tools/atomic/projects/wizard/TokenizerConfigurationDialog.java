@@ -23,8 +23,15 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration; 
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
+import org.corpus_tools.atomic.ui.validation.NotEmptyStringOrNullValidator;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -125,14 +132,29 @@ public class TokenizerConfigurationDialog extends Dialog {
 	}
 
 	/**
-	 * Parses the children of composite and creates databinding for each
+	 * Parses the children of composite and creates databinding for each.
+	 * Must be called explicitly by clients.
 	 *
 	 * @param configuration
 	 * @param composite
 	 */
 	private void initDataBindings(ProcessingComponentConfiguration<?> configuration, Composite composite) {
-		// TODO Auto-generated method stub
-		
+		DataBindingContext bindingContext = new DataBindingContext();
+		for (Control control : composite.getChildren()) {
+			String data;
+			if ((data = (String) control.getData("property")) != null) {
+				if (control instanceof Composite) { // I.e., Combo, etc.
+					IObservableValue widgetValue = WidgetProperties.selection().observe(control);
+					IObservableValue modelValue = BeanProperties.value(configuration.getClass(), data).observe(configuration);
+					bindingContext.bindValue(widgetValue, modelValue);
+				}
+				else {
+					IObservableValue widgetValue = WidgetProperties.text(SWT.Modify).observe(control);
+					IObservableValue modelValue = BeanProperties.value(configuration.getClass(), data).observe(configuration);
+					bindingContext.bindValue(widgetValue, modelValue);
+				}
+			}
+		}
 	}
 
 	/**

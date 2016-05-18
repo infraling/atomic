@@ -18,6 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions.processingcomponents.ui.impl;
 
+import org.corpus_tools.atomic.extensions.processingcomponents.impl.ProcessingComponentConfigurationProperties;
 import org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer;  
 import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
 import org.eclipse.swt.SWT;
@@ -57,7 +58,7 @@ public class SaltTokenizerConfigurationControls extends ProcessingComponentConfi
 		}
 		languageCodeCombo.setItems(items);
 		languageCodeCombo.select(0);
-		languageCodeCombo.setData("languageData");
+		setProperty(languageCodeCombo, ProcessingComponentConfigurationProperties.SaltTokenizerConfiguration_languageCode);
 		
 		Label abbreviationsLabel = new Label(parent, SWT.NONE);
 		abbreviationsLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
@@ -72,6 +73,7 @@ public class SaltTokenizerConfigurationControls extends ProcessingComponentConfi
 		GridData abbreviationsTextLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 		abbreviationsTextLayoutData.heightHint = 5 * abbreviationsText.getLineHeight();
 		abbreviationsText.setLayoutData(abbreviationsTextLayoutData);
+		setProperty(abbreviationsText ,ProcessingComponentConfigurationProperties.SaltTokenizerConfiguration_abbreviations);
 		
 		
 		Button abbreviationsFileBrowseButton = new Button(parent, SWT.PUSH);
