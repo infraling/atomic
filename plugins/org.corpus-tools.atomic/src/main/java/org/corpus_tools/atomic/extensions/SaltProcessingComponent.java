@@ -91,6 +91,7 @@ public class SaltProcessingComponent {
 			SLayer layer = SaltFactory.createSLayer();
 			document.getDocumentGraph().addLayer(layer);
 			targetLayer = layer;
+			targetLayer.setName(getTargetLayerName(document));
 		}
 		return targetLayer;
 	}

@@ -60,6 +60,8 @@ import org.corpus_tools.salt.core.SLayer;
  */
 public abstract class Tokenizer extends SaltProcessingComponent implements ProcessingComponent<String, List<String>> {
 	
+	private SLayer layer;
+
 	// FIXME: Needs unit tests!
 
 	/**
@@ -82,6 +84,10 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 		SDocumentGraph documentGraph = document.getDocumentGraph();
 		if (documentGraph.getTextualDSs().size() > 0 && documentGraph.getTextualDSs().get(0) == null) {
 			throw new ProcessingException("The processed document's document graph does not have an STextualDS!", new NullPointerException());
+		}
+		layer = getTargetLayer(document);
+		if (documentGraph.getLayer(layer.getId()) != null) {
+			layer = documentGraph.getLayer(layer.getId());
 		}
 		for (STextualDS sTextualDS : documentGraph.getTextualDSs()) {
 			String documentSourceText = sTextualDS.getText();
@@ -119,7 +125,14 @@ public abstract class Tokenizer extends SaltProcessingComponent implements Proce
 						previousToken = token;
 					
 						// Add token to layer
-						SLayer layer;
+						layer.addNode(token);
+						/* Hol den target layer
+						 * checke ob der target layer schon im graphen is
+						 * ja: füge tokens diesem layer zu
+						 * nein: mach nen neuen layer und füge die tokens da zu
+						 * 
+						 */
+						
 						if ((layer = getTargetLayer(document)) != null && documentGraph.getLayers().contains(layer)) {
 							if (layer.getName() == null || layer.getName().isEmpty()) {
 								layer.setName(getTargetLayerName(document));

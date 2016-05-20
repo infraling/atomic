@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.extensions.processingcomponents.impl;
 
-import java.util.HashSet;
+import java.util.HashSet; 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,9 +27,7 @@ import org.corpus_tools.atomic.exceptions.AtomicException;
 import org.corpus_tools.atomic.extensions.ConfigurableProcessingComponent;
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
-import org.corpus_tools.salt.common.SDocument;
-import org.corpus_tools.salt.common.SDocumentGraph;
-import org.corpus_tools.salt.common.STextualDS;
+import com.neovisionaries.i18n.LanguageCode;
 
 /**
  * Wraps the tokenizer included in Salt ({@link de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer})
@@ -57,59 +55,28 @@ public class SaltTokenizer extends Tokenizer implements ConfigurableProcessingCo
 	
 	private SaltTokenizerConfiguration configuration = null;
 
-	/**
-	 * 
-	 */
-	public SaltTokenizer() {
-		// TODO Auto-generated constructor stub
-	}
-
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer#tokenize(java.lang.String)
 	 */
 	@Override
 	public List<String> tokenize(String rawSourceText) {
-		/** Not implemented because the wrapped tokenizer works on instances of the Salt model itself per default. */
-		return null;
-	}
-	
-	/* 
-	 * @copydoc @see org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer#processDocument(de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument)
-	 */
-	@Override
-	public void processDocument(SDocument document) {
-		SDocumentGraph graph = document.getDocumentGraph();
-		if (getConfiguration() != null) {
-			org.corpus_tools.salt.common.tokenizer.Tokenizer tokenizer = new org.corpus_tools.salt.common.tokenizer.Tokenizer();
-			tokenizer.setsDocumentGraph(document.getDocumentGraph());
-			if (graph.getTextualDSs().size() > 0) {
-				for (STextualDS sTextualDS : graph.getTextualDSs()) {
-					if (sTextualDS != null) {
-						// FIXME TODO: Add check for options in config
-						// TODO: Add clitics as soon as they are available in a Salt release
-						if (getConfiguration() instanceof SaltTokenizerConfiguration) {
-							SaltTokenizerConfiguration config = (SaltTokenizerConfiguration) getConfiguration();
-							HashSet<String> abbreviations;
-							if ((abbreviations = config.getAbbreviations()) != null && !abbreviations.isEmpty()) {
-								tokenizer.addAbbreviation(config.getLanguageCode(), abbreviations);
-							}
-							// TODO tokenizer.addClitics(config.getLanguageCode(), config.getClitics());
-							if (config.getLanguageCode() != null) {
-								tokenizer.tokenize(sTextualDS, config.getLanguageCode());
-							}
-							else {
-								document.getDocumentGraph().tokenize();
-							}
-						}
-					}
-				}
+		org.corpus_tools.salt.common.tokenizer.Tokenizer saltTokenizer = new org.corpus_tools.salt.common.tokenizer.Tokenizer();
+		ProcessingComponentConfiguration<SaltTokenizer> config;
+		SaltTokenizerConfiguration saltConfig = null;
+		if ((config = getConfiguration()) != null && config instanceof SaltTokenizerConfiguration) {
+			saltConfig = (SaltTokenizerConfiguration) config;
+			HashSet<String> abbreviations = saltConfig.getAbbreviations();
+			LanguageCode languageCode = saltConfig.getLanguageCode();
+			if (abbreviations != null && !abbreviations.isEmpty()) {
+				saltTokenizer.addAbbreviation(saltConfig.getLanguageCode(), abbreviations);
 			}
+			return saltTokenizer.tokenizeToString(rawSourceText, languageCode);
 		}
 		else {
-			document.getDocumentGraph().tokenize();
+			return null;
 		}
 	}
-
+	
 	/* 
 	 * @copydoc @see org.corpus_tools.atomic.extensions.ProcessingComponent#getConfiguration()
 	 */

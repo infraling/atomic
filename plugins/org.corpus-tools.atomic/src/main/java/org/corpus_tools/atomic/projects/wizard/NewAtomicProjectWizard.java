@@ -27,7 +27,9 @@ import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
 import org.corpus_tools.salt.common.SCorpusGraph;
 import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.common.SaltProject;
+import org.corpus_tools.salt.core.SLayer;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -89,9 +91,14 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				for (Tokenizer tokenizer : orderedTokenizers) {
 					tokenizer.processDocument(document);
 				}
+				for (SLayer layer : document.getDocumentGraph().getLayers()) {
+					System.err.println("LAYER: " + layer.getName() + "(" + layer.getId());
+				}
+				for (SToken token : document.getDocumentGraph().getTokens()) {
+					System.err.println(document.getDocumentGraph().getText(token));
+				}
 			}
 		}
-
 		project.saveSaltProject(URI.createFileURI(System.getProperty("user.home")));
 		return false; // TODO FIXME
 	}
