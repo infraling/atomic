@@ -32,13 +32,13 @@ import org.eclipse.core.databinding.conversion.Converter;
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class HashSetToAlphabeticallyOrderedLinebrokenStringConverter extends Converter {
+public class HashSetToALinebrokenStringConverter extends Converter {
 
 	/**
 	 * @param fromType
 	 * @param toType
 	 */
-	public HashSetToAlphabeticallyOrderedLinebrokenStringConverter(Object fromType, Object toType) {
+	public HashSetToALinebrokenStringConverter(Object fromType, Object toType) {
 		super(HashSet.class, String.class);
 	}
 
@@ -49,10 +49,9 @@ public class HashSetToAlphabeticallyOrderedLinebrokenStringConverter extends Con
 	@Override
 	public Object convert(Object fromObject) {
 		if (fromObject instanceof HashSet) {
+			HashSet<String> set = (HashSet<String>) fromObject;
 			StringBuilder builder = new StringBuilder();
-			TreeSet orderedSet = new TreeSet<>();
-			orderedSet.addAll((HashSet) fromObject);
-			Iterator iterator = orderedSet.iterator();
+			Iterator iterator = set.iterator();
 			while (iterator.hasNext()) {
 				Object object = (Object) iterator.next();
 				builder.append(object.toString() + "\n");
