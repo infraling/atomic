@@ -62,14 +62,6 @@ public class SaltTokenizerTest {
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer#tokenize(java.lang.String)}.
-	 */
-	@Test
-	public void testTokenize() {
-		assertNull(getFixture().tokenize("Test string."));
-	}
-
-	/**
 	 * Test method for {@link org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer#processDocument(org.corpus_tools.salt.common.SDocument)}.
 	 */
 	@Test

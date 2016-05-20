@@ -73,7 +73,7 @@ public class SaltTokenizer extends Tokenizer implements ConfigurableProcessingCo
 			return saltTokenizer.tokenizeToString(rawSourceText, languageCode);
 		}
 		else {
-			return null;
+			return saltTokenizer.tokenizeToString(rawSourceText, null);
 		}
 	}
 	
