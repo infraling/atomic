@@ -22,19 +22,20 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link HashSetToAlphabeticallyOrderedLinebrokenStringConverter}
+ * Unit tests for {@link HashSetToALinebrokenStringConverter}
  *
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
 public class HashSetToAlphabeticallyOrderedLinebrokenStringConverterTest {
 	
-	HashSetToAlphabeticallyOrderedLinebrokenStringConverter fixture = null;
+	HashSetToALinebrokenStringConverter fixture = null;
 
 	/**
 	 * Sets up the fixture.
@@ -43,32 +44,32 @@ public class HashSetToAlphabeticallyOrderedLinebrokenStringConverterTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		setFixture(new HashSetToAlphabeticallyOrderedLinebrokenStringConverter(HashSet.class, String.class));
+		setFixture(new HashSetToALinebrokenStringConverter(HashSet.class, String.class));
 	}
 
 	/**
-	 * Test method for {@link org.corpus_tools.atomic.databinding.converters.HashSetToAlphabeticallyOrderedLinebrokenStringConverter#convert(java.lang.Object)}.
+	 * Test method for {@link org.corpus_tools.atomic.databinding.converters.HashSetToALinebrokenStringConverter#convert(java.lang.Object)}.
 	 */
 	@Test
 	public void testConvert() {
-		HashSet<String> set = new HashSet<>(Arrays.asList(new String[]{"One", "Two", "Three"}));
+		HashSet<String> set = new LinkedHashSet<>(Arrays.asList(new String[]{"One", "Two", "Three"}));
 		Object convertedObject = getFixture().convert(set);
 		assertNotNull(convertedObject);
 		assertTrue(convertedObject instanceof String);
-		assertEquals("One\nThree\nTwo", convertedObject);
+		assertEquals("One\nTwo\nThree", convertedObject);
 	}
 
 	/**
 	 * @return the fixture
 	 */
-	private HashSetToAlphabeticallyOrderedLinebrokenStringConverter getFixture() {
+	private HashSetToALinebrokenStringConverter getFixture() {
 		return fixture;
 	}
 
 	/**
 	 * @param fixture the fixture to set
 	 */
-	private void setFixture(HashSetToAlphabeticallyOrderedLinebrokenStringConverter fixture) {
+	private void setFixture(HashSetToALinebrokenStringConverter fixture) {
 		this.fixture = fixture;
 	}
 
