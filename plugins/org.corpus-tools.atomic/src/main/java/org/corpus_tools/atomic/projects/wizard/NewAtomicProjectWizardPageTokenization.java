@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.ConfigurableProcessingComponent;
+import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.ProcessingComponentMetaData;
 import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
 import org.eclipse.core.runtime.CoreException;
@@ -365,26 +366,44 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				}
 				
 				if (source == sourceTokenizerContainer && target == targetTokenizerContainer) {
+					Composite tokenizerComposite = null;
 					if (configureButton != null) {
 						configureButton.setEnabled(true);
 					}
 					if (isComposite) {
-						droppedTokenizerComposite.setParent(targetTokenizerContainer);
+						tokenizerComposite = (Composite) droppedTokenizerComposite;
 					}
 					else {
-						droppedTokenizerComposite.getParent().setParent(targetTokenizerContainer);
+						tokenizerComposite = droppedTokenizerComposite.getParent(); 
 					}
-					try {
-						if (isComposite) {
-							droppedTokenizerComposite.setData(TOKENIZER_OBJECT, ((IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT)).createExecutableExtension("class"));
+					tokenizerComposite.setParent(targetTokenizerContainer);
+					Tokenizer tokenizerObject = (Tokenizer) tokenizerComposite.getData(TOKENIZER_OBJECT);
+					IConfigurationElement configElement = (IConfigurationElement) tokenizerComposite.getData(CONFIGURATION_ELEMENT);
+					if (tokenizerObject == null) {
+						try {
+							tokenizerObject = (Tokenizer) configElement.createExecutableExtension("class");
 						}
-						else {
-							droppedTokenizerComposite.getParent().setData(TOKENIZER_OBJECT, ((IConfigurationElement) droppedTokenizerComposite.getData(CONFIGURATION_ELEMENT)).createExecutableExtension("class"));
+						catch (CoreException e) {
+							log.error("Could not add a tokenizer of type \"{}\" to the list of tokenizers to use:", tokenizer.getAttribute("name"), e);
 						}
+						tokenizerComposite.setData(TOKENIZER_OBJECT, tokenizerObject);
 						log.info("Added tokenizer of type \"{}\" to list of tokenizers to apply.", tokenizer.getAttribute("name"));
 					}
-					catch (CoreException e) {
-						log.error("Could not add a tokenizer of type \"{}\" to the list of tokenizers to use:", tokenizer.getAttribute("name"), e);
+					System.err.println(tokenizerObject.getClass());
+					if (tokenizerObject instanceof ConfigurableProcessingComponent) {
+						if (((ConfigurableProcessingComponent) tokenizerObject).getConfiguration() == null) {
+							try {
+								ProcessingComponentConfiguration<?> tokenizerConfiguration = (ProcessingComponentConfiguration<?>) configElement.createExecutableExtension("configuration");
+								((ConfigurableProcessingComponent) tokenizerObject).setConfiguration(tokenizerConfiguration);
+								log.info("Added configuration of type \"{}\" to the tokenizer of type {}.", tokenizerConfiguration.getClass().getSimpleName(), tokenizerObject.getClass().getSimpleName());
+							}
+							catch (CoreException e) {
+								log.error("Could not add a configuration of type {} to the tokenizer of type {}!", configElement.getAttribute("configuration"), configElement.getAttribute("class"), e);
+							}
+						}
+						else {
+							log.info("Tokenizer of type {} already has a configuration, of type {}!", tokenizerObject.getClass().getSimpleName(), ((ConfigurableProcessingComponent) tokenizerObject).getConfiguration().getClass().getSimpleName());
+						}
 					}
 				}
 				else if (source == targetTokenizerContainer && target == sourceTokenizerContainer) {
