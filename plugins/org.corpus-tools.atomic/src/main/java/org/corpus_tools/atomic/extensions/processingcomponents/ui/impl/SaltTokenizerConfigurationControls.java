@@ -150,7 +150,8 @@ public class SaltTokenizerConfigurationControls extends ProcessingComponentConfi
 	 * Initializes the data bindings for the widgets working on actual data.
 	 */
 	private void initDataBindings() {
-		getConfiguration().setLanguageCode(LanguageCode.aa);
+		// Force the language dropdown to not show a blank field! 
+		((SaltTokenizerConfiguration) getConfiguration()).setLanguageCode(LanguageCode.aa);
 		
 		DataBindingContext bindingContext = new DataBindingContext();
 		IViewerObservableValue languageCodewidgetObservable = ViewersObservables.observeSingleSelection(languageCodeCombo);

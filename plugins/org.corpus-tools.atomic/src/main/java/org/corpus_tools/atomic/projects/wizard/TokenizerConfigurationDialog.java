@@ -18,15 +18,14 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager; 
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.extensions.ProcessingComponentConfiguration;
-import org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizerConfiguration;
 import org.corpus_tools.atomic.extensions.processingcomponents.ui.ProcessingComponentConfigurationControls;
-import org.corpus_tools.atomic.extensions.processingcomponents.ui.impl.SaltTokenizerConfigurationControls;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
@@ -44,12 +43,6 @@ import org.eclipse.swt.widgets.Shell;
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-/**
- * TODO Description
- *
- * @author Stephan Druskat <mail@sdruskat.net>
- *
- */
 public class TokenizerConfigurationDialog extends Dialog {
 	
 	/** 
@@ -63,9 +56,10 @@ public class TokenizerConfigurationDialog extends Dialog {
 	/**
 	 * 
 	 */
-	public TokenizerConfigurationDialog(Shell parentShell, IConfigurationElement tokenizer) {
+	public TokenizerConfigurationDialog(Shell parentShell, IConfigurationElement tokenizer, ProcessingComponentConfiguration<?> configuration) {
 		super(parentShell);
 		this.tokenizer = tokenizer;
+		this.configuration = configuration;
 	}
 	
 	/* 
@@ -107,14 +101,11 @@ public class TokenizerConfigurationDialog extends Dialog {
 		Object controls = null;
 		try {
 			controls = tokenizer.createExecutableExtension("configurationControls");
-			((SaltTokenizerConfigurationControls) controls).setConfiguration((SaltTokenizerConfiguration) tokenizer.createExecutableExtension("configuration"));
-			if (controls instanceof ProcessingComponentConfigurationControls) {
-				((ProcessingComponentConfigurationControls) controls).execute(composite, SWT.NONE);
-				setConfiguration(((SaltTokenizerConfigurationControls) controls).getConfiguration());
-			}
+			((ProcessingComponentConfigurationControls) controls).setConfiguration(getConfiguration());
+			((ProcessingComponentConfigurationControls) controls).execute(composite, SWT.NONE);
 		}
 		catch (CoreException e) {
-			log.error("Could not create an executable extension!", e);
+			log.error("Could not create an executable extension of tpye {}!", tokenizer.getAttribute("configurationControls"), e);
 		}
 
         sc.setContent(composite);
@@ -131,12 +122,14 @@ public class TokenizerConfigurationDialog extends Dialog {
 	public ProcessingComponentConfiguration<?> getConfiguration() {
 		return configuration;
 	}
-
-	/**
-	 * @param configuration the configuration to set
+	
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
-	private void setConfiguration(ProcessingComponentConfiguration<?> configuration) {
-		this.configuration = configuration;
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		// Create only the OK button
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 	}
 
 }

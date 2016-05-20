@@ -52,6 +52,8 @@ import org.eclipse.swt.widgets.Control;
  *
  */
 public abstract class ProcessingComponentConfigurationControls {
+	
+	private ProcessingComponentConfiguration<?> configuration = null;
 
 	/**
 	 * This is where SWT widgets/JFace viewers are added.
@@ -84,6 +86,20 @@ public abstract class ProcessingComponentConfigurationControls {
 	 */
 	public void setProperty(Control control, String property) {
 		control.setData("property", property);
+	}
+
+	/**
+	 * @return the configuration
+	 */
+	public ProcessingComponentConfiguration<?> getConfiguration() {
+		return configuration;
+	}
+
+	/**
+	 * @param configuration the configuration to set
+	 */
+	public void setConfiguration(ProcessingComponentConfiguration<?> configuration) {
+		this.configuration = configuration;
 	}
 
 }

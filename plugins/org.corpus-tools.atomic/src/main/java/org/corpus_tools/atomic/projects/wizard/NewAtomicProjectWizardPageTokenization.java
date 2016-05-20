@@ -275,12 +275,11 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
         		configureBtn.addSelectionListener(new SelectionAdapter() {
     				@Override
     				public void widgetSelected(SelectionEvent e) {
-						TokenizerConfigurationDialog dialog = new TokenizerConfigurationDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), tokenizer);
+						TokenizerConfigurationDialog dialog = new TokenizerConfigurationDialog(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), tokenizer, ((ConfigurableProcessingComponent) tokenizerArea.getData(TOKENIZER_OBJECT)).getConfiguration());
     					int status = dialog.open();
     					if (status == IStatus.OK) {
-    						((ConfigurableProcessingComponent) tokenizerArea.getData(TOKENIZER_OBJECT)).setConfiguration(dialog.getConfiguration());
+        					isConfiguredBtn.setSelection(true);
     					}
-    					isConfiguredBtn.setSelection(true);
     				}	
     			});
     		}
@@ -389,7 +388,7 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 						tokenizerComposite.setData(TOKENIZER_OBJECT, tokenizerObject);
 						log.info("Added tokenizer of type \"{}\" to list of tokenizers to apply.", tokenizer.getAttribute("name"));
 					}
-					System.err.println(tokenizerObject.getClass());
+
 					if (tokenizerObject instanceof ConfigurableProcessingComponent) {
 						if (((ConfigurableProcessingComponent) tokenizerObject).getConfiguration() == null) {
 							try {
