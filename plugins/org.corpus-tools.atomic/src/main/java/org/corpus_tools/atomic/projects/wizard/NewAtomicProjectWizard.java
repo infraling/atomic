@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.io.File;
+import java.io.File; 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,16 +28,21 @@ import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
 import org.corpus_tools.salt.common.SCorpusGraph;
 import org.corpus_tools.salt.common.SDocument;
-import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.common.SaltProject;
-import org.corpus_tools.salt.core.SLayer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -76,9 +81,7 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	 */
 	@Override
 	public boolean canFinish() {
-		// TODO Auto-generated method stub
-//		return (false && super.canFinish());
-		return true;
+		return (getStructurePage().isPageComplete() && getTokenizationPage().isPageComplete());
 	}
 	
 	/*
@@ -89,46 +92,58 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		Corpus projectData = getStructurePage().getModel();
 		// TODO: Compile SaltProject form projectData
 		SaltProjectCompiler compiler = new SaltProjectCompiler(projectData);
-		SaltProject project = compiler.run();
+		final SaltProject project = compiler.run();
 		List<Tokenizer> orderedTokenizers = getTokenizationPage().getTokenizers();
 		for (SCorpusGraph corpusGraph : project.getCorpusGraphs()) {
 			for (SDocument document : corpusGraph.getDocuments()) {
 				for (Tokenizer tokenizer : orderedTokenizers) {
 					tokenizer.processDocument(document);
 				}
-				
-				// TODO FIXME Write project to worksapce & refresh workspace
-				
-				for (SLayer layer : document.getDocumentGraph().getLayers()) {
-					System.err.println("LAYER: " + layer.getName() + "(" + layer.getId());
-				}
-				for (SToken token : document.getDocumentGraph().getTokens()) {
-					System.err.println(document.getDocumentGraph().getText(token));
-				}
 			}
 		}
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		log.info("Workspace root is {}.", workspaceRoot.getLocation().toOSString());
 		IProject iProject = workspaceRoot.getProject(project.getName());
+		log.info("Created IProject OBJECT with name \"{}\" at workspace root.", iProject.getName());
 		try {
 			iProject.create(null);
+			log.info("Successfully created IProject \"{}\".", iProject.getName());
 			iProject.open(null);
+			log.info("Opened IProject \"{}\".", iProject.getName());
 		}
 		catch (CoreException e) {
-			log.error("Could not create and open the IProject for SaltProject{}!", project.getName(), e);
+			// FIXME Check this in wizard!
+			MessageDialog.openError(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), "Atomic project note created!", "A project by the name of \"" + project.getName() + "\" already exists.");
+			log.error("Could not create and open the IProject for SaltProject {}!", project.getName(), e);
+			return false;
 		}
 		File iProjectLocation = new File(iProject.getLocation().toString());
-		URI uri = URI.createFileURI(iProjectLocation.getAbsolutePath());
-		project.saveSaltProject(uri);
+		final URI uri = URI.createFileURI(iProjectLocation.getAbsolutePath());
+		
+		// FIXME Check how this is reported in UI!
+		Job saltProjectCreationJob = new Job("Create SaltProject.") {
+			
+			@Override
+			  protected IStatus run(IProgressMonitor monitor) {
+			    SubMonitor subMonitor = SubMonitor.convert(monitor);
+			    if (monitor.isCanceled()) {
+			    	log.info("Saving the SaltProject \"{}\" was interrupted by the user.", project.getName());
+			    	return Status.CANCEL_STATUS;
+			    }
+		    	subMonitor.setTaskName("Saving Atomic project \"" + project.getName() + "\".");
+		    	project.saveSaltProject(uri);
+			    return Status.OK_STATUS;
+			}
+		};
+		saltProjectCreationJob.schedule();
 		try {
 			iProject.refreshLocal(IProject.DEPTH_INFINITE, null);
 		}
 		catch (CoreException e) {
 			log.error("Could not refresh IProject for SaltProject {}!", project.getName(), e);
 		}
-		
-		// TODO FIXME Make next & finish work
-		
-		return false; // TODO FIXME
+		// Finally, return true
+		return true;
 	}
 	
 	@Override

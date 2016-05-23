@@ -435,6 +435,9 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 				scrolledComposite.setMinSize(intermediateComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 				scrolledComposite2.layout(true, true);
 				scrolledComposite2.setMinSize(intermediateComposite2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				
+				// Manual update
+				getWizard().getContainer().updateButtons();
 			}
 
 			/**
@@ -519,6 +522,14 @@ public class NewAtomicProjectWizardPageTokenization extends WizardPage {
 			tokenizerList.add((Tokenizer) children[i].getData(TOKENIZER_OBJECT));
 		}
 		return tokenizerList;
+	}
+	
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
+	 */
+	@Override
+	public boolean isPageComplete() {
+		return (getErrorMessage() == null && targetTokenizerContainer.getChildren().length > 0);
 	}
 
 }

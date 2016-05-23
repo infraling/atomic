@@ -524,7 +524,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 	 */
 	@Override
 	public boolean isPageComplete() {
-		return getErrorMessage() == null;
+		return (getErrorMessage() == null && doAllDocumentsHaveSourceTexts);
 	}
 
 	/**
