@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.io.File;
+import java.io.File; 
 import java.io.IOException; 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -33,6 +33,7 @@ import org.corpus_tools.atomic.projects.Corpus;
 import org.corpus_tools.atomic.projects.Document;
 import org.corpus_tools.atomic.projects.ProjectNode;
 import org.corpus_tools.atomic.ui.ExtendedViewerSupport;
+import org.corpus_tools.atomic.ui.validation.NotEmptyStringOrNullOrExistingProjectValidator;
 import org.corpus_tools.atomic.ui.validation.NotEmptyStringOrNullValidator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -436,7 +437,7 @@ public class NewAtomicProjectWizardPageProjectStructure extends WizardPage {
 		// Binds the "Project name text" text field to the 'name' property of the project.
 		IObservableValue projectNameTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(projectNameText);
 		IObservableValue projectNameObserveProjectNameText = BeanProperties.value("name").observe(getModel());
-		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, new UpdateValueStrategy().setBeforeSetValidator(new NotEmptyStringOrNullValidator("Project name")), null);
+		bindingContext.bindValue(projectNameTextObserveWidget, projectNameObserveProjectNameText, new UpdateValueStrategy().setBeforeSetValidator(new NotEmptyStringOrNullOrExistingProjectValidator("Project name")), null);
 		
 		return bindingContext;
 	}
