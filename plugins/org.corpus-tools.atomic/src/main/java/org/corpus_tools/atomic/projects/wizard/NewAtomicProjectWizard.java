@@ -18,6 +18,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +31,10 @@ import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.common.SaltProject;
 import org.corpus_tools.salt.core.SLayer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -91,6 +96,9 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				for (Tokenizer tokenizer : orderedTokenizers) {
 					tokenizer.processDocument(document);
 				}
+				
+				// TODO FIXME Write project to worksapce & refresh workspace
+				
 				for (SLayer layer : document.getDocumentGraph().getLayers()) {
 					System.err.println("LAYER: " + layer.getName() + "(" + layer.getId());
 				}
@@ -99,7 +107,27 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 				}
 			}
 		}
-		project.saveSaltProject(URI.createFileURI(System.getProperty("user.home")));
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject iProject = workspaceRoot.getProject(project.getName());
+		try {
+			iProject.create(null);
+			iProject.open(null);
+		}
+		catch (CoreException e) {
+			log.error("Could not create and open the IProject for SaltProject{}!", project.getName(), e);
+		}
+		File iProjectLocation = new File(iProject.getLocation().toString());
+		URI uri = URI.createFileURI(iProjectLocation.getAbsolutePath());
+		project.saveSaltProject(uri);
+		try {
+			iProject.refreshLocal(IProject.DEPTH_INFINITE, null);
+		}
+		catch (CoreException e) {
+			log.error("Could not refresh IProject for SaltProject {}!", project.getName(), e);
+		}
+		
+		// TODO FIXME Make next & finish work
+		
 		return false; // TODO FIXME
 	}
 	
