@@ -14,10 +14,13 @@
  * limitations under the License.
  *
  * Contributors:
- *     Stephan Druskat - initial API and implementation
+ *     Michael Grübsch - initial API and implementation
+ *     Stephan Druskat - update to Pepper 3.x API
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.importwizard;
 
+import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard;
+import org.corpus_tools.pepper.modules.PepperImporter;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardContainer;
@@ -34,211 +37,77 @@ import org.eclipse.ui.IWorkbench;
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-public class PepperImportWizard implements IImportWizard {
+public class PepperImportWizard extends AbstractPepperWizard<PepperImporter> implements IImportWizard {
+	protected String projectName;
 
-	/**
-	 * 
-	 */
 	public PepperImportWizard() {
-		// TODO Auto-generated constructor stub
+		super("Import via Pepper", WizardMode.IMPORT);
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// TODO Auto-generated method stub
-
+		initialize();
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#addPages()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void addPages() {
-		// TODO Auto-generated method stub
-
+		addPage(new PepperWizardPageModule<PepperImporter>(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
+		addPage(new PepperWizardPageFormat<PepperImporter>(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import format."));
+		addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
+		addPage(new PepperWizardPageProperties<PepperImporter>(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
+		addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#canFinish()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean canFinish() {
-		// TODO Auto-generated method stub
-		return false;
+	protected List<PepperImporter> resolvePepperModules(PepperModuleResolver pepperModuleResolver) {
+		return pepperModuleResolver.getPepperImporters();
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#createPageControls(org.eclipse.swt.widgets.Composite)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-	public void createPageControls(Composite pageContainer) {
-		// TODO Auto-generated method stub
-
+	public EList<FormatDefinition> getSupportedFormats() {
+		PepperImporter module = getPepperModule();
+		return module != null ? module.getSupportedFormats() : new BasicEList<FormatDefinition>();
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#dispose()
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+	protected IProject getProject() throws CoreException {
+		return AtomicProjectService.getInstance().createIProject(getProjectName());
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getContainer()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-	public IWizardContainer getContainer() {
-		// TODO Auto-generated method stub
-		return null;
+	protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable) {
+		return new ImportModuleRunnable(this, project, cancelable);
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getDefaultPageImage()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-	public Image getDefaultPageImage() {
-		// TODO Auto-generated method stub
-		return null;
+	protected boolean canPerformFinish() {
+		AtomicProjectService atomicProjectService = AtomicProjectService.getInstance();
+		return super.canPerformFinish() && projectName != null && !atomicProjectService.isProjectExisting(projectName);
 	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getDialogSettings()
-	 */
-	@Override
-	public IDialogSettings getDialogSettings() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
-	 */
-	@Override
-	public IWizardPage getNextPage(IWizardPage page) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getPage(java.lang.String)
-	 */
-	@Override
-	public IWizardPage getPage(String pageName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getPageCount()
-	 */
-	@Override
-	public int getPageCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getPages()
-	 */
-	@Override
-	public IWizardPage[] getPages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getPreviousPage(org.eclipse.jface.wizard.IWizardPage)
-	 */
-	@Override
-	public IWizardPage getPreviousPage(IWizardPage page) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getStartingPage()
-	 */
-	@Override
-	public IWizardPage getStartingPage() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getTitleBarColor()
-	 */
-	@Override
-	public RGB getTitleBarColor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#getWindowTitle()
-	 */
-	@Override
-	public String getWindowTitle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#isHelpAvailable()
-	 */
-	@Override
-	public boolean isHelpAvailable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#needsPreviousAndNextButtons()
-	 */
-	@Override
-	public boolean needsPreviousAndNextButtons() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#needsProgressMonitor()
-	 */
-	@Override
-	public boolean needsProgressMonitor() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#performCancel()
-	 */
-	@Override
-	public boolean performCancel() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#performFinish()
-	 */
-	@Override
-	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.IWizard#setContainer(org.eclipse.jface.wizard.IWizardContainer)
-	 */
-	@Override
-	public void setContainer(IWizardContainer wizardContainer) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
