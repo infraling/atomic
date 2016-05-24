@@ -19,6 +19,7 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.wizard;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +29,9 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.corpus_tools.atomic.pepper.Activator;
+import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
+import org.corpus_tools.pepper.common.MODULE_TYPE;
+import org.corpus_tools.pepper.common.PepperModuleDesc;
 import org.corpus_tools.pepper.modules.PepperModule;
 import org.corpus_tools.pepper.modules.PepperModuleProperties;
 import org.corpus_tools.pepper.modules.PepperModuleProperty;
@@ -74,18 +78,16 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
 	}
 
-	protected final WizardMode wizardMode;
+	protected final MODULE_TYPE wizardMode;
 
-	protected ServiceReference<PepperConverter> reference;
-	protected PepperConverter pepperConverter;
-	protected List<P> pepperModuleList;
+	protected AtomicPepperOSGiConnector pepperConnector;
+	protected List<PepperModuleDesc> pepperModuleList;
 	protected P pepperModule;
 	protected PepperModuleProperties pepperModuleProperties;
-	protected FormatDefinition formatDefinition;
 	protected String exchangeTargetPath;
 	protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
 
-	protected AbstractPepperWizard(String windowTitle, WizardMode wizardMode) {
+	protected AbstractPepperWizard(String windowTitle, MODULE_TYPE wizardMode) {
 		this.wizardMode = wizardMode;
 		setWindowTitle(windowTitle);
 		setNeedsProgressMonitor(true);
@@ -107,54 +109,43 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	}
 
 	public void initialize() {
-		reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(PepperConverter.class);
-		if (reference != null) {
-			pepperConverter = Activator.getDefault().getBundle().getBundleContext().getService(reference);
-
-			Properties properties = pepperConverter.getProperties();
-			if (properties == null) {
-				properties = new Properties();
-			}
-			properties.setProperty(PepperFWProperties.PROP_REMOVE_SDOCUMENTS_AFTER_PROCESSING, "true");
-			pepperConverter.setProperties(properties);
-		}
+		pepperConnector = new AtomicPepperOSGiConnector();
+		pepperConnector.init();
 
 		pepperModuleProperties = new PepperModuleProperties();
 
 		readDialogSettings();
 	}
 
-	public WizardMode getWizardMode() {
+	public MODULE_TYPE getWizardMode() {
 		return wizardMode;
 	}
 
-	protected abstract List<P> resolvePepperModules(PepperModuleResolver pepperModuleResolver);
-
-	public List<P> getPepperModules() {
+	public List<PepperModuleDesc> getPepperModules() {
 		if (pepperModuleList == null) {
-			List<P> modules = null;
-			if (pepperConverter != null) {
-				PepperModuleResolver pepperModuleResolver = pepperConverter.getPepperModuleResolver();
-				if (pepperModuleResolver != null) {
-					modules = resolvePepperModules(pepperModuleResolver);
-					if (modules != null) {
-						Collections.sort(modules, new Comparator<P>() {
-							@Override
-							public int compare(P o1, P o2) {
-								return o1.getName().compareTo(o2.getName());
-							}
-						});
+			
+			pepperModuleList = new ArrayList<>();
+			if(pepperConnector != null) {
+				Collection<PepperModuleDesc> allModuleDescs = pepperConnector.getRegisteredModules();
+				if(allModuleDescs != null) {
+					for(PepperModuleDesc desc : allModuleDescs) {
+						if(desc.getModuleType() == wizardMode) {
+							pepperModuleList.add(desc);
+						}
 					}
-					else {
-						new MessageDialog(this.getShell(), "Error", null, "Did not found any Pepper module!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
-					}
-				}
-				else {
-					new MessageDialog(this.getShell(), "Error", null, "Did not found Pepper module resolver!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
 				}
 			}
-
-			pepperModuleList = modules != null ? modules : Collections.<P> emptyList();
+			
+			if(pepperModuleList.isEmpty()) {
+				new MessageDialog(this.getShell(), "Error", null, "Did not found any Pepper module of type + " + wizardMode.name() + "!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+			}
+			
+			Collections.sort(pepperModuleList, new Comparator<PepperModuleDesc>() {
+				@Override
+				public int compare(PepperModuleDesc o1, PepperModuleDesc o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
 		}
 
 		return pepperModuleList;
@@ -405,7 +396,4 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		FILE, DIRECTORY
 	}
 
-	public static enum WizardMode {
-		IMPORT, EXPORT
-	}
 }

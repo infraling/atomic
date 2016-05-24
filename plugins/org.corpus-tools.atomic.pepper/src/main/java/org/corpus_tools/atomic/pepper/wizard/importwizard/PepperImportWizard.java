@@ -25,6 +25,7 @@ import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageDirectory;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageFormat;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageModule;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageProperties;
+import org.corpus_tools.pepper.connectors.impl.PepperOSGiConnector;
 import org.corpus_tools.pepper.modules.PepperImporter;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -56,14 +57,6 @@ public class PepperImportWizard extends AbstractPepperWizard<PepperImporter> imp
 		addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
 		addPage(new PepperWizardPageProperties<PepperImporter>(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
 		addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected List<PepperImporter> resolvePepperModules(PepperModuleResolver pepperModuleResolver) {
-		return pepperModuleResolver.getPepperImporters();
 	}
 
 	/**
