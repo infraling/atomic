@@ -121,11 +121,11 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		final URI uri = URI.createFileURI(iProjectLocation.getAbsolutePath());
 		
 		// FIXME Check how this is reported in UI!
-		Job saltProjectCreationJob = new Job("Create SaltProject.") {
+		Job saltProjectCreationJob = new Job("Creating Atomic project ...") {
 			
 			@Override
 			  protected IStatus run(IProgressMonitor monitor) {
-			    SubMonitor subMonitor = SubMonitor.convert(monitor);
+				SubMonitor subMonitor = SubMonitor.convert(monitor);
 			    if (monitor.isCanceled()) {
 			    	log.info("Saving the SaltProject \"{}\" was interrupted by the user.", project.getName());
 			    	return Status.CANCEL_STATUS;
