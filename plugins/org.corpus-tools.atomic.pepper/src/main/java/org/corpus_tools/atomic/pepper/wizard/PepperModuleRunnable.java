@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2014 Friedrich Schiller University Jena
- * Vivid Sky - Softwaremanufaktur, Michael Grübsch.
+ * Vivid Sky - Softwaremanufaktur, Michael Grï¿½bsch.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
+package org.corpus_tools.atomic.pepper.wizard;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -141,7 +141,7 @@ public abstract class PepperModuleRunnable
     {
       synchronized (cancelLock)
       {
-        // prüfen, ob Ausführung bereits vor dem Start abgebrochen worden ist
+        // prï¿½fen, ob Ausfï¿½hrung bereits vor dem Start abgebrochen worden ist
         if (cancelled)
         {
           throw new InterruptedException();
@@ -149,7 +149,7 @@ public abstract class PepperModuleRunnable
         else
         {
           controlThread = Thread.currentThread();
-          // Thread in dem der Vorgang ausgeführt wird und der bei Abbruch im
+          // Thread in dem der Vorgang ausgefï¿½hrt wird und der bei Abbruch im
           // Progressmonitor unterbrochen werden soll
           moduleThread = new Thread("Pepper Module Thread #" + threadCounter.incrementAndGet())
           {
@@ -173,11 +173,11 @@ public abstract class PepperModuleRunnable
         }
       }
 
-      // Progressmonitor asynchron auf Abbruch überwachen
+      // Progressmonitor asynchron auf Abbruch ï¿½berwachen
       ScheduledFuture<?> cancellationCheck;
       if (cancelable)
       {
-        // Überwachungsthread
+        // ï¿½berwachungsthread
         cancellationCheck = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay
           ( new Runnable()
             {
@@ -205,7 +205,7 @@ public abstract class PepperModuleRunnable
       outcome = Boolean.FALSE;
       try
       {
-        // Modul ausführen
+        // Modul ausfï¿½hren
         moduleThread.start();
 
         Display display = Display.findDisplay(Thread.currentThread());
@@ -237,7 +237,7 @@ public abstract class PepperModuleRunnable
         // Monitor beenden
         monitor.done();
 
-        // Überwachungsthread stoppen
+        // ï¿½berwachungsthread stoppen
         if (cancellationCheck != null)
         {
           cancellationCheck.cancel(true);

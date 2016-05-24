@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2013 Friedrich Schiller University Jena
- * Michael Grübsch
+ * Michael Grï¿½bsch
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-package de.uni_jena.iaa.linktype.atomic.model.pepper.wizard;
+package org.corpus_tools.atomic.pepper.wizard;
 
-import org.eclipse.jface.layout.TableColumnLayout;
+import org.corpus_tools.pepper.modules.PepperModule;
+import org.eclipse.jface.layout.TableColumnLayout; 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -41,11 +42,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
-
 /**
  *
- * @author  Michael Grübsch
+ * @author  Michael Grï¿½bsch
  * @version $Revision$, $Date$
  */
 public class PepperWizardPageModule<P extends PepperModule> extends WizardPage implements IWizardPage

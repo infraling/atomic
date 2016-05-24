@@ -19,6 +19,13 @@ package org.corpus_tools.atomic.pepper.wizard.importwizard;
 
 import java.util.List;
 
+import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard;
+import org.corpus_tools.atomic.pepper.wizard.PepperModuleRunnable;
+import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageDirectory;
+import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageFormat;
+import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageModule;
+import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageProperties;
+import org.corpus_tools.pepper.modules.PepperImporter;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.BasicEList;
@@ -27,106 +34,77 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleResolver;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperModuleRunnable;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageDirectory;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageFormat;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageModule;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperWizardPageProperties;
-import de.uni_jena.iaa.linktype.atomic.model.salt.project.AtomicProjectService;
+public class PepperImportWizard extends AbstractPepperWizard<PepperImporter> implements IImportWizard {
+	protected String projectName;
 
-public class PepperImportWizard 
-  extends 
-    AbstractPepperWizard<PepperImporter>
-  implements 
-    IImportWizard
-{
-  protected String projectName;
+	public PepperImportWizard() {
+		super("Import via Pepper", WizardMode.IMPORT);
+	}
 
-  public PepperImportWizard()
-  {
-    super("Import via Pepper", WizardMode.IMPORT);
-  }
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		initialize();
+	}
 
-  @Override
-  public void init(IWorkbench workbench, IStructuredSelection selection)
-  {
-    initialize();
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addPages() {
+		addPage(new PepperWizardPageModule<PepperImporter>(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
+		addPage(new PepperWizardPageFormat<PepperImporter>(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import format."));
+		addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
+		addPage(new PepperWizardPageProperties<PepperImporter>(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
+		addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void addPages()
-  {
-    addPage(new PepperWizardPageModule<PepperImporter>(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
-    addPage(new PepperWizardPageFormat<PepperImporter>(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import format."));
-    addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
-    addPage(new PepperWizardPageProperties<PepperImporter>(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
-    addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected List<PepperImporter> resolvePepperModules(PepperModuleResolver pepperModuleResolver) {
+		return pepperModuleResolver.getPepperImporters();
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected List<PepperImporter> resolvePepperModules(PepperModuleResolver pepperModuleResolver)
-  {
-    return pepperModuleResolver.getPepperImporters();
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public EList<FormatDefinition> getSupportedFormats() {
+		PepperImporter module = getPepperModule();
+		return module != null ? module.getSupportedFormats() : new BasicEList<FormatDefinition>();
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public EList<FormatDefinition> getSupportedFormats()
-  {
-    PepperImporter module = getPepperModule();
-    return module != null ? module.getSupportedFormats() : new BasicEList<FormatDefinition>();
-  }
+	public String getProjectName() {
+		return projectName;
+	}
 
-  public String getProjectName()
-  {
-    return projectName;
-  }
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
-  public void setProjectName(String projectName)
-  {
-    this.projectName = projectName;
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected IProject getProject() throws CoreException {
+		return AtomicProjectService.getInstance().createIProject(getProjectName());
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected IProject getProject() throws CoreException
-  {
-    return AtomicProjectService.getInstance().createIProject(getProjectName());
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable) {
+		return new ImportModuleRunnable(this, project, cancelable);
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable)
-  {
-    return new ImportModuleRunnable(this, project, cancelable);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected boolean canPerformFinish()
-  {
-    AtomicProjectService atomicProjectService = AtomicProjectService.getInstance();
-    return 
-        super.canPerformFinish()
-     && projectName != null
-     && ! atomicProjectService.isProjectExisting(projectName);
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean canPerformFinish() {
+		AtomicProjectService atomicProjectService = AtomicProjectService.getInstance();
+		return super.canPerformFinish() && projectName != null && !atomicProjectService.isProjectExisting(projectName);
+	}
 }

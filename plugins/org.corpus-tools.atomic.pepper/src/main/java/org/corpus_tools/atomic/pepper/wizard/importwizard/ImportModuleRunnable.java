@@ -17,7 +17,7 @@
 
 package org.corpus_tools.atomic.pepper.wizard.importwizard;
 
-import java.io.File;
+import java.io.File; 
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;

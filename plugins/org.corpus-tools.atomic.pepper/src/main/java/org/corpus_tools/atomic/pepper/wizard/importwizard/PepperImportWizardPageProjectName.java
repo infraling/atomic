@@ -17,7 +17,7 @@
 
 package org.corpus_tools.atomic.pepper.wizard.importwizard;
 
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageDescriptor; 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -27,8 +27,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import de.uni_jena.iaa.linktype.atomic.model.salt.project.AtomicProjectService;
 
 /**
  * 
