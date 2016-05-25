@@ -17,6 +17,7 @@
 
 package org.corpus_tools.atomic.pepper.wizard.importwizard;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.resource.ImageDescriptor; 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -92,7 +93,7 @@ public class PepperImportWizardPageProjectName extends WizardPage
     String projectName = getProjectName();
     if (projectName != null)
     {
-      if (AtomicProjectService.getInstance().isProjectExisting(projectName))
+      if (ResourcesPlugin.getWorkspace().getRoot().getProject(getProjectName()).exists())
       {
         setMessage(null);
         setErrorMessage("Project does already exist - choose another name.");

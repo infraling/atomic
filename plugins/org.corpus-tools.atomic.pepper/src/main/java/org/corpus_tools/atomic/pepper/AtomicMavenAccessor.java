@@ -141,6 +141,8 @@ public class AtomicMavenAccessor {
 	public static final String KORPLING_MAVEN_REPO = "http://korpling.german.hu-berlin.de/maven2/";
 	/** path to maven central */
 	public static final String CENTRAL_REPO = "http://central.maven.org/maven2/";
+	/** Path to Sonatype Snapshots Maven repo */
+	public static final String SONATYPE_SNAPSHOTS_REPO = "https://oss.sonatype.org/content/repositories/snapshots/";
 
 	/** flag which is added to the blacklist entry of a dependency – a FINAL dependency can not be overridden */
 	private static enum STATUS {
@@ -233,13 +235,18 @@ public class AtomicMavenAccessor {
 	 */
 	private boolean initDependencies() {
 		String frameworkVersion = atomicPepperOSGiConnector.getFrameworkVersion();
-		RemoteRepository repo = getRepo("korpling", KORPLING_MAVEN_REPO);
+		if (frameworkVersion.split("\\.").length > 3) { // I.e., Is a snapshot version
+			String[] segments = frameworkVersion.split("\\.");
+			frameworkVersion = (segments[0] + "." + segments[1] + "." + segments[2] + "-SNAPSHOT");			
+		}
+		RemoteRepository repo = getRepo("korpling", SONATYPE_SNAPSHOTS_REPO);
 		getRepo("central", CENTRAL_REPO);
+//		getRepo("sonatype-snapshots", SONATYPE_SNAPSHOTS_REPO);
 
 		if (forbiddenFruits.isEmpty()) {
 			log.info("Configuring update mechanism ...");
 			/* maven access utils */
-			Artifact pepArt = new DefaultArtifact("de.hu_berlin.german.korpling.saltnpepper", ARTIFACT_ID_PEPPER_PARENT, "pom", frameworkVersion);
+			Artifact pepArt = new DefaultArtifact("org.corpus-tools", ARTIFACT_ID_PEPPER_PARENT, "pom", frameworkVersion);
 
 			DefaultRepositorySystemSession session = getNewSession();
 
@@ -249,6 +256,7 @@ public class AtomicMavenAccessor {
 			collectRequest.setRepositories(null);
 			collectRequest.addRepository(repo);
 			collectRequest.addRepository(repos.get(CENTRAL_REPO));
+			collectRequest.addRepository(repos.get(SONATYPE_SNAPSHOTS_REPO));
 			collectRequest.setRootArtifact(pepArt);
 			try {
 				CollectResult collectResult = mvnSystem.collectDependencies(session, collectRequest);
@@ -418,6 +426,7 @@ public class AtomicMavenAccessor {
 				}
 				List<RemoteRepository> repoList = new ArrayList<RemoteRepository>();
 				repoList.add(repos.get(CENTRAL_REPO));
+//				repoList.add(repos.get(SONATYPE_SNAPSHOTS_REPO));
 				repoList.add(repos.get(repositoryUrl));
 				if (artifactResult != null && artifactResult.getArtifact().getFile().exists()) {
 					try {
@@ -676,9 +685,10 @@ public class AtomicMavenAccessor {
 			List<Dependency> checkList = parentDependencies.get(parentVersion.replace("-SNAPSHOT", ""));
 			if (checkList == null) {
 				CollectRequest collectRequest = new CollectRequest();
-				collectRequest.setRoot(new Dependency(new DefaultArtifact("de.hu_berlin.german.korpling.saltnpepper", ARTIFACT_ID_PEPPER_PARENT, "pom", parentVersion), ""));
+				collectRequest.setRoot(new Dependency(new DefaultArtifact("org.corpus-tools", ARTIFACT_ID_PEPPER_PARENT, "pom", parentVersion), ""));
 				collectRequest.addRepository(repos.get(CENTRAL_REPO));
-				collectRequest.addRepository(repos.get(KORPLING_MAVEN_REPO));
+//				collectRequest.addRepository(repos.get(KORPLING_MAVEN_REPO));
+				collectRequest.addRepository(repos.get(SONATYPE_SNAPSHOTS_REPO));
 				CollectResult collectResult;
 				collectResult = mvnSystem.collectDependencies(session, collectRequest);
 				parentDeps = getAllDependencies(collectResult.getRoot(), false);
@@ -772,6 +782,7 @@ public class AtomicMavenAccessor {
 			request.setArtifact(artifact);
 			if (repositoryUrl == null) {
 				request.addRepository(repos.get(CENTRAL_REPO));
+				request.addRepository(repos.get(SONATYPE_SNAPSHOTS_REPO));
 			}
 			request.addRepository(repo);
 			try {

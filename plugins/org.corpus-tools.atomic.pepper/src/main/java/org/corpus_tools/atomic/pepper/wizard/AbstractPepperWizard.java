@@ -19,7 +19,10 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.wizard;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.net.URI;
+import java.util.ArrayList; 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,15 +31,30 @@ import java.util.Properties;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.pepper.Activator;
+import org.corpus_tools.atomic.pepper.AtomicPepperConfiguration;
 import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
+import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
+import org.corpus_tools.atomic.pepper.update.PepperUpdateHandler;
+import org.corpus_tools.pepper.cli.PepperStarterConfiguration;
+import org.corpus_tools.pepper.common.FormatDesc;
 import org.corpus_tools.pepper.common.MODULE_TYPE;
+import org.corpus_tools.pepper.common.Pepper;
 import org.corpus_tools.pepper.common.PepperModuleDesc;
+import org.corpus_tools.pepper.connectors.PepperConnector;
+import org.corpus_tools.pepper.connectors.impl.PepperOSGiConnector;
+import org.corpus_tools.pepper.exceptions.PepperFWException;
 import org.corpus_tools.pepper.modules.PepperModule;
 import org.corpus_tools.pepper.modules.PepperModuleProperties;
 import org.corpus_tools.pepper.modules.PepperModuleProperty;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -44,8 +62,16 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osgi.service.environment.Constants;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.e4.compatibility.ModeledPageLayoutUtils;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -54,6 +80,12 @@ import org.osgi.framework.ServiceReference;
  * @author Stephan Druskat <mail@sdruskat.net>
  */
 public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizard {
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "AbstractPepperWizard".
+	 */
+	private static final Logger log = LogManager.getLogger(AbstractPepperWizard.class);
+	
 
 	protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_PATH = "exchangeTargetPath";
 	protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE = "exchangeTargetType";
@@ -80,12 +112,15 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 
 	protected final MODULE_TYPE wizardMode;
 
-	protected AtomicPepperOSGiConnector pepperConnector;
-	protected List<PepperModuleDesc> pepperModuleList;
+	protected Pepper pepper;
+	protected List<PepperModuleDesc> pepperModuleDescriptions;
 	protected P pepperModule;
 	protected PepperModuleProperties pepperModuleProperties;
 	protected String exchangeTargetPath;
 	protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
+
+
+	private Pepper pepperObject;
 
 	protected AbstractPepperWizard(String windowTitle, MODULE_TYPE wizardMode) {
 		this.wizardMode = wizardMode;
@@ -109,9 +144,13 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	}
 
 	public void initialize() {
-		pepperConnector = new AtomicPepperOSGiConnector();
-		pepperConnector.init();
-
+		ServiceReference<Pepper> reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(Pepper.class);
+		if (reference != null) {
+			Pepper pepper = Activator.getDefault().getBundle().getBundleContext().getService(reference);
+			pepper.setConfiguration(new AtomicPepperConfiguration());
+			setPepper(pepper);
+		}
+		
 		pepperModuleProperties = new PepperModuleProperties();
 
 		readDialogSettings();
@@ -122,85 +161,128 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	}
 
 	public List<PepperModuleDesc> getPepperModules() {
-		if (pepperModuleList == null) {
-			
-			pepperModuleList = new ArrayList<>();
-			if(pepperConnector != null) {
-				Collection<PepperModuleDesc> allModuleDescs = pepperConnector.getRegisteredModules();
-				if(allModuleDescs != null) {
-					for(PepperModuleDesc desc : allModuleDescs) {
-						if(desc.getModuleType() == wizardMode) {
-							pepperModuleList.add(desc);
-						}
+		if (pepperModuleDescriptions == null) {
+			pepperModuleDescriptions = new ArrayList<>();
+		}
+		
+		//
+		AtomicPepperConfiguration configuration = (AtomicPepperConfiguration) getPepper().getConfiguration();
+		configuration.load();
+		String path = configuration.getPlugInPath();
+		if (new File(path).listFiles().length == 1) { // I.e., only INFO is in dir
+			if (MessageDialog.openConfirm(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), "Only default modules available!", "Currently, only the basic default Pepper modules are available. Update Pepper to install all available modules. You can do so now, or later (Help > Updates > Update Pepper).\n\nUpdate Pepper now? (You need to be connected to the internet to run the update successfully.")){
+				try {
+					new PepperUpdateHandler().execute(new ExecutionEvent());
+				}
+				catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		File[] fileLocations = new File(path).listFiles((FilenameFilter) new SuffixFileFilter(".jar"));
+		List<Bundle> moduleBundles = new ArrayList<>();
+		if (fileLocations != null) {
+			for (File bundleJar : fileLocations) {
+				if (bundleJar.isFile() && bundleJar.canRead()) {
+					URI bundleURI = bundleJar.toURI();
+					Bundle bundle = null;
+					try {
+						bundle = Activator.getDefault().getBundle().getBundleContext().installBundle(bundleURI.toString());
+					}
+					catch (BundleException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					moduleBundles.add(bundle);
+				}
+			}
+			for (Bundle bundle : moduleBundles) {
+				try {
+					bundle.start();
+				}
+				catch (BundleException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		if (getPepper() != null) {
+			Collection<PepperModuleDesc> allModuleDescs = getPepper().getRegisteredModules();
+			if (allModuleDescs != null) {
+				for (PepperModuleDesc desc : allModuleDescs) {
+					if (desc.getModuleType() == wizardMode) {
+						pepperModuleDescriptions.add(desc);
 					}
 				}
 			}
-			
-			if(pepperModuleList.isEmpty()) {
-				new MessageDialog(this.getShell(), "Error", null, "Did not found any Pepper module of type + " + wizardMode.name() + "!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
-			}
-			
-			Collections.sort(pepperModuleList, new Comparator<PepperModuleDesc>() {
-				@Override
-				public int compare(PepperModuleDesc o1, PepperModuleDesc o2) {
-					return o1.getName().compareTo(o2.getName());
-				}
-			});
 		}
 
-		return pepperModuleList;
+		if (pepperModuleDescriptions.isEmpty()) {
+			new MessageDialog(this.getShell(), "Error", null, "Did not find any Pepper module of type " + wizardMode.name() + "!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+		}
+
+		Collections.sort(pepperModuleDescriptions, new Comparator<PepperModuleDesc>() {
+			@Override
+			public int compare(PepperModuleDesc o1, PepperModuleDesc o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+
+		return pepperModuleDescriptions;
 	}
 
-	public PepperConverter getPepperConverter() {
-		return pepperConverter;
-	}
+//	public PepperConverter getPepperConverter() {
+//		return pepperConverter;
+//	}
 
 	public P getPepperModule() {
 		return pepperModule;
 	}
 
-	public P getPreferredPepperModule() {
-		List<P> moduleList = getPepperModules();
-		String moduleName = getDialogSettings().get(DIALOG_SETTINGS_MODULE);
-		if (0 < moduleList.size() && moduleName != null) {
-			for (P module : moduleList) {
-				if (moduleName.equals(module.getName())) {
-					return module;
-				}
-			}
-		}
-
-		return null;
-	}
+//	public P getPreferredPepperModule() {
+//		List<PepperModuleDesc> moduleList = getPepperModules();
+//		String moduleName = getDialogSettings().get(DIALOG_SETTINGS_MODULE);
+//		if (0 < moduleList.size() && moduleName != null) {
+//			for (PepperModuleDesc moduleDesc : moduleList) {
+//				if (moduleName.equals(moduleDesc.getName())) {
+//					return moduleDesc.get;
+//				}
+//			}
+//		}
+//
+//		return null;
+//	}
 
 	public void setPepperModule(P pepperModule) {
 		this.pepperModule = pepperModule;
 	}
 
-	public abstract EList<FormatDefinition> getSupportedFormats();
-
-	public FormatDefinition getFormatDefinition() {
-		return formatDefinition;
-	}
-
-	public FormatDefinition getPreferredFormatDefinition() {
-		P module = getPepperModule();
-		String formatName = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_NAME);
-		String formatVersion = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_VERSION);
-		if (module != null && formatName != null && formatVersion != null) {
-			for (FormatDefinition fd : getSupportedFormats()) {
-				if (formatName.equals(fd.getFormatName()) && formatVersion.equals(fd.getFormatVersion())) {
-					return fd;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public void setFormatDefinition(FormatDefinition formatDefinition) {
-		this.formatDefinition = formatDefinition;
-	}
+	public abstract List<FormatDesc> getSupportedFormats();
+//
+//	public FormatDefinition getFormatDefinition() {
+//		return formatDefinition;
+//	}
+//
+//	public FormatDefinition getPreferredFormatDefinition() {
+//		P module = getPepperModule();
+//		String formatName = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_NAME);
+//		String formatVersion = getDialogSettings().get(DIALOG_SETTINGS_FORMAT_VERSION);
+//		if (module != null && formatName != null && formatVersion != null) {
+//			for (FormatDefinition fd : getSupportedFormats()) {
+//				if (formatName.equals(fd.getFormatName()) && formatVersion.equals(fd.getFormatVersion())) {
+//					return fd;
+//				}
+//			}
+//		}
+//
+//		return null;
+//	}
+//
+//	public void setFormatDefinition(FormatDefinition formatDefinition) {
+//		this.formatDefinition = formatDefinition;
+//	}
 
 	public String getExchangeTargetPath() {
 		return exchangeTargetPath;
@@ -275,23 +357,23 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	 */
 	@Override
 	public void dispose() {
-		if (reference != null) {
+		if (pepper != null) {
 			exchangeTargetPath = null;
 			exchangeTargetType = ExchangeTargetType.DIRECTORY;
-			formatDefinition = null;
+//			formatDefinition = null;
 			pepperModule = null;
-			pepperModuleList = null;
-			pepperConverter = null;
+			pepperModuleDescriptions = null;
+			pepper = null;
 
-			Activator.getDefault().getBundle().getBundleContext().ungetService(reference);
-			reference = null;
+//			Activator.getDefault().getBundle().getBundleContext().ungetService(reference);
+//			reference = null;
 		}
 
 		super.dispose();
 	}
 
 	protected boolean canPerformFinish() {
-		return pepperModule != null && formatDefinition != null && exchangeTargetPath != null;
+		return pepperModule != null /*&& formatDefinition != null */&& exchangeTargetPath != null;
 	}
 
 	protected abstract IProject getProject() throws CoreException;
@@ -360,9 +442,9 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		P module = getPepperModule();
 		settings.put(DIALOG_SETTINGS_MODULE, module != null ? module.getName() : null);
 
-		FormatDefinition fd = getFormatDefinition();
-		settings.put(DIALOG_SETTINGS_FORMAT_NAME, fd != null ? fd.getFormatName() : null);
-		settings.put(DIALOG_SETTINGS_FORMAT_VERSION, fd != null ? fd.getFormatVersion() : null);
+//		FormatDefinition fd = getFormatDefinition();
+//		settings.put(DIALOG_SETTINGS_FORMAT_NAME, fd != null ? fd.getFormatName() : null);
+//		settings.put(DIALOG_SETTINGS_FORMAT_VERSION, fd != null ? fd.getFormatVersion() : null);
 
 		PepperModuleProperties moduleProperties = getPepperModuleProperties();
 		if (moduleProperties != null) {
@@ -395,5 +477,23 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	public static enum ExchangeTargetType {
 		FILE, DIRECTORY
 	}
+
+	/**
+	 * @return the pepper
+	 */
+	public Pepper getPepper() {
+		return pepper;
+	}
+	
+	/**
+	 * @param pepper2 The {@link Pepper} to set
+	 */
+	public void setPepper(Pepper pepper2) {
+		this.pepper = pepper2;
+//		if (!getPepper().isInitialized()) {
+//			getPepper().init();
+//		}
+	}
+
 
 }

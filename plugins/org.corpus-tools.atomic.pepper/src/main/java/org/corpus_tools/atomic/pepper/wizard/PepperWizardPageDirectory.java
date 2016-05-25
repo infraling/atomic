@@ -20,7 +20,7 @@ package org.corpus_tools.atomic.pepper.wizard;
 import java.io.File;
 
 import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard.ExchangeTargetType;
-import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard.WizardMode;
+import org.corpus_tools.pepper.common.MODULE_TYPE;
 import org.corpus_tools.pepper.modules.PepperModule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -129,12 +129,14 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     label.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
     switch (pepperWizard.getWizardMode())
     {
-      case IMPORT:
+      case IMPORTER:
         label.setText("Source path the data should be imported from");
         break;
-      case EXPORT:
+      case EXPORTER:
         label.setText("Target path the data should be exported to");
         break;
+	default:
+		break;
     }
 
     text = new Text(container, SWT.BORDER);
@@ -164,10 +166,10 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
           FileDialog dialog;
           switch (pepperWizard.getWizardMode())
           {
-            case IMPORT:
+            case IMPORTER:
               dialog = new FileDialog(getShell(), SWT.OPEN);
               break;
-            case EXPORT:
+            case EXPORTER:
               dialog = new FileDialog(getShell(), SWT.SAVE);
               dialog.setOverwrite(true);
               break;
@@ -210,7 +212,7 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
    */
   protected String validateTargetPath(File targetPath, boolean isFile)
   {
-    if (pepperWizard.getWizardMode() == WizardMode.EXPORT)
+    if (pepperWizard.getWizardMode() == MODULE_TYPE.EXPORTER)
     {
       if (targetPath.exists())
       {

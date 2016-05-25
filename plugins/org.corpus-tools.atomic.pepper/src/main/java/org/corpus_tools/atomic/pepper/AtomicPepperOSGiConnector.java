@@ -71,7 +71,6 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 	 */
 	private static final Logger log = LogManager.getLogger(AtomicPepperOSGiConnector.class);
 	
-	
 	private AtomicPepperConfiguration properties = null;
 	
 	/** Stores all bundle ids and the corresponding bundles. */
@@ -86,6 +85,8 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 	private String frameworkVersion = null;
 	/** this String contains the artifactId of pepper-framework. */
 	private static final String ARTIFACT_ID_PEPPER_FRAMEWORK = "pepper-framework";
+
+	private static final String PEPPER_FW_MAVEN_QUALIFIED = "org.corpus-tools." + ARTIFACT_ID_PEPPER_FRAMEWORK;
 	private AtomicMavenAccessor maven = null;
 	/** Determines if this object has been initialized **/
 	@SuppressWarnings("unused")
@@ -150,7 +151,7 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 				// TODO this is a workaround, to fix that module resolver is
 				// loaded as last bundle, otherwise, some modules will be
 				// ignored
-				if ("de.hu_berlin.german.korpling.saltnpepper.pepper-framework".equalsIgnoreCase(bundle.getSymbolicName())) {
+				if (PEPPER_FW_MAVEN_QUALIFIED.equalsIgnoreCase(bundle.getSymbolicName())) {
 					pepperBundle = bundle;
 				} else {
 					start(bundle.getBundleId());

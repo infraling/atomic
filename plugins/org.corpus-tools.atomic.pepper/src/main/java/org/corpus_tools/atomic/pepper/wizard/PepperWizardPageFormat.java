@@ -17,6 +17,9 @@
 
 package org.corpus_tools.atomic.pepper.wizard;
 
+import java.util.List;
+
+import org.corpus_tools.pepper.common.FormatDesc;
 import org.corpus_tools.pepper.modules.PepperModule;
 import org.eclipse.emf.common.util.EList; 
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -96,7 +99,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
       @Override
       public String getText(Object element)
       {
-        return super.getText(((FormatDefinition) element).getFormatName());
+        return super.getText(((FormatDesc) element).getFormatName());
       }
     });
 
@@ -111,7 +114,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
       @Override
       public String getText(Object element)
       {
-        return super.getText(((FormatDefinition) element).getFormatVersion());
+        return super.getText(((FormatDesc) element).getFormatVersion());
       }
     });
 
@@ -138,7 +141,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
 
         boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
         setPageComplete(selected);
-        pepperWizard.setFormatDefinition(selected ? (FormatDefinition) ((IStructuredSelection) selection).getFirstElement() : null);
+//        pepperWizard.setFormatDefinition(selected ? (FormatDesc) ((IStructuredSelection) selection).getFirstElement() : null);
       }
     });
     
@@ -160,20 +163,20 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
   {
     if (visible)
     {
-      EList<FormatDefinition> supportedFormats = pepperWizard.getSupportedFormats();
+      List<FormatDesc> supportedFormats = pepperWizard.getSupportedFormats();
       tableViewer.setInput(supportedFormats);
 
-      FormatDefinition formatDefinition =
-          supportedFormats.size() == 1
-        ? supportedFormats.get(0)
-        : pepperWizard.getFormatDefinition();
+//      FormatDesc formatDefinition =
+//          supportedFormats.size() == 1
+//        ? supportedFormats.get(0)
+//        : pepperWizard.getFormatDefinition();
+//
+//      if (formatDefinition == null)
+//      {
+//        formatDefinition = pepperWizard.getPreferredFormatDefinition();
+//      }
 
-      if (formatDefinition == null)
-      {
-        formatDefinition = pepperWizard.getPreferredFormatDefinition();
-      }
-
-      tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
+//      tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
     }
 
     super.setVisible(visible);

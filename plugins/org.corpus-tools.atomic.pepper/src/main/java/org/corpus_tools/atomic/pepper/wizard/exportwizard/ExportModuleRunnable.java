@@ -19,43 +19,37 @@ package org.corpus_tools.atomic.pepper.wizard.exportwizard;
 
 import java.io.File;
 
+import org.corpus_tools.atomic.pepper.wizard.PepperModuleRunnable;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ExporterParams;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ImporterParams;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParamsFactory;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.saltXML.SaltXMLImporter;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.AbstractPepperWizard;
-import de.uni_jena.iaa.linktype.atomic.model.pepper.wizard.PepperModuleRunnable;
-
-public class ExportModuleRunnable extends PepperModuleRunnable
+public class ExportModuleRunnable //extends PepperModuleRunnable
 {
-  public ExportModuleRunnable(PepperExportWizard pepperWizard, IProject project, boolean cancelable)
-  {
-    super(pepperWizard, project, cancelable);
-  }
-
-  @Override
-  protected ImporterParams createImporterParams()
-  {
-    ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
-    SaltXMLImporter saltXMLImporter = new SaltXMLImporter();
-    importerParams.setModuleName(saltXMLImporter.getName());
-    importerParams.setFormatName(AbstractPepperWizard.SALT_XML_FORMAT_NAME);
-    importerParams.setFormatVersion(AbstractPepperWizard.SALT_XML_FORMAT_VERSION);
-    importerParams.setSourcePath(URI.createURI(project.getLocationURI().toString()));
-    return importerParams;
-  }
-
-  @Override
-  protected ExporterParams createExporterParams()
-  {
-    ExporterParams exporterParams = PepperParamsFactory.eINSTANCE.createExporterParams();
-    exporterParams.setModuleName(pepperWizard.getPepperModule().getName());
-    exporterParams.setFormatName(pepperWizard.getFormatDefinition().getFormatName());
-    exporterParams.setFormatVersion(pepperWizard.getFormatDefinition().getFormatVersion());
-    exporterParams.setDestinationPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath()));
-    return exporterParams;
-  }
+//  public ExportModuleRunnable(PepperExportWizard pepperWizard, IProject project, boolean cancelable)
+//  {
+//    super(pepperWizard, project, cancelable);
+//  }
+//
+//  @Override
+//  protected ImporterParams createImporterParams()
+//  {
+//    ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
+//    SaltXMLImporter saltXMLImporter = new SaltXMLImporter();
+//    importerParams.setModuleName(saltXMLImporter.getName());
+//    importerParams.setFormatName(AbstractPepperWizard.SALT_XML_FORMAT_NAME);
+//    importerParams.setFormatVersion(AbstractPepperWizard.SALT_XML_FORMAT_VERSION);
+//    importerParams.setSourcePath(URI.createURI(project.getLocationURI().toString()));
+//    return importerParams;
+//  }
+//
+//  @Override
+//  protected ExporterParams createExporterParams()
+//  {
+//    ExporterParams exporterParams = PepperParamsFactory.eINSTANCE.createExporterParams();
+//    exporterParams.setModuleName(pepperWizard.getPepperModule().getName());
+//    exporterParams.setFormatName(pepperWizard.getFormatDefinition().getFormatName());
+//    exporterParams.setFormatVersion(pepperWizard.getFormatDefinition().getFormatVersion());
+//    exporterParams.setDestinationPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath()));
+//    return exporterParams;
+//  }
 }

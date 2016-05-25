@@ -9,7 +9,7 @@
       </category>
       <wizard
             category="org.corpus_tools.atomic.AtomicImportWizardCategory"
-            class="org.corpus_tools.atomic.pepper.importwizard.PepperImportWizard"
+            class="org.corpus_tools.atomic.pepper.wizard.importwizard.PepperImportWizard"
             icon="icons/obj16/pepper16.png"
             id="org.corpus_tools.atomic.importPepperWizard"
             name="Corpus Import">
