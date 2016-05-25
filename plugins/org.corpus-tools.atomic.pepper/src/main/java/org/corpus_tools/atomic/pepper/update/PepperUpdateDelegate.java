@@ -151,7 +151,9 @@ public class PepperUpdateDelegate {
 			return true;
 		}
 		AtomicPepperOSGiConnector pepper = (AtomicPepperOSGiConnector) getPepper();
-		if (pepper.update(entry.getValue().getLeft(), entry.getKey(), entry.getValue().getRight(), false, false)) {
+		// FIXME TODO LREC Hack to get modules in any case
+		if (pepper.update(entry.getValue().getLeft(), entry.getKey(), entry.getValue().getRight(), false, true)) {
+//		if (pepper.update(entry.getValue().getLeft(), entry.getKey(), entry.getValue().getRight(), false, false)) {
 			log.info(entry.getKey().concat(" successfully updated."));
 			 resultLines.add(entry.getKey().concat(" successfully updated."));
 		}
