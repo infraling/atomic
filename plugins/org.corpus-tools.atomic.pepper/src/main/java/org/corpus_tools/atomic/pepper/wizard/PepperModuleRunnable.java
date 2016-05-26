@@ -51,7 +51,7 @@ public abstract class PepperModuleRunnable
 {
   protected static final AtomicInteger threadCounter = new AtomicInteger();
 
-  protected final AbstractPepperWizard<? extends PepperModule> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected final IProject project;
   protected final boolean cancelable;
@@ -66,7 +66,7 @@ public abstract class PepperModuleRunnable
   protected volatile Thread controlThread = null;
   protected volatile Thread moduleThread = null;
   
-  public PepperModuleRunnable(AbstractPepperWizard<? extends PepperModule> pepperWizard, IProject project, boolean cancelable)
+  public PepperModuleRunnable(AbstractPepperWizard pepperWizard, IProject project, boolean cancelable)
   {
     this.pepperWizard = pepperWizard;
     this.project = project;

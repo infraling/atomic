@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPage implements IWizardPage
 {
-  protected final AbstractPepperWizard<P> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected Text text;
   protected Button btnFile;
@@ -57,7 +57,7 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
    * Create the wizard.
    */
   public PepperWizardPageDirectory
-    ( AbstractPepperWizard<P> pepperWizard
+    ( AbstractPepperWizard pepperWizard
     , String pageName
     , String title
     , ImageDescriptor titleImage

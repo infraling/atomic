@@ -28,6 +28,8 @@ import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageModule;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageProperties;
 import org.corpus_tools.pepper.common.FormatDesc;
 import org.corpus_tools.pepper.common.MODULE_TYPE;
+import org.corpus_tools.pepper.common.PepperModuleDesc;
+import org.corpus_tools.pepper.common.StepDesc;
 import org.corpus_tools.pepper.connectors.impl.PepperOSGiConnector;
 import org.corpus_tools.pepper.modules.PepperImporter;
 import org.eclipse.core.resources.IProject;
@@ -40,7 +42,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class PepperImportWizard extends AbstractPepperWizard<PepperImporter> implements IImportWizard {
+public class PepperImportWizard extends AbstractPepperWizard implements IImportWizard {
 	protected String projectName;
 
 	public PepperImportWizard() {
@@ -57,7 +59,7 @@ public class PepperImportWizard extends AbstractPepperWizard<PepperImporter> imp
 	 */
 	@Override
 	public void addPages() {
-		addPage(new PepperWizardPageModule<PepperImporter>(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
+		addPage(new PepperWizardPageModule(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
 //		addPage(new PepperWizardPageFormat<PepperImporter>(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import format."));
 //		addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
 //		addPage(new PepperWizardPageProperties<PepperImporter>(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
@@ -69,11 +71,12 @@ public class PepperImportWizard extends AbstractPepperWizard<PepperImporter> imp
 	 */
 	@Override
 	public List<FormatDesc> getSupportedFormats() {
-		PepperImporter module = getPepperModule();
-		for (FormatDesc format : module.getSupportedFormats()) {
-			System.err.println(format.getFormatName() +": " + format.getFormatVersion());
+		for (PepperModuleDesc pepperModuleDescription : getPepperModules()) {
+			if (getPepperModuleStepDesc().getName().equals(pepperModuleDescription.getName())) {
+				return pepperModuleDescription.getSupportedFormats();
+			}
 		}
-		return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
+		return null;
 	}
 
 	public String getProjectName() {

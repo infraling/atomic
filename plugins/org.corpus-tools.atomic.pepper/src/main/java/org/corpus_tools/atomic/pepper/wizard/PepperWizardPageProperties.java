@@ -59,7 +59,7 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class PepperWizardPageProperties<P extends PepperModule> extends WizardPage implements IWizardPage
 {
-  protected final AbstractPepperWizard<P> pepperWizard;
+  protected final AbstractPepperWizard pepperWizard;
 
   protected TableViewer tableViewer;
 
@@ -69,7 +69,7 @@ public class PepperWizardPageProperties<P extends PepperModule> extends WizardPa
    * @param title
    * @param titleImage
    */
-  public PepperWizardPageProperties(AbstractPepperWizard<P> pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
+  public PepperWizardPageProperties(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
   {
     super(pageName, title, titleImage);
     setPageComplete(false);

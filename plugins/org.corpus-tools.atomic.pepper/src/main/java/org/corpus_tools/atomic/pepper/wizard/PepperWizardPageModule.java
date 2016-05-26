@@ -17,8 +17,12 @@
 
 package org.corpus_tools.atomic.pepper.wizard;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.exceptions.AtomicException;
 import org.corpus_tools.pepper.common.PepperModuleDesc;
-import org.corpus_tools.pepper.modules.PepperModule;
+import org.corpus_tools.pepper.common.StepDesc;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -47,8 +51,14 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageModule<P extends PepperModule> extends WizardPage implements IWizardPage {
-	protected final AbstractPepperWizard<P> pepperWizard;
+public class PepperWizardPageModule extends WizardPage implements IWizardPage {
+	
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "PepperWizardPageModule".
+	 */
+	private static final Logger log = LogManager.getLogger(PepperWizardPageModule.class);
+	
+	protected final AbstractPepperWizard pepperWizard;
 
 	protected TableViewer tableViewer;
 
@@ -59,7 +69,7 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
 	 * @param title
 	 * @param titleImage
 	 */
-	public PepperWizardPageModule(AbstractPepperWizard<P> pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description) {
+	public PepperWizardPageModule(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description) {
 		super(pageName, title, titleImage);
 		setPageComplete(false);
 		setDescription(description);
@@ -89,7 +99,6 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public String getText(Object element) {
 				return super.getText(((PepperModuleDesc) element).getName());
@@ -103,7 +112,6 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public String getText(Object element) {
 				return super.getText(((PepperModuleDesc) element).getVersion());
@@ -125,14 +133,21 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
 		table.setLinesVisible(true);
 
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 
-				boolean selected = !selection.isEmpty() && selection instanceof IStructuredSelection;
-				setPageComplete(selected);
-				pepperWizard.setPepperModule(selected ? (P) ((IStructuredSelection) selection).getFirstElement() : null);
+				if (selection != null) {
+					boolean selected = !selection.isEmpty() && selection instanceof IStructuredSelection;
+					setPageComplete(selected);
+					if (((IStructuredSelection) selection).getFirstElement() instanceof PepperModuleDesc) {
+						log.debug("Setting the PepperModuleStepDesc with name {}.", ((PepperModuleDesc) ((IStructuredSelection) selection).getFirstElement()).getName());
+						pepperWizard.setPepperModuleStepDesc(selected ? new StepDesc().setName(((PepperModuleDesc) ((IStructuredSelection) selection).getFirstElement()).getName()) : null);
+					}
+					else {
+						log.debug("Selection is empty or not of type PepperModuleDesc!");
+					}
+				}
 			}
 		});
 
@@ -150,19 +165,17 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
-			P pepperModule = pepperWizard.getPepperModule();
-			if (pepperModule == null) {
-//				pepperModule = pepperWizard.getPreferredPepperModule();
+			StepDesc moduleStepDesc = pepperWizard.getPepperModuleStepDesc();
+			if (moduleStepDesc == null) {
+				moduleStepDesc = pepperWizard.getPreferredPepperModule();
 			}
-			if (pepperWizard.getPepperModules().size() > 4) { // Only the three basic modules are available
-				String description = getDescription();
-		    	  if (description != null && !description.isEmpty()) {
-		    		  setDescription(description + "\nMore modules may be available. To install/update modules, run Help > Updates > Update Pepper.");
-		    	  }
+			if (pepperWizard.getPepperModules().size() < 4) { // Only the three basic modules are available
+				setMessage("More modules may be available. To install/update modules, run Help > Updates > Update Pepper.", DialogPage.INFORMATION);
+				this.getContainer().updateMessage();
 			}
 			
 			tableViewer.setInput(pepperWizard.getPepperModules());
-			tableViewer.setSelection(pepperModule != null ? new StructuredSelection(pepperModule) : StructuredSelection.EMPTY);
+			tableViewer.setSelection(moduleStepDesc != null ? new StructuredSelection(moduleStepDesc) : StructuredSelection.EMPTY);
 		}
 
 		super.setVisible(visible);
