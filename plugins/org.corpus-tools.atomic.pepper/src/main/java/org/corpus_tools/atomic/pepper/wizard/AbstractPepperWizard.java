@@ -140,8 +140,8 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	}
 
 	/**
-	 * TODO: Description
-	 *
+	 * Initializes the wizard, sets up the Pepper instance
+	 * and module properties object.
 	 */
 	public void initialize() {
 		ServiceReference<Pepper> reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(Pepper.class);
@@ -154,10 +154,20 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		readDialogSettings();
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
 	public MODULE_TYPE getWizardMode() {
 		return wizardMode;
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
 	public List<PepperModuleDesc> getPepperModules() {
 		if (pepperModuleDescriptions == null) {
 			pepperModuleDescriptions = new ArrayList<>();
@@ -248,6 +258,11 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		this.pepperModule = pepperModule;
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
 	public abstract List<FormatDesc> getSupportedFormats();
 //
 //	public FormatDefinition getFormatDefinition() {
@@ -341,34 +356,50 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#dispose()
 	 */
 	@Override
 	public void dispose() {
 		if (pepper != null) {
 			exchangeTargetPath = null;
 			exchangeTargetType = ExchangeTargetType.DIRECTORY;
-//			formatDefinition = null;
 			pepperModule = null;
 			pepperModuleDescriptions = null;
 			pepper = null;
-
-//			Activator.getDefault().getBundle().getBundleContext().ungetService(reference);
-//			reference = null;
 		}
-
 		super.dispose();
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
 	protected boolean canPerformFinish() {
-		return pepperModule != null /*&& formatDefinition != null */&& exchangeTargetPath != null;
+		return pepperModule != null /* && formatDefinition != null */ && exchangeTargetPath != null;
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 * @throws CoreException
+	 */
 	protected abstract IProject getProject() throws CoreException;
 
+	/**
+	 * TODO: Description
+	 *
+	 * @param project
+	 * @param cancelable
+	 * @return
+	 */
 	protected abstract PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable);
 
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 */
 	@Override
 	public boolean performFinish() {
 		try {
@@ -399,6 +430,10 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		}
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 */
 	protected void readDialogSettings() {
 		IDialogSettings settings = getDialogSettings();
 		exchangeTargetPath = settings.get(DIALOG_SETTINGS_EXCHANGE_TARGET_PATH);
@@ -422,6 +457,10 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		}
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 */
 	protected void writeDialogSettings() {
 		IDialogSettings settings = getDialogSettings();
 
@@ -463,6 +502,12 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		}
 	}
 
+	/**
+	 * TODO Description
+	 *
+	 * @author Stephan Druskat <mail@sdruskat.net>
+	 *
+	 */
 	public static enum ExchangeTargetType {
 		FILE, DIRECTORY
 	}
@@ -475,10 +520,10 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	}
 	
 	/**
-	 * @param pepper2 The {@link Pepper} to set
+	 * @param pepper The {@link Pepper} to set
 	 */
-	public void setPepper(Pepper pepper2) {
-		this.pepper = pepper2;
+	public void setPepper(Pepper pepper) {
+		this.pepper = pepper;
 //		if (!getPepper().isInitialized()) {
 //			getPepper().init();
 //		}

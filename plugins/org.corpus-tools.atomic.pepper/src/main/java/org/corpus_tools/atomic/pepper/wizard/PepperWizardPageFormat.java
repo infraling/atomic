@@ -164,12 +164,6 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
     if (visible)
     {
       List<FormatDesc> supportedFormats = pepperWizard.getSupportedFormats();
-      if (supportedFormats.size() > 4) {
-    	  String description = getDescription();
-    	  if (description != null && !description.isEmpty()) {
-    		  setDescription(description + "\nMore modules may be available. To install/update modules, run Help > Updates > Update Pepper.");
-    	  }
-      }
       tableViewer.setInput(supportedFormats);
 
 //      FormatDesc formatDefinition =

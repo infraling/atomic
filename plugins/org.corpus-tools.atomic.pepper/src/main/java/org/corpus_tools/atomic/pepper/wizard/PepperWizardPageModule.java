@@ -154,7 +154,13 @@ public class PepperWizardPageModule<P extends PepperModule> extends WizardPage i
 			if (pepperModule == null) {
 //				pepperModule = pepperWizard.getPreferredPepperModule();
 			}
-
+			if (pepperWizard.getPepperModules().size() > 4) { // Only the three basic modules are available
+				String description = getDescription();
+		    	  if (description != null && !description.isEmpty()) {
+		    		  setDescription(description + "\nMore modules may be available. To install/update modules, run Help > Updates > Update Pepper.");
+		    	  }
+			}
+			
 			tableViewer.setInput(pepperWizard.getPepperModules());
 			tableViewer.setSelection(pepperModule != null ? new StructuredSelection(pepperModule) : StructuredSelection.EMPTY);
 		}
