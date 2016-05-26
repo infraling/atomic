@@ -101,14 +101,14 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	public static final String SALT_XML_FORMAT_NAME = "SaltXML";
 	public static final String SALT_XML_FORMAT_VERSION = "1.0";
 
-	protected static final ImageDescriptor DEFAULT_PAGE_IAMGE_DESCRIPTOR = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.getDefault().getBundle().getSymbolicName(), "/saltnpepper_logo-64x64.png");
+	protected static final ImageDescriptor DEFAULT_PAGE_IAMGE_DESCRIPTOR = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.getDefault().getBundle().getSymbolicName(), "/pepper64.png");
 
-	protected static final AtomicInteger PEPPER_JOB_ID = new AtomicInteger();
+//	protected static final AtomicInteger PEPPER_JOB_ID = new AtomicInteger();
 
-	static {
-		System.setProperty("PepperModuleResolver.TemprorariesURI", System.getProperty("java.io.tmpdir"));
-		System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
-	}
+//	static {
+//		System.setProperty("PepperModuleResolver.TemprorariesURI", System.getProperty("java.io.tmpdir"));
+//		System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
+//	}
 
 	protected final MODULE_TYPE wizardMode;
 
@@ -119,9 +119,6 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 	protected String exchangeTargetPath;
 	protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
 
-
-	private Pepper pepperObject;
-
 	protected AbstractPepperWizard(String windowTitle, MODULE_TYPE wizardMode) {
 		this.wizardMode = wizardMode;
 		setWindowTitle(windowTitle);
@@ -129,8 +126,8 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		setDefaultPageImageDescriptor(DEFAULT_PAGE_IAMGE_DESCRIPTOR);
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#getDialogSettings()
 	 */
 	@Override
 	public IDialogSettings getDialogSettings() {
@@ -139,10 +136,13 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 			settings = DialogSettings.getOrCreateSection(Activator.getDefault().getDialogSettings(), "pepperWizard:" + getClass().getName());
 			setDialogSettings(settings);
 		}
-
 		return settings;
 	}
 
+	/**
+	 * TODO: Description
+	 *
+	 */
 	public void initialize() {
 		ServiceReference<Pepper> reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(Pepper.class);
 		if (reference != null) {
@@ -150,9 +150,7 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 			pepper.setConfiguration(new AtomicPepperConfiguration());
 			setPepper(pepper);
 		}
-		
 		pepperModuleProperties = new PepperModuleProperties();
-
 		readDialogSettings();
 	}
 
@@ -164,25 +162,19 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 		if (pepperModuleDescriptions == null) {
 			pepperModuleDescriptions = new ArrayList<>();
 		}
-		
-		//
+		else {
+			pepperModuleDescriptions.clear();
+			// Otherwise entries in the module page will be n-plicating when going back and forth between pages
+		}
+		// Load the configuration
 		AtomicPepperConfiguration configuration = (AtomicPepperConfiguration) getPepper().getConfiguration();
 		configuration.load();
 		String path = configuration.getPlugInPath();
-		if (new File(path).listFiles().length == 1) { // I.e., only INFO is in dir
-			if (MessageDialog.openConfirm(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), "Only default modules available!", "Currently, only the basic default Pepper modules are available. Update Pepper to install all available modules. You can do so now, or later (Help > Updates > Update Pepper).\n\nUpdate Pepper now? (You need to be connected to the internet to run the update successfully.")){
-				try {
-					new PepperUpdateHandler().execute(new ExecutionEvent());
-				}
-				catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		// Find all JAR files in pepper-modules directory
 		File[] fileLocations = new File(path).listFiles((FilenameFilter) new SuffixFileFilter(".jar"));
 		List<Bundle> moduleBundles = new ArrayList<>();
 		if (fileLocations != null) {
+			// Install JARs as OSGi bundles
 			for (File bundleJar : fileLocations) {
 				if (bundleJar.isFile() && bundleJar.canRead()) {
 					URI bundleURI = bundleJar.toURI();
@@ -191,23 +183,22 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 						bundle = Activator.getDefault().getBundle().getBundleContext().installBundle(bundleURI.toString());
 					}
 					catch (BundleException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error("Could not install bundle {}!", bundleURI.toString(), e);
 					}
 					moduleBundles.add(bundle);
 				}
 			}
+			// Start bundles
 			for (Bundle bundle : moduleBundles) {
 				try {
 					bundle.start();
 				}
 				catch (BundleException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error("Could not start bundle {}!", bundle.getSymbolicName(), e);
 				}
 			}
 		}
-
+		// Compile list of module description for use in pages
 		if (getPepper() != null) {
 			Collection<PepperModuleDesc> allModuleDescs = getPepper().getRegisteredModules();
 			if (allModuleDescs != null) {
@@ -218,18 +209,16 @@ public abstract class AbstractPepperWizard<P extends PepperModule> extends Wizar
 				}
 			}
 		}
-
 		if (pepperModuleDescriptions.isEmpty()) {
 			new MessageDialog(this.getShell(), "Error", null, "Did not find any Pepper module of type " + wizardMode.name() + "!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
 		}
-
+		// Sort list of module descriptions
 		Collections.sort(pepperModuleDescriptions, new Comparator<PepperModuleDesc>() {
 			@Override
 			public int compare(PepperModuleDesc o1, PepperModuleDesc o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-
 		return pepperModuleDescriptions;
 	}
 

@@ -114,7 +114,6 @@ public class Atomic implements IApplication {
 				}
 				catch (IllegalStateException | IOException e) {
 					log.error("Setting the instance location didn't succeed!", e);
-					e.printStackTrace();
 				}
 			}
 		}
