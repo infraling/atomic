@@ -29,90 +29,116 @@ import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageProperties;
 import org.corpus_tools.pepper.common.FormatDesc;
 import org.corpus_tools.pepper.common.MODULE_TYPE;
 import org.corpus_tools.pepper.common.PepperModuleDesc;
-import org.corpus_tools.pepper.common.StepDesc;
-import org.corpus_tools.pepper.connectors.impl.PepperOSGiConnector;
-import org.corpus_tools.pepper.modules.PepperImporter;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class PepperImportWizard extends AbstractPepperWizard implements IImportWizard {
-	protected String projectName;
+public class PepperImportWizard 
+  extends 
+    AbstractPepperWizard
+  implements 
+    IImportWizard
+{
+  protected String projectName;
 
-	public PepperImportWizard() {
-		super("Import via Pepper", MODULE_TYPE.IMPORTER);
-	}
+  public PepperImportWizard()
+  {
+    super("Import via Pepper", WizardMode.IMPORT);
+  }
 
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		initialize();
-	}
+  @Override
+  public void init(IWorkbench workbench, IStructuredSelection selection)
+  {
+    initialize();
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addPages() {
-		addPage(new PepperWizardPageModule(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
-//		addPage(new PepperWizardPageFormat<PepperImporter>(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import format."));
-//		addPage(new PepperWizardPageDirectory<PepperImporter>(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
-//		addPage(new PepperWizardPageProperties<PepperImporter>(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
-//		addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void addPages()
+  {
+    addPage(new PepperWizardPageModule(this, "selectImporter", "Select Import Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import module."));
+    addPage(new PepperWizardPageFormat(this, "selectFormat", "Select Import Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import format."));
+    addPage(new PepperWizardPageDirectory(this, "selectTargetPath", "Select Import Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper import path."));
+    addPage(new PepperWizardPageProperties(this, "selectProperties", "Select Import Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper import module properties."));
+    addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IAMGE_DESCRIPTOR));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<FormatDesc> getSupportedFormats() {
-		for (PepperModuleDesc pepperModuleDescription : getPepperModules()) {
-			if (getPepperModuleStepDesc().getName().equals(pepperModuleDescription.getName())) {
-				return pepperModuleDescription.getSupportedFormats();
-			}
-		}
-		return null;
-	}
+//  /**
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  protected List<PepperImporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
+//  {
+//    return pepperModuleResolver.getPepperImporters();
+//  }
 
-	public String getProjectName() {
-		return projectName;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<FormatDesc> getSupportedFormats()
+  {
+    PepperModuleDesc module = getPepperModule();
+    return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
+  }
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
+  public String getProjectName()
+  {
+    return projectName;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IProject getProject() throws CoreException {
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-	    IProject project = root.getProject(getProjectName());
+  public void setProjectName(String projectName)
+  {
+    this.projectName = projectName;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected IProject getProject() throws CoreException
+  {
+	  IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+	  IProject project = root.getProject(getProjectName());
+	  
+
 	    project.create(null);
 	    project.open(null);
-		return project;
-	}
+	    return project;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable) {
-//		return new ImportModuleRunnable(this, project, cancelable);
-		return null;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable)
+  {
+    return new ImportModuleRunnable(this, project, cancelable);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean canPerformFinish() {
-		return super.canPerformFinish() && getProjectName() != null && ResourcesPlugin.getWorkspace().getRoot().getProject(getProjectName()).exists();
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected boolean canPerformFinish()
+  {
+    return 
+        super.canPerformFinish()
+     && projectName != null
+     && !ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).exists();
+  }
+
+/** 
+ * {@inheritDoc}
+ */
+@Override
+public List<PepperModuleDesc> getPepperModules() {
+	return(super.getPepperModules(MODULE_TYPE.IMPORTER));
+}
 }

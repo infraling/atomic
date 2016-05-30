@@ -20,8 +20,7 @@ package org.corpus_tools.atomic.pepper.wizard;
 import java.io.File;
 
 import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard.ExchangeTargetType;
-import org.corpus_tools.pepper.common.MODULE_TYPE;
-import org.corpus_tools.pepper.modules.PepperModule;
+import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard.WizardMode;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -45,7 +44,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Michael Gr�bsch
  * @version $Revision: 1.2 $, $Date: 2012/03/29 22:59:03 $
  */
-public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPage implements IWizardPage
+public class PepperWizardPageDirectory extends WizardPage implements IWizardPage
 {
   protected final AbstractPepperWizard pepperWizard;
 
@@ -129,14 +128,12 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
     label.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
     switch (pepperWizard.getWizardMode())
     {
-      case IMPORTER:
+      case IMPORT:
         label.setText("Source path the data should be imported from");
         break;
-      case EXPORTER:
+      case EXPORT:
         label.setText("Target path the data should be exported to");
         break;
-	default:
-		break;
     }
 
     text = new Text(container, SWT.BORDER);
@@ -166,10 +163,10 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
           FileDialog dialog;
           switch (pepperWizard.getWizardMode())
           {
-            case IMPORTER:
+            case IMPORT:
               dialog = new FileDialog(getShell(), SWT.OPEN);
               break;
-            case EXPORTER:
+            case EXPORT:
               dialog = new FileDialog(getShell(), SWT.SAVE);
               dialog.setOverwrite(true);
               break;
@@ -212,7 +209,7 @@ public class PepperWizardPageDirectory<P extends PepperModule> extends WizardPag
    */
   protected String validateTargetPath(File targetPath, boolean isFile)
   {
-    if (pepperWizard.getWizardMode() == MODULE_TYPE.EXPORTER)
+    if (pepperWizard.getWizardMode() == WizardMode.EXPORT)
     {
       if (targetPath.exists())
       {

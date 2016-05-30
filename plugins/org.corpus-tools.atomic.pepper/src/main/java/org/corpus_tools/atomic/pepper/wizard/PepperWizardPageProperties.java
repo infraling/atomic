@@ -17,11 +17,10 @@
 
 package org.corpus_tools.atomic.pepper.wizard;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.corpus_tools.pepper.modules.PepperModule;
 import org.corpus_tools.pepper.modules.PepperModuleProperties;
 import org.corpus_tools.pepper.modules.PepperModuleProperty;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -57,7 +56,7 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author  Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageProperties<P extends PepperModule> extends WizardPage implements IWizardPage
+public class PepperWizardPageProperties extends WizardPage implements IWizardPage
 {
   protected final AbstractPepperWizard pepperWizard;
 

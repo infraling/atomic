@@ -20,19 +20,35 @@ package org.corpus_tools.atomic.pepper.wizard.exportwizard;
 import java.io.File;
 
 import org.corpus_tools.atomic.pepper.wizard.PepperModuleRunnable;
+import org.corpus_tools.pepper.common.CorpusDesc;
+import org.corpus_tools.pepper.common.MODULE_TYPE;
+import org.corpus_tools.pepper.common.StepDesc;
+import org.corpus_tools.pepper.modules.coreModules.SaltXMLImporter;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 
-public class ExportModuleRunnable //extends PepperModuleRunnable
+public class ExportModuleRunnable extends PepperModuleRunnable
 {
-//  public ExportModuleRunnable(PepperExportWizard pepperWizard, IProject project, boolean cancelable)
-//  {
-//    super(pepperWizard, project, cancelable);
-//  }
-//
-//  @Override
-//  protected ImporterParams createImporterParams()
-//  {
+  public ExportModuleRunnable(PepperExportWizard pepperWizard, IProject project, boolean cancelable)
+  {
+    super(pepperWizard, project, cancelable);
+  }
+
+  /**
+   * Creates a dummy import step for the SalXMLImporter.
+   */
+  @Override
+  protected StepDesc createImporterParams()
+  {
+	  SaltXMLImporter saltXMLImporter = new SaltXMLImporter();
+	  StepDesc stepDesc= new StepDesc();
+	  stepDesc.setCorpusDesc(new CorpusDesc());
+	  stepDesc.getCorpusDesc().setCorpusPath(URI.createURI(project.getLocationURI().toString()));
+	  stepDesc.setName(saltXMLImporter.getName());
+	  stepDesc.setVersion(saltXMLImporter.getVersion());
+	  stepDesc.setModuleType(MODULE_TYPE.IMPORTER);
+	  return(stepDesc);
+	  
 //    ImporterParams importerParams = PepperParamsFactory.eINSTANCE.createImporterParams();
 //    SaltXMLImporter saltXMLImporter = new SaltXMLImporter();
 //    importerParams.setModuleName(saltXMLImporter.getName());
@@ -40,16 +56,24 @@ public class ExportModuleRunnable //extends PepperModuleRunnable
 //    importerParams.setFormatVersion(AbstractPepperWizard.SALT_XML_FORMAT_VERSION);
 //    importerParams.setSourcePath(URI.createURI(project.getLocationURI().toString()));
 //    return importerParams;
-//  }
-//
-//  @Override
-//  protected ExporterParams createExporterParams()
-//  {
+  }
+
+  @Override
+  protected StepDesc createExporterParams()
+  {
+	  StepDesc stepDesc= new StepDesc();
+	  stepDesc.setCorpusDesc(new CorpusDesc());
+	  stepDesc.getCorpusDesc().setCorpusPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath()));
+	  stepDesc.setName(pepperWizard.getPepperModule().getName());
+//	  stepDesc.setVersion(saltXMLImporter.getVersion());
+	  stepDesc.setModuleType(MODULE_TYPE.EXPORTER);
+	  return(stepDesc);
+	  
 //    ExporterParams exporterParams = PepperParamsFactory.eINSTANCE.createExporterParams();
 //    exporterParams.setModuleName(pepperWizard.getPepperModule().getName());
-//    exporterParams.setFormatName(pepperWizard.getFormatDefinition().getFormatName());
-//    exporterParams.setFormatVersion(pepperWizard.getFormatDefinition().getFormatVersion());
+//    exporterParams.setFormatName(pepperWizard.getFormatDesc().getFormatName());
+//    exporterParams.setFormatVersion(pepperWizard.getFormatDesc().getFormatVersion());
 //    exporterParams.setDestinationPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath()));
 //    return exporterParams;
-//  }
+  }
 }

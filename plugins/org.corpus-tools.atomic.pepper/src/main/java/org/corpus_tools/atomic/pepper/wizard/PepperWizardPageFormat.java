@@ -20,8 +20,6 @@ package org.corpus_tools.atomic.pepper.wizard;
 import java.util.List;
 
 import org.corpus_tools.pepper.common.FormatDesc;
-import org.corpus_tools.pepper.modules.PepperModule;
-import org.eclipse.emf.common.util.EList; 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -51,7 +49,7 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author  Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage implements IWizardPage
+public class PepperWizardPageFormat extends WizardPage implements IWizardPage
 {
   protected final AbstractPepperWizard pepperWizard;
 
@@ -141,7 +139,7 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
 
         boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
         setPageComplete(selected);
-//        pepperWizard.setFormatDefinition(selected ? (FormatDesc) ((IStructuredSelection) selection).getFirstElement() : null);
+        pepperWizard.setFormatDesc(selected ? (FormatDesc) ((IStructuredSelection) selection).getFirstElement() : null);
       }
     });
     
@@ -166,17 +164,17 @@ public class PepperWizardPageFormat<P extends PepperModule> extends WizardPage i
       List<FormatDesc> supportedFormats = pepperWizard.getSupportedFormats();
       tableViewer.setInput(supportedFormats);
 
-//      FormatDesc formatDefinition =
-//          supportedFormats.size() == 1
-//        ? supportedFormats.get(0)
-//        : pepperWizard.getFormatDefinition();
-//
-//      if (formatDefinition == null)
-//      {
-//        formatDefinition = pepperWizard.getPreferredFormatDefinition();
-//      }
+      FormatDesc formatDefinition =
+          supportedFormats.size() == 1
+        ? supportedFormats.get(0)
+        : pepperWizard.getFormatDesc();
 
-//      tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
+      if (formatDefinition == null)
+      {
+        formatDefinition = pepperWizard.getPreviouslySelectedFormatDesc();
+      }
+
+      tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
     }
 
     super.setVisible(visible);
