@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.corpus_tools.pepper.common.Pepper;
 import org.corpus_tools.pepper.common.PepperJob;
 import org.corpus_tools.pepper.common.StepDesc;
+import org.corpus_tools.salt.common.SaltProject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -147,14 +148,24 @@ private String jobId;
 //    pepperConverter.start();
 	  
 	  Pepper pepper = pepperWizard.getPepper();
-	  jobId= pepper.createJob();
+	  String jobId = pepper.createJob();
 	  PepperJob pepperJob= pepper.getJob(jobId);
-	  System.err.println("PEPPERJOB: " + pepperJob);
 	  pepperJob.addStepDesc(createImporterParams());
 	  pepperJob.addStepDesc(createExporterParams());
-	  pepperJob.convert();
+	  pepperJob.convert(); // TODO: CONVERT FROM
 
     project.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+	  
+//	  Pepper pepper = pepperWizard.getPepper();
+//	  jobId= pepper.createJob();
+//	  PepperJob pepperJob= pepper.getJob(jobId);
+//	  System.err.println("PEPPERJOB: " + pepperJob);
+//	  pepperJob.addStepDesc(createImporterParams());
+//	  pepperJob.addStepDesc(createExporterParams());
+//	  pepperJob.convert(); // TODO: CONVERT FROM
+//
+//    project.refreshLocal(IResource.DEPTH_INFINITE, null);
   }
   
   

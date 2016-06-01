@@ -106,11 +106,9 @@ public class PepperImportWizard
   {
 	  IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 	  IProject project = root.getProject(getProjectName());
-	  
-
-	    project.create(null);
-	    project.open(null);
-	    return project;
+	  project.create(null);
+	  project.open(null);
+	  return project;
   }
 
   /**
