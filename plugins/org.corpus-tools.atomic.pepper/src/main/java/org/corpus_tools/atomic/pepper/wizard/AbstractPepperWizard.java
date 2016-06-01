@@ -31,10 +31,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.pepper.Activator;
 import org.corpus_tools.atomic.pepper.AtomicPepperConfiguration;
+import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
+import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
 import org.corpus_tools.pepper.common.FormatDesc;
 import org.corpus_tools.pepper.common.MODULE_TYPE;
 import org.corpus_tools.pepper.common.Pepper;
 import org.corpus_tools.pepper.common.PepperModuleDesc;
+import org.corpus_tools.pepper.connectors.PepperConnector;
 import org.corpus_tools.pepper.modules.PepperModuleProperties;
 import org.corpus_tools.pepper.modules.PepperModuleProperty;
 import org.eclipse.core.resources.IProject;
@@ -83,6 +86,9 @@ public abstract class AbstractPepperWizard extends Wizard {
 	protected String exchangeTargetPath;
 	protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
 	protected final WizardMode wizardMode;
+	protected ServiceReference<PepperConnector> reference;
+	protected PepperConnector pepper;
+
 
 
 	/**
@@ -129,20 +135,36 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 * This method is called by implementing classes in {@link Wizard#init()}.
 	 */
 	public void initialize() {
-		reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(Pepper.class);
-		if (reference != null) {
-			pepper = Activator.getDefault().getBundle().getBundleContext().getService(reference);
-		}
-		else {
-			log.error("Could not discover the Pepper OSGi service!");
-			return;
-		}
-		AtomicPepperConfiguration configuration = new AtomicPepperConfiguration();
-		configuration.load();
-		pepper.setConfiguration(configuration);
-		System.setProperty(AtomicPepperConfiguration.PROP_PEPPER_MODULE_RESOURCES, ((AtomicPepperConfiguration) pepper.getConfiguration()).getPlugInPath());
+//		AtomicPepperOSGiConnector pepper = new AtomicPepperOSGiConnector();
+//		AtomicPepperConfiguration configuration = new AtomicPepperConfiguration();
+//		configuration.load();
+//		pepper.setConfiguration(configuration);
+//		pepper.init();
+		AtomicPepperStarter pepperStarter = new AtomicPepperStarter();
+		pepperStarter.startPepper();
+//		pepperStarter.getPepper().init();
+		setPepper(pepperStarter.getPepper());
+//		System.setProperty(AtomicPepperConfiguration.PROP_PEPPER_MODULE_RESOURCES, ((AtomicPepperConfiguration) getPepper().getConfiguration()).getPlugInPath());
+
+
+//		setPepper(pepper);
 		pepperModuleProperties = new PepperModuleProperties();
 		readDialogSettings();
+
+//		reference = Activator.getDefault().getBundle().getBundleContext().getServiceReference(Pepper.class);
+//		if (reference != null) {
+//			pepper = Activator.getDefault().getBundle().getBundleContext().getService(reference);
+//		}
+//		else {
+//			log.error("Could not discover the Pepper OSGi service!");
+//			return;
+//		}
+//		AtomicPepperConfiguration configuration = new AtomicPepperConfiguration();
+//		configuration.load();
+//		pepper.setConfiguration(configuration);
+//		System.setProperty(AtomicPepperConfiguration.PROP_PEPPER_MODULE_RESOURCES, ((AtomicPepperConfiguration) pepper.getConfiguration()).getPlugInPath());
+//		pepperModuleProperties = new PepperModuleProperties();
+//		readDialogSettings();
 	}
 
 	public WizardMode getWizardMode() {
@@ -285,10 +307,8 @@ public abstract class AbstractPepperWizard extends Wizard {
 		}
 	}
 
-	protected ServiceReference<Pepper> reference;
-	protected Pepper pepper;
 
-	public Pepper getPepper() {
+	public PepperConnector getPepper() {
 		return pepper;
 	}
 
@@ -547,5 +567,12 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 */
 	public static enum ExchangeTargetType {
 		FILE, DIRECTORY
+	}
+
+	/**
+	 * @param pepper the pepper to set
+	 */
+	public void setPepper(PepperConnector pepper) {
+		this.pepper = pepper;
 	}
 }

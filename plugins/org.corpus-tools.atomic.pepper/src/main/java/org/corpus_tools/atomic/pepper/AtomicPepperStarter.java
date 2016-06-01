@@ -94,6 +94,17 @@ public class AtomicPepperStarter {
 		}
 	}
 
+	/**
+	 * Passes the call to an instance of {@link AtomicPepperOSGiConnector},
+	 * which in turn instantiates a {@link AtomicMavenAccessor}, passing
+	 * itself as argument. Must be called to be able to resolve Maven
+	 * dependencies for modules, etc.
+	 *
+	 */
+	public void initMavenAccessor() {
+		((AtomicPepperOSGiConnector) getPepper()).initializeMavenAccessor();
+	}
+
 
 
 }

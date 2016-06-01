@@ -43,6 +43,7 @@ import org.corpus_tools.pepper.cli.exceptions.PepperOSGiException;
 import org.corpus_tools.pepper.cli.exceptions.PepperOSGiFrameworkPluginException;
 import org.corpus_tools.pepper.cli.exceptions.PepperPropertyException;
 import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.connectors.PepperConnector;
 import org.corpus_tools.pepper.connectors.impl.PepperOSGiConnector;
 import org.corpus_tools.pepper.core.PepperOSGiRunner;
 import org.corpus_tools.pepper.exceptions.PepperConfigurationException;
@@ -108,6 +109,7 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 		try {
 			// Disable PepperOSGiRunner and set bundle context
 			System.setProperty(PepperOSGiRunner.PROP_TEST_DISABLED, Boolean.TRUE.toString());
+			System.setProperty(AtomicPepperConfiguration.PROP_PEPPER_MODULE_RESOURCES, getAtomicPepperConfiguration().getPlugInPath());
 			setBundleContext(FrameworkUtil.getBundle(this.getClass()).getBundleContext());
 		} catch (Exception e) {
 			log.error("OSGi environment could not be started: {}.", e.getMessage(), e);
@@ -121,9 +123,26 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 				frameworkVersion = bundle.getVersion().toString().replace(".SNAPSHOT", "-SNAPSHOT");
 			}
 		}
-		maven = new AtomicMavenAccessor(this);
-
+		
+		/* Original location of the call
+		 * maven = new AtomicMavenAccessor(this);
+		 * 
+		 * Kept for historical reasons.
+		 */
+		
 		isInit = true;
+	}
+	
+	/**
+	 * Initializes the Maven accessor which downloads dependencies, etc.
+	 * Clients must call this manually because this is not an
+	 * intrinsic function of this implementation of a {@link PepperConnector}!
+	 * However, this functions must be called before attempting to, e.g., 
+	 * update Pepper modules.
+	 *
+	 */
+	protected void initializeMavenAccessor() {
+		maven = new AtomicMavenAccessor(this);
 	}
 	
 	@Override
