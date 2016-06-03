@@ -9,7 +9,7 @@
    <launcherArgs>
       <programArgs>-data @noDefault
       </programArgs>
-      <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+      <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dorg.eclipse.update.reconcile=false
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -140,6 +140,7 @@
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.corpus-tools.pepper-framework" autoStart="true" startLevel="3" />
    </configurations>
 
    <preferencesInfo>

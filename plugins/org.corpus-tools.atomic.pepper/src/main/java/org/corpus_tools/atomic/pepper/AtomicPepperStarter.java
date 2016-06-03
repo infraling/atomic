@@ -55,6 +55,28 @@ public class AtomicPepperStarter {
 		setPepper(pepper);
 	}
 	
+	public void startPepperAndBridgeOSGi() {
+		AtomicPepperOSGiConnector pepper = null;
+		AtomicPepperConfiguration pepperProps = null;
+		
+		pepperProps = new AtomicPepperConfiguration();
+		log.trace("Loading Pepper properties via the object {}.", pepperProps);
+		pepperProps.load();
+		
+		pepper = new AtomicPepperOSGiConnector();
+		log.trace("Setting the Pepper properties ({}) as configuration in the {} object {}.", pepperProps, AtomicPepperOSGiConnector.class.getName(), pepper);
+		pepper.setConfiguration(pepperProps);
+		
+		pepper.addSharedPackage("org.corpus_tools.salt", "3");
+	    pepper.addSharedPackage("org.corpus_tools.salt.common", "3");
+	    pepper.addSharedPackage("org.corpus_tools.salt.core", "3");
+	    pepper.addSharedPackage("org.corpus_tools.salt.graph", "3");
+	    pepper.addSharedPackage("org.corpus_tools.salt.util", "3");             
+	    pepper.init();
+	    
+		setPepper(pepper);
+	}
+	
 	/**
 	 * @return the Pepper instance (as a {@link PepperConnector} object).
 	 */
@@ -70,6 +92,17 @@ public class AtomicPepperStarter {
 		if (!getPepper().isInitialized()) {
 			getPepper().init();
 		}
+	}
+
+	/**
+	 * Passes the call to an instance of {@link AtomicPepperOSGiConnector},
+	 * which in turn instantiates a {@link AtomicMavenAccessor}, passing
+	 * itself as argument. Must be called to be able to resolve Maven
+	 * dependencies for modules, etc.
+	 *
+	 */
+	public void initMavenAccessor() {
+		((AtomicPepperOSGiConnector) getPepper()).initializeMavenAccessor();
 	}
 
 
