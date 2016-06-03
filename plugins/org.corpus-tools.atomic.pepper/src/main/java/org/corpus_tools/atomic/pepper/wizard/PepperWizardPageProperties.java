@@ -1,6 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Friedrich Schiller University Jena
- * Michael Gr�bsch
+ * Copyright 2013 Friedrich Schiller University Jena 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +51,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * @author Michael Gr�bsch
- * @version $Revision$, $Date$
+ * @author Michael Grübsch
  */
 public class PepperWizardPageProperties extends WizardPage implements IWizardPage {
 	protected final AbstractPepperWizard pepperWizard;
@@ -61,7 +59,7 @@ public class PepperWizardPageProperties extends WizardPage implements IWizardPag
 	protected TableViewer tableViewer;
 
 	/**
-	 * Legt eine neue Instanz des Typs PepperImportWizardPageProperties an.
+	 * Creates a new instance of type {@link PepperWizardPageProperties}.
 	 * 
 	 * @param pageName
 	 * @param title

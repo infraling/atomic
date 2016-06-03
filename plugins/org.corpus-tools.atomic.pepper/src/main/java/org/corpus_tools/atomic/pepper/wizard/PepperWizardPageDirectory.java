@@ -55,7 +55,7 @@ public class PepperWizardPageDirectory extends WizardPage implements IWizardPage
 	protected Button btnDirectory;
 
 	/**
-	 * Create the wizard.
+	 * Create the wizard page.
 	 */
 	public PepperWizardPageDirectory(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description) {
 		super(pageName, title, titleImage);

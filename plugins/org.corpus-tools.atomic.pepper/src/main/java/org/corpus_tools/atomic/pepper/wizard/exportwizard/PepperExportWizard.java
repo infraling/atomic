@@ -1,19 +1,22 @@
 /*******************************************************************************
- * Copyright 2014 Friedrich Schiller University Jena
- * Vivid Sky - Softwaremanufaktur, Michael Gr�bsch.
- * 
+ * Copyright 2014 Friedrich Schiller University Jena 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *
+ * Contributors:
+ *     Michael Grübsch - initial API and implementation
+ *     Stephan Druskat - update to Pepper 3.x API
+ *******************************************************************************/
 
 package org.corpus_tools.atomic.pepper.wizard.exportwizard;
 
@@ -27,7 +30,6 @@ import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageFormat;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageModule;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageProperties;
 import org.corpus_tools.pepper.common.FormatDesc;
-import org.corpus_tools.pepper.common.MODULE_TYPE;
 import org.corpus_tools.pepper.common.PepperModuleDesc;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -38,8 +40,9 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * @author Michael Gr�bsch
- * @version $Revision$, $Date$
+ * An implementation of {@link AbstractPepperWizard} for corpus exports.
+ * 
+ * @author Michael Grübsch
  */
 public class PepperExportWizard extends AbstractPepperWizard implements IExportWizard {
 	protected IProject selectedProject = null;
@@ -48,6 +51,9 @@ public class PepperExportWizard extends AbstractPepperWizard implements IExportW
 		super("Export via Pepper", WizardMode.EXPORT);
 	}
 
+	/*
+	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		initialize();
@@ -65,7 +71,7 @@ public class PepperExportWizard extends AbstractPepperWizard implements IExportW
 		}
 	}
 
-	/* 
+	/*
 	 * @copydoc @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
 	@Override
@@ -78,7 +84,7 @@ public class PepperExportWizard extends AbstractPepperWizard implements IExportW
 		}
 	}
 
-	/* 
+	/*
 	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getSupportedFormats()
 	 */
 	@Override
@@ -87,7 +93,7 @@ public class PepperExportWizard extends AbstractPepperWizard implements IExportW
 		return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
 	}
 
-	/* 
+	/*
 	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#createModuleRunnable(org.eclipse.core.resources.IProject, boolean)
 	 */
 	@Override
@@ -95,7 +101,7 @@ public class PepperExportWizard extends AbstractPepperWizard implements IExportW
 		return new ExportModuleRunnable(this, project, cancelable);
 	}
 
-	/* 
+	/*
 	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getProject()
 	 */
 	@Override

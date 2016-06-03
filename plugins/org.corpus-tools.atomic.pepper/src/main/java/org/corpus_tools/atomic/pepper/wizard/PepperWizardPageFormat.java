@@ -54,7 +54,7 @@ public class PepperWizardPageFormat extends WizardPage implements IWizardPage {
 	protected TableViewer tableViewer;
 
 	/**
-	 * Creates a new instance of an implementation of {@link AbstractPepperWizard}. 
+	 * Creates a new instance of an implementation of {@link PepperWizardPageFormat}. 
 	 * 
 	 * @param pageName
 	 * @param title

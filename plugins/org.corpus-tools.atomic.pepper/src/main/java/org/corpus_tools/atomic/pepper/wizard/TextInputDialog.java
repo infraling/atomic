@@ -1,6 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Friedrich Schiller University Jena
- * Michael Grübsch
+ * Copyright 2013 Friedrich Schiller University Jena 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
-// -----------------------------------------------------------------------------
-// Contributed by Vivid Sky - Software-Manufaktur, Michael Gruebsch.
-// Author:  Michael Grübsch
-// -----------------------------------------------------------------------------
 
 package org.corpus_tools.atomic.pepper.wizard;
 
@@ -36,10 +30,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * Dialog, mit dessen Hilfe ein Text eingegeben werden kann.
+ * Dialog allowing for text input.
  * 
  * @author Michael Grübsch
- * @version $Revision: 1.1 $, $Date: 2012/09/26 07:37:15 $
  */
 public class TextInputDialog extends MessageDialog {
 
@@ -52,7 +45,7 @@ public class TextInputDialog extends MessageDialog {
 	protected Text text;
 
 	/**
-	 * Legt eine neue Instanz des Typs TextInputDialog an.
+	 * Creates a new instance of type {@link TextInputDialog}.
 	 * 
 	 * @param parentShell
 	 * @param dialogTitle
