@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
 		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
-		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-3.0.2/</pepper-dependencies-repo.url>
+		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-3.1.0-SNAPSHOT/</pepper-dependencies-repo.url>
 		<atomic-test-dependencies-repo.url>https://dl.bintray.com/sdruskat/tests-p2/</atomic-test-dependencies-repo.url>
 	</properties>
 
@@ -66,6 +66,10 @@
 			<layout>p2</layout>
 			<url>http://sdruskat.net/logging-p2/updates</url>
 		</repository> -->
+	    <repository>
+			<id>sonatype-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	    </repository>
 
 	</repositories>
 

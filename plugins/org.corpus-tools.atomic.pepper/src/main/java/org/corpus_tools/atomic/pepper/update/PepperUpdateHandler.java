@@ -67,7 +67,7 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		log.info("Starting Pepper update process, called from menu.");
 		try {
-			new URL("http://korpling.german.hu-berlin.de/maven2/").openConnection().getContent();
+			new URL("http://central.maven.org/maven2/").openConnection().getContent();
 		}
 		catch (IOException e) {
 			Display.getDefault().asyncExec(new Runnable() {
@@ -76,7 +76,7 @@ public class PepperUpdateHandler extends AbstractHandler implements IHandler {
 					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No internet connection!", "An error occurred during the initialization of the Pepper update mechanism.\n\nPlease check your internet connection!");
 				}
 			});
-			log.warn("Cannot connect to korpling Maven repository at Humboldt-Universität zu Berlin!", e);
+			log.warn("Cannot connect to Maven Central!", e);
 			return null;
 		}
 		

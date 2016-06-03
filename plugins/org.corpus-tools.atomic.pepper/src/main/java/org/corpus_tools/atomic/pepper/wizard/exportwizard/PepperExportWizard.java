@@ -1,22 +1,26 @@
 /*******************************************************************************
- * Copyright 2014 Friedrich Schiller University Jena
- * Vivid Sky - Softwaremanufaktur, Michael Gr�bsch.
- * 
+ * Copyright 2014 Friedrich Schiller University Jena 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *
+ * Contributors:
+ *     Michael Grübsch - initial API and implementation
+ *     Stephan Druskat - update to Pepper 3.x API
+ *******************************************************************************/
 
 package org.corpus_tools.atomic.pepper.wizard.exportwizard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard;
@@ -25,11 +29,10 @@ import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageDirectory;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageFormat;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageModule;
 import org.corpus_tools.atomic.pepper.wizard.PepperWizardPageProperties;
-import org.corpus_tools.pepper.modules.PepperExporter;
+import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.common.PepperModuleDesc;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -37,16 +40,20 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * @author Michael Gr�bsch
- * @version $Revision$, $Date$
+ * An implementation of {@link AbstractPepperWizard} for corpus exports.
+ * 
+ * @author Michael Grübsch
  */
-public class PepperExportWizard extends AbstractPepperWizard<PepperExporter> implements IExportWizard {
+public class PepperExportWizard extends AbstractPepperWizard implements IExportWizard {
 	protected IProject selectedProject = null;
 
 	public PepperExportWizard() {
 		super("Export via Pepper", WizardMode.EXPORT);
 	}
 
+	/*
+	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		initialize();
@@ -64,46 +71,38 @@ public class PepperExportWizard extends AbstractPepperWizard<PepperExporter> imp
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/*
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
 	@Override
 	public void addPages() {
 		if (selectedProject != null) {
-			addPage(new PepperWizardPageModule<PepperExporter>(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export module."));
-			addPage(new PepperWizardPageFormat<PepperExporter>(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export format."));
-			addPage(new PepperWizardPageDirectory<PepperExporter>(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export path."));
-			addPage(new PepperWizardPageProperties<PepperExporter>(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper export module properties."));
+			addPage(new PepperWizardPageModule(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export module."));
+			addPage(new PepperWizardPageFormat(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export format."));
+			addPage(new PepperWizardPageDirectory(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export path."));
+			addPage(new PepperWizardPageProperties(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Edit the pepper export module properties."));
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/*
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getSupportedFormats()
 	 */
 	@Override
-	protected List<PepperExporter> resolvePepperModules(PepperModuleResolver pepperModuleResolver) {
-		return pepperModuleResolver.getPepperExporters();
+	public List<FormatDesc> getSupportedFormats() {
+		PepperModuleDesc module = getPepperModule();
+		return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public EList<FormatDefinition> getSupportedFormats() {
-		PepperExporter module = getPepperModule();
-		return module != null ? module.getSupportedFormats() : new BasicEList<FormatDefinition>();
-	}
-
-	/**
-	 * {@inheritDoc}
+	/*
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#createModuleRunnable(org.eclipse.core.resources.IProject, boolean)
 	 */
 	@Override
 	protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable) {
 		return new ExportModuleRunnable(this, project, cancelable);
 	}
 
-	/**
-	 * {@inheritDoc}
+	/*
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getProject()
 	 */
 	@Override
 	protected IProject getProject() throws CoreException {
