@@ -18,7 +18,7 @@
 package org.corpus_tools.atomic.pepper.wizard.importwizard;
 
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jface.resource.ImageDescriptor; 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -30,113 +30,96 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * 
  * @author Michael Gr�bsch
  * @version $Revision: 1.2 $, $Date: 2012/03/29 22:59:03 $
  */
-public class PepperImportWizardPageProjectName extends WizardPage
-{
-  protected final PepperImportWizard pepperImportWizard;
-  protected Text text;
+public class PepperImportWizardPageProjectName extends WizardPage {
+	protected final PepperImportWizard pepperImportWizard;
+	protected Text text;
 
-  /**
-   * Create the wizard.
-   */
-  public PepperImportWizardPageProjectName(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage)
-  {
-    super(pageName, title, titleImage);
-    setPageComplete(false);
-    setDescription("Enter the name of the project whose data should be imported.");
+	/**
+	 * Create the wizard.
+	 */
+	public PepperImportWizardPageProjectName(PepperImportWizard pepperImportWizard, String pageName, String title, ImageDescriptor titleImage) {
+		super(pageName, title, titleImage);
+		setPageComplete(false);
+		setDescription("Enter the name of the project whose data should be imported.");
 
-    this.pepperImportWizard = pepperImportWizard;
-  }
+		this.pepperImportWizard = pepperImportWizard;
+	}
 
-  /**
-   * Create contents of the wizard.
-   * 
-   * @param parent
-   */
-  @Override
-  public void createControl(Composite parent)
-  {
-    Composite container = new Composite(parent, SWT.NULL);
+	/**
+	 * Create contents of the wizard.
+	 * 
+	 * @param parent
+	 */
+	@Override
+	public void createControl(Composite parent) {
+		Composite container = new Composite(parent, SWT.NULL);
 
-    setControl(container);
-    GridLayout gl_container = new GridLayout(2, false);
-    gl_container.marginBottom = 20;
-    container.setLayout(gl_container);
+		setControl(container);
+		GridLayout gl_container = new GridLayout(2, false);
+		gl_container.marginBottom = 20;
+		container.setLayout(gl_container);
 
-    Label lblNewLabel = new Label(container, SWT.NONE);
-    lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
-    lblNewLabel.setText("Project name; must be unique");
+		Label lblNewLabel = new Label(container, SWT.NONE);
+		lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 2, 1));
+		lblNewLabel.setText("Project name; must be unique");
 
-    text = new Text(container, SWT.BORDER);
-    text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    text.addModifyListener(new ModifyListener()
-    {
-      @Override
-      public void modifyText(ModifyEvent e)
-      {
-        updatePageComplete();
-      }
-    });
-  }
+		text = new Text(container, SWT.BORDER);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				updatePageComplete();
+			}
+		});
+	}
 
-  protected String getProjectName()
-  {
-    String path = text.getText().trim();
-    return 0 < path.length() ? path : null;
-  }
+	protected String getProjectName() {
+		String path = text.getText().trim();
+		return 0 < path.length() ? path : null;
+	}
 
-  protected void updatePageComplete()
-  {
-    String projectName = getProjectName();
-    if (projectName != null)
-    {
-      if (ResourcesPlugin.getWorkspace().getRoot().getProject(getProjectName()).exists())
-      {
-        setMessage(null);
-        setErrorMessage("Project does already exist - choose another name.");
-        setPageComplete(false);
-      }
-      else
-      {
-        setMessage(null);
-        setErrorMessage(null);
-        setPageComplete(true);
-      }
-    }
-    else
-    {
-      setMessage(null);
-      setErrorMessage(null);
-      setPageComplete(false);
-    }
+	protected void updatePageComplete() {
+		String projectName = getProjectName();
+		if (projectName != null) {
+			if (ResourcesPlugin.getWorkspace().getRoot().getProject(getProjectName()).exists()) {
+				setMessage(null);
+				setErrorMessage("Project does already exist - choose another name.");
+				setPageComplete(false);
+			}
+			else {
+				setMessage(null);
+				setErrorMessage(null);
+				setPageComplete(true);
+			}
+		}
+		else {
+			setMessage(null);
+			setErrorMessage(null);
+			setPageComplete(false);
+		}
 
-    pepperImportWizard.setProjectName(projectName);
-  }
+		pepperImportWizard.setProjectName(projectName);
+	}
 
+	/*
+	 * @copydoc @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			String projectName = pepperImportWizard.getProjectName();
+			if (projectName != null) {
+				text.setText(projectName);
+			}
+		}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setVisible(boolean visible)
-  {
-    if (visible)
-    {
-      String projectName = pepperImportWizard.getProjectName();
-      if (projectName != null)
-      {
-        text.setText(projectName);
-      }
-    }
+		super.setVisible(visible);
 
-    super.setVisible(visible);
-
-    if (visible)
-    {
-      text.setFocus();
-    }
-  }
+		if (visible) {
+			text.setFocus();
+		}
+	}
 }

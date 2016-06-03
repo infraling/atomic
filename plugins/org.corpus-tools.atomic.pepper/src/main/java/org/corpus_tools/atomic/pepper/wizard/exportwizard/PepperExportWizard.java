@@ -38,116 +38,68 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- *
- * @author  Michael Gr�bsch
+ * @author Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperExportWizard
-  extends 
-    AbstractPepperWizard
-  implements 
-    IExportWizard
-{
-  protected IProject selectedProject = null;
+public class PepperExportWizard extends AbstractPepperWizard implements IExportWizard {
+	protected IProject selectedProject = null;
 
-  public PepperExportWizard()
-  {
-    super("Export via Pepper", WizardMode.EXPORT);
-  }
+	public PepperExportWizard() {
+		super("Export via Pepper", WizardMode.EXPORT);
+	}
 
-// =============================================> called by Eclipse  
-  @Override
-  public void init(IWorkbench workbench, IStructuredSelection selection)
-  {
-    initialize();
-    if (1 == selection.size())
-    {
-      Object element = selection.getFirstElement();
-      if (element instanceof IProject)
-      {
-        selectedProject = (IProject) element;
-      }
-      else
-      {
-        new MessageDialog
-          ( this.getShell()
-          , "Error"
-          , null
-          , "Selection is not a project!"
-          , MessageDialog.ERROR
-          , new String[]{ IDialogConstants.OK_LABEL }
-          , 0).open();
-      }
-    }
-    else
-    {
-      new MessageDialog
-        ( this.getShell()
-        , "Error"
-        , null
-        , "To run the Pepper Export Wizard select exactly one project!"
-        , MessageDialog.ERROR
-        , new String[]{ IDialogConstants.OK_LABEL }
-        , 0).open();
-    }
-  }
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		initialize();
+		if (1 == selection.size()) {
+			Object element = selection.getFirstElement();
+			if (element instanceof IProject) {
+				selectedProject = (IProject) element;
+			}
+			else {
+				new MessageDialog(this.getShell(), "Error", null, "Selection is not a project!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+			}
+		}
+		else {
+			new MessageDialog(this.getShell(), "Error", null, "To run the Pepper Export Wizard select exactly one project!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+		}
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void addPages()
-  {
-    if (selectedProject != null)
-    {
-      addPage(new PepperWizardPageModule(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export module."));
-      addPage(new PepperWizardPageFormat(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export format."));
-      addPage(new PepperWizardPageDirectory(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export path."));
-      addPage(new PepperWizardPageProperties(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Edit the pepper export module properties."));
-    }
-  }
-//=============================================< called by Eclipse
-//  /**
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  protected List<PepperExporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
-//  {
-//    return pepperModuleResolver.getPepperExporters();
-//  }
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#addPages()
+	 */
+	@Override
+	public void addPages() {
+		if (selectedProject != null) {
+			addPage(new PepperWizardPageModule(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export module."));
+			addPage(new PepperWizardPageFormat(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export format."));
+			addPage(new PepperWizardPageDirectory(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export path."));
+			addPage(new PepperWizardPageProperties(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Edit the pepper export module properties."));
+		}
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<FormatDesc> getSupportedFormats()
-  {
-	  PepperModuleDesc module = getPepperModule();
-    return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
-  }
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getSupportedFormats()
+	 */
+	@Override
+	public List<FormatDesc> getSupportedFormats() {
+		PepperModuleDesc module = getPepperModule();
+		return module != null ? module.getSupportedFormats() : new ArrayList<FormatDesc>();
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable)
-  {
-    return new ExportModuleRunnable(this, project, cancelable);
-  }
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#createModuleRunnable(org.eclipse.core.resources.IProject, boolean)
+	 */
+	@Override
+	protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable) {
+		return new ExportModuleRunnable(this, project, cancelable);
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected IProject getProject() throws CoreException
-  {
-    return selectedProject;
-  }
-//  /** 
-//   * {@inheritDoc}
-//   */
-//  @Override
-//  public List<PepperModuleDesc> getPepperModules() {
-//  	return(super.getPepperModules(MODULE_TYPE.EXPORTER));
-//  }
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getProject()
+	 */
+	@Override
+	protected IProject getProject() throws CoreException {
+		return selectedProject;
+	}
 }

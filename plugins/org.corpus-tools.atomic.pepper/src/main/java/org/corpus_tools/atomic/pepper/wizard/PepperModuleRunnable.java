@@ -1,29 +1,27 @@
 /*******************************************************************************
  * Copyright 2014 Friedrich Schiller University Jena
- * Vivid Sky - Softwaremanufaktur, Michael Gr�bsch.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *
+ * Contributors:
+ *     Michael Grübsch - initial API and implementation
+ *     Stephan Druskat - update to Pepper 3.x API
+ *******************************************************************************/
 
 package org.corpus_tools.atomic.pepper.wizard;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -37,30 +35,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.corpus_tools.pepper.common.Pepper;
 import org.corpus_tools.pepper.common.PepperJob;
 import org.corpus_tools.pepper.common.StepDesc;
-import org.corpus_tools.salt.common.SaltProject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperDocumentController;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperJob;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperModuleController;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModule;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ExporterParams;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ImporterParams;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.ModuleParams;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperJobParams;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParams;
-//import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParamsFactory;
-
+/**
+ * Runs a {@link PepperJob}.
+ *
+ * @author Stephan Druskat <mail@sdruskat.net>
+ */
 public abstract class PepperModuleRunnable implements IRunnableWithProgress, Future<Boolean> {
 	protected static final AtomicInteger threadCounter = new AtomicInteger();
 
@@ -79,8 +67,11 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 	protected volatile Thread controlThread = null;
 	protected volatile Thread moduleThread = null;
 
-	private String jobId;
-
+	/**
+	 * @param pepperWizard
+	 * @param project
+	 * @param cancelable
+	 */
 	public PepperModuleRunnable(AbstractPepperWizard pepperWizard, IProject project, boolean cancelable) {
 		this.pepperWizard = pepperWizard;
 		this.project = project;
@@ -91,31 +82,6 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 
 	protected abstract StepDesc createExporterParams();
 
-	// protected abstract ImporterParams createImporterParams();
-	//
-	// protected abstract ExporterParams createExporterParams();
-
-	// protected void setSpecialParams(ModuleParams moduleParams) throws IOException
-	// {
-	// Properties properties = pepperWizard.getPepperModuleProperties().getProperties();
-	// if (0 < properties.size())
-	// {
-	// File tempFile = File.createTempFile("pepper", ".properties");
-	// tempFile.deleteOnExit();
-	//
-	// Writer writer = new FileWriter(tempFile);
-	// try
-	// {
-	// properties.store(writer, "Generated pepper properties");
-	// moduleParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
-	// }
-	// finally
-	// {
-	// writer.close();
-	// }
-	// }
-	// }
-
 	/**
 	 * Creates and starts a Pepper job. The job is created via {@link AbstractPepperWizard#getPepper()}.
 	 * 
@@ -123,24 +89,6 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 	 * @throws CoreException
 	 */
 	protected void runPepper() throws IOException, CoreException {
-
-		// ImporterParams importerParams = createImporterParams();
-		// setSpecialParams(importerParams);
-		//
-		// ExporterParams exporterParams = createExporterParams();
-		//
-		// PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
-		// pepperJobParams.setId(AbstractPepperWizard.PEPPER_JOB_ID.incrementAndGet());
-		// pepperJobParams.getImporterParams().add(importerParams);
-		// pepperJobParams.getExporterParams().add(exporterParams);
-		//
-		// PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
-		// pepperParams.getPepperJobParams().add(pepperJobParams);
-		//
-		// PepperConverter pepperConverter = pepperWizard.getPepper();
-		// pepperConverter.setPepperParams(pepperParams);
-		// pepperConverter.start();
-
 		Pepper pepper = pepperWizard.getPepper();
 		String jobId = pepper.createJob();
 		PepperJob pepperJob = pepper.getJob(jobId);
@@ -149,33 +97,22 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 		pepperJob.convert(); // TODO: CONVERT FROM
 
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
-
-		// Pepper pepper = pepperWizard.getPepper();
-		// jobId= pepper.createJob();
-		// PepperJob pepperJob= pepper.getJob(jobId);
-		// System.err.println("PEPPERJOB: " + pepperJob);
-		// pepperJob.addStepDesc(createImporterParams());
-		// pepperJob.addStepDesc(createExporterParams());
-		// pepperJob.convert(); // TODO: CONVERT FROM
-		//
-		// project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 
-	/**
-	 * {@inheritDoc}
+	/*
+	 * @copydoc @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
 			synchronized (cancelLock) {
-				// pr�fen, ob Ausf�hrung bereits vor dem Start abgebrochen worden ist
+				// Check if run has been cancelled before start
 				if (cancelled) {
 					throw new InterruptedException();
 				}
 				else {
 					controlThread = Thread.currentThread();
-					// Thread in dem der Vorgang ausgef�hrt wird und der bei Abbruch im
-					// Progressmonitor unterbrochen werden soll
+					// Thread cancellable via input in the ProgressMonitorDialog
 					moduleThread = new Thread("Pepper Module Thread #" + threadCounter.incrementAndGet()) {
 						@Override
 						public void run() {
@@ -193,10 +130,10 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 				}
 			}
 
-			// Progressmonitor asynchron auf Abbruch �berwachen
+			// Asynchronously monitor ProgressMonitor for cancellations
 			ScheduledFuture<?> cancellationCheck;
 			if (cancelable) {
-				// �berwachungsthread
+				// Monitoring thread
 				cancellationCheck = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new Runnable() {
 					@Override
 					public void run() {
@@ -210,11 +147,11 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 				cancellationCheck = null;
 			}
 
-			// Monitor starten
+			// Start monitor
 			monitor.beginTask("Running ...", IProgressMonitor.UNKNOWN);
 			outcome = Boolean.FALSE;
 			try {
-				// Modul ausf�hren
+				// Run module
 				moduleThread.start();
 
 				Display display = Display.findDisplay(Thread.currentThread());
@@ -222,7 +159,7 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 					moduleThread.join();
 				}
 				else {
-					// aktueller Thread ist der UI-Thread
+					// Current thread is the UI Thread
 					while (!isCancelled() && moduleThread.isAlive()) {
 						if (controlThread.isInterrupted()) {
 							throw new InterruptedException();
@@ -237,31 +174,22 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 				outcome = Boolean.TRUE;
 			}
 			finally {
-				// Monitor beenden
+				// Stop monitor
 				monitor.done();
 
-				// �berwachungsthread stoppen
+				// Stop monitor thread
 				if (cancellationCheck != null) {
 					cancellationCheck.cancel(true);
 				}
 
-				// Abbruch signalisieren
+				// Signal cancellation
 				if (Thread.currentThread().isInterrupted()) {
 					throw new InterruptedException();
 				}
 			}
 		}
 		catch (InterruptedException X) {
-			new MessageDialog(Display.getCurrent().getActiveShell(), "Error", null, "Any error occured in Pepper and unfortunately Pepper is not stoppable anymore. So run!!! ", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
-			// Abbruchsignal empfangen
-			// try
-			// {
-			// finishModuleThread(500);
-			// }
-			// catch (Throwable T)
-			// {
-			// throw new InvocationTargetException(throwable = T);
-			// }
+			new MessageDialog(Display.getCurrent().getActiveShell(), "Error", null, "Some error occured while running Pepper and unfortunately Pepper is not stoppable anymore. Letting it run wild.", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
 		}
 		catch (Throwable T) {
 			throw new InvocationTargetException(throwable = T);
@@ -274,78 +202,8 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 		}
 	}
 
-	// /**
-	// * Pepper hangs if it encounters an error: release its monitors manually.
-	// */
-	// protected void finishModuleThread(long gracePeriodInMillis) throws NoSuchFieldException, SecurityException, IllegalAccessException
-	// {
-	// Thread thread = moduleThread;
-	// if (thread != null && thread.isAlive())
-	// {
-	// try
-	// {
-	// thread.join(gracePeriodInMillis);
-	// }
-	// catch (InterruptedException XX)
-	// {
-	// // siliently ignore
-	// }
-	//
-	// if (thread.isAlive())
-	// {
-	// Pepper pepper = pepperWizard.getPepper();
-	// PepperJob pepperJob= pepper.getJob(jobId);
-	//
-	// pepperJob.getStatus()
-	//
-	// Field field = pepperJob.getClass().getDeclaredField("allModuleControlers");
-	// field.setAccessible(true);
-	// @SuppressWarnings("unchecked")
-	//
-	// EList<PepperModuleController> pepperModuleControllers = (EList<PepperModuleController>) field.get(pepperJob);
-	// for (PepperModuleController pepperModuleController : pepperModuleControllers)
-	// {
-	// pepperModuleController.getPepperM2JMonitor().finish();
-	// }
-	// }
-	// }
-	// }
-
-	// /**
-	// * Collects status information. Unfortunately this status is not appropriated
-	// * to be displayed within the Eclipse progress monitor dialog.
-	// *
-	// * @return status information
-	// */
-	// protected String getStatusString()
-	// {
-	// String status = null;
-	// Thread thread = moduleThread;
-	// if (thread != null && thread.isAlive())
-	// {
-	// PepperConverter pepperConverter = pepperWizard.getPepper();
-	// if (pepperConverter != null)
-	// {
-	// for (PepperJob pepperJob : pepperConverter.getPepperJobs())
-	// {
-	// PepperDocumentController documentController = pepperJob.getPepperDocumentController();
-	// if (documentController != null)
-	// {
-	// String status4Print = documentController.getStatus4Print();
-	// if (status4Print != null)
-	// {
-	// status = status != null ? status + "\n" + status4Print : status4Print;
-	// }
-	// }
-	// }
-	// }
-	// }
-	//
-	// return status;
-	// }
-
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see java.util.concurrent.Future#cancel(boolean)
 	 */
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
@@ -372,22 +230,28 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see java.util.concurrent.Future#isCancelled()
 	 */
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see java.util.concurrent.Future#isDone()
 	 */
 	@Override
 	public boolean isDone() {
 		return done;
 	}
 
+	/**
+	 * Returns the result as boolean.
+	 *
+	 * @return the result
+	 * @throws ExecutionException
+	 */
 	protected Boolean getOutcome() throws ExecutionException {
 		if (throwable != null) {
 			throw new ExecutionException(throwable);
@@ -397,8 +261,8 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see java.util.concurrent.Future#get()
 	 */
 	@Override
 	public Boolean get() throws InterruptedException, CancellationException, ExecutionException {
@@ -416,8 +280,8 @@ public abstract class PepperModuleRunnable implements IRunnableWithProgress, Fut
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
 	public Boolean get(long timeout, TimeUnit unit) throws InterruptedException, CancellationException, ExecutionException, TimeoutException {

@@ -1,20 +1,21 @@
 /*******************************************************************************
- * Copyright 2013 Friedrich Schiller University Jena
- * Michael Gr�bsch
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
+* Copyright 2013 Friedrich Schiller University Jena
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* Contributors:
+*     Michael Grübsch - initial API and implementation
+*******************************************************************************/
 package org.corpus_tools.atomic.pepper.wizard;
 
 import java.util.List;
@@ -45,138 +46,120 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- *
- * @author  Michael Gr�bsch
- * @version $Revision$, $Date$
+ * @author Michael Grübsch
  */
-public class PepperWizardPageFormat extends WizardPage implements IWizardPage
-{
-  protected final AbstractPepperWizard pepperWizard;
+public class PepperWizardPageFormat extends WizardPage implements IWizardPage {
+	protected final AbstractPepperWizard pepperWizard;
 
-  protected TableViewer tableViewer;
+	protected TableViewer tableViewer;
 
-  /**
-   * Legt eine neue Instanz des Typs PepperImportWizardPageImporter an.
-   * @param pageName
-   * @param title
-   * @param titleImage
-   */
-  public PepperWizardPageFormat(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
-  {
-    super(pageName, title, titleImage);
-    setPageComplete(false);
-    setDescription(description);
+	/**
+	 * Creates a new instance of an implementation of {@link AbstractPepperWizard}. 
+	 * 
+	 * @param pageName
+	 * @param title
+	 * @param titleImage
+	 */
+	public PepperWizardPageFormat(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description) {
+		super(pageName, title, titleImage);
+		setPageComplete(false);
+		setDescription(description);
 
-    this.pepperWizard = pepperWizard;
-  }
+		this.pepperWizard = pepperWizard;
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void createControl(Composite parent)
-  {
-    Composite container = new Composite(parent, SWT.NULL);
-    setControl(container);
-    container.setLayout(new GridLayout(1, false));
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	public void createControl(Composite parent) {
+		Composite container = new Composite(parent, SWT.NULL);
+		setControl(container);
+		container.setLayout(new GridLayout(1, false));
 
-    Composite tableComposite = new Composite(container, SWT.NONE);
-    tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		Composite tableComposite = new Composite(container, SWT.NONE);
+		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-    tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
 
-    TableColumnLayout tableColumnLayout = new TableColumnLayout();
-    tableComposite.setLayout(tableColumnLayout);
+		TableColumnLayout tableColumnLayout = new TableColumnLayout();
+		tableComposite.setLayout(tableColumnLayout);
 
-    TableViewerColumn tableViewerColumn;
-    TableColumn tableColumn;
-    
-    tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-    tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
-    {
-      @Override
-      public String getText(Object element)
-      {
-        return super.getText(((FormatDesc) element).getFormatName());
-      }
-    });
+		TableViewerColumn tableViewerColumn;
+		TableColumn tableColumn;
 
-    tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Format");
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return super.getText(((FormatDesc) element).getFormatName());
+			}
+		});
 
-    tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(70));
+		tableColumn = tableViewerColumn.getColumn();
+		tableColumn.setText("Format");
 
-    tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-    tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
-    {
-      @Override
-      public String getText(Object element)
-      {
-        return super.getText(((FormatDesc) element).getFormatVersion());
-      }
-    });
+		tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(70));
 
-    tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Version");
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return super.getText(((FormatDesc) element).getFormatVersion());
+			}
+		});
 
-    tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(30));
+		tableColumn = tableViewerColumn.getColumn();
+		tableColumn.setText("Version");
 
-    ColumnViewerToolTipSupport.enableFor(tableViewer);
+		tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(30));
 
-    tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-  
-    Table table = tableViewer.getTable();
+		ColumnViewerToolTipSupport.enableFor(tableViewer);
 
-    table.setHeaderVisible(true);
-    table.setLinesVisible(true);
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
-    tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
-    {
-      @Override
-      public void selectionChanged(SelectionChangedEvent event)
-      {
-        ISelection selection = event.getSelection();
+		Table table = tableViewer.getTable();
 
-        boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
-        setPageComplete(selected);
-        pepperWizard.setFormatDesc(selected ? (FormatDesc) ((IStructuredSelection) selection).getFirstElement() : null);
-      }
-    });
-    
-    tableViewer.addDoubleClickListener(new IDoubleClickListener()
-    {
-      @Override
-      public void doubleClick(DoubleClickEvent event)
-      {
-        PepperWizardPageFormat.this.pepperWizard.advance();
-      }
-    });
-  }
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setVisible(boolean visible)
-  {
-    if (visible)
-    {
-      List<FormatDesc> supportedFormats = pepperWizard.getSupportedFormats();
-      tableViewer.setInput(supportedFormats);
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = event.getSelection();
 
-      FormatDesc formatDefinition =
-          supportedFormats.size() == 1
-        ? supportedFormats.get(0)
-        : pepperWizard.getFormatDesc();
+				boolean selected = !selection.isEmpty() && selection instanceof IStructuredSelection;
+				setPageComplete(selected);
+				pepperWizard.setFormatDesc(selected ? (FormatDesc) ((IStructuredSelection) selection).getFirstElement() : null);
+			}
+		});
 
-      if (formatDefinition == null)
-      {
-        formatDefinition = pepperWizard.getPreviouslySelectedFormatDesc();
-      }
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				PepperWizardPageFormat.this.pepperWizard.advance();
+			}
+		});
+	}
 
-      tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
-    }
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			List<FormatDesc> supportedFormats = pepperWizard.getSupportedFormats();
+			tableViewer.setInput(supportedFormats);
 
-    super.setVisible(visible);
-  }
+			FormatDesc formatDefinition = supportedFormats.size() == 1 ? supportedFormats.get(0) : pepperWizard.getFormatDesc();
+
+			if (formatDefinition == null) {
+				formatDefinition = pepperWizard.getPreviouslySelectedFormatDesc();
+			}
+
+			tableViewer.setSelection(formatDefinition != null ? new StructuredSelection(formatDefinition) : StructuredSelection.EMPTY);
+		}
+
+		super.setVisible(visible);
+	}
 }

@@ -52,230 +52,192 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- *
- * @author  Michael Gr�bsch
+ * @author Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageProperties extends WizardPage implements IWizardPage
-{
-  protected final AbstractPepperWizard pepperWizard;
+public class PepperWizardPageProperties extends WizardPage implements IWizardPage {
+	protected final AbstractPepperWizard pepperWizard;
 
-  protected TableViewer tableViewer;
+	protected TableViewer tableViewer;
 
-  /**
-   * Legt eine neue Instanz des Typs PepperImportWizardPageProperties an.
-   * @param pageName
-   * @param title
-   * @param titleImage
-   */
-  public PepperWizardPageProperties(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description)
-  {
-    super(pageName, title, titleImage);
-    setPageComplete(false);
-    setDescription(description);
+	/**
+	 * Legt eine neue Instanz des Typs PepperImportWizardPageProperties an.
+	 * 
+	 * @param pageName
+	 * @param title
+	 * @param titleImage
+	 */
+	public PepperWizardPageProperties(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description) {
+		super(pageName, title, titleImage);
+		setPageComplete(false);
+		setDescription(description);
 
-    this.pepperWizard = pepperWizard;
-  }
+		this.pepperWizard = pepperWizard;
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void createControl(Composite parent)
-  {
-    Composite container = new Composite(parent, SWT.NULL);
-    setControl(container);
-    container.setLayout(new GridLayout(1, false));
+	/*
+	 * @copydoc @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	public void createControl(Composite parent) {
+		Composite container = new Composite(parent, SWT.NULL);
+		setControl(container);
+		container.setLayout(new GridLayout(1, false));
 
-    Composite tableComposite = new Composite(container, SWT.NONE);
-    tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		Composite tableComposite = new Composite(container, SWT.NONE);
+		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-    tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
 
-    TableColumnLayout tableColumnLayout = new TableColumnLayout();
-    tableComposite.setLayout(tableColumnLayout);
+		TableColumnLayout tableColumnLayout = new TableColumnLayout();
+		tableComposite.setLayout(tableColumnLayout);
 
-    TableViewerColumn tableViewerColumn;
-    TableColumn tableColumn;
-    
-    tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-    tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
-    {
-      @Override
-      public String getText(Object element)
-      {
-        return super.getText(((PepperModuleProperty<?>) element).getName());
-      }
-    });
+		TableViewerColumn tableViewerColumn;
+		TableColumn tableColumn;
 
-    tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Property");
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return super.getText(((PepperModuleProperty<?>) element).getName());
+			}
+		});
 
-    tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(50));
+		tableColumn = tableViewerColumn.getColumn();
+		tableColumn.setText("Property");
 
-    tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-    tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
-    {
-      @Override
-      public String getText(Object element)
-      {
-        return super.getText(((PepperModuleProperty<?>) element).getValue());
-      }
-    });
+		tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(50));
 
-    tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Value");
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return super.getText(((PepperModuleProperty<?>) element).getValue());
+			}
+		});
 
-    tableViewerColumn.setEditingSupport(new EditingSupport(tableViewer)
-    {
-      TextCellEditor textCellEditor = null;
-      
-      @Override
-      protected boolean canEdit(Object element)
-      {
-        return true;
-      }
-      
-      @Override
-      protected CellEditor getCellEditor(Object element)
-      {
-        if (textCellEditor == null)
-        {
-          textCellEditor = new TextCellEditor((Composite) tableViewer.getControl());
-        }
-        return textCellEditor;
-      }
-      
-      @Override
-      protected void setValue(Object element, Object value)
-      {
-        ((PepperModuleProperty<?>) element).setValueString(value != null ? value.toString() : null);
-        tableViewer.refresh(element, true);
-      }
-      
-      @Override
-      protected Object getValue(Object element)
-      {
-        return ((PepperModuleProperty<?>) element).getValue();
-      }
-    });
+		tableColumn = tableViewerColumn.getColumn();
+		tableColumn.setText("Value");
 
-    tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(50));
+		tableViewerColumn.setEditingSupport(new EditingSupport(tableViewer) {
+			TextCellEditor textCellEditor = null;
 
-    ColumnViewerToolTipSupport.enableFor(tableViewer);
+			@Override
+			protected boolean canEdit(Object element) {
+				return true;
+			}
 
-    tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-  
-    Table table = tableViewer.getTable();
+			@Override
+			protected CellEditor getCellEditor(Object element) {
+				if (textCellEditor == null) {
+					textCellEditor = new TextCellEditor((Composite) tableViewer.getControl());
+				}
+				return textCellEditor;
+			}
 
-    table.setHeaderVisible(true);
-    table.setLinesVisible(true);
-    
-    Composite composite = new Composite(container, SWT.NONE);
-    composite.setLayout(new GridLayout(2, true));
-    composite.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false, 1, 1));
-    
-    Button addButton = new Button(composite, SWT.NONE);
-    addButton.addSelectionListener(new SelectionAdapter() 
-    {
-      @Override
-      public void widgetSelected(SelectionEvent e) 
-      {
-        TextInputDialog textInputDialog = new TextInputDialog
-          ( getShell()
-          , "Set Property Name"
-          , "Enter the name of the new property. The name must be unique."
-          , "Propery Name: "
-          , ""
-          , new TextInputDialog.RequiredTextInputVerifier()
-            {
-              @Override
-              public boolean verifyText(String text)
-              {
-                if (super.verifyText(text))
-                {
-                  return ! pepperWizard.containsPepperModuleProperty(text.trim());
-                }
-                else
-                {
-                  return false;
-                }
-              }
-            }
-          );
-        if (textInputDialog.open() == Window.OK)
-        {
-          PepperModuleProperty<String> property = new PepperModuleProperty<String>(textInputDialog.getInputText(), String.class, "", "");
-          property.setValueString("<ENTER VALUE HERE>");
-          pepperWizard.addPepperModuleProperty(property);
-          tableViewer.add(property);
-        }
-      }
-    });
-    addButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    addButton.setText("Add");
-    
-    final Button removeButton = new Button(composite, SWT.NONE);
-    removeButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    removeButton.setText("Remove");
-    removeButton.setEnabled(false);
-    removeButton.addSelectionListener(new SelectionAdapter() 
-    {
-      @Override
-      public void widgetSelected(SelectionEvent e) 
-      {
-        ISelection selection = tableViewer.getSelection();
-        if ( ! selection.isEmpty() && selection instanceof IStructuredSelection)
-        {
-          PepperModuleProperty<?> property = (PepperModuleProperty<?>)((IStructuredSelection) selection).getFirstElement();
-          if (property != null)
-          {
-            pepperWizard.removePepperModuleProperty(property.getName());
-            tableViewer.remove(property);
-          }
-        }
-      }
-    });
-    
-    tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
-    {
-      @Override
-      public void selectionChanged(SelectionChangedEvent event)
-      {
-        ISelection selection = event.getSelection();
-        boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
-        removeButton.setEnabled(selected);
-      }
-    });
-  }
+			@Override
+			protected void setValue(Object element, Object value) {
+				((PepperModuleProperty<?>) element).setValueString(value != null ? value.toString() : null);
+				tableViewer.refresh(element, true);
+			}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setVisible(boolean visible)
-  {
-    if (visible)
-    {
-      PepperModuleProperties pepperModuleProperties = pepperWizard.getPepperModuleProperties();
-      if (pepperModuleProperties != null)
-      {
-        Collection<String> propertyNames =  pepperModuleProperties.getPropertyNames();
-        if (propertyNames != null)
-        {
-          List<PepperModuleProperty<?>> propertyList = new ArrayList<PepperModuleProperty<?>>(propertyNames.size());
-          for (String propertyName : propertyNames)
-          {
-            propertyList.add(pepperModuleProperties.getProperty(propertyName));
-          }
+			@Override
+			protected Object getValue(Object element) {
+				return ((PepperModuleProperty<?>) element).getValue();
+			}
+		});
 
-          tableViewer.setInput(propertyList);
-        }
-      }
-      
-      setPageComplete(true);
-    }
+		tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(50));
 
-    super.setVisible(visible);
-  }
+		ColumnViewerToolTipSupport.enableFor(tableViewer);
+
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+
+		Table table = tableViewer.getTable();
+
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+
+		Composite composite = new Composite(container, SWT.NONE);
+		composite.setLayout(new GridLayout(2, true));
+		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false, 1, 1));
+
+		Button addButton = new Button(composite, SWT.NONE);
+		addButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TextInputDialog textInputDialog = new TextInputDialog(getShell(), "Set Property Name", "Enter the name of the new property. The name must be unique.", "Propery Name: ", "", new TextInputDialog.RequiredTextInputVerifier() {
+					@Override
+					public boolean verifyText(String text) {
+						if (super.verifyText(text)) {
+							return !pepperWizard.containsPepperModuleProperty(text.trim());
+						}
+						else {
+							return false;
+						}
+					}
+				});
+				if (textInputDialog.open() == Window.OK) {
+					PepperModuleProperty<String> property = new PepperModuleProperty<String>(textInputDialog.getInputText(), String.class, "", "");
+					property.setValueString("<ENTER VALUE HERE>");
+					pepperWizard.addPepperModuleProperty(property);
+					tableViewer.add(property);
+				}
+			}
+		});
+		addButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		addButton.setText("Add");
+
+		final Button removeButton = new Button(composite, SWT.NONE);
+		removeButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		removeButton.setText("Remove");
+		removeButton.setEnabled(false);
+		removeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ISelection selection = tableViewer.getSelection();
+				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+					PepperModuleProperty<?> property = (PepperModuleProperty<?>) ((IStructuredSelection) selection).getFirstElement();
+					if (property != null) {
+						pepperWizard.removePepperModuleProperty(property.getName());
+						tableViewer.remove(property);
+					}
+				}
+			}
+		});
+
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = event.getSelection();
+				boolean selected = !selection.isEmpty() && selection instanceof IStructuredSelection;
+				removeButton.setEnabled(selected);
+			}
+		});
+	}
+
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			PepperModuleProperties pepperModuleProperties = pepperWizard.getPepperModuleProperties();
+			if (pepperModuleProperties != null) {
+				Collection<String> propertyNames = pepperModuleProperties.getPropertyNames();
+				if (propertyNames != null) {
+					List<PepperModuleProperty<?>> propertyList = new ArrayList<PepperModuleProperty<?>>(propertyNames.size());
+					for (String propertyName : propertyNames) {
+						propertyList.add(pepperModuleProperties.getProperty(propertyName));
+					}
+
+					tableViewer.setInput(propertyList);
+				}
+			}
+
+			setPageComplete(true);
+		}
+
+		super.setVisible(visible);
+	}
 }

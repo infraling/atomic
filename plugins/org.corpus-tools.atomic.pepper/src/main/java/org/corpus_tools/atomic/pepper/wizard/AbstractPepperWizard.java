@@ -19,24 +19,16 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.pepper.wizard;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
+import java.lang.reflect.InvocationTargetException; 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.pepper.Activator;
-import org.corpus_tools.atomic.pepper.AtomicPepperConfiguration;
-import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
 import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
 import org.corpus_tools.atomic.pepper.modules.LoadPepperModuleRunnable;
 import org.corpus_tools.pepper.common.FormatDesc;
@@ -58,20 +50,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 
 /**
  * An abstract base class for Pepper Wizards, i.e., import and export wizards.
  *
  * @author Stephan Druskat <mail@sdruskat.net>
- */
-/**
- * TODO Description
- *
- * @author Stephan Druskat <mail@sdruskat.net>
- *
  */
 public abstract class AbstractPepperWizard extends Wizard {
 
@@ -121,6 +105,13 @@ public abstract class AbstractPepperWizard extends Wizard {
 		System.setProperty("PepperModuleResolver.ResourcesURI", System.getProperty("java.io.tmpdir"));
 	}
 
+	/**
+	 * Creates an implementation of {@link PepperModuleRunnable}.
+	 *
+	 * @param project The current Atomic project as an {@link IProject}
+	 * @param cancelable whether the process shold be cancellable
+	 * @return An instance of an implementation of {@link PepperModuleRunnable}
+	 */
 	protected abstract PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable);
 
 	/* 
@@ -150,7 +141,6 @@ public abstract class AbstractPepperWizard extends Wizard {
 		setPepper(pepperStarter.getPepper());
 		pepperModuleProperties = new PepperModuleProperties();
 		// FIXME TODO Check whether previous selections are remembered.
-		System.err.println(">>> " + System.getProperty(AtomicPepperConfiguration.PROP_PEPPER_MODULE_RESOURCES));
 		readDialogSettings();
 	}
 
@@ -158,6 +148,10 @@ public abstract class AbstractPepperWizard extends Wizard {
 		return wizardMode;
 	}
 
+	/**
+	 * Advances the wizard to the next page if it exists.
+	 *
+	 */
 	public void advance() {
 		IWizardPage currentPage = getContainer().getCurrentPage();
 		if (currentPage != null) {
@@ -168,8 +162,8 @@ public abstract class AbstractPepperWizard extends Wizard {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#dispose()
 	 */
 	@Override
 	public void dispose() {
@@ -188,6 +182,9 @@ public abstract class AbstractPepperWizard extends Wizard {
 		super.dispose();
 	}
 
+	/**
+	 * @return whether the wizard can finish
+	 */
 	protected boolean canPerformFinish() {
 		return pepperModule != null && formatDesc != null && exchangeTargetPath != null;
 	}
@@ -230,6 +227,10 @@ public abstract class AbstractPepperWizard extends Wizard {
 		}
 	}
 
+	/**
+	 * Reads the dialog settings for this wizard.
+	 *
+	 */
 	protected void readDialogSettings() {
 		IDialogSettings settings = getDialogSettings();
 		exchangeTargetPath = settings.get(DIALOG_SETTINGS_EXCHANGE_TARGET_PATH);
@@ -253,6 +254,10 @@ public abstract class AbstractPepperWizard extends Wizard {
 		}
 	}
 
+	/**
+	 * Persists the dialog settings for this wizard.
+	 *
+	 */
 	protected void writeDialogSettings() {
 		IDialogSettings settings = getDialogSettings();
 
@@ -295,101 +300,12 @@ public abstract class AbstractPepperWizard extends Wizard {
 	}
 
 
+	/**
+	 * @return The current {@link Pepper} instance as {@link PepperConnector}
+	 */
 	public PepperConnector getPepper() {
 		return pepper;
 	}
-
-	// FIXME TODO
-	// Load Pepper modeules properly!!!
-	
-//	/**
-//	 * Returns a list of PepperModules according to the requested module type.
-//	 * 
-//	 * @return
-//	 */
-//	public List<PepperModuleDesc> getPepperModules() {
-//		System.err.println("Module descriptions: " + pepperModuleDescriptions);
-//		if (pepperModuleDescriptions == null) {
-//			pepperModuleDescriptions = new ArrayList<>();
-//		}
-//		if (!pepperModuleDescriptions.isEmpty()) {
-//			return pepperModuleDescriptions;
-//		}
-//		else {
-//			System.err.println("Loading modules");
-//			// Load the configuration
-//			AtomicPepperConfiguration configuration = (AtomicPepperConfiguration) getPepper().getConfiguration();
-//			configuration.load();
-//			String path = configuration.getPlugInPath();
-//			// Find all JAR files in pepper-modules directory
-//			File[] fileLocations = new File(path).listFiles((FilenameFilter) new SuffixFileFilter(".jar"));
-//			List<Bundle> moduleBundles = new ArrayList<>();
-//			if (fileLocations != null) {
-//				// Install JARs as OSGi bundles
-//				for (File bundleJar : fileLocations) {
-//					if (bundleJar.isFile() && bundleJar.canRead()) {
-//						URI bundleURI = bundleJar.toURI();
-//						Bundle bundle = null;
-//						try {
-//							bundle = Activator.getDefault().getBundle().getBundleContext().installBundle(bundleURI.toString());
-//							moduleBundles.add(bundle);
-//						}
-//						catch (BundleException e) {
-//							log.debug("Could not install bundle {}!", bundleURI.toString());
-//						}
-//					}
-//				}
-//				// Start bundles
-//				for (Bundle bundle : moduleBundles) {
-//					try {
-//						bundle.start();
-//					}
-//					catch (BundleException e) {
-//						log.debug("Could not start bundle {}!", bundle.getSymbolicName());
-//					}
-//				}
-//			}
-//			// Compile list of module description for use in pages
-//			if (getPepper() != null) {
-//				Collection<PepperModuleDesc> allModuleDescs = getPepper().getRegisteredModules();
-//				if (allModuleDescs != null) {
-//					for (PepperModuleDesc desc : allModuleDescs) {
-//						if (desc.getModuleType() == getModuleTypeFromWizardMode()) {
-//							pepperModuleDescriptions.add(desc);
-//						}
-//					}
-//				}
-//			}
-//			if (pepperModuleDescriptions.isEmpty()) {
-//				new MessageDialog(this.getShell(), "Error", null, "Did not find any Pepper module of type " + wizardMode.name() + "!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
-//			}
-//			// Sort list of module descriptions
-//			Collections.sort(pepperModuleDescriptions, new Comparator<PepperModuleDesc>() {
-//				@Override
-//				public int compare(PepperModuleDesc o1, PepperModuleDesc o2) {
-//					return o1.getName().compareTo(o2.getName());
-//				}
-//			});
-//			System.err.println("Module descriptions after load: " + pepperModuleDescriptions);
-//			return pepperModuleDescriptions;
-//		}
-//
-//	}
-
-
-//	/**
-//	 * Return the {@link MODULE_TYPE} respective of the {@link WizardMode}.
-//	 *
-//	 * @return
-//	 */
-//	private MODULE_TYPE getModuleTypeFromWizardMode() {
-//		if (wizardMode == WizardMode.IMPORT) {
-//			return MODULE_TYPE.IMPORTER;
-//		}
-//		else {
-//			return MODULE_TYPE.EXPORTER;
-//		}
-//	}
 
 	/**
 	 * Returns description objects for all {@link PepperModule}s provided by the current {@link Pepper} instance. The list either contains all importers (sorted by name), manipulators (sorted by name) or all exporters (sorted by name).
@@ -435,73 +351,14 @@ public abstract class AbstractPepperWizard extends Wizard {
 					return o1.getName().compareTo(o2.getName());
 				}
 			});
-			System.err.println("Module descriptions after load: " + pepperModuleDescriptions);
 			return pepperModuleDescriptions;
 		}
-
-//			System.err.println("Loading modules");
-//			// Load the configuration
-//			AtomicPepperConfiguration configuration = (AtomicPepperConfiguration) getPepper().getConfiguration();
-//			configuration.load();
-//			String path = configuration.getPlugInPath();
-//			// Find all JAR files in pepper-modules directory
-//			File[] fileLocations = new File(path).listFiles((FilenameFilter) new SuffixFileFilter(".jar"));
-//			List<Bundle> moduleBundles = new ArrayList<>();
-//			if (fileLocations != null) {
-//				// Install JARs as OSGi bundles
-//				for (File bundleJar : fileLocations) {
-//					if (bundleJar.isFile() && bundleJar.canRead()) {
-//						URI bundleURI = bundleJar.toURI();
-//						Bundle bundle = null;
-//						try {
-//							bundle = Activator.getDefault().getBundle().getBundleContext().installBundle(bundleURI.toString());
-//							moduleBundles.add(bundle);
-//						}
-//						catch (BundleException e) {
-//							log.debug("Could not install bundle {}!", bundleURI.toString());
-//						}
-//					}
-//				}
-//				// Start bundles
-//				for (Bundle bundle : moduleBundles) {
-//					try {
-//						bundle.start();
-//					}
-//					catch (BundleException e) {
-//						log.debug("Could not start bundle {}!", bundle.getSymbolicName());
-//					}
-//				}
-//			}
-//			// Compile list of module description for use in pages
-//			if (getPepper() != null) {
-//				Collection<PepperModuleDesc> allModuleDescs = getPepper().getRegisteredModules();
-//				if (allModuleDescs != null) {
-//					for (PepperModuleDesc desc : allModuleDescs) {
-//						if (desc.getModuleType() == moduleType) {
-//							pepperModuleDescriptions.add(desc);
-//						}
-//					}
-//				}
-//			}
-//			if (pepperModuleDescriptions.isEmpty()) {
-//				new MessageDialog(this.getShell(), "Error", null, "Did not find any Pepper module of type " + wizardMode.name() + "!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
-//			}
-//			// Sort list of module descriptions
-//			Collections.sort(pepperModuleDescriptions, new Comparator<PepperModuleDesc>() {
-//				@Override
-//				public int compare(PepperModuleDesc o1, PepperModuleDesc o2) {
-//					return o1.getName().compareTo(o2.getName());
-//				}
-//			});
-//			System.err.println("Module descriptions after load: " + pepperModuleDescriptions);
-//			return pepperModuleDescriptions;
-//		}
 	}
 
 	/**
 	 * Gets the previously selected module name.
 	 * 
-	 * @return
+	 * @return the description of the module
 	 */
 	public PepperModuleDesc getPreviouslySelectedPepperModule() {
 		Collection<PepperModuleDesc> moduleList = getPepper().getRegisteredModules();
@@ -513,7 +370,6 @@ public abstract class AbstractPepperWizard extends Wizard {
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -620,6 +476,13 @@ public abstract class AbstractPepperWizard extends Wizard {
 		this.exchangeTargetType = exchangeTargetType;
 	}
 
+	/**
+	 * Proactively "removes" a {@link PepperModuleProperty} by creating a new
+	 * {@link PepperModuleProperties} object and only adding those available
+	 * {@link PepperModuleProperty}s to it whose name doesn't equal the argument.
+	 *
+	 * @param propertyName
+	 */
 	public void removePepperModuleProperty(String propertyName) {
 
 		// es gibt kein remove in PepperModuleProperties

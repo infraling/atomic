@@ -56,7 +56,7 @@ public class LoadPepperModuleRunnable implements IRunnableWithProgress {
 	
 
 	/**
-	 * @param pepper
+	 * @param pepper The {@link Pepper} instance to use
 	 */
 	public LoadPepperModuleRunnable(PepperConnector pepper) {
 		this.pepper = pepper;

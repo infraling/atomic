@@ -48,160 +48,139 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- *
- * @author  Michael Gr�bsch
+ * @author Michael Gr�bsch
  * @version $Revision$, $Date$
  */
-public class PepperWizardPageModule extends WizardPage implements IWizardPage
-{
-  protected final AbstractPepperWizard pepperWizard;
+public class PepperWizardPageModule extends WizardPage implements IWizardPage {
+	protected final AbstractPepperWizard pepperWizard;
 
-  protected TableViewer tableViewer;
+	protected TableViewer tableViewer;
 
-  /**
-   * Legt eine neue Instanz des Typs PepperImportWizardPageImporter an.
-   * @param pageName
-   * @param title
-   * @param titleImage
-   */
-  public PepperWizardPageModule
-    ( AbstractPepperWizard pepperWizard
-    , String pageName
-    , String title
-    , ImageDescriptor titleImage
-    , String description
-    )
-  {
-    super(pageName, title, titleImage);
-    setPageComplete(false);
-    setDescription(description);
+	/**
+	 * Legt eine neue Instanz des Typs PepperImportWizardPageImporter an.
+	 * 
+	 * @param pageName
+	 * @param title
+	 * @param titleImage
+	 */
+	public PepperWizardPageModule(AbstractPepperWizard pepperWizard, String pageName, String title, ImageDescriptor titleImage, String description) {
+		super(pageName, title, titleImage);
+		setPageComplete(false);
+		setDescription(description);
 
-    this.pepperWizard = pepperWizard;
-  }
+		this.pepperWizard = pepperWizard;
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void createControl(Composite parent)
-  {
-    Composite container = new Composite(parent, SWT.NULL);
-    setControl(container);
-    container.setLayout(new GridLayout(1, false));
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	public void createControl(Composite parent) {
+		Composite container = new Composite(parent, SWT.NULL);
+		setControl(container);
+		container.setLayout(new GridLayout(1, false));
 
-    Composite tableComposite = new Composite(container, SWT.NONE);
-    tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		Composite tableComposite = new Composite(container, SWT.NONE);
+		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-    tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
 
-    TableColumnLayout tableColumnLayout = new TableColumnLayout();
-    tableComposite.setLayout(tableColumnLayout);
+		TableColumnLayout tableColumnLayout = new TableColumnLayout();
+		tableComposite.setLayout(tableColumnLayout);
 
-    TableViewerColumn tableViewerColumn;
-    TableColumn tableColumn;
-    
-    tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-    tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
-    {
-      @Override
-      public String getText(Object element)
-      {
-        return super.getText(((PepperModuleDesc) element).getName());
-      }
-    });
+		TableViewerColumn tableViewerColumn;
+		TableColumn tableColumn;
 
-    tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Module");
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return super.getText(((PepperModuleDesc) element).getName());
+			}
+		});
 
-    tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(70));
+		tableColumn = tableViewerColumn.getColumn();
+		tableColumn.setText("Module");
 
-    tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-    tableViewerColumn.setLabelProvider(new ColumnLabelProvider()
-    {
-      @Override
-      public String getText(Object element)
-      {
-        return super.getText(((PepperModuleDesc) element).getVersion());
-      }
-    });
+		tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(70));
 
-    tableColumn = tableViewerColumn.getColumn();
-    tableColumn.setText("Version");
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return super.getText(((PepperModuleDesc) element).getVersion());
+			}
+		});
 
-    tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(30));
+		tableColumn = tableViewerColumn.getColumn();
+		tableColumn.setText("Version");
 
-    ColumnViewerToolTipSupport.enableFor(tableViewer);
+		tableColumnLayout.setColumnData(tableColumn, new ColumnWeightData(30));
 
-    tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-  
-    Table table = tableViewer.getTable();
+		ColumnViewerToolTipSupport.enableFor(tableViewer);
 
-    table.setHeaderVisible(true);
-    table.setLinesVisible(true);
-    
-    tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
-    {
-      @Override
-      public void selectionChanged(SelectionChangedEvent event)
-      {
-        ISelection selection = event.getSelection();
-        
-        boolean selected = ! selection.isEmpty() && selection instanceof IStructuredSelection;
-        setPageComplete(selected);
-        pepperWizard.setPepperModule(selected ? (PepperModuleDesc) ((IStructuredSelection) selection).getFirstElement() : null);
-      }
-    });
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
-    tableViewer.addDoubleClickListener(new IDoubleClickListener()
-    {
-      @Override
-      public void doubleClick(DoubleClickEvent event)
-      {
-        PepperWizardPageModule.this.pepperWizard.advance();
-      }
-    });
-  }
+		Table table = tableViewer.getTable();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setVisible(boolean visible)
-  {
-    if (visible)
-    {
-    	PepperModuleDesc pepperModule = pepperWizard.getPepperModule();
-      if (pepperModule == null)
-      {
-        pepperModule = pepperWizard.getPreviouslySelectedPepperModule();
-      }
-      List<PepperModuleDesc> modules = pepperWizard.getPepperModules(getModuleTypeFromWizardMode());
-      if (modules.size() < 4) { // Only the three basic modules are available
-			setMessage("More modules may be available. To install/update modules, run Help > Updates > Update Pepper.", DialogPage.INFORMATION);
-			this.getContainer().updateMessage();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = event.getSelection();
+
+				boolean selected = !selection.isEmpty() && selection instanceof IStructuredSelection;
+				setPageComplete(selected);
+				pepperWizard.setPepperModule(selected ? (PepperModuleDesc) ((IStructuredSelection) selection).getFirstElement() : null);
+			}
+		});
+
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				PepperWizardPageModule.this.pepperWizard.advance();
+			}
+		});
+	}
+
+	/* 
+	 * @copydoc @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			PepperModuleDesc pepperModule = pepperWizard.getPepperModule();
+			if (pepperModule == null) {
+				pepperModule = pepperWizard.getPreviouslySelectedPepperModule();
+			}
+			List<PepperModuleDesc> modules = pepperWizard.getPepperModules(getModuleTypeFromWizardMode());
+			if (modules.size() < 4) { // Only the three basic modules are available
+				setMessage("More modules may be available. To install/update modules, run Help > Updates > Update Pepper.", DialogPage.INFORMATION);
+				this.getContainer().updateMessage();
+			}
+
+			tableViewer.setInput(modules);
+
+			tableViewer.setSelection(pepperModule != null ? new StructuredSelection(pepperModule) : StructuredSelection.EMPTY);
 		}
-		
 
-      tableViewer.setInput(modules);
-      
-      System.err.println("TABLE VIEWER INPUT: " + tableViewer.getInput());
-      tableViewer.setSelection(pepperModule != null ? new StructuredSelection(pepperModule) : StructuredSelection.EMPTY);
-    }
-
-    super.setVisible(visible);
-  }
-
-/**
- * TODO: Description
- *
- * @return
- */
-private MODULE_TYPE getModuleTypeFromWizardMode() {
-	if (pepperWizard.getWizardMode() == WizardMode.IMPORT) {
-		return MODULE_TYPE.IMPORTER;
-	}
-	else {
-		return MODULE_TYPE.EXPORTER;
+		super.setVisible(visible);
 	}
 
-}}
+	/**
+	 * TODO: Description
+	 *
+	 * @return
+	 */
+	private MODULE_TYPE getModuleTypeFromWizardMode() {
+		if (pepperWizard.getWizardMode() == WizardMode.IMPORT) {
+			return MODULE_TYPE.IMPORTER;
+		}
+		else {
+			return MODULE_TYPE.EXPORTER;
+		}
+
+	}
+}

@@ -49,8 +49,8 @@ public class PepperImportWizard extends AbstractPepperWizard implements IImportW
 		initialize();
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
 	@Override
 	public void addPages() {
@@ -61,17 +61,8 @@ public class PepperImportWizard extends AbstractPepperWizard implements IImportW
 		addPage(new PepperImportWizardPageProjectName(this, "selectProjectName", "Select Project Name", DEFAULT_PAGE_IMAGE_DESCRIPTOR));
 	}
 
-	// /**
-	// * {@inheritDoc}
-	// */
-	// @Override
-	// protected List<PepperImporter> resolvePepperModules(ModuleResolver pepperModuleResolver)
-	// {
-	// return pepperModuleResolver.getPepperImporters();
-	// }
-
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getSupportedFormats()
 	 */
 	@Override
 	public List<FormatDesc> getSupportedFormats() {
@@ -87,8 +78,8 @@ public class PepperImportWizard extends AbstractPepperWizard implements IImportW
 		this.projectName = projectName;
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#getProject()
 	 */
 	@Override
 	protected IProject getProject() throws CoreException {
@@ -99,27 +90,20 @@ public class PepperImportWizard extends AbstractPepperWizard implements IImportW
 		return project;
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#createModuleRunnable(org.eclipse.core.resources.IProject, boolean)
 	 */
 	@Override
 	protected PepperModuleRunnable createModuleRunnable(IProject project, boolean cancelable) {
 		return new ImportModuleRunnable(this, project, cancelable);
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* 
+	 * @copydoc @see org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard#canPerformFinish()
 	 */
 	@Override
 	protected boolean canPerformFinish() {
 		return super.canPerformFinish() && projectName != null && !ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).exists();
 	}
 
-//	/**
-//	 * {@inheritDoc}
-//	 */
-//	@Override
-//	public List<PepperModuleDesc> getPepperModules() {
-//		return (super.getPepperModules(MODULE_TYPE.IMPORTER));
-//	}
 }
