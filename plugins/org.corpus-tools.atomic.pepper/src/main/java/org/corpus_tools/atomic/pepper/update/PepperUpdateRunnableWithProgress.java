@@ -25,7 +25,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
- * TODO Description
+ * Runs a {@link PepperUpdateJob} (more precisely a {@link PepperUpdateDelegate})
+ * and passes the results to a {@link PepperUpdateReporter} instance.
  *
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *

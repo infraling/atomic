@@ -4,14 +4,15 @@
    <extension
          point="org.eclipse.ui.importWizards">
       <category
-            id="org.corpus_tools.atomic.pepper.categoryAtomicImport"
+            id="org.corpus_tools.atomic.AtomicImportWizardCategory"
             name="Atomic">
       </category>
       <wizard
-            category="org.corpus_tools.atomic.pepper.categoryAtomicImport"
-            class="org.corpus_tools.atomic.pepper.importwizard.PepperImportWizard"
-            id="org.corpus_tools.atomic.pepper.importwizard.pepperImportWizard"
-            name="Corpus Import via Pepper">
+            category="org.corpus_tools.atomic.AtomicImportWizardCategory"
+            class="org.corpus_tools.atomic.pepper.wizard.importwizard.PepperImportWizard"
+            icon="icons/obj16/pepper16.png"
+            id="org.corpus_tools.atomic.importPepperWizard"
+            name="Corpus Import">
       </wizard>
    </extension>
    <extension

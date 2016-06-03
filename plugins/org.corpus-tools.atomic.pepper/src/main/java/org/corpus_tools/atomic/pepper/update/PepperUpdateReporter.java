@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * TODO Description
+ * Reports the result of a {@link PepperUpdateJob}.
  * <p>
  * @author Stephan Druskat <stephan.druskat@uni-jena.de>
  */
