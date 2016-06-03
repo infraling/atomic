@@ -21,6 +21,7 @@ package org.corpus_tools.atomic.pepper.wizard;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import org.corpus_tools.atomic.pepper.Activator;
 import org.corpus_tools.atomic.pepper.AtomicPepperConfiguration;
 import org.corpus_tools.atomic.pepper.AtomicPepperOSGiConnector;
 import org.corpus_tools.atomic.pepper.AtomicPepperStarter;
+import org.corpus_tools.atomic.pepper.modules.LoadPepperModuleRunnable;
 import org.corpus_tools.pepper.common.FormatDesc;
 import org.corpus_tools.pepper.common.MODULE_TYPE;
 import org.corpus_tools.pepper.common.Pepper;
@@ -53,6 +55,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
@@ -402,39 +405,15 @@ public abstract class AbstractPepperWizard extends Wizard {
 			return pepperModuleDescriptions;
 		}
 		else {
-			System.err.println("Loading modules");
-			// Load the configuration
-			AtomicPepperConfiguration configuration = (AtomicPepperConfiguration) getPepper().getConfiguration();
-			configuration.load();
-			String path = configuration.getPlugInPath();
-			// Find all JAR files in pepper-modules directory
-			File[] fileLocations = new File(path).listFiles((FilenameFilter) new SuffixFileFilter(".jar"));
-			List<Bundle> moduleBundles = new ArrayList<>();
-			if (fileLocations != null) {
-				// Install JARs as OSGi bundles
-				for (File bundleJar : fileLocations) {
-					if (bundleJar.isFile() && bundleJar.canRead()) {
-						URI bundleURI = bundleJar.toURI();
-						Bundle bundle = null;
-						try {
-							bundle = Activator.getDefault().getBundle().getBundleContext().installBundle(bundleURI.toString());
-							moduleBundles.add(bundle);
-						}
-						catch (BundleException e) {
-							log.debug("Could not install bundle {}!", bundleURI.toString());
-						}
-					}
-				}
-				// Start bundles
-				for (Bundle bundle : moduleBundles) {
-					try {
-						bundle.start();
-					}
-					catch (BundleException e) {
-						log.debug("Could not start bundle {}!", bundle.getSymbolicName());
-					}
-				}
+			LoadPepperModuleRunnable moduleRunnable = new LoadPepperModuleRunnable(getPepper());
+			try {
+				PlatformUI.getWorkbench().getProgressService().run(false, true, moduleRunnable);
 			}
+			catch (InvocationTargetException | InterruptedException e) {
+				log.error("Loading available non-core Pepper modules did not complete successfully!", e);
+				MessageDialog.openError(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), "Pepper modules not loaded!", "The available Pepper modules could not be loaded! Only the core modules will be available!");
+			}
+
 			// Compile list of module description for use in pages
 			if (getPepper() != null) {
 				Collection<PepperModuleDesc> allModuleDescs = getPepper().getRegisteredModules();
@@ -459,6 +438,64 @@ public abstract class AbstractPepperWizard extends Wizard {
 			System.err.println("Module descriptions after load: " + pepperModuleDescriptions);
 			return pepperModuleDescriptions;
 		}
+
+//			System.err.println("Loading modules");
+//			// Load the configuration
+//			AtomicPepperConfiguration configuration = (AtomicPepperConfiguration) getPepper().getConfiguration();
+//			configuration.load();
+//			String path = configuration.getPlugInPath();
+//			// Find all JAR files in pepper-modules directory
+//			File[] fileLocations = new File(path).listFiles((FilenameFilter) new SuffixFileFilter(".jar"));
+//			List<Bundle> moduleBundles = new ArrayList<>();
+//			if (fileLocations != null) {
+//				// Install JARs as OSGi bundles
+//				for (File bundleJar : fileLocations) {
+//					if (bundleJar.isFile() && bundleJar.canRead()) {
+//						URI bundleURI = bundleJar.toURI();
+//						Bundle bundle = null;
+//						try {
+//							bundle = Activator.getDefault().getBundle().getBundleContext().installBundle(bundleURI.toString());
+//							moduleBundles.add(bundle);
+//						}
+//						catch (BundleException e) {
+//							log.debug("Could not install bundle {}!", bundleURI.toString());
+//						}
+//					}
+//				}
+//				// Start bundles
+//				for (Bundle bundle : moduleBundles) {
+//					try {
+//						bundle.start();
+//					}
+//					catch (BundleException e) {
+//						log.debug("Could not start bundle {}!", bundle.getSymbolicName());
+//					}
+//				}
+//			}
+//			// Compile list of module description for use in pages
+//			if (getPepper() != null) {
+//				Collection<PepperModuleDesc> allModuleDescs = getPepper().getRegisteredModules();
+//				if (allModuleDescs != null) {
+//					for (PepperModuleDesc desc : allModuleDescs) {
+//						if (desc.getModuleType() == moduleType) {
+//							pepperModuleDescriptions.add(desc);
+//						}
+//					}
+//				}
+//			}
+//			if (pepperModuleDescriptions.isEmpty()) {
+//				new MessageDialog(this.getShell(), "Error", null, "Did not find any Pepper module of type " + wizardMode.name() + "!", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+//			}
+//			// Sort list of module descriptions
+//			Collections.sort(pepperModuleDescriptions, new Comparator<PepperModuleDesc>() {
+//				@Override
+//				public int compare(PepperModuleDesc o1, PepperModuleDesc o2) {
+//					return o1.getName().compareTo(o2.getName());
+//				}
+//			});
+//			System.err.println("Module descriptions after load: " + pepperModuleDescriptions);
+//			return pepperModuleDescriptions;
+//		}
 	}
 
 	/**

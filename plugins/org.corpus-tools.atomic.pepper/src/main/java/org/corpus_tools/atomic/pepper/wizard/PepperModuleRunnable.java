@@ -49,7 +49,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 
-
 //import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperConverter;
 //import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperDocumentController;
 //import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperFW.PepperJob;
@@ -62,458 +61,381 @@ import org.eclipse.swt.widgets.Display;
 //import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParams;
 //import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperParams.PepperParamsFactory;
 
-public abstract class PepperModuleRunnable
-  implements 
-    IRunnableWithProgress
-  , Future<Boolean>
-{
-  protected static final AtomicInteger threadCounter = new AtomicInteger();
+public abstract class PepperModuleRunnable implements IRunnableWithProgress, Future<Boolean> {
+	protected static final AtomicInteger threadCounter = new AtomicInteger();
 
-  protected final AbstractPepperWizard pepperWizard;
+	protected final AbstractPepperWizard pepperWizard;
 
-  protected final IProject project;
-  protected final boolean cancelable;
-  
-  protected final Object cancelLock = new Object();
+	protected final IProject project;
+	protected final boolean cancelable;
 
-  protected Semaphore semaphore = new Semaphore(0);
-  protected Boolean outcome = Boolean.FALSE;
-  protected Throwable throwable = null;
-  protected volatile boolean cancelled = false;
-  protected volatile boolean done = false;
-  protected volatile Thread controlThread = null;
-  protected volatile Thread moduleThread = null;
+	protected final Object cancelLock = new Object();
 
-private String jobId;
-  
-  public PepperModuleRunnable(AbstractPepperWizard pepperWizard, IProject project, boolean cancelable)
-  {
-    this.pepperWizard = pepperWizard;
-    this.project = project;
-    this.cancelable = cancelable;
-  }
+	protected Semaphore semaphore = new Semaphore(0);
+	protected Boolean outcome = Boolean.FALSE;
+	protected Throwable throwable = null;
+	protected volatile boolean cancelled = false;
+	protected volatile boolean done = false;
+	protected volatile Thread controlThread = null;
+	protected volatile Thread moduleThread = null;
 
-  protected abstract StepDesc createImporterParams();
+	private String jobId;
 
-  protected abstract StepDesc createExporterParams();
-  
-//  protected abstract ImporterParams createImporterParams();
-//
-//  protected abstract ExporterParams createExporterParams();
+	public PepperModuleRunnable(AbstractPepperWizard pepperWizard, IProject project, boolean cancelable) {
+		this.pepperWizard = pepperWizard;
+		this.project = project;
+		this.cancelable = cancelable;
+	}
 
-//  protected void setSpecialParams(ModuleParams moduleParams) throws IOException
-//  {
-//    Properties properties = pepperWizard.getPepperModuleProperties().getProperties();
-//    if (0 < properties.size())
-//    {
-//      File tempFile = File.createTempFile("pepper", ".properties");
-//      tempFile.deleteOnExit();
-//      
-//      Writer writer = new FileWriter(tempFile);
-//      try
-//      {
-//        properties.store(writer, "Generated pepper properties");
-//        moduleParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
-//      }
-//      finally
-//      {
-//        writer.close();
-//      }
-//    }
-//  }
+	protected abstract StepDesc createImporterParams();
 
-  /**
-   * Creates and starts a Pepper job. The job is created via {@link AbstractPepperWizard#getPepper()}. 
-   * @throws IOException
-   * @throws CoreException
-   */
-  protected void runPepper() throws IOException, CoreException
-  {
-	  
-//    ImporterParams importerParams = createImporterParams();
-//    setSpecialParams(importerParams);
-//
-//    ExporterParams exporterParams = createExporterParams();
-//    
-//    PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
-//    pepperJobParams.setId(AbstractPepperWizard.PEPPER_JOB_ID.incrementAndGet());
-//    pepperJobParams.getImporterParams().add(importerParams);
-//    pepperJobParams.getExporterParams().add(exporterParams);
-//
-//    PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
-//    pepperParams.getPepperJobParams().add(pepperJobParams);
-//    
-//    PepperConverter pepperConverter = pepperWizard.getPepper();
-//    pepperConverter.setPepperParams(pepperParams);
-//    pepperConverter.start();
-	  
-	  Pepper pepper = pepperWizard.getPepper();
-	  String jobId = pepper.createJob();
-	  PepperJob pepperJob= pepper.getJob(jobId);
-	  pepperJob.addStepDesc(createImporterParams());
-	  pepperJob.addStepDesc(createExporterParams());
-	  pepperJob.convert(); // TODO: CONVERT FROM
+	protected abstract StepDesc createExporterParams();
 
-    project.refreshLocal(IResource.DEPTH_INFINITE, null);
+	// protected abstract ImporterParams createImporterParams();
+	//
+	// protected abstract ExporterParams createExporterParams();
 
-	  
-//	  Pepper pepper = pepperWizard.getPepper();
-//	  jobId= pepper.createJob();
-//	  PepperJob pepperJob= pepper.getJob(jobId);
-//	  System.err.println("PEPPERJOB: " + pepperJob);
-//	  pepperJob.addStepDesc(createImporterParams());
-//	  pepperJob.addStepDesc(createExporterParams());
-//	  pepperJob.convert(); // TODO: CONVERT FROM
-//
-//    project.refreshLocal(IResource.DEPTH_INFINITE, null);
-  }
-  
-  
+	// protected void setSpecialParams(ModuleParams moduleParams) throws IOException
+	// {
+	// Properties properties = pepperWizard.getPepperModuleProperties().getProperties();
+	// if (0 < properties.size())
+	// {
+	// File tempFile = File.createTempFile("pepper", ".properties");
+	// tempFile.deleteOnExit();
+	//
+	// Writer writer = new FileWriter(tempFile);
+	// try
+	// {
+	// properties.store(writer, "Generated pepper properties");
+	// moduleParams.setSpecialParams(URI.createFileURI(tempFile.getAbsolutePath()));
+	// }
+	// finally
+	// {
+	// writer.close();
+	// }
+	// }
+	// }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-  {
-    try
-    {
-      synchronized (cancelLock)
-      {
-        // pr�fen, ob Ausf�hrung bereits vor dem Start abgebrochen worden ist
-        if (cancelled)
-        {
-          throw new InterruptedException();
-        }
-        else
-        {
-          controlThread = Thread.currentThread();
-          // Thread in dem der Vorgang ausgef�hrt wird und der bei Abbruch im
-          // Progressmonitor unterbrochen werden soll
-          moduleThread = new Thread("Pepper Module Thread #" + threadCounter.incrementAndGet())
-          {
-            @Override
-            public void run()
-            {
-              try
-              {
-                runPepper();
-              }
-              catch (IOException X)
-              {
-                throw new RuntimeException(X);
-              }
-              catch (CoreException X)
-              {
-                throw new RuntimeException(X);
-              }
-            }
-          };
-        }
-      }
+	/**
+	 * Creates and starts a Pepper job. The job is created via {@link AbstractPepperWizard#getPepper()}.
+	 * 
+	 * @throws IOException
+	 * @throws CoreException
+	 */
+	protected void runPepper() throws IOException, CoreException {
 
-      // Progressmonitor asynchron auf Abbruch �berwachen
-      ScheduledFuture<?> cancellationCheck;
-      if (cancelable)
-      {
-        // �berwachungsthread
-        cancellationCheck = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay
-          ( new Runnable()
-            {
-              @Override
-              public void run()
-              {
-                if (monitor.isCanceled())
-                {
-                  cancel(true);
-                }
-              }
-            }
-          , 500
-          , 500
-          , TimeUnit.MILLISECONDS
-          );
-      }
-      else
-      {
-        cancellationCheck = null;
-      }
+		// ImporterParams importerParams = createImporterParams();
+		// setSpecialParams(importerParams);
+		//
+		// ExporterParams exporterParams = createExporterParams();
+		//
+		// PepperJobParams pepperJobParams = PepperParamsFactory.eINSTANCE.createPepperJobParams();
+		// pepperJobParams.setId(AbstractPepperWizard.PEPPER_JOB_ID.incrementAndGet());
+		// pepperJobParams.getImporterParams().add(importerParams);
+		// pepperJobParams.getExporterParams().add(exporterParams);
+		//
+		// PepperParams pepperParams = PepperParamsFactory.eINSTANCE.createPepperParams();
+		// pepperParams.getPepperJobParams().add(pepperJobParams);
+		//
+		// PepperConverter pepperConverter = pepperWizard.getPepper();
+		// pepperConverter.setPepperParams(pepperParams);
+		// pepperConverter.start();
 
-      // Monitor starten
-      monitor.beginTask("Running ...", IProgressMonitor.UNKNOWN);
-      outcome = Boolean.FALSE;
-      try
-      {
-        // Modul ausf�hren
-        moduleThread.start();
+		Pepper pepper = pepperWizard.getPepper();
+		String jobId = pepper.createJob();
+		PepperJob pepperJob = pepper.getJob(jobId);
+		pepperJob.addStepDesc(createImporterParams());
+		pepperJob.addStepDesc(createExporterParams());
+		pepperJob.convert(); // TODO: CONVERT FROM
 
-        Display display = Display.findDisplay(Thread.currentThread());
-        if (display == null)
-        {
-          moduleThread.join();
-        }
-        else
-        {
-          // aktueller Thread ist der UI-Thread
-          while ( ! isCancelled() && moduleThread.isAlive())
-          {
-            if (controlThread.isInterrupted())
-            {
-              throw new InterruptedException();
-            }
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 
-            if ( ! display.readAndDispatch())
-            {
-              display.sleep();
-            }
-          }
-        }
+		// Pepper pepper = pepperWizard.getPepper();
+		// jobId= pepper.createJob();
+		// PepperJob pepperJob= pepper.getJob(jobId);
+		// System.err.println("PEPPERJOB: " + pepperJob);
+		// pepperJob.addStepDesc(createImporterParams());
+		// pepperJob.addStepDesc(createExporterParams());
+		// pepperJob.convert(); // TODO: CONVERT FROM
+		//
+		// project.refreshLocal(IResource.DEPTH_INFINITE, null);
+	}
 
-        outcome = Boolean.TRUE;
-      }
-      finally
-      {
-        // Monitor beenden
-        monitor.done();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		try {
+			synchronized (cancelLock) {
+				// pr�fen, ob Ausf�hrung bereits vor dem Start abgebrochen worden ist
+				if (cancelled) {
+					throw new InterruptedException();
+				}
+				else {
+					controlThread = Thread.currentThread();
+					// Thread in dem der Vorgang ausgef�hrt wird und der bei Abbruch im
+					// Progressmonitor unterbrochen werden soll
+					moduleThread = new Thread("Pepper Module Thread #" + threadCounter.incrementAndGet()) {
+						@Override
+						public void run() {
+							try {
+								runPepper();
+							}
+							catch (IOException X) {
+								throw new RuntimeException(X);
+							}
+							catch (CoreException X) {
+								throw new RuntimeException(X);
+							}
+						}
+					};
+				}
+			}
 
-        // �berwachungsthread stoppen
-        if (cancellationCheck != null)
-        {
-          cancellationCheck.cancel(true);
-        }
+			// Progressmonitor asynchron auf Abbruch �berwachen
+			ScheduledFuture<?> cancellationCheck;
+			if (cancelable) {
+				// �berwachungsthread
+				cancellationCheck = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new Runnable() {
+					@Override
+					public void run() {
+						if (monitor.isCanceled()) {
+							cancel(true);
+						}
+					}
+				}, 500, 500, TimeUnit.MILLISECONDS);
+			}
+			else {
+				cancellationCheck = null;
+			}
 
-        // Abbruch signalisieren
-        if (Thread.currentThread().isInterrupted())
-        {
-          throw new InterruptedException();
-        }
-      }
-    }
-    catch (InterruptedException X)
-    {
-    	new MessageDialog
-        ( Display.getCurrent().getActiveShell()
-        , "Error"
-        , null
-        , "Any error occured in Pepper and unfortunately Pepper is not stoppable anymore. So run!!! "
-        , MessageDialog.ERROR
-        , new String[]{ IDialogConstants.OK_LABEL }
-        , 0).open();
-      // Abbruchsignal empfangen
-//      try
-//      {
-//        finishModuleThread(500);
-//      }
-//      catch (Throwable T)
-//      {
-//        throw new InvocationTargetException(throwable = T);
-//      }
-    }
-    catch (Throwable T)
-    {
-      throw new InvocationTargetException(throwable = T);
-    }
-    finally
-    {
-      moduleThread = null;
-      controlThread = null;
-      done = true;
-      semaphore.release(Integer.MAX_VALUE);
-    }
-  }
+			// Monitor starten
+			monitor.beginTask("Running ...", IProgressMonitor.UNKNOWN);
+			outcome = Boolean.FALSE;
+			try {
+				// Modul ausf�hren
+				moduleThread.start();
 
-//  /**
-//   * Pepper hangs if it encounters an error: release its monitors manually.
-//   */
-//  protected void finishModuleThread(long gracePeriodInMillis) throws NoSuchFieldException, SecurityException, IllegalAccessException
-//  {
-//    Thread thread = moduleThread;
-//    if (thread != null && thread.isAlive())
-//    {
-//      try
-//      {
-//        thread.join(gracePeriodInMillis);
-//      }
-//      catch (InterruptedException XX)
-//      {
-//        // siliently ignore
-//      }
-//
-//      if (thread.isAlive())
-//      {
-//        Pepper pepper = pepperWizard.getPepper();
-//        PepperJob pepperJob= pepper.getJob(jobId); 
-//        
-//        pepperJob.getStatus()
-//        
-//          Field field = pepperJob.getClass().getDeclaredField("allModuleControlers");
-//          field.setAccessible(true);
-//          @SuppressWarnings("unchecked")
-//
-//          EList<PepperModuleController> pepperModuleControllers = (EList<PepperModuleController>) field.get(pepperJob);
-//          for (PepperModuleController pepperModuleController : pepperModuleControllers)
-//          {
-//            pepperModuleController.getPepperM2JMonitor().finish();
-//        }
-//      }
-//    }
-//  }
-  
-//  /**
-//   * Collects status information. Unfortunately this status is not appropriated
-//   * to be displayed within the Eclipse progress monitor dialog.
-//   * 
-//   * @return status information
-//   */
-//  protected String getStatusString()
-//  {
-//    String status = null;
-//    Thread thread = moduleThread;
-//    if (thread != null && thread.isAlive())
-//    {
-//      PepperConverter pepperConverter = pepperWizard.getPepper();
-//      if (pepperConverter != null)
-//      {
-//        for (PepperJob pepperJob : pepperConverter.getPepperJobs())
-//        {
-//          PepperDocumentController documentController = pepperJob.getPepperDocumentController();
-//          if (documentController != null)
-//          {
-//            String status4Print = documentController.getStatus4Print();
-//            if (status4Print != null)
-//            {
-//              status = status != null ? status + "\n" + status4Print : status4Print;
-//            }
-//          }
-//        }
-//      }
-//    }
-//    
-//    return status;
-//  }
+				Display display = Display.findDisplay(Thread.currentThread());
+				if (display == null) {
+					moduleThread.join();
+				}
+				else {
+					// aktueller Thread ist der UI-Thread
+					while (!isCancelled() && moduleThread.isAlive()) {
+						if (controlThread.isInterrupted()) {
+							throw new InterruptedException();
+						}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean cancel(boolean mayInterruptIfRunning)
-  {
-    if (cancelable)
-    {
-      synchronized (cancelLock)
-      {
-        if ( ! cancelled)
-        {
-          Thread thread = controlThread;
-          if (thread != null)
-          {
-            if (mayInterruptIfRunning)
-            {
-              thread.interrupt();
-              cancelled = true;
-            }
-          }
-          else
-          {
-            cancelled = true;
-          }
-        }
+						if (!display.readAndDispatch()) {
+							display.sleep();
+						}
+					}
+				}
 
-        return cancelled;
-      }
-    }
-    else
-    {
-      return false;
-    }
-  }
+				outcome = Boolean.TRUE;
+			}
+			finally {
+				// Monitor beenden
+				monitor.done();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isCancelled()
-  {
-    return cancelled;
-  }
+				// �berwachungsthread stoppen
+				if (cancellationCheck != null) {
+					cancellationCheck.cancel(true);
+				}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isDone()
-  {
-    return done;
-  }
+				// Abbruch signalisieren
+				if (Thread.currentThread().isInterrupted()) {
+					throw new InterruptedException();
+				}
+			}
+		}
+		catch (InterruptedException X) {
+			new MessageDialog(Display.getCurrent().getActiveShell(), "Error", null, "Any error occured in Pepper and unfortunately Pepper is not stoppable anymore. So run!!! ", MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+			// Abbruchsignal empfangen
+			// try
+			// {
+			// finishModuleThread(500);
+			// }
+			// catch (Throwable T)
+			// {
+			// throw new InvocationTargetException(throwable = T);
+			// }
+		}
+		catch (Throwable T) {
+			throw new InvocationTargetException(throwable = T);
+		}
+		finally {
+			moduleThread = null;
+			controlThread = null;
+			done = true;
+			semaphore.release(Integer.MAX_VALUE);
+		}
+	}
 
-  protected Boolean getOutcome() throws ExecutionException
-  {
-    if (throwable != null)
-    {
-      throw new ExecutionException(throwable);
-    }
-    else
-    {
-      return outcome;
-    }
-  }
+	// /**
+	// * Pepper hangs if it encounters an error: release its monitors manually.
+	// */
+	// protected void finishModuleThread(long gracePeriodInMillis) throws NoSuchFieldException, SecurityException, IllegalAccessException
+	// {
+	// Thread thread = moduleThread;
+	// if (thread != null && thread.isAlive())
+	// {
+	// try
+	// {
+	// thread.join(gracePeriodInMillis);
+	// }
+	// catch (InterruptedException XX)
+	// {
+	// // siliently ignore
+	// }
+	//
+	// if (thread.isAlive())
+	// {
+	// Pepper pepper = pepperWizard.getPepper();
+	// PepperJob pepperJob= pepper.getJob(jobId);
+	//
+	// pepperJob.getStatus()
+	//
+	// Field field = pepperJob.getClass().getDeclaredField("allModuleControlers");
+	// field.setAccessible(true);
+	// @SuppressWarnings("unchecked")
+	//
+	// EList<PepperModuleController> pepperModuleControllers = (EList<PepperModuleController>) field.get(pepperJob);
+	// for (PepperModuleController pepperModuleController : pepperModuleControllers)
+	// {
+	// pepperModuleController.getPepperM2JMonitor().finish();
+	// }
+	// }
+	// }
+	// }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Boolean get() throws InterruptedException, CancellationException, ExecutionException
-  {
-    if (cancelled)
-    {
-      throw new CancellationException();
-    }
-    else
-    {
-      semaphore.acquire();
-      try
-      {
-        return getOutcome();
-      }
-      finally
-      {
-        semaphore.release();
-      }
-    }
-  }
+	// /**
+	// * Collects status information. Unfortunately this status is not appropriated
+	// * to be displayed within the Eclipse progress monitor dialog.
+	// *
+	// * @return status information
+	// */
+	// protected String getStatusString()
+	// {
+	// String status = null;
+	// Thread thread = moduleThread;
+	// if (thread != null && thread.isAlive())
+	// {
+	// PepperConverter pepperConverter = pepperWizard.getPepper();
+	// if (pepperConverter != null)
+	// {
+	// for (PepperJob pepperJob : pepperConverter.getPepperJobs())
+	// {
+	// PepperDocumentController documentController = pepperJob.getPepperDocumentController();
+	// if (documentController != null)
+	// {
+	// String status4Print = documentController.getStatus4Print();
+	// if (status4Print != null)
+	// {
+	// status = status != null ? status + "\n" + status4Print : status4Print;
+	// }
+	// }
+	// }
+	// }
+	// }
+	//
+	// return status;
+	// }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Boolean get(long timeout, TimeUnit unit) 
-    throws 
-      InterruptedException
-    , CancellationException
-    , ExecutionException
-    , TimeoutException
-  {
-    if (cancelled)
-    {
-      throw new CancellationException();
-    }
-    else
-    {
-      if (semaphore.tryAcquire(timeout, unit))
-      {
-        try
-        {
-          return getOutcome();
-        }
-        finally
-        {
-          semaphore.release();
-        }
-      }
-      else
-      {
-        return null;
-      }
-    }
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean cancel(boolean mayInterruptIfRunning) {
+		if (cancelable) {
+			synchronized (cancelLock) {
+				if (!cancelled) {
+					Thread thread = controlThread;
+					if (thread != null) {
+						if (mayInterruptIfRunning) {
+							thread.interrupt();
+							cancelled = true;
+						}
+					}
+					else {
+						cancelled = true;
+					}
+				}
+
+				return cancelled;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isDone() {
+		return done;
+	}
+
+	protected Boolean getOutcome() throws ExecutionException {
+		if (throwable != null) {
+			throw new ExecutionException(throwable);
+		}
+		else {
+			return outcome;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean get() throws InterruptedException, CancellationException, ExecutionException {
+		if (cancelled) {
+			throw new CancellationException();
+		}
+		else {
+			semaphore.acquire();
+			try {
+				return getOutcome();
+			}
+			finally {
+				semaphore.release();
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean get(long timeout, TimeUnit unit) throws InterruptedException, CancellationException, ExecutionException, TimeoutException {
+		if (cancelled) {
+			throw new CancellationException();
+		}
+		else {
+			if (semaphore.tryAcquire(timeout, unit)) {
+				try {
+					return getOutcome();
+				}
+				finally {
+					semaphore.release();
+				}
+			}
+			else {
+				return null;
+			}
+		}
+	}
 }
