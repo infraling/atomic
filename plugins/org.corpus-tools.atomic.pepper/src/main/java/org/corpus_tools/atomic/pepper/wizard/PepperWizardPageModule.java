@@ -17,7 +17,12 @@
 
 package org.corpus_tools.atomic.pepper.wizard;
 
+import java.util.List;
+
+import org.corpus_tools.atomic.pepper.wizard.AbstractPepperWizard.WizardMode;
+import org.corpus_tools.pepper.common.MODULE_TYPE;
 import org.corpus_tools.pepper.common.PepperModuleDesc;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -170,11 +175,33 @@ public class PepperWizardPageModule extends WizardPage implements IWizardPage
       {
         pepperModule = pepperWizard.getPreviouslySelectedPepperModule();
       }
+      List<PepperModuleDesc> modules = pepperWizard.getPepperModules(getModuleTypeFromWizardMode());
+      if (modules.size() < 4) { // Only the three basic modules are available
+			setMessage("More modules may be available. To install/update modules, run Help > Updates > Update Pepper.", DialogPage.INFORMATION);
+			this.getContainer().updateMessage();
+		}
+		
 
-      tableViewer.setInput(pepperWizard.getPepperModules());
+      tableViewer.setInput(modules);
+      
+      System.err.println("TABLE VIEWER INPUT: " + tableViewer.getInput());
       tableViewer.setSelection(pepperModule != null ? new StructuredSelection(pepperModule) : StructuredSelection.EMPTY);
     }
 
     super.setVisible(visible);
   }
-}
+
+/**
+ * TODO: Description
+ *
+ * @return
+ */
+private MODULE_TYPE getModuleTypeFromWizardMode() {
+	if (pepperWizard.getWizardMode() == WizardMode.IMPORT) {
+		return MODULE_TYPE.IMPORTER;
+	}
+	else {
+		return MODULE_TYPE.EXPORTER;
+	}
+
+}}

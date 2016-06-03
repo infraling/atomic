@@ -100,10 +100,10 @@ public class PepperExportWizard
   {
     if (selectedProject != null)
     {
-      addPage(new PepperWizardPageModule(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export module."));
-      addPage(new PepperWizardPageFormat(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export format."));
-      addPage(new PepperWizardPageDirectory(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Select the pepper export path."));
-      addPage(new PepperWizardPageProperties(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IAMGE_DESCRIPTOR, "Edit the pepper export module properties."));
+      addPage(new PepperWizardPageModule(this, "selectExporter", "Select Export Module", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export module."));
+      addPage(new PepperWizardPageFormat(this, "selectFormat", "Select Export Format", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export format."));
+      addPage(new PepperWizardPageDirectory(this, "selectTargetPath", "Select Export Path", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Select the pepper export path."));
+      addPage(new PepperWizardPageProperties(this, "selectProperties", "Select Export Properties", DEFAULT_PAGE_IMAGE_DESCRIPTOR, "Edit the pepper export module properties."));
     }
   }
 //=============================================< called by Eclipse
@@ -143,11 +143,11 @@ public class PepperExportWizard
   {
     return selectedProject;
   }
-  /** 
-   * {@inheritDoc}
-   */
-  @Override
-  public List<PepperModuleDesc> getPepperModules() {
-  	return(super.getPepperModules(MODULE_TYPE.EXPORTER));
-  }
+//  /** 
+//   * {@inheritDoc}
+//   */
+//  @Override
+//  public List<PepperModuleDesc> getPepperModules() {
+//  	return(super.getPepperModules(MODULE_TYPE.EXPORTER));
+//  }
 }

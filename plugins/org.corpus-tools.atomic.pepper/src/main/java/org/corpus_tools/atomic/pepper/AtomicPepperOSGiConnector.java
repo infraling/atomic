@@ -109,7 +109,7 @@ public class AtomicPepperOSGiConnector extends PepperOSGiConnector {
 		try {
 			// Disable PepperOSGiRunner and set bundle context
 			System.setProperty(PepperOSGiRunner.PROP_TEST_DISABLED, Boolean.TRUE.toString());
-			System.setProperty(AtomicPepperConfiguration.PROP_PEPPER_MODULE_RESOURCES, getAtomicPepperConfiguration().getPlugInPath());
+			System.setProperty(PepperConfiguration.PROP_PEPPER_MODULE_RESOURCES, getAtomicPepperConfiguration().getPlugInPath());
 			setBundleContext(FrameworkUtil.getBundle(this.getClass()).getBundleContext());
 		} catch (Exception e) {
 			log.error("OSGi environment could not be started: {}.", e.getMessage(), e);
