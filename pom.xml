@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
 		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
-		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-3.1.0-SNAPSHOT/</pepper-dependencies-repo.url>
+		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-latest/</pepper-dependencies-repo.url>
 		<atomic-test-dependencies-repo.url>https://dl.bintray.com/sdruskat/tests-p2/</atomic-test-dependencies-repo.url>
 	</properties>
 
