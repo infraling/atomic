@@ -829,7 +829,7 @@ public class AtomicMavenAccessor {
 	/**
 	 * This method tries to determine maven project coordinates from a bundle id to invoke {@link #printDependencies(String, String, String, String)}.
 	 */
-	protected String printDependencies(Bundle bundle) {
+	protected String printDependencies(Bundle bundle) { // NO UCD (unused code)
 		String[] coords = null;
 		for (String s : forbiddenFruits) {
 			coords = s.split(DELIMITER);

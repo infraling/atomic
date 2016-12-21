@@ -424,27 +424,6 @@
             file="doc/help/index.xml">
       </index>
    </extension>
-   <extension
-         point="org.corpus_tools.atomic.processingComponents.tokenizers">
-      <tokenizerComponent
-            category="tokenizer"
-            class="org.corpus_tools.atomic.extensions.processingcomponents.impl.SimpleSaltTokenizer"
-            creator="Humboldt-Universität zu Berlin"
-            description="A tokenizer based on the TreeTagger tokenizer by Helmut Schmid (see http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/). This is a no frills implementation working on abbreviation sets for English, French, Italian and German. A more complex version of this tokenizer, supporting further language-based sets of abbreviations, and tokenizations of segments of documents, is available as the &quot;Configurable TreeTagger-based Tokenizer&quot;."
-            id="org.corpus_tools.atomic.extensions.processingcomponents.impl.SimpleSaltTokenizer"
-            name="Simple TreeTagger-based Tokenizer">
-      </tokenizerComponent>
-      <tokenizerComponent
-            category="tokenizer"
-            class="org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer"
-            configuration="org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizerConfiguration"
-            configurationControls="org.corpus_tools.atomic.extensions.processingcomponents.ui.impl.SaltTokenizerConfigurationControls"
-            creator="Humboldt-Universität zu Berlin"
-            description="A tokenizer based on the TreeTagger tokenizer by Helmut Schmid (see http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/). It can be configured with language and an abbreviation set."
-            id="org.corpus_tools.atomic.extensions.processingcomponents.impl.SaltTokenizer"
-            name="Configurable TreeTagger-based Tokenizer">
-      </tokenizerComponent>
-   </extension>
    
       <extension
          point="org.eclipse.ui.importWizards">

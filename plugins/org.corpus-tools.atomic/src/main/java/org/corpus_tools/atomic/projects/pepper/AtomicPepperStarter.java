@@ -56,7 +56,7 @@ public class AtomicPepperStarter {
 		setPepper(pepper);
 	}
 	
-	public void startPepperAndBridgeOSGi() {
+	public void startPepperAndBridgeOSGi() { // NO_UCD (unused code)
 		AtomicPepperOSGiConnector pepper = null;
 		AtomicPepperConfiguration pepperProps = null;
 		

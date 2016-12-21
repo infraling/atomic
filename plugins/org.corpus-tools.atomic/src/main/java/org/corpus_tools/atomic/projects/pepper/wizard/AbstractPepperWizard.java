@@ -67,23 +67,23 @@ public abstract class AbstractPepperWizard extends Wizard {
 	private static final Logger log = LogManager.getLogger(AbstractPepperWizard.class);
 	
 	// Class constants
-	protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_PATH = "exchangeTargetPath";
-	protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE = "exchangeTargetType";
-	protected static final String DIALOG_SETTINGS_MODULE = "pepperModule";
-	protected static final String DIALOG_SETTINGS_FORMAT_NAME = "formatName";
-	protected static final String DIALOG_SETTINGS_FORMAT_VERSION = "formatVersion";
-	protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_KEYS = "modulePropertyKeys";
-	protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_VALUES = "modulePropertyValues";
+	protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_PATH = "exchangeTargetPath"; // NO_UCD (use private)
+	protected static final String DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE = "exchangeTargetType"; // NO_UCD (use private)
+	protected static final String DIALOG_SETTINGS_MODULE = "pepperModule"; // NO_UCD (use private)
+	protected static final String DIALOG_SETTINGS_FORMAT_NAME = "formatName"; // NO_UCD (use private)
+	protected static final String DIALOG_SETTINGS_FORMAT_VERSION = "formatVersion"; // NO_UCD (use private)
+	protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_KEYS = "modulePropertyKeys"; // NO_UCD (use private)
+	protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_VALUES = "modulePropertyValues"; // NO_UCD (use private)
 	protected static final ImageDescriptor DEFAULT_PAGE_IMAGE_DESCRIPTOR = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.getDefault().getBundle().getSymbolicName(), "icons/pepper/pepper64.png");
 
-	protected PepperModuleProperties pepperModuleProperties;
-	protected FormatDesc formatDesc;
-	protected String exchangeTargetPath;
-	protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY;
-	protected final WizardMode wizardMode;
-	protected ServiceReference<PepperConnector> reference;
-	protected PepperConnector pepper;
-	protected List<PepperModuleDesc> pepperModuleDescriptions;
+	protected PepperModuleProperties pepperModuleProperties; // NO_UCD (use private)
+	protected FormatDesc formatDesc; // NO_UCD (use private)
+	protected String exchangeTargetPath; // NO_UCD (use private)
+	protected ExchangeTargetType exchangeTargetType = ExchangeTargetType.DIRECTORY; // NO_UCD (use private)
+	protected final WizardMode wizardMode; // NO_UCD (use private)
+	protected ServiceReference<PepperConnector> reference; // NO_UCD (use private)
+	protected PepperConnector pepper; // NO_UCD (use private)
+	protected List<PepperModuleDesc> pepperModuleDescriptions; // NO_UCD (use private)
 
 
 
@@ -92,7 +92,7 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 * DIALOG_SETTINGS_EXCHANGE_TARGET_TYPE instead.
 	 */
 	@Deprecated
-	protected static final String DIALOG_SETTINGS_EXCHANGE_DIRECTORY = "exchangeDirectory";
+	protected static final String DIALOG_SETTINGS_EXCHANGE_DIRECTORY = "exchangeDirectory"; // NO_UCD (use private)
 
 
 	protected AbstractPepperWizard(String windowTitle, WizardMode wizardMode) {
@@ -154,7 +154,7 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 * Advances the wizard to the next page if it exists.
 	 *
 	 */
-	public void advance() {
+	void advance() {
 		IWizardPage currentPage = getContainer().getCurrentPage();
 		if (currentPage != null) {
 			IWizardPage nextPage = getNextPage(currentPage);
@@ -233,7 +233,7 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 * Reads the dialog settings for this wizard.
 	 *
 	 */
-	protected void readDialogSettings() {
+	protected void readDialogSettings() { // NO_UCD (use private)
 		IDialogSettings settings = getDialogSettings();
 		exchangeTargetPath = settings.get(DIALOG_SETTINGS_EXCHANGE_TARGET_PATH);
 		if (exchangeTargetPath == null) {
@@ -443,19 +443,19 @@ public abstract class AbstractPepperWizard extends Wizard {
 		pepperModuleProperties.addProperty(pepperModuleProperty);
 	}
 
-	public boolean containsPepperModuleProperty(String propertyName) {
+	public boolean containsPepperModuleProperty(String propertyName) { // NO_UCD (unused code)
 		PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
 		return property != null;
 	}
 
-	public String getPepperModulePropertyValue(String propertyName) {
+	public String getPepperModulePropertyValue(String propertyName) { // NO_UCD (unused code)
 		PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
 		Object value = property != null ? property.getValue() : null;
 
 		return value != null ? value.toString() : null;
 	}
 
-	public void setPepperModulePropertyValue(String propertyName, String propertyValueString) {
+	public void setPepperModulePropertyValue(String propertyName, String propertyValueString) { // NO_UCD (unused code)
 		PepperModuleProperty<?> property = pepperModuleProperties.getProperty(propertyName);
 		if (property != null) {
 			property.setValueString(propertyValueString);
@@ -485,7 +485,7 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 *
 	 * @param propertyName
 	 */
-	public void removePepperModuleProperty(String propertyName) {
+	public void removePepperModuleProperty(String propertyName) { // NO_UCD (unused code)
 
 		// es gibt kein remove in PepperModuleProperties
 		PepperModuleProperty<?> property;
@@ -520,7 +520,7 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 * @author Stephan Druskat <mail@sdruskat.net>
 	 *
 	 */
-	public static enum ExchangeTargetType {
+	static enum ExchangeTargetType {
 		FILE, DIRECTORY
 	}
 
