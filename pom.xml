@@ -190,5 +190,6 @@
 		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>features/org-corpus-tools.atomic.feature</module>
 		<module>repository</module>
+		<module>plugins/org.corpus-tools.atomic.tokeneditor</module>
 	</modules>
 </project>
