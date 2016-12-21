@@ -131,7 +131,9 @@ public class PepperWizardPageModule extends WizardPage implements IWizardPage {
 
 				boolean selected = !selection.isEmpty() && selection instanceof IStructuredSelection;
 				setPageComplete(selected);
-				pepperWizard.setPepperModule(selected ? (PepperModuleDesc) ((IStructuredSelection) selection).getFirstElement() : null);
+				PepperModuleDesc selectedModule = (PepperModuleDesc) ((IStructuredSelection) selection).getFirstElement(); 
+				pepperWizard.setPepperModule(selected ?  selectedModule : null);
+				pepperWizard.setPepperModuleProperties(selected ? selectedModule.getProperties() : null);
 			}
 		});
 
