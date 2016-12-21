@@ -44,7 +44,7 @@ public abstract class AbstractBean {
 	 * @param listener The property change listener to add (must not be null!)
 	 * @throws RuntimeException if listener is null
 	 */
-	public void addPropertyChangeListener(final PropertyChangeListener listener) {
+	public void addPropertyChangeListener(final PropertyChangeListener listener) { // NO_UCD (unused code)
 		Assert.isNotNull(listener);
 		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
@@ -55,7 +55,7 @@ public abstract class AbstractBean {
 	 * @param listener The property change listener to remove (must not be null!)
 	 * @throws RuntimeException if listener is null
 	 */
-	public void removePropertyChangeListener(final PropertyChangeListener listener) {
+	public void removePropertyChangeListener(final PropertyChangeListener listener) { // NO_UCD (unused code)
 		Assert.isNotNull(listener);
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}

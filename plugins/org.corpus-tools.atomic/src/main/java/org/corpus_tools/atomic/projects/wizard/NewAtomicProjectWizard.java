@@ -18,26 +18,21 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.projects.wizard;
 
-import java.io.File; 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.extensions.processingcomponents.Tokenizer;
-import org.corpus_tools.atomic.projects.Corpus;
-import org.corpus_tools.atomic.projects.salt.SaltProjectCompiler;
-import org.corpus_tools.salt.common.SCorpusGraph;
-import org.corpus_tools.salt.common.SDocument;
-import org.corpus_tools.salt.common.SaltProject;
+import org.corpus_tools.atomic.projects.pepper.AtomicPepperStarter;
+import org.corpus_tools.pepper.common.MODULE_TYPE;
+import org.corpus_tools.pepper.common.PepperJob;
+import org.corpus_tools.pepper.common.PepperModuleDesc;
+import org.corpus_tools.pepper.common.StepDesc;
+import org.corpus_tools.pepper.connectors.PepperConnector;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -58,118 +53,118 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 	 */
 	private static final Logger log = LogManager.getLogger(NewAtomicProjectWizard.class);
 	
-	private NewAtomicProjectWizardPageProjectStructure structurePage = new NewAtomicProjectWizardPageProjectStructure();
-	private NewAtomicProjectWizardPageTokenization tokenizationPage = new NewAtomicProjectWizardPageTokenization();
+	private PepperConnector pepper = null;
 	
-	/*
-	 * @copydoc @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	private NewAtomicProjectWizardPage page = new NewAtomicProjectWizardPage();
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void addPages() {
-		addPage(getStructurePage());
-		addPage(getTokenizationPage());
+		addPage(page);
 	}
 
-	/* 
-	 * @copydoc @see org.eclipse.jface.wizard.Wizard#canFinish()
-	 */
-	@Override
-	public boolean canFinish() {
-		return (getStructurePage().isPageComplete() && getTokenizationPage().isPageComplete());
-	}
-	
 	/*
 	 * @copydoc @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
-	public boolean performFinish() {
-		Corpus projectData = getStructurePage().getModel();
-		// TODO: Compile SaltProject form projectData
-		SaltProjectCompiler compiler = new SaltProjectCompiler(projectData);
-		final SaltProject project = compiler.run();
-		List<Tokenizer> orderedTokenizers = getTokenizationPage().getTokenizers();
-		for (SCorpusGraph corpusGraph : project.getCorpusGraphs()) {
-			for (SDocument document : corpusGraph.getDocuments()) {
-				for (Tokenizer tokenizer : orderedTokenizers) {
-					tokenizer.processDocument(document);
-				}
+	public boolean performFinish() { // FIXME: Add logs
+		AtomicPepperStarter pepperStarter = new AtomicPepperStarter();
+		pepperStarter.startPepper();
+		this.pepper = pepperStarter.getPepper();
+		log.trace("Procured an instance of {}: {}.", this.pepper.getClass().getName(), this.pepper.toString());
+		String pepperJobId = pepper.createJob();
+		PepperJob pepperJob = pepper.getJob(pepperJobId);
+		log.trace("Procured an instance of {}: {}.", pepperJob.getClass().getName(), pepperJob.toString());
+		
+		// Create import step
+		StepDesc importStepDesc = pepperJob.createStepDesc();
+		importStepDesc.setModuleType(MODULE_TYPE.IMPORTER);
+		String importPath = page.getCorpus().getPath();
+		importStepDesc.getCorpusDesc().setCorpusPath(URI.createFileURI(importPath));
+		log.trace("Procured an instance of {}: {}.", importStepDesc.getClass().getName(), importStepDesc.toString());
+		PepperModuleDesc importer = null;
+		for (PepperModuleDesc md : pepper.getRegisteredModules()) {
+			if (md.getModuleType().equals(MODULE_TYPE.IMPORTER) && md.getName().equals("TextImporter")) {
+				importer = md;
+				break;
 			}
 		}
+		importStepDesc.setName(importer.getName());
+		pepperJob.addStepDesc(importStepDesc);
+		log.info("Successfully set up an importer of type {} for the creation of a new Atomic project from path {}.", importer.getName(), importPath);
+		
+		// Set up Eclipse project
+		String projectName = page.getCorpus().getName();
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		log.info("Workspace root is {}.", workspaceRoot.getLocation().toOSString());
-		IProject iProject = workspaceRoot.getProject(project.getName());
-		log.info("Created IProject OBJECT with name \"{}\" at workspace root.", iProject.getName());
+		log.trace("Workspace root is {}.", workspaceRoot.getLocation().toOSString());
+		IProject iProject = workspaceRoot.getProject(projectName);
+		log.trace("Created IProject OBJECT with name \"{}\" at workspace root.", iProject.getName());
 		try {
 			iProject.create(null);
-			log.info("Successfully created IProject \"{}\".", iProject.getName());
+			log.info("Successfully created Atomic project \"{}\".", iProject.getName());
 			iProject.open(null);
-			log.info("Opened IProject \"{}\".", iProject.getName());
+			log.trace("Opened IProject \"{}\".", iProject.getName());
 		}
 		catch (CoreException e) {
-			// FIXME Check this in wizard!
-			MessageDialog.openError(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), "Atomic project note created!", "A project by the name of \"" + project.getName() + "\" already exists.");
-			log.error("Could not create and open the IProject for SaltProject {}!", project.getName(), e);
+			MessageDialog.openError(Display.getCurrent() != null ? Display.getCurrent().getActiveShell() : Display.getDefault().getActiveShell(), "Atomic project note created!", "A project by the name of \"" + projectName + "\" already exists.");
+			log.error("Could not create and open the IProject for SaltProject {}!", projectName, e);
 			return false;
 		}
 		File iProjectLocation = new File(iProject.getLocation().toString());
-		final URI uri = URI.createFileURI(iProjectLocation.getAbsolutePath());
-		
-		// FIXME Check how this is reported in UI!
-		Job saltProjectCreationJob = new Job("Creating Atomic project ...") {
-			
-			@Override
-			  protected IStatus run(IProgressMonitor monitor) {
-				SubMonitor subMonitor = SubMonitor.convert(monitor);
-			    if (monitor.isCanceled()) {
-			    	log.info("Saving the SaltProject \"{}\" was interrupted by the user.", project.getName());
-			    	return Status.CANCEL_STATUS;
-			    }
-		    	subMonitor.setTaskName("Saving Atomic project \"" + project.getName() + "\".");
-		    	project.saveSaltProject(uri);
-			    return Status.OK_STATUS;
+
+		// Create export step
+		StepDesc exportStepDesc = pepperJob.createStepDesc();
+		exportStepDesc.setModuleType(MODULE_TYPE.EXPORTER);
+		String outputCanonicalPath;
+		try {
+			outputCanonicalPath = iProjectLocation.getCanonicalPath();
+		}
+		catch (IOException ex) {
+			outputCanonicalPath = iProjectLocation.getAbsolutePath();
+		}
+		exportStepDesc.getCorpusDesc().setCorpusPath(URI.createFileURI(outputCanonicalPath));
+		log.trace("Procured an instance of {}: {}.", importStepDesc.getClass().getName(), outputCanonicalPath);
+		PepperModuleDesc exporter = null;
+		for (PepperModuleDesc md : pepper.getRegisteredModules()) {
+			if (md.getModuleType().equals(MODULE_TYPE.EXPORTER) && md.getName().equals("SaltXMLExporter")) {
+				exporter = md;
+				break;
 			}
-		};
-		saltProjectCreationJob.schedule();
+		}
+		exportStepDesc.setName(exporter.getName());
+		pepperJob.addStepDesc(exportStepDesc);
+		log.info("Successfully set up an exporter of type {} for the creation of a new Atomic project to path {}.", importer.getName(), outputCanonicalPath);
+
+		// Convert
+		log.trace("Starting conversion with Pepper job {}.", pepperJob.toString());
+		// TODO Add observation and reporting!
+		try {
+			pepperJob.convert();
+		} catch (Exception e) {
+			log.error("An error occurred during the conversion of a text corpus to a Salt project during the creation of a new project!", e);
+		} finally {
+			pepper.removeJob(pepperJobId);
+		}
 		try {
 			iProject.refreshLocal(IProject.DEPTH_INFINITE, null);
 		}
 		catch (CoreException e) {
-			log.error("Could not refresh IProject for SaltProject {}!", project.getName(), e);
+			log.error("Could not refresh IProject for SaltProject {}!", projectName, e);
 		}
-		// Finally, return true
+		// Finally, return true (i.e., wizard is done).
 		return true;
 	}
 	
 	@Override
 	public String getWindowTitle() {
 		return "New Atomic Project";
-	}
-
-	/**
-	 * @return the structurePage
-	 */
-	private NewAtomicProjectWizardPageProjectStructure getStructurePage() {
-		return structurePage;
-	}
-
-	/**
-	 * @return the tokenizationPage
-	 */
-	public NewAtomicProjectWizardPageTokenization getTokenizationPage() {
-		return tokenizationPage;
-	}
-
-	/**
-	 * @param tokenizationPage the tokenizationPage to set
-	 */
-	public void setTokenizationPage(NewAtomicProjectWizardPageTokenization tokenizationPage) {
-		this.tokenizationPage = tokenizationPage;
 	}
 
 }

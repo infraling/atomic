@@ -10,9 +10,9 @@
   <properties>
 		<tycho-version>0.24.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url>
+		<mars-repo.url>http://download.eclipse.org/releases/neon</mars-repo.url>
 		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
-		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-3.1.0-SNAPSHOT/</pepper-dependencies-repo.url>
+		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-latest/</pepper-dependencies-repo.url>
 		<atomic-test-dependencies-repo.url>https://dl.bintray.com/sdruskat/tests-p2/</atomic-test-dependencies-repo.url>
 	</properties>
 
@@ -188,7 +188,6 @@
 		<module>tests/org.corpus-tools.atomic.tests</module>
 		<module>tests/org.corpus_tools.atomic.tests.gui</module>
 		<module>plugins/org.corpus-tools.atomic.logging</module>
-		<module>plugins/org.corpus-tools.atomic.pepper</module>
 		<module>features/org-corpus-tools.atomic.feature</module>
 		<module>repository</module>
 	</modules>

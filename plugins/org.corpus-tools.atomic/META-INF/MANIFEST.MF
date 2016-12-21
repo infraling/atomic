@@ -22,9 +22,21 @@ Require-Bundle: org.eclipse.ui,
  com.ibm.icu,
  org.eclipse.help.ui;bundle-version="4.0.100",
  org.eclipse.help.webapp;bundle-version="3.7.0",
- org.corpus-tools.salt-api;bundle-version="3.0.6"
+ org.corpus-tools.salt-api;bundle-version="3.0.6",
+ org.corpus-tools.pepper-framework,
+ org.corpus-tools.pepper-lib;bundle-version="3.1.0",
+ com.google.guava;bundle-version="18.0.0",
+ org.eclipse.osgi.services;bundle-version="3.5.100",
+ org.apache.commons.io;bundle-version="2.4.0",
+ org.codehaus.plexus.utils;bundle-version="3.0.20",
+ org.eclipse.osgi.util;bundle-version="3.3.100",
+ org.eclipse.aether.api;bundle-version="1.0.2",
+ org.eclipse.aether.connector.basic;bundle-version="1.0.1",
+ org.eclipse.aether.impl;bundle-version="1.0.2",
+ org.eclipse.aether.maven;bundle-version="3.1.0",
+ org.eclipse.aether.spi;bundle-version="1.0.2",
+ org.eclipse.aether.transport.file;bundle-version="1.0.2",
+ org.eclipse.aether.transport.http;bundle-version="1.0.2",
+ org.eclipse.aether.util;bundle-version="1.0.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Export-Package: org.corpus_tools.atomic.exceptions,
- org.corpus_tools.atomic.extensions.processingcomponents,
- org.corpus_tools.atomic.extensions.processingcomponents.ui
