@@ -445,5 +445,52 @@
             name="Configurable TreeTagger-based Tokenizer">
       </tokenizerComponent>
    </extension>
+   
+      <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="org.corpus_tools.atomic.AtomicImportWizardCategory"
+            name="Atomic">
+      </category>
+      <wizard
+            category="org.corpus_tools.atomic.AtomicImportWizardCategory"
+            class="org.corpus_tools.atomic.projects.pepper.wizard.importwizard.PepperImportWizard"
+            icon="icons/obj16/pepper16.png"
+            id="org.corpus_tools.atomic.importPepperWizard"
+            name="Corpus Import">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.corpus_tools.atomic.menus.help.updates">
+         <command
+               commandId="org.corpus_tools.atomic.pepper.updateCommand"
+               label="Update Pepper"
+               mnemonic="P"
+               style="push"
+               tooltip="Updates Pepper and its modules">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.corpus_tools.atomic.projects.pepper.update.PepperUpdateHandler"
+            id="org.corpus_tools.atomic.pepper.updateCommand"
+            name="Update Pepper">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="org.eclipse.ui.ExtensionFactory:progressView"
+            id="org.eclipse.ui.views.ProgressView"
+            name="Progress"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
