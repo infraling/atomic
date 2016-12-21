@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Friedrich Schiller University Jena 
+ * Copyright 2013, 2016 Friedrich Schiller University Jena 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,12 @@ package org.corpus_tools.atomic.projects.pepper.wizard;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.pepper.modules.PepperModuleProperties;
 import org.corpus_tools.pepper.modules.PepperModuleProperty;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -30,30 +34,28 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * @author Michael Grübsch
+ * @author Stephan Druskat
  */
 public class PepperWizardPageProperties extends WizardPage implements IWizardPage {
+	/** 
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "PepperWizardPageProperties".
+	 */
+	private static final Logger log = LogManager.getLogger(PepperWizardPageProperties.class);
+	
 	protected final AbstractPepperWizard pepperWizard;
 
 	protected TableViewer tableViewer;
@@ -156,62 +158,6 @@ public class PepperWizardPageProperties extends WizardPage implements IWizardPag
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		Composite composite = new Composite(container, SWT.NONE);
-		composite.setLayout(new GridLayout(2, true));
-		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false, 1, 1));
-
-		Button addButton = new Button(composite, SWT.NONE);
-		addButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TextInputDialog textInputDialog = new TextInputDialog(getShell(), "Set Property Name", "Enter the name of the new property. The name must be unique.", "Propery Name: ", "", new TextInputDialog.RequiredTextInputVerifier() {
-					@Override
-					public boolean verifyText(String text) {
-						if (super.verifyText(text)) {
-							return !pepperWizard.containsPepperModuleProperty(text.trim());
-						}
-						else {
-							return false;
-						}
-					}
-				});
-				if (textInputDialog.open() == Window.OK) {
-					PepperModuleProperty<String> property = new PepperModuleProperty<String>(textInputDialog.getInputText(), String.class, "", "");
-					property.setValueString("<ENTER VALUE HERE>");
-					pepperWizard.addPepperModuleProperty(property);
-					tableViewer.add(property);
-				}
-			}
-		});
-		addButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		addButton.setText("Add");
-
-		final Button removeButton = new Button(composite, SWT.NONE);
-		removeButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		removeButton.setText("Remove");
-		removeButton.setEnabled(false);
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ISelection selection = tableViewer.getSelection();
-				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-					PepperModuleProperty<?> property = (PepperModuleProperty<?>) ((IStructuredSelection) selection).getFirstElement();
-					if (property != null) {
-						pepperWizard.removePepperModuleProperty(property.getName());
-						tableViewer.remove(property);
-					}
-				}
-			}
-		});
-
-		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = event.getSelection();
-				boolean selected = !selection.isEmpty() && selection instanceof IStructuredSelection;
-				removeButton.setEnabled(selected);
-			}
-		});
 	}
 
 	/* 
@@ -220,15 +166,15 @@ public class PepperWizardPageProperties extends WizardPage implements IWizardPag
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
-			PepperModuleProperties pepperModuleProperties = pepperWizard.getPepperModuleProperties();
-			if (pepperModuleProperties != null) {
-				Collection<String> propertyNames = pepperModuleProperties.getPropertyNames();
+			PepperModuleProperties moduleProperties = pepperWizard.getPepperModuleProperties();
+			if (moduleProperties != null) {
+				Collection<String> propertyNames = moduleProperties.getPropertyNames();// = pepperModuleProperties.getPropertyNames();
 				if (propertyNames != null) {
-					List<PepperModuleProperty<?>> propertyList = new ArrayList<PepperModuleProperty<?>>(propertyNames.size());
+					List<PepperModuleProperty<?>> propertyList = new ArrayList<>(propertyNames.size());
 					for (String propertyName : propertyNames) {
-						propertyList.add(pepperModuleProperties.getProperty(propertyName));
+						propertyList.add(moduleProperties.getProperty(propertyName));
 					}
-
+					Collections.sort(propertyList, new PropertyNameComparator());
 					tableViewer.setInput(propertyList);
 				}
 			}
@@ -237,5 +183,25 @@ public class PepperWizardPageProperties extends WizardPage implements IWizardPag
 		}
 
 		super.setVisible(visible);
+	}
+
+	/**
+	 * TODO Description
+	 *
+	 * @author Stephan Druskat <mail@sdruskat.net>
+	 *
+	 */
+	public class PropertyNameComparator implements Comparator<PepperModuleProperty<?>> {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		@Override
+		public int compare(PepperModuleProperty<?> property1, PepperModuleProperty<?> property2) {
+			return property1.getName().compareToIgnoreCase(property2.getName());
+		}
+
 	}
 }
