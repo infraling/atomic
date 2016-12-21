@@ -74,7 +74,7 @@ public abstract class AbstractPepperWizard extends Wizard {
 	protected static final String DIALOG_SETTINGS_FORMAT_VERSION = "formatVersion";
 	protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_KEYS = "modulePropertyKeys";
 	protected static final String DIALOG_SETTINGS_MODULE_PROPERTY_VALUES = "modulePropertyValues";
-	protected static final ImageDescriptor DEFAULT_PAGE_IMAGE_DESCRIPTOR = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.getDefault().getBundle().getSymbolicName(), "/pepper64.png");
+	protected static final ImageDescriptor DEFAULT_PAGE_IMAGE_DESCRIPTOR = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.getDefault().getBundle().getSymbolicName(), "icons/pepper/pepper64.png");
 
 	protected PepperModuleProperties pepperModuleProperties;
 	protected FormatDesc formatDesc;
@@ -529,5 +529,12 @@ public abstract class AbstractPepperWizard extends Wizard {
 	 */
 	public void setPepper(PepperConnector pepper) {
 		this.pepper = pepper;
+	}
+
+	/**
+	 * @param pepperModuleProperties the pepperModuleProperties to set
+	 */
+	protected final void setPepperModuleProperties(PepperModuleProperties pepperModuleProperties) {
+		this.pepperModuleProperties = pepperModuleProperties;
 	}
 }
