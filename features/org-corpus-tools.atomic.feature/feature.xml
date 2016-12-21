@@ -71,7 +71,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.corpus_tools.atomic.pepper"
+         id="org.corpus_tools.atomic.tokeneditor"
          download-size="0"
          install-size="0"
          version="0.0.0"
