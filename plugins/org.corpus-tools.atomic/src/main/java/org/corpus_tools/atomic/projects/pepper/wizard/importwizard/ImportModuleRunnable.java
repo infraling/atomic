@@ -51,6 +51,7 @@ public class ImportModuleRunnable extends PepperModuleRunnable {
 		stepDesc.setVersion(pepperWizard.getPepperModule().getVersion());
 		stepDesc.setCorpusDesc(new CorpusDesc().setCorpusPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath())));
 		stepDesc.setModuleType(MODULE_TYPE.IMPORTER);
+		stepDesc.setProps(pepperWizard.getPepperModuleProperties().getProperties());
 		return (stepDesc);
 	}
 
