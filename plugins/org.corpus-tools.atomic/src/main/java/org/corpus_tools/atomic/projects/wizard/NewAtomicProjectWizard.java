@@ -29,7 +29,6 @@ import org.corpus_tools.pepper.common.PepperJob;
 import org.corpus_tools.pepper.common.PepperModuleDesc;
 import org.corpus_tools.pepper.common.StepDesc;
 import org.corpus_tools.pepper.connectors.PepperConnector;
-import org.corpus_tools.salt.common.SaltProject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -71,14 +70,6 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 		addPage(page);
 	}
 
-//	/* 
-//	 * @copydoc @see org.eclipse.jface.wizard.Wizard#canFinish()
-//	 */
-//	@Override
-//	public boolean canFinish() {
-//		return page.getCorpus().getName() != null && page.getCorpus().getPath() != null;
-//	}
-	
 	/*
 	 * @copydoc @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
@@ -153,32 +144,14 @@ public class NewAtomicProjectWizard extends Wizard implements INewWizard {
 
 		// Convert
 		log.trace("Starting conversion with Pepper job {}.", pepperJob.toString());
+		// TODO Add observation and reporting!
 		try {
 			pepperJob.convert();
-			SaltProject proj = pepperJob.getSaltProject();
-			log.info("WOOT WOOT, GOT A PROJECT! {}", proj.toString());
 		} catch (Exception e) {
-			log.warn("EXCEPTIOOOOOOOOOOOOOON: ", e);
+			log.error("An error occurred during the conversion of a text corpus to a Salt project during the creation of a new project!", e);
 		} finally {
 			pepper.removeJob(pepperJobId);
 		}
-		// FIXME CONVERT HERE
-		// FIXME Check how this is reported in UI!
-//		Job saltProjectCreationJob = new Job("Creating Atomic project ...") {
-//			
-//			@Override
-//			  protected IStatus run(IProgressMonitor monitor) {
-//				SubMonitor subMonitor = SubMonitor.convert(monitor);
-//			    if (monitor.isCanceled()) {
-//			    	log.info("Saving the SaltProject \"{}\" was interrupted by the user.", projectName);
-//			    	return Status.CANCEL_STATUS;
-//			    }
-//		    	subMonitor.setTaskName("Saving Atomic project \"" + projectName + "\".");
-//		    	project.saveSaltProject(uri);
-//			    return Status.OK_STATUS;
-//			}
-//		};
-//		saltProjectCreationJob.schedule();
 		try {
 			iProject.refreshLocal(IProject.DEPTH_INFINITE, null);
 		}
