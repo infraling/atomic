@@ -1,11 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atomic Token Editor
-Bundle-SymbolicName: org.corpus_tools.atomic.tokeneditor
+Bundle-SymbolicName: org.corpus_tools.atomic.tokeneditor;singleton:=true
 Bundle-Version: 0.3.0.qualifier
 Bundle-Activator: org.corpus_tools.atomic.tokeneditor.Activator
 Bundle-Vendor: Humboldt-Universität zu Berlin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.corpus_tools.atomic;bundle-version="0.3.0",
+ org.corpus_tools.atomic.logging;bundle-version="0.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="90">
+<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="91">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.aether.spi" version="1.0.2.v20150114"/>
@@ -122,6 +122,11 @@
 <unit id="org.eclipse.nebula.widgets.nattable.extension.e4.feature.feature.group" version="1.0.0.201606011907"/>
 <unit id="org.eclipse.nebula.widgets.nattable.extension.nebula.source.feature.feature.group" version="1.0.0.201606011907"/>
 <repository location="http://download.eclipse.org/nattable/releases/1.4.0/repository/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.vogella.model.feature.source.feature.group" version="1.0.0.201612142229"/>
+<unit id="com.vogella.model.feature.feature.group" version="1.0.0.201612142229"/>
+<repository location="https://dl.bintray.com/vogellacompany/codeexamples-javadatamodel/"/>
 </location>
 </locations>
 </target>
