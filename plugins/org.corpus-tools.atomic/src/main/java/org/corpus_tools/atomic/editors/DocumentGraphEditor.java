@@ -42,7 +42,7 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	private static final Logger log = LogManager.getLogger(DocumentGraphEditor.class);
 	
 	
-	private SDocumentGraph graph = null;
+	protected SDocumentGraph graph = null;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
