@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="91">
+<?pde version="3.8"?><target name="org.corpus-tools.atomic.dev" sequenceNumber="100">
 <locations>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.aether.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.aether.transport.http.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.emf.ecore.feature.group" version="2.12.0.v20160420-0247"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
+<unit id="org.eclipse.aether.connector.basic.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.aether.transport.file.feature.feature.group" version="1.0.1.v20141111"/>
+<unit id="org.eclipse.aether.maven.feature.feature.group" version="3.1.0.20140706-2237"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.12.1.v20160907-1200"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.6.1.v20160907-1200"/>
+<unit id="org.eclipse.emf.common.feature.group" version="2.12.0.v20160420-0247"/>
+<unit id="org.eclipse.platform.feature.group" version="4.6.1.v20160907-1200"/>
+<unit id="org.eclipse.emf.feature.group" version="2.12.0.v20160526-0356"/>
+<repository location="http://download.eclipse.org/releases/neon"/>
+</location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.aether.spi" version="1.0.2.v20150114"/>
 <unit id="org.apache.httpcomponents.fluent-hc" version="4.2.6"/>
@@ -51,6 +66,11 @@
 <repository location="https://dl.bintray.com/sdruskat/pepper-dependencies-3.1.0-SNAPSHOT/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.vogella.model.feature.source.feature.group" version="1.0.0.201612142229"/>
+<unit id="com.vogella.model.feature.feature.group" version="1.0.0.201612142229"/>
+<repository location="https://dl.bintray.com/vogellacompany/codeexamples-javadatamodel/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="cglib.nodep" version="3.2.0"/>
 <unit id="org.hamcrest.core" version="1.3.0"/>
 <unit id="junit" version="4.12.0"/>
@@ -96,21 +116,6 @@
 <repository location="http://download.eclipse.org/technology/swtbot/releases/latest/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.aether.feature.feature.group" version="1.0.1.v20141111"/>
-<unit id="org.eclipse.aether.transport.http.feature.feature.group" version="1.0.1.v20141111"/>
-<unit id="org.eclipse.emf.ecore.feature.group" version="2.12.0.v20160420-0247"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
-<unit id="org.eclipse.aether.connector.basic.feature.feature.group" version="1.0.1.v20141111"/>
-<unit id="org.eclipse.aether.transport.file.feature.feature.group" version="1.0.1.v20141111"/>
-<unit id="org.eclipse.aether.maven.feature.feature.group" version="3.1.0.20140706-2237"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.12.1.v20160907-1200"/>
-<unit id="org.eclipse.rcp.feature.group" version="4.6.1.v20160907-1200"/>
-<unit id="org.eclipse.emf.common.feature.group" version="2.12.0.v20160420-0247"/>
-<unit id="org.eclipse.platform.feature.group" version="4.6.1.v20160907-1200"/>
-<unit id="org.eclipse.emf.feature.group" version="2.12.0.v20160526-0356"/>
-<repository location="http://download.eclipse.org/releases/neon"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="1.4.0.201606011907"/>
 <unit id="org.eclipse.nebula.widgets.nattable.extension.e4.source.feature.feature.group" version="1.0.0.201606011907"/>
 <unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="1.4.0.201606011907"/>
@@ -124,9 +129,14 @@
 <repository location="http://download.eclipse.org/nattable/releases/1.4.0/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.vogella.model.feature.source.feature.group" version="1.0.0.201612142229"/>
-<unit id="com.vogella.model.feature.feature.group" version="1.0.0.201612142229"/>
-<repository location="https://dl.bintray.com/vogellacompany/codeexamples-javadatamodel/"/>
+<unit id="junit" version="4.12.0"/>
+<unit id="com.goldmansachs.gs-collections-testutils" version="7.0.0"/>
+<unit id="com.goldmansachs.gs-collections" version="7.0.0"/>
+<unit id="com.goldmansachs.gs-collections-api" version="7.0.0"/>
+<unit id="com.goldmansachs.gs-collections-forkjoin" version="7.0.0"/>
+<unit id="org.apache.commons.codec" version="1.10.0"/>
+<unit id="org.hamcrest.core" version="1.3.0"/>
+<repository location="https://dl.bintray.com/sdruskat/thid-party-deps-p2"/>
 </location>
 </locations>
 </target>

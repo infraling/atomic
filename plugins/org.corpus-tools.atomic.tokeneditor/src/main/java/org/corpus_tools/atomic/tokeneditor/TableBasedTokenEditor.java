@@ -3,10 +3,10 @@
  */
 package org.corpus_tools.atomic.tokeneditor;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.corpus_tools.atomic.editors.DocumentGraphEditor;
+import org.corpus_tools.atomic.tokeneditor.data.TokenListDataProvider;
 import org.corpus_tools.salt.common.STextualRelation;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SNode;
@@ -16,7 +16,6 @@ import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ISpanningDataProvider;
-import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.layer.ColumnHeaderLayer;
@@ -27,6 +26,8 @@ import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+
+import com.gs.collections.impl.list.Interval;
 
 /**
  * TODO Description
@@ -87,7 +88,8 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	 */
 	private IDataProvider createDataProvider() {
 		final List<SToken> tokens = graph.getSortedTokenByText();
-		return new ListDataProvider<>(tokens, new TokenColumnPropertyAccessor());
+//		return new ListDataProvider<>(tokens, new TokenColumnPropertyAccessor());
+		return new TokenListDataProvider(tokens, new TokenRowPropertyAccessor());
 	}
 
 	/**
@@ -97,6 +99,8 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	 *
 	 */
 	public class TokenizationEditorTableColumnHeaderDataProvider extends DefaultColumnHeaderDataProvider {
+		
+		private List<Integer> tokenIndices = Interval.zeroTo(graph.getTokens().size() - 1);
 
 		/**
 		 * @param columnLabels
@@ -107,25 +111,12 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 
 		@Override
 		public String getColumnHeaderLabel(int columnIndex) {
-			String propertyName = null;
-			switch (columnIndex) {
-			case 0:
-				propertyName = "Token text";
-				break;
-
-			case 1:
-				propertyName = "Offset";
-				break;
-
-			default:
-				break;
-			}
-			return propertyName;
+			return tokenIndices.get(columnIndex).toString();
 		}
 
 		@Override
 		public int getColumnCount() {
-			return 2;
+			return graph.getTokens().size();
 		}
 
 		@Override
@@ -154,9 +145,9 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	 * @author Stephan Druskat <mail@sdruskat.net>
 	 *
 	 */
-	public class TokenColumnPropertyAccessor implements IColumnPropertyAccessor<SToken> {
+	public class TokenRowPropertyAccessor implements IColumnPropertyAccessor<SToken> {
 
-		private final List<String> propertyNames = Arrays.asList("text", "offsets");
+//		private final List<String> propertyNames = Arrays.asList("text", "offsets");
 
 		@Override
 		public Object getDataValue(SToken token, int columnIndex) {
@@ -179,7 +170,7 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 				break;
 			}
 
-			return "";
+			return null;
 		}
 
 		@Override
@@ -193,12 +184,12 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 
 		@Override
 		public String getColumnProperty(int columnIndex) {
-			return propertyNames.get(columnIndex);
+			return null;
 		}
 
 		@Override
 		public int getColumnIndex(String propertyName) {
-			return propertyNames.indexOf(propertyName);
+			return -1;
 		}
 	}
 
