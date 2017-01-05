@@ -44,6 +44,9 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	
 	protected SDocumentGraph graph = null;
 
+
+	protected boolean dirty;
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -97,6 +100,7 @@ public abstract class DocumentGraphEditor extends EditorPart {
 			}
 			log.trace("Loaded document graph {}.", graph);
 			setSite(site);
+			setInput(input);
 		}
 	}
 
@@ -105,8 +109,7 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	 */
 	@Override
 	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
+		return dirty;
 	}
 
 	/* (non-Javadoc)
@@ -160,6 +163,14 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	 */
 	protected final SDocumentGraph getGraph() {
 		return graph;
+	}
+
+	/**
+	 * @param dirty the dirty to set
+	 */
+	protected final void setDirty(boolean dirty) {
+		this.dirty = dirty;
+		firePropertyChange(PROP_DIRTY);
 	}
 
 }
