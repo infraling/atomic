@@ -3,7 +3,9 @@
  */
 package org.corpus_tools.atomic.tokeneditor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.corpus_tools.atomic.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.tokeneditor.data.TokenListDataProvider;
@@ -14,6 +16,7 @@ import org.corpus_tools.salt.core.SRelation;
 import org.eclipse.collections.impl.list.Interval;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.coordinate.Range;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ISpanningDataProvider;
@@ -26,7 +29,12 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
+import org.eclipse.nebula.widgets.nattable.layer.LayerUtil;
+import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
+import org.eclipse.nebula.widgets.nattable.selection.event.CellSelectionEvent;
+import org.eclipse.nebula.widgets.nattable.selection.event.ColumnSelectionEvent;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -47,7 +55,6 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	 * 
 	 */
 	public TableBasedTokenEditor() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -62,7 +69,7 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 
 		// build the body layer stack
 		dataProvider = createDataProvider();
-		DataLayer bodyDataLayer = new DataLayer(dataProvider);
+		final DataLayer bodyDataLayer = new DataLayer(dataProvider);
 		SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer);
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 
@@ -78,9 +85,49 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 		ILayer cornerLayer = new CornerLayer(new DataLayer(new DefaultCornerDataProvider(colHeaderDataProvider, rowHeaderDataProvider)), rowHeaderLayer, columnHeaderLayer);
 
 		GridLayer compositeLayer = new GridLayer(viewportLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
-		NatTable natTable = new NatTable(parent, compositeLayer);
-
+		
+		final NatTable natTable = new NatTable(parent, compositeLayer);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
+		
+		// Handle selection
+		natTable.addLayerListener(new ILayerListener() {
+
+            // Default selection behavior selects cells by default.
+            @Override
+			public void handleLayerEvent(ILayerEvent event) {
+				if (event instanceof CellSelectionEvent) {
+					CellSelectionEvent cellEvent = (CellSelectionEvent) event;
+					selectToken(cellEvent.getColumnPosition());
+				}
+				else if (event instanceof ColumnSelectionEvent) {
+					ColumnSelectionEvent colEvent = (ColumnSelectionEvent) event;
+					List<Range> rangesList = new ArrayList<>(colEvent.getColumnPositionRanges());
+					Range range = rangesList.get(0);
+					Set<Integer> members = range.getMembers();
+					if (members.size() == 1) {
+						System.err.println(members);
+						selectToken(new ArrayList<>(members).get(0));
+					}
+				}
+			}
+            
+            private void selectToken(int colPos) {
+            	// transform the NatTable column position to the row position
+				// of the body layer stack
+				int absoluteColPos = LayerUtil.convertColumnPosition(natTable, colPos, bodyDataLayer);
+				SToken token = graph.getSortedTokenByText().get(absoluteColPos);
+				int start = 0, end = 0;
+				for (SRelation rel : ((SNode) token).getOutRelations()) {
+					if (rel instanceof STextualRelation) {
+						start = ((STextualRelation) rel).getStart();
+						end = ((STextualRelation) rel).getEnd();
+					}
+				}
+//				SToken newToken = graph.createToken(graph.getTextualDSs().get(0), start + 1, end + 1);
+//				System.err.println("TOKEN SELECTED: >" + graph.getText(token) + "<");
+				setDirty(true);
+            }
+		});
 	}
 
 	/**
@@ -235,5 +282,7 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 			return -1;
 		}
 	}
+
+	
 
 }
