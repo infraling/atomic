@@ -16,10 +16,13 @@ import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ISpanningDataProvider;
-import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.layer.ColumnHeaderLayer;
-import org.eclipse.nebula.widgets.nattable.layer.CompositeLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
@@ -65,17 +68,17 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 
 		// build the column header layer stack
-		IDataProvider headerDataProvider = new TokenizationEditorTableColumnHeaderDataProvider();
-		DataLayer headerDataLayer = new DataLayer(headerDataProvider);
-		ILayer columnHeaderLayer = new ColumnHeaderLayer(headerDataLayer, viewportLayer, selectionLayer);
+		IDataProvider colHeaderDataProvider = new TokenColumnHeaderDataProvider();
+		DataLayer colHeaderDataLayer = new DataLayer(colHeaderDataProvider);
+		ILayer columnHeaderLayer = new ColumnHeaderLayer(colHeaderDataLayer, viewportLayer, selectionLayer);
 
-		// create the composition
-		// set the region labels to make default configurations work, e.g.
-		// selection
-		CompositeLayer compositeLayer = new CompositeLayer(1, 2);
-		compositeLayer.setChildLayer(GridRegion.COLUMN_HEADER, columnHeaderLayer, 0, 0);
-		compositeLayer.setChildLayer(GridRegion.BODY, viewportLayer, 0, 1);
+		// build the row header layer stack
+		IDataProvider rowHeaderDataProvider = new TokenRowHeaderDataProvider(dataProvider);
+		DataLayer rowHeaderDataLayer = new DataLayer(rowHeaderDataProvider);
+		ILayer rowHeaderLayer = new RowHeaderLayer(rowHeaderDataLayer, viewportLayer, selectionLayer);
+		ILayer cornerLayer = new CornerLayer(new DataLayer(new DefaultCornerDataProvider(colHeaderDataProvider, rowHeaderDataProvider)), rowHeaderLayer, columnHeaderLayer);
 
+		GridLayer compositeLayer = new GridLayer(viewportLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
 		NatTable natTable = new NatTable(parent, compositeLayer);
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
@@ -88,7 +91,6 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	 */
 	private IDataProvider createDataProvider() {
 		final List<SToken> tokens = graph.getSortedTokenByText();
-//		return new ListDataProvider<>(tokens, new TokenColumnPropertyAccessor());
 		return new TokenListDataProvider(tokens, new TokenRowPropertyAccessor());
 	}
 
@@ -98,14 +100,14 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	 * @author Stephan Druskat <mail@sdruskat.net>
 	 *
 	 */
-	public class TokenizationEditorTableColumnHeaderDataProvider extends DefaultColumnHeaderDataProvider {
+	public class TokenColumnHeaderDataProvider extends DefaultColumnHeaderDataProvider {
 		
 		private List<Integer> tokenIndices = Interval.zeroTo(graph.getTokens().size() - 1);
 
 		/**
 		 * @param columnLabels
 		 */
-		public TokenizationEditorTableColumnHeaderDataProvider() {
+		public TokenColumnHeaderDataProvider() {
 			super(null);
 		}
 
@@ -137,6 +139,48 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 			throw new UnsupportedOperationException();
 		}
 
+	}
+
+	/**
+		 * TODO Description
+		 *
+		 * @author Stephan Druskat <mail@sdruskat.net>
+		 *
+		 */
+	public class TokenRowHeaderDataProvider extends DefaultRowHeaderDataProvider {
+
+		/**
+		 * @param bodyDataProvider
+		 */
+		public TokenRowHeaderDataProvider(IDataProvider bodyDataProvider) {
+			super(bodyDataProvider);
+			// TODO Auto-generated constructor stub
+		}
+		
+		@Override
+	    public int getColumnCount() {
+	        return 1;
+	    }
+
+	    @Override
+	    public int getRowCount() {
+	        return 2;
+	    }
+
+	    @Override
+	    public Object getDataValue(int columnIndex, int rowIndex) {
+	    	switch (rowIndex) {
+			case 0:
+				return "Token text";
+				
+			case 1:
+				return "Token index";
+
+			default:
+				return null;
+			}
+	    }
+	
 	}
 
 	/**
