@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.corpus_tools.salt.common.SToken;
 import org.eclipse.nebula.widgets.nattable.data.IColumnAccessor;
+import org.eclipse.nebula.widgets.nattable.data.ISpanningDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
+import org.eclipse.nebula.widgets.nattable.layer.cell.DataCell;
 
 /**
  * TODO Description
@@ -15,7 +17,7 @@ import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class TokenListDataProvider extends ListDataProvider<SToken> {
+public class TokenListDataProvider extends ListDataProvider<SToken> implements ISpanningDataProvider {
 
 	/**
 	 * @param list
@@ -65,6 +67,15 @@ public class TokenListDataProvider extends ListDataProvider<SToken> {
 	public List<SToken> getList() {
         return this.list;
     }
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.nebula.widgets.nattable.data.ISpanningDataProvider#getCellByPosition(int, int)
+	 */
+	@Override
+	public DataCell getCellByPosition(int columnPosition, int rowPosition) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }
