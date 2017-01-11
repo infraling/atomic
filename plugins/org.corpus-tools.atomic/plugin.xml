@@ -137,16 +137,6 @@
       </key>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            allowMultiple="false"
-            class="org.eclipse.ui.navigator.CommonNavigator"
-            id="org.corpus_tools.atomic.views.navigation"
-            name="Navigation"
-            restorable="true">
-      </view>
-   </extension>
-   <extension
          point="org.eclipse.ui.navigator.viewer">
       <viewerActionBinding
             viewerId="org.corpus_tools.atomic.views.navigation">
@@ -468,6 +458,13 @@
             class="org.eclipse.ui.ExtensionFactory:progressView"
             id="org.eclipse.ui.views.ProgressView"
             name="Progress"
+            restorable="true">
+      </view>
+            <view
+            allowMultiple="false"
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            id="org.corpus_tools.atomic.views.navigation"
+            name="Navigation"
             restorable="true">
       </view>
    </extension>
