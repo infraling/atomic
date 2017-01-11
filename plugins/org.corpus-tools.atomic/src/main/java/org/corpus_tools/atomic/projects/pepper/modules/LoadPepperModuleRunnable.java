@@ -94,11 +94,13 @@ public class LoadPepperModuleRunnable implements IRunnableWithProgress {
 			}
 			// Start bundles
 			for (Bundle bundle : moduleBundles) {
-				try {
-					bundle.start();
-				}
-				catch (BundleException e) {
-					log.debug("Could not start bundle {}!", bundle.getSymbolicName());
+				if (bundle.getState() != Bundle.ACTIVE) {
+					try {
+						bundle.start();
+					}
+					catch (BundleException e) {
+						log.debug("Could not start bundle {}!", bundle.getSymbolicName());
+					}
 				}
 			}
 		}
