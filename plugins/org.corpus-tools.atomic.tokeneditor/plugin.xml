@@ -5,11 +5,31 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.corpus_tools.atomic.tokeneditor.TableBasedTokenEditor"
-            default="false"
+            default="true"
             filenames="salt"
             id="org.corpus_tools.atomic.tokeneditor.table"
             name="Tokenization Editor">
+         <contentTypeBinding
+               contentTypeId="org.corpus_tools.atomic.tokeneditor.saltDocumentContentType">
+         </contentTypeBinding>
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="salt"
+            id="org.corpus_tools.atomic.tokeneditor.saltDocumentContentType"
+            name="Salt Document"
+            priority="high">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{sDocumentStructure}SDocumentGraph">
+            </parameter>
+         </describer>
+      </content-type>
    </extension>
 
 </plugin>
