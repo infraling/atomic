@@ -118,7 +118,8 @@
       </key>
       <scheme
             id="org.corpus_tools.atomic.keyscheme"
-            name="Atomic Key Binding Scheme">
+            name="Atomic Key Binding Scheme"
+            parentId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </scheme>
       <key
             commandId="org.corpus_tools.atomic.commands.switchWorkspace"
