@@ -31,5 +31,42 @@
          </describer>
       </content-type>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.corpus_tools.atomic.tokeneditor.createToken"
+            contextId="org.corpus_tools.atomic.tokeneditor.context"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="M1+N">
+      </key>
+      <scheme
+            id="org.corpus_tools.atomic.tokeneditor.scheme"
+            name="Tokenization Editor scheme"
+            parentId="org.corpus_tools.atomic.keyscheme">
+      </scheme>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.corpus_tools.atomic.tokeneditor.tokenCategory"
+            defaultHandler="org.corpus_tools.atomic.tokeneditor.NewTokenHandler"
+            description="Creates a new token"
+            id="org.corpus_tools.atomic.tokeneditor.createToken"
+            name="Create token">
+      </command>
+      <category
+            description="A category for commands that change the tokenization"
+            id="org.corpus_tools.atomic.tokeneditor.tokenCategory"
+            name="Tokenization">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="org.corpus_tools.atomic.tokeneditor.context"
+            name="Tokenization Editor context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
 
 </plugin>
