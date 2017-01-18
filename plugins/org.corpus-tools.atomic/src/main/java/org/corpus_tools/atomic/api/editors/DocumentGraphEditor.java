@@ -5,6 +5,7 @@ package org.corpus_tools.atomic.api.editors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.corpus_tools.atomic.api.events.PartContextListener;
 import org.corpus_tools.atomic.exceptions.AtomicGeneralException;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
@@ -20,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -101,6 +103,9 @@ public abstract class DocumentGraphEditor extends EditorPart {
 			log.trace("Loaded document graph {}.", graph);
 			setSite(site);
 			setInput(input);
+			
+			// Set up editor for automatic context switches on activation/deactivation 
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new PartContextListener(site.getId(), site.getPluginId()));
 		}
 	}
 

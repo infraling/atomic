@@ -6,7 +6,6 @@ package org.corpus_tools.atomic.tokeneditor;
 import java.util.List;
 
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
-import org.corpus_tools.atomic.api.events.PartContextListener;
 import org.corpus_tools.atomic.tokeneditor.accessors.TokenRowPropertyAccessor;
 import org.corpus_tools.atomic.tokeneditor.configuration.EditorPopupMenuConfiguration;
 import org.corpus_tools.atomic.tokeneditor.configuration.TokenEditorKeyConfiguration;
@@ -47,10 +46,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextActivation;
 
 /**
@@ -78,15 +73,6 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	 */
 	public TableBasedTokenEditor() {}
 	
-	/* (non-Javadoc)
-	 * @see org.corpus_tools.atomic.editors.DocumentGraphEditor#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
-	 */
-	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		super.init(site, input);
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new PartContextListener(getSite().getId(), getSite().getPluginId()));
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
