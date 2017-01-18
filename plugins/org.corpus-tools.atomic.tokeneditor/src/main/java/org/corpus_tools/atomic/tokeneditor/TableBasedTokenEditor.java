@@ -42,6 +42,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
@@ -331,6 +333,16 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 		natTable.configure();
+		
+		// Select the first cell on opening the editor
+		natTable.addPaintListener(new PaintListener() {
+		    @Override
+		    public void paintControl(PaintEvent e) {
+		        natTable.setFocus();
+		        natTable.doCommand(new SelectCellCommand(selectionLayer, 0, 0, false, false));
+		        natTable.removePaintListener(this);
+		    }
+		});
 		
 		selectionLayer.selectCell(0, 0, false, false);
 		natTable.forceFocus();
