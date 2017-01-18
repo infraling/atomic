@@ -21,9 +21,7 @@ public class PartContextListener implements IPartListener2 {
 	
 	private final String partId;
 	private IContextActivation contextActivation = null;
-	private final String pluginId;
 	private String contextId = null;
-	
 
 	/**
 	 * @param partId 
@@ -31,13 +29,12 @@ public class PartContextListener implements IPartListener2 {
 	 */
 	public PartContextListener(String partId, String pluginId) {
 		this.partId = partId;
-		this.pluginId = pluginId;
 		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.ui.contexts");
 		
 		for (IConfigurationElement element : elements) {
 			if (element.getContributor().getName().equals(pluginId)) {
 				this.contextId = element.getAttribute("id");
-				break;
+				break; // Allow only one context per plugin
 			}
 		}
 	}
@@ -45,36 +42,45 @@ public class PartContextListener implements IPartListener2 {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IPartListener2#partActivated(org.eclipse.ui.IWorkbenchPartReference)
 	 */
+	/**
+	 * If {@link #contextId} is set and {@link #partId} equals the
+	 * part's ID that has been **activated**, activate the
+	 * respective context and set {@link #contextActivation} 
+	 * to the activation method's return object, as we will
+	 * need this later to deactivate context when the part is
+	 * deactivated. 
+	 */
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
-		if (contextId != null) {
-			if (partRef.getId().equals(partId)) {
-				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-					@Override
-					public void run() {
-						contextActivation = PlatformUI.getWorkbench().getService(IContextService.class).activateContext(contextId);
-					}
-				});
-			}
+		if (contextId != null && partRef.getId().equals(partId)) {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					contextActivation = PlatformUI.getWorkbench().getService(IContextService.class).activateContext(contextId);
+				}
+			});
 		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IPartListener2#partDeactivated(org.eclipse.ui.IWorkbenchPartReference)
 	 */
+	/**
+	 * If both {@link #contextId} and {@link #contextActivation}
+	 * are set, and {@link #partId} equals the part's ID that 
+	 * has been **deactivated**, deactivate the respective
+	 * context.
+	 */
 	@Override
 	public void partDeactivated(IWorkbenchPartReference partRef) {
-		if (contextId != null && contextActivation != null) {
-			if (partRef.getId().equals(partId)) {
-				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-					@Override
-					public void run() {
-						PlatformUI.getWorkbench().getService(IContextService.class).deactivateContext(contextActivation);
-					}
-				});
-			}
+		if (contextId != null && contextActivation != null && partRef.getId().equals(partId)) {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					PlatformUI.getWorkbench().getService(IContextService.class).deactivateContext(contextActivation);
+				}
+			});
 		}
-	
 	}
 
 	// Unimplemented methods
