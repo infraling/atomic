@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.corpus_tools.atomic.editors;
+package org.corpus_tools.atomic.api.editors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
