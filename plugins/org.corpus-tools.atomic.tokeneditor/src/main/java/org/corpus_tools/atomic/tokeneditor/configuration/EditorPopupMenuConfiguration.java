@@ -3,8 +3,8 @@
  */
 package org.corpus_tools.atomic.tokeneditor.configuration;
 
-import org.corpus_tools.atomic.tokeneditor.TableBasedTokenEditor;
 import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SToken;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
@@ -34,8 +34,8 @@ public class EditorPopupMenuConfiguration extends AbstractUiBindingConfiguration
 	private final Menu menu;
 	private final SDocumentGraph graph;
 
-	public EditorPopupMenuConfiguration(NatTable natTable) {
-		this.graph = (SDocumentGraph) natTable.getData(TableBasedTokenEditor.DATA_GRAPH);
+	public EditorPopupMenuConfiguration(NatTable natTable, SDocumentGraph graph) {
+		this.graph = graph;
 		this.menu = new PopupMenuBuilder(natTable).withMenuItemProvider("newTokenPopupMenu", new NewTokenMenuItemProvider()).build();
 	}
 
@@ -75,7 +75,8 @@ public class EditorPopupMenuConfiguration extends AbstractUiBindingConfiguration
 
 					System.err.println("Selected token: " + natTable.getDataValueByPosition(columnPosition, rowPosition));
 					int absoluteTokenIndex = LayerUtil.convertColumnPosition(natTable, columnPosition, (IUniqueIndexLayer) natTable.getData("dataLayer"));
-					System.err.println("SELECTED TOKEN : " + graph.getText(graph.getSortedTokenByText().get(absoluteTokenIndex)));
+					SToken selectedToken = graph.getSortedTokenByText().get(absoluteTokenIndex);
+					// FIXME Now call NewTokenHandler
 				}
 			});
 		}
