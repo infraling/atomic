@@ -15,10 +15,16 @@ import org.corpus_tools.atomic.tokeneditor.providers.TokenColumnHeaderDataProvid
 import org.corpus_tools.atomic.tokeneditor.providers.TokenRowHeaderDataProvider;
 import org.corpus_tools.salt.common.STextualRelation;
 import org.corpus_tools.salt.common.SToken;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
@@ -30,8 +36,12 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
+import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
+import org.eclipse.nebula.widgets.nattable.selection.ISelectionModel;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.command.SelectCellCommand;
+import org.eclipse.nebula.widgets.nattable.selection.event.ISelectionEvent;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ExtendedModifyEvent;
@@ -56,11 +66,8 @@ import org.eclipse.ui.contexts.IContextActivation;
  * @author Stephan Druskat <mail@sdruskat.net>
  *
  */
-public class TableBasedTokenEditor extends DocumentGraphEditor {
+public class TableBasedTokenEditor extends DocumentGraphEditor implements ISelectionProvider {
 
-	public static final String DATA_GRAPH = "graph";
-	public static final String DATA_DATALAYER = "dataLayer";
-	public static final String DATA_SELECTIONLAYER = "selectionLayer";
 	private boolean tableFocus = true;
 	private boolean offsetSet = false;
 	ISpanningDataProvider dataProvider;
@@ -69,12 +76,9 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	protected StyleRange boldSection;
 	protected int highestOffset = 0;
 	protected IContextActivation actication;
+	private ListenerList<ISelectionChangedListener> selectionListeners = new ListenerList<>();
+	private int[] selectedColumns = new int[0];
 
-	/**
-	 * Default constructor 
-	 */
-	public TableBasedTokenEditor() {}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,6 +93,7 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 		final DataLayer bodyDataLayer = new DataLayer(dataProvider);
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
 		selectionLayer.addConfiguration(new TokenEditorSelectionConfiguration(graph));
+		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 
 		// build the column header layer stack
@@ -108,13 +113,6 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	            | SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL
 	            | SWT.H_SCROLL | SWT.BORDER, compositeLayer, false);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(natTable);
-
-		// Set graph for retrieval via NatTable#getData() method later on.
-		natTable.setData(DATA_GRAPH, graph);
-		// Set dataLayer for retrieval via NatTable#getData() method later on.
-		natTable.setData(DATA_DATALAYER, bodyDataLayer);
-		// Set dataLayer for retrieval via NatTable#getData() method later on.
-		natTable.setData(DATA_SELECTIONLAYER, selectionLayer);
 
 		// StyledText
 		final StyledText text = new StyledText(parent, SWT.H_SCROLL| SWT.BORDER);
@@ -140,18 +138,14 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 				 * of ordered tokens by text whose overlapped text
 				 * (inclusively) contains the current caret offset. 
 				 */
-				if ((e.stateMask & SWT.CTRL) != 0 && e.keyCode == 'g') {
+				if ((e.stateMask & SWT.CTRL) != 0 && (e.keyCode == 'g' || e.keyCode == 't')) {
 					int index = -1;
 					int offset = text.getCaretOffset();
 					// Find the STextualRelation for the offset
 					relations:
 					for (STextualRelation rel : graph.getTextualRelations()) {
 						// TODO: Benchmark this vs. single if with <= and >= (3rd if here)
-						if (rel.getEnd() == offset) {
-							index = graph.getSortedTokenByText().indexOf(rel.getSource());
-							break relations;
-						}
-						else if (rel.getStart() == offset) {
+						if (rel.getStart() == offset || rel.getEnd() == offset) {
 							index = graph.getSortedTokenByText().indexOf(rel.getSource());
 							break relations;
 						}
@@ -166,102 +160,17 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 						int pos = selectionLayer.getColumnPositionByIndex(index);
 						selectionLayer.selectColumn(pos, 0, false, false);
 					}
+					/*
+					 * CTRL + T selects the table control.
+					 */
+					if (e.keyCode == 't') {
+						natTable.setFocus();
+					}
 				}
 				
-				/*
-				 * CTRL + T selects the table control.
-				 */
-				if ((e.stateMask & SWT.CTRL) != 0 && e.keyCode == 't') {
-					natTable.setFocus();
-				}
 			}
 		});
 		
-//		/*
-//		 * Handle key events in the text widget
-//		 */
-//		text.addVerifyKeyListener(new VerifyKeyListener() {
-//			@Override
-//			public void verifyKey(VerifyEvent event) {
-//				// Go to table cell
-//				if ((event.stateMask & SWT.CTRL) != 0 && event.keyCode == 'g') {
-//					System.err.println(">" + text.getSelectionText() + "<");
-//					for (STextualRelation stextualres : graph.getTextualRelations()) {
-//						if (stextualres.getStart() < text.getCaretOffset()) {
-//							if (stextualres.getEnd() > text.getCaretOffset()) {
-//								SToken token = stextualres.getSource();
-//								int index = graph.getSortedTokenByText().indexOf(token);
-//								selectionLayer.selectColumn(index, 1, false, false);
-//							}
-//						}
-//					}
-//				}
-//				
-//				switch (event.keyCode) {
-//
-//				/* 
-//				 * Anything that potentially moves the cursor
-//				 * should reset everything! 	
-//				 */
-//				case SWT.ESC:
-//				case SWT.END:
-//				case SWT.HOME:
-//				case SWT.ARROW_DOWN:
-//				case SWT.ARROW_UP:
-//				case SWT.PAGE_DOWN:
-//				case SWT.PAGE_UP:
-//					
-//					// Delete previously entered text!
-//					if (isEdited()) {
-//						resetText(text);
-//						reset();
-//					}
-//					break;
-//				
-//				/*
-//				 * Handle arrow keys when editing,
-//				 * i.e., don't process as the event
-//				 * isn't processed yet and the offsets
-//				 * are wrong!
-//				 */
-//				case SWT.ARROW_RIGHT:
-//				case SWT.ARROW_LEFT:
-//					break;
-//
-//				/* 
-//				 * Backspace, Delete: Handle as usual.
-//				 */
-//				case SWT.BS:
-//				// Delete	
-//				case SWT.DEL:
-//					break;
-//				/* 
-//				 * Return: Write and reset!
-//				 */
-//				case SWT.CR:
-//					event.doit = false;
-//					if (offset != 0 && highestOffset != 0) {
-//						System.err.println("Writing text:" + text.getText().substring(offset, highestOffset + 1));
-//					}
-//					reset();
-//					break;
-//					
-//				default:
-//					int currentOfsset = text.getCaretOffset();
-//					if (!offsetSet) {
-//						offset = currentOfsset;
-//					}
-//					else {
-//						if (currentOfsset > highestOffset) {
-//							highestOffset  = currentOfsset;
-//						}
-//					}
-//					offsetSet = true;
-//					newText += event.character;
-//					break;
-//				}
-//			}
-//		});
 		
 		/*
 		 * When control loses focus and offset and newText
@@ -289,47 +198,19 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 		});
 		
 		
-		
-//		// Handle selection
-//		natTable.addLayerListener(new ILayerListener() {
-//
-//			// Default selection behavior selects cells by default.
-//			@Override
-//			public void handleLayerEvent(ILayerEvent event) {
-//				if (event instanceof CellSelectionEvent) {
-////					System.err.println("CELL EVENT");
-//					CellSelectionEvent cellEvent = (CellSelectionEvent) event;
-//					setSelectedToken(cellEvent.getColumnPosition());
-//				}
-//				else if (event instanceof ColumnSelectionEvent) {
-////					System.err.println("COL EVENT");
-//					ColumnSelectionEvent colEvent = (ColumnSelectionEvent) event;
-//					List<Range> rangesList = new ArrayList<>(colEvent.getColumnPositionRanges());
-//					Range range = rangesList.get(0);
-//					Set<Integer> members = range.getMembers();
-//					if (members.size() == 1) {
-//						setSelectedToken(new ArrayList<>(members).get(0));
-//					}
-//				}
-//			}
-//
-//			private void setSelectedToken(int colPos) {
-//				// transform the NatTable column position to the row position
-//				// of the body layer stack
-//				int absoluteColPos = LayerUtil.convertColumnPosition(natTable, colPos, bodyDataLayer);
-//				SToken token = graph.getSortedTokenByText().get(absoluteColPos);
-//				// FIXME: HERE IS SELECTION IN TEXT VIEWER
-//				if (tableFocus) {
-//					List<DataSourceSequence> seq = graph.getOverlappedDataSourceSequence(token, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
-//					// Tokens should only overlap one single sequence
-//					int textIndex = seq.get(0).getStart().intValue();
-//					text.setCaretOffset(textIndex - 20);
-//					text.setSelection(textIndex);
-//				}
-//				natTable.setData("selectedToken", graph.getSortedTokenByText().get(absoluteColPos));
-//			}
-//		});
-		natTable.addConfiguration(new EditorPopupMenuConfiguration(natTable));
+		// Handle selection - TODO Check if a scroll listener would be faster
+		natTable.addLayerListener(new ILayerListener() {
+
+			// Default selection behavior selects cells by default.
+			@Override
+			public void handleLayerEvent(ILayerEvent event) {
+				if (event instanceof ISelectionEvent) {
+					setSelection(new StructuredSelection(selectionModel.getSelectedColumnPositions()));
+				}
+			}
+		});
+
+		natTable.addConfiguration(new EditorPopupMenuConfiguration(natTable, graph));
 		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 		natTable.configure();
@@ -344,23 +225,11 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 		    }
 		});
 		
-		selectionLayer.selectCell(0, 0, false, false);
-		natTable.forceFocus();
-		natTable.doCommand(new SelectCellCommand(selectionLayer, 0, 0, false, false));
-		System.err.println(natTable.isFocusControl());
-	}
+		// Set editor as selection provider
+		getSite().setSelectionProvider(this);
 		
-//		natTable.addFocusListener(new FocusAdapter() {
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				tableFocus = true;
-//			}
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				tableFocus = false;
-//			}
-//		});}
-	
+	}
+			
 	/**
 	 * TODO: Description
 	 *
@@ -414,6 +283,43 @@ public class TableBasedTokenEditor extends DocumentGraphEditor {
 	
 	private boolean isEdited() {
 		return !(offset == 0 && highestOffset == 0);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionListeners.add(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		return new StructuredSelection(selectedColumns);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	@Override
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionListeners.remove(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public void setSelection(ISelection selection) {
+		selectedColumns = (int[]) ((StructuredSelection) selection).getFirstElement();
+//		this.selectedTokenIndex = (Integer) ((StructuredSelection) selection).getFirstElement();
+		Object[] listeners = selectionListeners.getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			((ISelectionChangedListener) listeners[i]).selectionChanged(new SelectionChangedEvent(this, selection));
+		}
 	}
 
 }
