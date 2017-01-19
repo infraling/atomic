@@ -166,7 +166,7 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	 * 
 	 * @return the graph
 	 */
-	protected final SDocumentGraph getGraph() {
+	public final SDocumentGraph getGraph() {
 		return graph;
 	}
 
