@@ -49,7 +49,7 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.corpus_tools.atomic.tokeneditor.tokenCategory"
-            defaultHandler="org.corpus_tools.atomic.tokeneditor.NewTokenHandler"
+            defaultHandler="org.corpus_tools.atomic.tokeneditor.handlers.NewTokenHandler"
             description="Creates a new token"
             id="org.corpus_tools.atomic.tokeneditor.createToken"
             name="Create token">
