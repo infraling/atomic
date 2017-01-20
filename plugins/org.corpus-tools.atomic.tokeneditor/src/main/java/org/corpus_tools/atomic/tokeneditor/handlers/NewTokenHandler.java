@@ -3,6 +3,8 @@
  */
 package org.corpus_tools.atomic.tokeneditor.handlers;
 
+import java.util.List;
+
 import org.corpus_tools.atomic.api.commands.DocumentGraphAwareHandler;
 import org.corpus_tools.salt.common.STextualRelation;
 import org.corpus_tools.salt.common.SToken;
@@ -32,7 +34,10 @@ public class NewTokenHandler extends DocumentGraphAwareHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		boolean isLastToken = false;
 		SToken selectedToken = null;
+		List<SToken> sortedTokens = getGraph().getSortedTokenByText();
+		int sortedTokensSize = sortedTokens.size();
 		Event trigger = (Event) event.getTrigger();
 		Widget widget = trigger.widget;
 		Object selectionElement = ((StructuredSelection) HandlerUtil.getCurrentSelectionChecked(event)).getFirstElement();
@@ -40,10 +45,17 @@ public class NewTokenHandler extends DocumentGraphAwareHandler {
 			if (widget instanceof NatTable) {
 				if (selectionElement instanceof int[]) {
 					int[] selection = (int[]) selectionElement;
-					selectedToken = getGraph().getSortedTokenByText().get(selection[0]);
+					int index = selection[0];
+					selectedToken = sortedTokens.get(index);
+					if (index == sortedTokens.size() - 1) {
+						isLastToken = true;
+					}
 				}
 				else if (trigger.data instanceof SToken){ // Command executed from menu 
 					selectedToken = (SToken) trigger.data;
+					if (sortedTokens.get(sortedTokensSize - 1).equals(selectedToken)) {
+						isLastToken = true;
+					}
 				}
 			}
 			/*
@@ -66,10 +78,18 @@ public class NewTokenHandler extends DocumentGraphAwareHandler {
 						}
 					}
 				}
+				if (sortedTokens.get(sortedTokensSize - 1).equals(selectedToken)) {
+					isLastToken = true;
+				}
 			}
 		}
 		// FIXME
-		System.err.println("HANDLE " + getGraph().getText(selectedToken));
+		if (!isLastToken) {
+			System.err.println("HANDLE " + getGraph().getText(selectedToken));
+		}
+		else {
+			System.err.println("HANDLE LAST " + getGraph().getText(selectedToken));
+		}
 		return null;
 	}
 }
