@@ -3,8 +3,14 @@
  */
 package org.corpus_tools.atomic.tokeneditor.configuration;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SToken;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
@@ -30,6 +36,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 
 /**
@@ -70,36 +77,69 @@ public class EditorPopupMenuConfiguration extends AbstractUiBindingConfiguration
 		 */
 		@Override
 		public void addMenuItem(NatTable natTable, Menu popupMenu) {
-			MenuItem newTokenLabelsMenuItem = new MenuItem(popupMenu, SWT.PUSH);
-			newTokenLabelsMenuItem.setText("Create &new token");
-			newTokenLabelsMenuItem.setEnabled(true);
-
-			newTokenLabelsMenuItem.addSelectionListener(new SelectionAdapter() {
+			MenuItem createTokenMenuItem = new MenuItem(popupMenu, SWT.PUSH);
+			createTokenMenuItem.setText("Create &new token");
+			createTokenMenuItem.setEnabled(true);
+			createTokenMenuItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					NatEventData data = (NatEventData) menu.getData(MenuItemProviders.NAT_EVENT_DATA_KEY);
-					NatTable natTable = data.getNatTable();
-					int columnPosition = data.getColumnPosition();
-					IUniqueIndexLayer bodyLayer = ((ViewportLayer) ((GridLayer) natTable.getLayer()).getBodyLayer()).getScrollableLayer();
-					int absoluteTokenIndex = LayerUtil.convertColumnPosition(natTable, columnPosition, bodyLayer);
-					SToken selectedToken = graph.getSortedTokenByText().get(absoluteTokenIndex);
-					Event event = new Event();
-					event.data = selectedToken;
-					event.widget = natTable;
-					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
-					try {
-						handlerService.executeCommand("org.corpus_tools.atomic.tokeneditor.createToken", event);
-					}
-					catch (Exception ex) {
-						throw new RuntimeException("org.corpus_tools.atomic.tokeneditor.createToken not found");
-						// FIXME: Log
-					}
-
+					executeCreateTokenCommand(Boolean.FALSE);
 				}
+
+			});
+			MenuItem createNullTokenMenuItem = new MenuItem(popupMenu, SWT.PUSH);
+			createNullTokenMenuItem.setText("Create new &empty token");
+			createNullTokenMenuItem.setEnabled(true);
+			createNullTokenMenuItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					executeCreateTokenCommand(Boolean.TRUE);
+				}
+
 			});
 		}
 
 	}
+	
+	/**
+	 * TODO: Description
+	 *
+	 */
+	private void executeCreateTokenCommand(Boolean isNullToken) {
+		NatEventData data = (NatEventData) menu.getData(MenuItemProviders.NAT_EVENT_DATA_KEY);
+		NatTable natTable = data.getNatTable();
+		int columnPosition = data.getColumnPosition();
+		IUniqueIndexLayer bodyLayer = ((ViewportLayer) ((GridLayer) natTable.getLayer()).getBodyLayer()).getScrollableLayer();
+		int absoluteTokenIndex = LayerUtil.convertColumnPosition(natTable, columnPosition, bodyLayer);
+		List<SToken> sortedTokens = graph.getSortedTokenByText();
+		boolean isLastToken = (sortedTokens.size() - 1 == absoluteTokenIndex);
+		SToken selectedToken = sortedTokens.get(absoluteTokenIndex);
+
+		ICommandService commandService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(ICommandService.class);
+		IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
+		
+		// FIXME Externalize string
+		Command createTokenCmd = commandService.getCommand("org.corpus_tools.atomic.tokeneditor.commands.createToken");
+
+		Event event = new Event();
+		event.data = selectedToken;
+		event.widget = natTable;
+		
+		Map<String, Object> params = new HashMap<>();
+		// FIXME Externalize strings
+		params.put("org.corpus_tools.atomic.tokeneditor.commands.createToken.isNullToken", isNullToken);
+		params.put("org.corpus_tools.atomic.tokeneditor.commands.createToken.isLastToken", isLastToken);
+		ParameterizedCommand parameterizedCmd = ParameterizedCommand.generateCommand(createTokenCmd, params);
+		try {
+			handlerService.executeCommand(parameterizedCmd, event);
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+			// TODO Auto-generated catch block
+			throw new RuntimeException("Command org.corpus_tools.atomic.tokeneditor.commands.createToken not found");
+		}
+	}
+
 
 	/**
 	 * TODO Description
