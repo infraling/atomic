@@ -4,12 +4,12 @@
 package org.corpus_tools.atomic.tokeneditor.configuration;
 
 import org.corpus_tools.salt.common.SDocumentGraph;
-import org.corpus_tools.salt.core.SNode;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.selection.config.DefaultSelectionBindings;
 import org.eclipse.nebula.widgets.nattable.ui.action.IKeyAction;
 import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
-import org.eclipse.nebula.widgets.nattable.ui.matcher.IKeyEventMatcher;
+import org.eclipse.nebula.widgets.nattable.ui.matcher.KeyEventMatcher;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 
 /**
@@ -30,24 +30,23 @@ public class TokenEditorSelectionBindings extends DefaultSelectionBindings {
 	}
 
 	@Override
-	public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
-		super.configureUiBindings(uiBindingRegistry);
-		uiBindingRegistry.registerKeyBinding(new IKeyEventMatcher() {
-
-			@Override
-			public boolean matches(KeyEvent event) {
-				if (event.keyCode == 'n') {
-					return true;
-				}
-				return false;
-			}
-		}, new IKeyAction() {
-
+	protected void configurePageDownButtonBindings(UiBindingRegistry uiBindingRegistry, IKeyAction action) {
+		IKeyAction newAction = new IKeyAction() {
+			
 			@Override
 			public void run(NatTable natTable, KeyEvent event) {
-				System.err.println("N gives us >" + graph.getText((SNode) natTable.getData("selectedToken")));
-
+				// FIXME: Implement new selection n steps to right
+				System.err.println("CUSTOM PAGE DOWN PRESSED!");
+				
 			}
-		});
-	}
+		};
+        uiBindingRegistry.registerKeyBinding(
+                new KeyEventMatcher(SWT.NONE, SWT.PAGE_DOWN), newAction);
+        uiBindingRegistry.registerKeyBinding(
+                new KeyEventMatcher(SWT.MOD2, SWT.PAGE_DOWN), newAction);
+        uiBindingRegistry.registerKeyBinding(
+                new KeyEventMatcher(SWT.MOD1, SWT.PAGE_DOWN), newAction);
+        uiBindingRegistry.registerKeyBinding(
+                new KeyEventMatcher(SWT.MOD2 | SWT.MOD1, SWT.PAGE_DOWN), newAction);
+    }
 }
