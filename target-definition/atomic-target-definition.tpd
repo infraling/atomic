@@ -1,0 +1,70 @@
+// see https://github.com/mbarbero/fr.obeo.releng.targetplatform for documentation
+target "Atomic Target Platform"
+
+with source requirements
+
+location "http://download.eclipse.org/releases/neon" {
+	
+     org.eclipse.rcp.feature.group
+     org.eclipse.equinox.p2.extras.feature.feature.group
+     org.eclipse.help.feature.group
+     org.eclipse.equinox.executable.feature.group
+     
+	 org.eclipse.core.runtime
+	 org.eclipse.ui.navigator
+	 org.eclipse.ui.ide
+	 org.eclipse.ui
+	 org.eclipse.core.resources
+	 org.eclipse.ui.navigator.resources
+	 org.apache.commons.lang3
+	 org.eclipse.emf.common
+	 org.eclipse.core.databinding
+	 org.eclipse.core.databinding.beans
+	 org.eclipse.core.databinding.observable
+	 org.eclipse.core.databinding.property
+	 org.eclipse.jface.databinding
+	 com.ibm.icu
+	 org.eclipse.help.ui
+	 org.eclipse.help.webapp
+	 com.google.guava
+	 org.eclipse.osgi.services
+	 org.eclipse.osgi.util
+	 
+	 org.eclipse.aether.maven [3.1.0,4.0.0)
+}
+
+location "https://dl.bintray.com/sdruskat/atomic-dependencies/" {
+	com.lmax.disruptor [3.3.2,3.4.0)
+}
+
+location "https://dl.bintray.com/sdruskat/pepper-dependencies-latest/" {
+	 org.corpus-tools.salt-api
+	 org.corpus-tools.pepper-framework
+	 org.corpus-tools.pepper-lib
+	 
+	 org.apache.commons.io
+	 org.codehaus.plexus.utils
+	 
+	 org.eclipse.aether.api 
+	 org.eclipse.aether.connector.basic
+	 org.eclipse.aether.impl
+	 org.eclipse.aether.spi
+	 org.eclipse.aether.transport.file
+	 org.eclipse.aether.transport.http
+	 org.eclipse.aether.util
+}
+
+location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
+	org.eclipse.swtbot.junit4_x 
+	org.eclipse.swtbot.eclipse.finder
+	org.eclipse.swtbot.go	
+}
+
+location "https://dl.bintray.com/sdruskat/tests-p2/" {
+	slf4j.api 
+	com.github.hazendaz.javabean-tester
+}
+
+location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/" {
+	org.junit	
+}

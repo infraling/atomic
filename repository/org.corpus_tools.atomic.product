@@ -128,9 +128,9 @@
 
    <features>
       <feature id="org.corpus_tools.atomic.feature" version="0.3.0.qualifier"/>
-      <feature id="org.eclipse.rcp" version="4.6.1.v20160907-1200"/>
-      <feature id="org.eclipse.equinox.p2.extras.feature" version="1.2.200.v20160815-1406"/>
-      <feature id="org.eclipse.help" version="2.2.0.v20160907-1200"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
+      <feature id="org.eclipse.help"/>
    </features>
 
    <configurations>

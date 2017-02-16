@@ -10,68 +10,7 @@
   <properties>
 		<tycho-version>0.24.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<mars-repo.url>http://download.eclipse.org/releases/neon</mars-repo.url>
-		<atomic-dependencies-repo.url>https://dl.bintray.com/sdruskat/atomic-dependencies/</atomic-dependencies-repo.url>
-		<pepper-dependencies-repo.url>https://dl.bintray.com/sdruskat/pepper-dependencies-latest/</pepper-dependencies-repo.url>
-		<atomic-test-dependencies-repo.url>https://dl.bintray.com/sdruskat/tests-p2/</atomic-test-dependencies-repo.url>
-	</properties>
-
-	<repositories>
-		<repository>
-			<id>mars</id>
-			<layout>p2</layout>
-			<url>${mars-repo.url}</url>
-		</repository>
-
-		<repository>
-			<id>atomic-dependencies</id>
-			<layout>p2</layout>
-			<url>${atomic-dependencies-repo.url}</url>
-		</repository>
-
-		<repository>
-			<id>pepper-dependencies</id>
-			<layout>p2</layout>
-			<url>${pepper-dependencies-repo.url}</url>
-		</repository>
-		
-		<repository>
-			<id>atomic-test-dependencies</id>
-			<layout>p2</layout>
-			<url>${atomic-test-dependencies-repo.url}</url>
-		</repository>
-		
-		<repository>
-			<id>orbit-drops</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150821153341/repository/</url>
-		</repository>
-
-		
-
-		<!-- <repository>
-			<id>pepper4eclipse</id>
-			<layout>p2</layout>
-			<url>http://linktype.iaa.uni-jena.de/atomic/pepper4eclipse/1.1.8-SNAPSHOT</url>
-		</repository>
-
-		<repository>
-			<id>eclipse-orbit</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
-		</repository>
-
-		<repository>
-			<id>slf4j-log4j2-logging</id>
-			<layout>p2</layout>
-			<url>http://sdruskat.net/logging-p2/updates</url>
-		</repository> -->
-	    <repository>
-			<id>sonatype-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-	    </repository>
-
-	</repositories>
+  </properties>
 
 
 
@@ -97,6 +36,13 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<resolver>p2</resolver>
+					<target>
+						<artifact>
+							<groupId>org.corpus-tools.atomic</groupId>
+							<artifactId>atomic-target-definition</artifactId>
+							<version>${project.version}</version>
+						</artifact>
+					</target>
 					<!-- configure the p2 target environments for multi-platform build -->
 					<environments>
 						<environment>
@@ -190,5 +136,6 @@
 		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>features/org-corpus-tools.atomic.feature</module>
 		<module>repository</module>
+		<module>target-definition</module>
 	</modules>
 </project>
