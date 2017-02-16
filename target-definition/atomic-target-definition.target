@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1487262072">
+<target name="Atomic Target Platform" sequenceNumber="1487262924">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
@@ -22,11 +22,11 @@
       <unit id="org.eclipse.core.databinding.property" version="1.6.0.v20160427-0852"/>
       <unit id="org.eclipse.jface.databinding" version="1.8.1.v20161026-1531"/>
       <unit id="com.ibm.icu" version="56.1.0.v201601250100"/>
-      <unit id="org.eclipse.help.ui" version="4.0.200.v20160510-0758"/>
-      <unit id="org.eclipse.help.webapp" version="3.8.0.v20160504-0839"/>
+      <unit id="org.eclipse.help" version="3.7.0.v20160602-1307"/>
       <unit id="com.google.guava" version="15.0.0.v201403281430"/>
       <unit id="org.eclipse.osgi.services" version="3.5.100.v20160504-1419"/>
       <unit id="org.eclipse.osgi.util" version="3.3.100.v20150423-1351"/>
+      <unit id="org.eclipse.osgi" version="3.11.2.v20161107-1947"/>
       <unit id="org.eclipse.aether.maven" version="3.1.0.v20140706-2237"/>
       <repository location="http://download.eclipse.org/releases/neon"/>
     </location>

@@ -24,11 +24,11 @@ location "http://download.eclipse.org/releases/neon" {
 	 org.eclipse.core.databinding.property
 	 org.eclipse.jface.databinding
 	 com.ibm.icu
-	 org.eclipse.help.ui
-	 org.eclipse.help.webapp
+	 org.eclipse.help
 	 com.google.guava
 	 org.eclipse.osgi.services
 	 org.eclipse.osgi.util
+	 org.eclipse.osgi
 	 
 	 org.eclipse.aether.maven [3.1.0,4.0.0)
 }
@@ -66,5 +66,5 @@ location "https://dl.bintray.com/sdruskat/tests-p2/" {
 }
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/" {
-	org.junit	
+	org.junit		
 }
