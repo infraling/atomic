@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1487262924">
+<target name="Atomic Target Platform" sequenceNumber="1487324754">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
@@ -36,8 +36,8 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.corpus-tools.salt-api" version="3.3.0"/>
-      <unit id="org.corpus-tools.pepper-framework" version="3.1.0.20161217012737"/>
-      <unit id="org.corpus-tools.pepper-lib" version="3.1.0.20161217012737"/>
+      <unit id="org.corpus-tools.pepper-framework" version="3.1.0.20161216134840"/>
+      <unit id="org.corpus-tools.pepper-lib" version="3.1.0.20161216134840"/>
       <unit id="org.apache.commons.io" version="2.4.0"/>
       <unit id="org.codehaus.plexus.utils" version="3.0.20"/>
       <unit id="org.eclipse.aether.api" version="1.0.2.v20150114"/>
@@ -47,7 +47,7 @@
       <unit id="org.eclipse.aether.transport.file" version="1.0.2.v20150114"/>
       <unit id="org.eclipse.aether.transport.http" version="1.0.2.v20150114"/>
       <unit id="org.eclipse.aether.util" version="1.0.2.v20150114"/>
-      <repository location="https://dl.bintray.com/sdruskat/pepper-dependencies-latest/"/>
+      <repository location="https://dl.bintray.com/sdruskat/pepper-dependencies/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.swtbot.junit4_x" version="2.5.0.201609021837"/>

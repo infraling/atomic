@@ -37,10 +37,10 @@ location "https://dl.bintray.com/sdruskat/atomic-dependencies/" {
 	com.lmax.disruptor [3.3.2,3.4.0)
 }
 
-location "https://dl.bintray.com/sdruskat/pepper-dependencies-latest/" {
-	 org.corpus-tools.salt-api
-	 org.corpus-tools.pepper-framework
-	 org.corpus-tools.pepper-lib
+location "https://dl.bintray.com/sdruskat/pepper-dependencies/" {
+	 org.corpus-tools.salt-api [3.3.0,3.4.0)
+	 org.corpus-tools.pepper-framework [3.1.0,3.2.0)
+	 org.corpus-tools.pepper-lib [3.1.0,3.2.0)
 	 
 	 org.apache.commons.io
 	 org.codehaus.plexus.utils
