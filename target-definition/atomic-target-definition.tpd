@@ -39,8 +39,8 @@ location "https://dl.bintray.com/sdruskat/atomic-dependencies/" {
 
 location "https://dl.bintray.com/sdruskat/pepper-dependencies/" {
 	 org.corpus-tools.salt-api [3.3.0,3.4.0)
-	 org.corpus-tools.pepper-framework [3.1.0,3.2.0)
-	 org.corpus-tools.pepper-lib [3.1.0,3.2.0)
+	 org.corpus-tools.pepper-framework [3.1.0,3.1.0]
+	 org.corpus-tools.pepper-lib [3.1.0,3.1.0]
 	 
 	 org.apache.commons.io
 	 org.codehaus.plexus.utils
