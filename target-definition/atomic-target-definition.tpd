@@ -1,70 +1,58 @@
 // see https://github.com/mbarbero/fr.obeo.releng.targetplatform for documentation
-target "Atomic Target Platform"
-
-with source requirements
+target "Atomic Target Platform" with source requirements
 
 location "http://download.eclipse.org/releases/neon" {
-	
-     org.eclipse.rcp.feature.group
-     org.eclipse.equinox.p2.extras.feature.feature.group
-     org.eclipse.help.feature.group
-     org.eclipse.equinox.executable.feature.group
-     
-	 org.eclipse.core.runtime
-	 org.eclipse.ui.navigator
-	 org.eclipse.ui.ide
-	 org.eclipse.ui
-	 org.eclipse.core.resources
-	 org.eclipse.ui.navigator.resources
-	 org.apache.commons.lang3
-	 org.eclipse.emf.common
-	 org.eclipse.core.databinding
-	 org.eclipse.core.databinding.beans
-	 org.eclipse.core.databinding.observable
-	 org.eclipse.core.databinding.property
-	 org.eclipse.jface.databinding
-	 com.ibm.icu
-	 org.eclipse.help
-	 com.google.guava
-	 org.eclipse.osgi.services
-	 org.eclipse.osgi.util
-	 org.eclipse.osgi
-	 
-	 org.eclipse.aether.maven [3.1.0,4.0.0)
+
+	org.eclipse.rcp.feature.group
+	org.eclipse.equinox.p2.extras.feature.feature.group
+	org.eclipse.help.feature.group
+	org.eclipse.equinox.executable.feature.group
+	org.eclipse.core.runtime
+	org.eclipse.ui.navigator
+	org.eclipse.ui.ide
+	org.eclipse.ui
+	org.eclipse.core.resources
+	org.eclipse.ui.navigator.resources
+	org.apache.commons.lang3
+	org.eclipse.emf.common
+	org.eclipse.core.databinding
+	org.eclipse.core.databinding.beans
+	org.eclipse.core.databinding.observable
+	org.eclipse.core.databinding.property
+	org.eclipse.jface.databinding
+	com.ibm.icu
+	org.eclipse.help
+	com.google.guava
+	org.eclipse.osgi.services
+	org.eclipse.osgi.util
+	org.eclipse.osgi
+	org.eclipse.aether.maven [3.1.0,4.0.0)
 }
 
-location "https://dl.bintray.com/sdruskat/atomic-dependencies/" {
+location "http://corpus-tools.org/p2/" {
 	com.lmax.disruptor [3.3.2,3.4.0)
-}
-
-location "https://dl.bintray.com/sdruskat/pepper-dependencies/" {
-	 org.corpus-tools.salt-api [3.3.0,3.4.0)
-	 org.corpus-tools.pepper-framework [3.1.0,3.1.0]
-	 org.corpus-tools.pepper-lib [3.1.0,3.1.0]
-	 
-	 org.apache.commons.io
-	 org.codehaus.plexus.utils
-	 
-	 org.eclipse.aether.api 
-	 org.eclipse.aether.connector.basic
-	 org.eclipse.aether.impl
-	 org.eclipse.aether.spi
-	 org.eclipse.aether.transport.file
-	 org.eclipse.aether.transport.http
-	 org.eclipse.aether.util
+	org.corpus-tools.salt-api [3.3.0,3.4.0)
+	org.corpus-tools.pepper-framework [3.1.0,3.1.0]
+	org.corpus-tools.pepper-lib [3.1.0,3.1.0]
+	org.apache.commons.io
+	org.codehaus.plexus.utils
+	org.eclipse.aether.api
+	org.eclipse.aether.connector.basic
+	org.eclipse.aether.impl
+	org.eclipse.aether.spi
+	org.eclipse.aether.transport.file
+	org.eclipse.aether.transport.http
+	org.eclipse.aether.util
+	com.github.hazendaz.javabean-tester
+	slf4j.api
 }
 
 location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
-	org.eclipse.swtbot.junit4_x 
+	org.eclipse.swtbot.junit4_x
 	org.eclipse.swtbot.eclipse.finder
-	org.eclipse.swtbot.go	
-}
-
-location "https://dl.bintray.com/sdruskat/tests-p2/" {
-	slf4j.api 
-	com.github.hazendaz.javabean-tester
+	org.eclipse.swtbot.go
 }
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/" {
-	org.junit		
+	org.junit
 }

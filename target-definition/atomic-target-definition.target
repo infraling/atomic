@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1487672600">
+<target name="Atomic Target Platform" sequenceNumber="1487679687">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
@@ -32,9 +32,6 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="com.lmax.disruptor" version="3.3.2"/>
-      <repository location="https://dl.bintray.com/sdruskat/atomic-dependencies/"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.corpus-tools.salt-api" version="3.3.1"/>
       <unit id="org.corpus-tools.pepper-framework" version="3.1.0"/>
       <unit id="org.corpus-tools.pepper-lib" version="3.1.0"/>
@@ -47,18 +44,15 @@
       <unit id="org.eclipse.aether.transport.file" version="1.0.2.v20150114"/>
       <unit id="org.eclipse.aether.transport.http" version="1.0.2.v20150114"/>
       <unit id="org.eclipse.aether.util" version="1.0.2.v20150114"/>
-      <repository location="https://dl.bintray.com/sdruskat/pepper-dependencies/"/>
+      <unit id="com.github.hazendaz.javabean-tester" version="1.4.0"/>
+      <unit id="slf4j.api" version="1.7.13"/>
+      <repository location="http://corpus-tools.org/p2/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.swtbot.junit4_x" version="2.5.0.201609021837"/>
       <unit id="org.eclipse.swtbot.eclipse.finder" version="2.5.0.201609021837"/>
       <unit id="org.eclipse.swtbot.go" version="2.5.0.201609021837"/>
       <repository location="http://download.eclipse.org/technology/swtbot/releases/2.5.0/"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="slf4j.api" version="1.7.13"/>
-      <unit id="com.github.hazendaz.javabean-tester" version="1.4.0"/>
-      <repository location="https://dl.bintray.com/sdruskat/tests-p2/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.junit" version="4.12.0.v201504281640"/>
