@@ -44,7 +44,6 @@ location "http://corpus-tools.org/p2/" {
 	org.eclipse.aether.transport.http
 	org.eclipse.aether.util
 	com.github.hazendaz.javabean-tester
-	slf4j.api
 }
 
 location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
