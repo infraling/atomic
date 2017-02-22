@@ -45,6 +45,7 @@
             </command>
             <command
                   commandId="org.corpus_tools.atomic.commands.switchWorkspace"
+                  id="switchworkspace"
                   label="Switch Workspace"
                   mnemonic="W"
                   style="push">
