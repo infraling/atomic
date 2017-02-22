@@ -42,7 +42,7 @@ public class ANNISSearch {
 	@Inject
 	@Optional
 	public void setSelection(@Named(IServiceConstants.ACTIVE_SELECTION) ISelection s) {
-		if (s.isEmpty())
+		if (s == null || s.isEmpty())
 			return;
 
 		if (s instanceof IStructuredSelection) {
