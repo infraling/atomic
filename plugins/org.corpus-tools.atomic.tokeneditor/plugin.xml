@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.corpus_tools.atomic.tokeneditor.TableBasedTokenEditor"
+            default="true"
+            filenames="salt"
+            id="org.corpus_tools.atomic.tokeneditor.table"
+            name="Tokenization Editor">
+         <contentTypeBinding
+               contentTypeId="org.corpus_tools.atomic.tokeneditor.saltDocumentContentType">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="salt"
+            id="org.corpus_tools.atomic.tokeneditor.saltDocumentContentType"
+            name="Salt Document"
+            priority="high">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{sDocumentStructure}SDocumentGraph">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.corpus_tools.atomic.tokeneditor.commands.createToken"
+            contextId="org.corpus_tools.atomic.tokeneditor.context"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="M1+N">
+         <parameter
+               id="org.corpus_tools.atomic.tokeneditor.commands.createToken.isNullToken"
+               value="false">
+         </parameter>
+      </key>
+      <key
+            commandId="org.corpus_tools.atomic.tokeneditor.commands.createToken"
+            contextId="org.corpus_tools.atomic.tokeneditor.context"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="M1+0">
+         <parameter
+               id="org.corpus_tools.atomic.tokeneditor.commands.createToken.isNullToken"
+               value="true">
+         </parameter>
+      </key>
+      <scheme
+            id="org.corpus_tools.atomic.tokeneditor.scheme"
+            name="Token editor key scheme"
+            parentId="org.corpus_tools.atomic.tokeneditor.scheme">
+      </scheme>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.corpus_tools.atomic.tokeneditor.tokenCategory"
+            description="Creates a new token"
+            id="org.corpus_tools.atomic.tokeneditor.commands.createToken"
+            name="Create token">
+         <commandParameter
+               id="org.corpus_tools.atomic.tokeneditor.commands.createToken.isNullToken"
+               name="Null token parameter"
+               optional="false"
+               typeId="org.corpus_tools.atomic.tokeneditor.commands.booleanType">
+         </commandParameter>
+         <commandParameter
+               id="org.corpus_tools.atomic.tokeneditor.commands.createToken.isLastToken"
+               name="Last token parameter"
+               optional="true"
+               typeId="org.corpus_tools.atomic.tokeneditor.commands.booleanType">
+         </commandParameter>
+      </command>
+      <category
+            description="A category for commands that change the tokenization"
+            id="org.corpus_tools.atomic.tokeneditor.tokenCategory"
+            name="Tokenization">
+      </category>
+      <commandParameterType
+            converter="org.corpus_tools.atomic.tokeneditor.commands.BooleanParameterValueConverter"
+            id="org.corpus_tools.atomic.tokeneditor.commands.booleanType"
+            type="java.lang.Boolean">
+      </commandParameterType>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="org.corpus_tools.atomic.tokeneditor.context"
+            name="Tokenization Editor context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.corpus_tools.atomic.tokeneditor.commands.CreateTokenHandler"
+            commandId="org.corpus_tools.atomic.tokeneditor.commands.createToken">
+      </handler>
+   </extension>
+
+</plugin>

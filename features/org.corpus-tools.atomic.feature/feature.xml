@@ -28,6 +28,21 @@
       <import plugin="org.eclipse.ui.navigator.resources" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.lang3"/>
       <import plugin="org.eclipse.emf.common" version="2.11.0" match="greaterOrEqual"/>
+      <import plugin="javax.xml"/>
+      <import plugin="com.lmax.disruptor" version="3.3.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="org.codehaus.plexus.utils" version="3.0.10" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="14.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.util" version="3.3.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.api" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.connector.basic" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.impl" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.maven" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.spi" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.transport.file" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.transport.http" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.aether.util" version="1.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.databinding"/>
       <import plugin="org.eclipse.core.databinding.beans"/>
       <import plugin="org.eclipse.core.databinding.observable"/>
@@ -38,22 +53,7 @@
       <import plugin="org.eclipse.help.webapp" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.corpus-tools.salt-api" version="3.0.6" match="greaterOrEqual"/>
       <import plugin="org.corpus-tools.pepper-framework" version="3.0.2" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi.util" version="3.3.100" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.connector.basic" version="1.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.maven" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="javax.xml"/>
-      <import plugin="com.lmax.disruptor" version="3.3.2" match="greaterOrEqual"/>
-      <import plugin="org.corpus-tools.pepper-lib" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi.services" version="3.5.100" match="greaterOrEqual"/>
-      <import plugin="org.codehaus.plexus.utils" version="3.0.20" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.api" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.impl" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.spi" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.transport.file" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.transport.http" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.aether.util" version="1.0.2" match="greaterOrEqual"/>
+      <import plugin="org.corpus-tools.pepper-lib" version="3.0.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -65,6 +65,13 @@
 
    <plugin
          id="org.corpus_tools.atomic.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.corpus_tools.atomic.tokeneditor"
          download-size="0"
          install-size="0"
          version="0.0.0"

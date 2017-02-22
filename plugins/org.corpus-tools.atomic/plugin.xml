@@ -131,7 +131,8 @@
       </key>
       <scheme
             id="org.corpus_tools.atomic.keyscheme"
-            name="Atomic Key Binding Scheme">
+            name="Atomic Key Binding Scheme"
+            parentId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </scheme>
       <key
             commandId="org.corpus_tools.atomic.commands.switchWorkspace"
@@ -148,16 +149,6 @@
             schemeId="org.corpus_tools.atomic.keyscheme"
             sequence="F1">
       </key>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            allowMultiple="false"
-            class="org.eclipse.ui.navigator.CommonNavigator"
-            id="org.corpus_tools.atomic.views.navigation"
-            name="Navigation"
-            restorable="true">
-      </view>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
@@ -481,6 +472,13 @@
             class="org.eclipse.ui.ExtensionFactory:progressView"
             id="org.eclipse.ui.views.ProgressView"
             name="Progress"
+            restorable="true">
+      </view>
+            <view
+            allowMultiple="false"
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            id="org.corpus_tools.atomic.views.navigation"
+            name="Navigation"
             restorable="true">
       </view>
    </extension>
