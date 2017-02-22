@@ -6,7 +6,7 @@
       <tags>categoryTag:Search</tags>
     </elements>
   </fragments>
-  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_zPTJkPkWEeazr9PeKTMG7w" featurename="menuContributions" parentElementId="org.eclipse.e4.legacy.ide.application" positionInList="after=additions">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_zPTJkPkWEeazr9PeKTMG7w" featurename="menuContributions" parentElementId="xpath:/" positionInList="after=additions">
     <elements xsi:type="menu:MenuContribution" xmi:id="_OrpJ8PkXEeazr9PeKTMG7w" elementId="org.corpus_tools.atomic.search.menucontribution.0" positionInParent="after=switchworkspace" parentId="org.corpus_tools.atomic.menus.file">
       <children xsi:type="menu:HandledMenuItem" xmi:id="_TbXocPkXEeazr9PeKTMG7w" elementId="org.corpus_tools.atomic.search.handledmenuitem.test" label="TEST"/>
     </elements>
