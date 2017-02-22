@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1487680425">
+<target name="Atomic Target Platform" sequenceNumber="1487770856">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
@@ -32,6 +32,7 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="com.lmax.disruptor" version="3.3.2"/>
+      <unit id="net.sdruskat.fragment.sun.misc" version="1.0.0"/>
       <unit id="org.corpus-tools.salt-api" version="3.3.1"/>
       <unit id="org.corpus-tools.pepper-framework" version="3.1.0"/>
       <unit id="org.corpus-tools.pepper-lib" version="3.1.0"/>
@@ -45,6 +46,10 @@
       <unit id="org.eclipse.aether.transport.http" version="1.0.2.v20150114"/>
       <unit id="org.eclipse.aether.util" version="1.0.2.v20150114"/>
       <unit id="com.github.hazendaz.javabean-tester" version="1.4.0"/>
+      <unit id="org.corpus-tools.graphannis-api" version="0.1.0"/>
+      <unit id="org.corpus-tools.graphannis-api.linux-x86_64" version="0.1.0"/>
+      <unit id="org.corpus-tools.graphannis-api.macosx-x86_64" version="0.1.0"/>
+      <unit id="org.corpus-tools.graphannis-api.windows-x86_64" version="0.1.0"/>
       <repository location="http://corpus-tools.org/p2/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

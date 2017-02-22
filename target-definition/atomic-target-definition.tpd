@@ -45,6 +45,11 @@ location "http://corpus-tools.org/p2/" {
 	org.eclipse.aether.transport.http
 	org.eclipse.aether.util
 	com.github.hazendaz.javabean-tester
+	
+	org.corpus-tools.graphannis-api [0.1.0,0.2.0)
+	org.corpus-tools.graphannis-api.linux-x86_64 [0.1.0,0.2.0)
+	org.corpus-tools.graphannis-api.macosx-x86_64 [0.1.0,0.2.0)
+	org.corpus-tools.graphannis-api.windows-x86_64 [0.1.0,0.2.0)
 }
 
 location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
