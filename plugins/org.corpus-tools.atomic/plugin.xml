@@ -38,6 +38,7 @@
                tooltip="The File menu provides access to basic application funtionalities">
             <command
                   commandId="org.eclipse.ui.newWizard"
+                  id="newproject"
                   label="New Project"
                   mnemonic="P"
                   style="push">
