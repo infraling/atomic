@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<Pane xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane layoutX="278.0" layoutY="386.0">
+	<!-- TODO Add Nodes -->
+</AnchorPane>
+      <Label layoutX="31.0" layoutY="18.0" text="Hello World" />
+      <Label fx:id="myLabelInView" layoutX="13.0" layoutY="45.0" text="Info Label" />
+   </children>
+</Pane>
