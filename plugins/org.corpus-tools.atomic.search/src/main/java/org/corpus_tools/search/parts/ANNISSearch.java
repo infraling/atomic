@@ -1,32 +1,59 @@
 package org.corpus_tools.search.parts;
 
+import java.io.IOException;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.fx.osgi.util.OSGiFXMLLoader;
+import org.eclipse.fx.osgi.util.OSGiFXMLLoader.FXMLData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+
+import javafx.application.Platform;
+import javafx.embed.swt.FXCanvas;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 public class ANNISSearch {
-	private Label myLabelInView;
 
+	private ANNISSearchController controller;
+
+	private FXCanvas fxCanvas;
+	
+	private void createFXMLScene() {
+		FXMLData<Parent, ANNISSearchController> fxmlData;
+		try {
+			fxmlData = OSGiFXMLLoader.loadWithController(getClass(), "ANNISSearch.fxml", null, null);
+			final Scene scene = new Scene(fxmlData.node);
+			this.controller = fxmlData.controller;
+			fxCanvas.setScene(scene);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
 	@PostConstruct
 	public void createPartControl(Composite parent) {
-		System.out.println("Enter in SampleE4View postConstruct");
-
-		myLabelInView = new Label(parent, SWT.BORDER);
-		myLabelInView.setText("This is a sample E4 view");
-
+		fxCanvas = new FXCanvas(parent, SWT.NONE);
+		
+		Platform.setImplicitExit(false);
+		Platform.runLater(() -> createFXMLScene());
 	}
+	
 
 	@Focus
 	public void setFocus() {
-		myLabelInView.setFocus();
+		if(controller != null) {
+			controller.focus();
+		}
 
 	}
 
@@ -73,8 +100,8 @@ public class ANNISSearch {
 			return;
 
 		// Test if label exists (inject methods are called before PostConstruct)
-		if (myLabelInView != null)
-			myLabelInView.setText("Current single selection class is : " + o.getClass());
+		if (controller != null)
+			controller.showInfo("Current single selection class is : " + o.getClass());
 	}
 
 	/**
@@ -83,14 +110,15 @@ public class ANNISSearch {
 	 * your specific selection
 	 * 
 	 * @param o
-	 *            : the current array of objects received in case of multiple selection
+	 *            : the current array of objects received in case of multiple
+	 *            selection
 	 */
 	@Inject
 	@Optional
 	public void setSelection(@Named(IServiceConstants.ACTIVE_SELECTION) Object[] selectedObjects) {
 
 		// Test if label exists (inject methods are called before PostConstruct)
-		if (myLabelInView != null)
-			myLabelInView.setText("This is a multiple selection of " + selectedObjects.length + " objects");
+		if (controller != null)
+			controller.showInfo("This is a multiple selection of " + selectedObjects.length + " objects");
 	}
 }

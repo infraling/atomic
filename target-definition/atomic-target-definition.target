@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1487776653">
+<target name="Atomic Target Platform" sequenceNumber="1487863120">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
@@ -28,6 +28,9 @@
       <unit id="org.eclipse.osgi.util" version="3.3.100.v20150423-1351"/>
       <unit id="org.eclipse.osgi" version="3.11.2.v20161107-1947"/>
       <unit id="org.eclipse.aether.maven" version="3.1.0.v20140706-2237"/>
+      <unit id="org.eclipse.fx.core" version="2.4.0.201605111715"/>
+      <unit id="org.eclipse.fx.ide.fxml" version="2.4.0.201605112122"/>
+      <unit id="org.eclipse.fx.osgi.util" version="2.4.0.201605111715"/>
       <repository location="http://download.eclipse.org/releases/neon"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

@@ -28,7 +28,11 @@ location "http://download.eclipse.org/releases/neon" {
 	org.eclipse.osgi
 	org.eclipse.aether.maven [3.1.0,4.0.0)
 	
+	org.eclipse.fx.core
+	org.eclipse.fx.ide.fxml
+	org.eclipse.fx.osgi.util
 }
+
 
 location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/" {
 	org.eclipse.e4.tools.model.spy
