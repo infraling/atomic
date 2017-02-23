@@ -2,6 +2,10 @@ package org.corpus_tools.search.parts;
 
 import javax.inject.Inject;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -30,12 +34,13 @@ public class ANNISSearchController {
 		Job job = new Job("Re-indexing corpus search") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	            IWorkspaceRoot root = workspace.getRoot();
+	            
+	            for(IProject p : root.getProjects()) {
+	            	
+	            }
+				
 				return Status.OK_STATUS;
 			}
 		};
