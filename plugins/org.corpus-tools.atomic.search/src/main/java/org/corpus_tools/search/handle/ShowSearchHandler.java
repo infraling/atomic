@@ -12,6 +12,6 @@ public class ShowSearchHandler {
 	
 	@Execute
 	public void showSearch() {
-		partService.showPart("org.corpus-tools.search.view.annissearch", PartState.ACTIVATE);
+		partService.showPart("org.corpus-tools.search.parts.annissearch", PartState.ACTIVATE);
 	}
 }

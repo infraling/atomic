@@ -12,13 +12,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.views">
-      <e4view
-            class="org.corpus_tools.search.parts.ANNISSearch"
-            icon="icons/Sample.png"
-            id="org.corpus-tools.search.view.annissearch"
-            name="ANNIS Search"
-            restorable="true">
-      </e4view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
