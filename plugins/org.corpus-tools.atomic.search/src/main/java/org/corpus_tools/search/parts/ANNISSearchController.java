@@ -2,6 +2,10 @@ package org.corpus_tools.search.parts;
 
 import javax.inject.Inject;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.ui.di.UISynchronize;
 import org.osgi.service.log.LogService;
@@ -23,14 +27,19 @@ public class ANNISSearchController {
 	
 	public void reindex() {
 		log.log(LogService.LOG_INFO, "Attempting re-index");
-		uiSync.asyncExec(() -> {
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			};
-		} );
+		Job job = new Job("Re-indexing corpus search") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		job.schedule();
 	}
 	
 	
