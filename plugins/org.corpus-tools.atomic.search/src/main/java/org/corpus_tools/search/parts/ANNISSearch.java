@@ -31,8 +31,8 @@ public class ANNISSearch {
 		FXMLData<Parent, ANNISSearchController> fxmlData;
 		try {
 			fxmlData = OSGiFXMLLoader.loadWithController(getClass(), "ANNISSearch.fxml", null, null);
-			final Scene scene = new Scene(fxmlData.node);
 			this.controller = fxmlData.controller;
+			final Scene scene = new Scene(fxmlData.node);
 			fxCanvas.setScene(scene);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

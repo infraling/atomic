@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<Pane xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
+<Pane xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.corpus_tools.search.parts.ANNISSearchController">
    <children>
       <AnchorPane layoutX="278.0" layoutY="386.0">
 	<!-- TODO Add Nodes -->
