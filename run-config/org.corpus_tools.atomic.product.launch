@@ -32,7 +32,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -data @noDefault -clearPersistedState"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="${jrebel_args} -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.corpus_tools.atomic.product"/>
 <stringAttribute key="productFile" value="/atomic-parent/repository/org.corpus_tools.atomic.product"/>

@@ -14,7 +14,8 @@
          point="org.eclipse.ui.views">
       <e4view
             class="org.corpus_tools.search.parts.ANNISSearch"
-            id="org.corpus-tools.search.e4view1"
+            icon="icons/Sample.png"
+            id="org.corpus-tools.search.view.annissearch"
             name="ANNIS Search"
             restorable="true">
       </e4view>
@@ -24,10 +25,11 @@
       <perspectiveExtension
             targetID="*">
          <view
-               id="org.corpus-tools.search.e4view1"
+               id="org.corpus-tools.search.view.annissearch"
                minimized="false"
                relationship="stack"
-               relative="org.eclipse.ui.editorss">
+               relative="org.eclipse.ui.editorss"
+               visible="false">
          </view>
       </perspectiveExtension>
    </extension>
