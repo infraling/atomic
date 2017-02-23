@@ -15,16 +15,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="*">
-         <view
-               id="org.corpus-tools.search.view.annissearch"
-               minimized="false"
-               relationship="stack"
-               relative="org.eclipse.ui.editorss"
-               visible="false">
-         </view>
-      </perspectiveExtension>
    </extension>
 
 </plugin>

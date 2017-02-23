@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_BxaXACerEeWxCPrV0pAZQQ">
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_0HkqkPm0Eea9HtitC0WCyA" featurename="descriptors" parentElementId="xpath:/">
-    <elements xsi:type="basic:PartDescriptor" xmi:id="_77ZMMPm0Eea9HtitC0WCyA" elementId="org.corpus-tools.search.parts.annissearch" label="ANNIS Search" iconURI="platform:/plugin/org.corpus_tools.atomic.search/icons/Sample.png" category="Other" closeable="true" contributionURI="bundleclass://org.corpus_tools.atomic.search/org.corpus_tools.search.parts.ANNISSearch">
+    <elements xsi:type="basic:PartDescriptor" xmi:id="_77ZMMPm0Eea9HtitC0WCyA" elementId="org.corpus-tools.search.parts.annissearch" label="ANNIS Search" iconURI="platform:/plugin/org.corpus_tools.atomic.search/icons/Sample.png" category="org.eclipse.e4.primaryDataStack" closeable="true" contributionURI="bundleclass://org.corpus_tools.atomic.search/org.corpus_tools.search.parts.ANNISSearch">
       <tags>categoryTag:Other</tags>
     </elements>
   </fragments>
