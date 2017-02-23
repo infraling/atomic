@@ -68,7 +68,6 @@
       <import plugin="org.eclipse.jface" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.registry" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.e4.ui.di" version="0.9.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.e4.tools.spy" version="0.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
