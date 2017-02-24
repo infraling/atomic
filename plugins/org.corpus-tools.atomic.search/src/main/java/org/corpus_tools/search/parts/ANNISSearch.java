@@ -1,49 +1,41 @@
 package org.corpus_tools.search.parts;
 
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.fx.ui.di.FXMLBuilder.Data;
-import org.eclipse.fx.ui.di.InjectingFXMLLoader;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-
-import javafx.application.Platform;
-import javafx.embed.swt.FXCanvas;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 
 public class ANNISSearch {
 
-	private ANNISSearchController controller;
-
-	private FXCanvas fxCanvas;
-	
-	
-	private void createFXMLScene(IEclipseContext context) {
-		InjectingFXMLLoader<Parent> loader = InjectingFXMLLoader.create(context, getClass(), "ANNISSearch.fxml");
-		Data<Parent, ANNISSearchController> fxmlData;
-		try {
-			fxmlData = loader.loadWithController();
-			this.controller = fxmlData.getController();
-			final Scene scene = new Scene(fxmlData.getNode());
-			fxCanvas.setScene(scene);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-
-	}
+	private Button reindexButton;
 	
 	@PostConstruct
 	public void createPartControl(Composite parent, IEclipseContext context) {
-		fxCanvas = new FXCanvas(parent, SWT.NONE);
+
+		RowLayout layout = new RowLayout();
+		parent.setLayout(layout);
 		
-		Platform.setImplicitExit(false);
-		Platform.runLater(() -> createFXMLScene(context));
+		reindexButton = new Button(parent, SWT.PUSH);
+		reindexButton.setText("Re-index corpus");
+		reindexButton.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 
