@@ -1,7 +1,9 @@
 package org.corpus_tools.search.parts;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
+import org.corpus_tools.search.service.SearchService;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -12,6 +14,9 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ANNISSearch {
 
+	@Inject
+	private SearchService search;
+	
 	private Button reindexButton;
 	
 	@PostConstruct

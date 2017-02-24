@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Search
 Bundle-SymbolicName: org.corpus_tools.atomic.search;singleton:=true
 Bundle-Version: 0.3.0.qualifier
+Eclipse-RegisterBuddy: org.corpus-tools.graphannis-api
 Require-Bundle: javax.inject,
  org.eclipse.osgi,
  org.eclipse.jface,
@@ -10,14 +11,10 @@ Require-Bundle: javax.inject,
  org.eclipse.e4.ui.di,
  org.eclipse.e4.ui.services,
  org.eclipse.e4.core.di.annotations,
- org.corpus-tools.graphannis-api;bundle-version="0.1.0",
  org.eclipse.e4.ui.workbench;bundle-version="1.4.0",
  org.eclipse.e4.core.contexts;bundle-version="1.5.0",
  org.eclipse.core.jobs;bundle-version="3.8.0",
- org.bytedeco.javacpp;bundle-version="1.2.4",
- org.corpus-tools.graphannis-api.linux-x86_64;bundle-version="0.1.0";resolution:=optional,
- org.corpus-tools.graphannis-api.macosx-x86_64;bundle-version="0.1.0";resolution:=optional,
- org.corpus-tools.graphannis-api.windows-x86_64;bundle-version="0.1.0";resolution:=optional
+ org.corpus-tools.graphannis-api;bundle-version="0.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime
