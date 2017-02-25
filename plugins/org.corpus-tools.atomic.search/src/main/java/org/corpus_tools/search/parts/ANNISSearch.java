@@ -15,6 +15,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Label;
+import swing2swt.layout.BorderLayout;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.jface.viewers.ListViewer;
 
 public class ANNISSearch {
 
@@ -25,17 +31,32 @@ public class ANNISSearch {
 	
 	@PostConstruct
 	public void createPartControl(Composite parent, IEclipseContext context) {
-
-		RowLayout layout = new RowLayout(SWT.VERTICAL);
-		parent.setLayout(layout);
+		parent.setLayout(new BorderLayout(0, 0));
 		
-		reindexButton = new Button(parent, SWT.PUSH);
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayoutData(BorderLayout.WEST);
+		RowLayout rl_composite = new RowLayout(SWT.VERTICAL);
+		composite.setLayout(rl_composite);
+		
+		reindexButton = new Button(composite, SWT.PUSH);
 		reindexButton.setText("Re-index corpus");
-		reindexButton.addSelectionListener(new SelectionListener() {
+		
+		
+		final Text queryField = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+		queryField.setLayoutData(new RowData(204, 143));
+		
+		final Button executeQuery = new Button(composite, SWT.PUSH);
+		executeQuery.setText("Execute Query");
+		
+		ListViewer listViewer = new ListViewer(parent, SWT.BORDER | SWT.V_SCROLL);
+		List list = listViewer.getList();
+		list.setLayoutData(BorderLayout.CENTER);
+		executeQuery.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				search.reindexAllDocuments();
+				long result = search.count(queryField.getText());
+				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result + " matches.");
 				
 			}
 			
@@ -45,22 +66,11 @@ public class ANNISSearch {
 				
 			}
 		});
-		
-		
-		final Text queryField = new Text(parent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-		RowData queryFieldRowData = new RowData();
-		queryFieldRowData.width=200;
-		queryFieldRowData.height=200;
-		queryField.setLayoutData(queryFieldRowData);
-		
-		final Button executeQuery = new Button(parent, SWT.PUSH);
-		executeQuery.setText("Execute Query");
-		executeQuery.addSelectionListener(new SelectionListener() {
+		reindexButton.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				long result = search.count(queryField.getText());
-				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result + " matches.");
+				search.reindexAllDocuments();
 				
 			}
 			

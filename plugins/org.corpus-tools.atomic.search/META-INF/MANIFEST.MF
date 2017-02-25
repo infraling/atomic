@@ -20,3 +20,5 @@ Require-Bundle: javax.inject,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime
+Bundle-ClassPath: .,
+ swing2swt.jar
