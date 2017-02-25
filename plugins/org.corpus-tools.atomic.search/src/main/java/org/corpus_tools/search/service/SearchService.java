@@ -1,5 +1,7 @@
 package org.corpus_tools.search.service;
 
+import java.util.ArrayList;
+
 import org.corpus_tools.graphannis.API;
 import org.corpus_tools.graphannis.API.CorpusStorageManager;
 import org.corpus_tools.graphannis.API.CorpusStorageManager.CorpusInfo;
@@ -105,8 +107,19 @@ public class SearchService {
 		updateList.finish();
 		
 		corpusManager.applyUpdate(corpusName, updateList);
+	}
+	
+	public long count(String query) {
 		
+		// search in all corpora (each corpus is a project)
+		ArrayList<String> corpora = new ArrayList<>();
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot root = workspace.getRoot();
+		for(IProject p : root.getProjects()) {
+			corpora.add(p.getName());
+		}
 		
+		return corpusManager.count(new StringVector(corpora.toArray(new String[0])), QueryToJSON.aqlToJSON(query));
 	}
 	
 }
