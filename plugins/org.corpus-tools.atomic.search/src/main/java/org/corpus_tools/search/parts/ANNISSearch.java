@@ -31,7 +31,7 @@ public class ANNISSearch {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
+				search.reindexAllDocuments();
 				
 			}
 			
