@@ -3,6 +3,9 @@ package org.corpus_tools.search.service;
 import org.corpus_tools.graphannis.API;
 import org.corpus_tools.graphannis.API.CorpusStorageManager;
 import org.corpus_tools.graphannis.API.CorpusStorageManager.CorpusInfo;
+import org.corpus_tools.graphannis.API.GraphUpdate;
+import org.corpus_tools.graphannis.API.StringVector;
+import org.corpus_tools.graphannis.QueryToJSON;
 import org.corpus_tools.graphannis.SaltImport;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.util.SaltUtil;
@@ -37,7 +40,7 @@ public class SearchService {
 			if("salt".equals(file.getFileExtension()) && !"saltProject.salt".equals(file.getName())) {
 				URI location = URI.createURI(file.getLocationURI().toASCIIString());
 
-				monitor.setTaskName(location.toString());
+				monitor.setTaskName("Importing document " + location.lastSegment());
 				SDocumentGraph docGraph = SaltUtil.loadDocumentGraph(location);
 				
 				addDocument(projectName, docGraph);
@@ -55,10 +58,16 @@ public class SearchService {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				
+				
 				// get all documents of workspace
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
 				IWorkspaceRoot root = workspace.getRoot();
 				for(IProject p : root.getProjects()) {
+					// delete all old documents first
+					monitor.setTaskName("Deleting corpus " + p.getName());
+					
+					deleteCorpus(p.getName());
+
 					try {
 						handleResource(p, p.getName(), monitor);
 					} catch (CoreException e) {
@@ -73,6 +82,19 @@ public class SearchService {
 		job.schedule();
 	}
 	
+	public void deleteCorpus(String corpusName) {
+		// find all nodes of the corpus and delete them
+		StringVector nodes = corpusManager.find(new StringVector(corpusName), QueryToJSON.aqlToJSON("node"));
+		GraphUpdate update = new GraphUpdate();
+		for(long i=0; i < nodes.size(); i++) {
+			URI nodeURI = URI.createURI(nodes.get(i).getString());
+			update.deleteNode(nodeURI.fragment());
+		}
+		update.finish();
+		corpusManager.applyUpdate(corpusName, update);
+		
+	}
+	
 	public void addDocument(String corpusName, SDocumentGraph docGraph) {
 		CorpusInfo info =  corpusManager.info("pcc2");
 		System.out.print(info.memoryUsageInBytes());
@@ -80,6 +102,7 @@ public class SearchService {
 		saltImport.map(docGraph);
 		
 		API.GraphUpdate updateList = saltImport.finish();
+		updateList.finish();
 		
 		corpusManager.applyUpdate(corpusName, updateList);
 		

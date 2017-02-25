@@ -8,9 +8,11 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
 public class ANNISSearch {
 
@@ -22,7 +24,7 @@ public class ANNISSearch {
 	@PostConstruct
 	public void createPartControl(Composite parent, IEclipseContext context) {
 
-		RowLayout layout = new RowLayout();
+		RowLayout layout = new RowLayout(SWT.VERTICAL);
 		parent.setLayout(layout);
 		
 		reindexButton = new Button(parent, SWT.PUSH);
@@ -41,6 +43,15 @@ public class ANNISSearch {
 				
 			}
 		});
+		
+		
+		Text queryField = new Text(parent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		RowData queryFieldRowData = new RowData();
+		queryFieldRowData.width=200;
+		queryFieldRowData.height=200;
+		queryField.setLayoutData(queryFieldRowData);
+		
+		
 	}
 	
 
