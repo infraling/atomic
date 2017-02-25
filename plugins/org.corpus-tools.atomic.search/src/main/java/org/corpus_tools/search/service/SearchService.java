@@ -109,17 +109,34 @@ public class SearchService {
 		corpusManager.applyUpdate(corpusName, updateList);
 	}
 	
-	public long count(String query) {
-		
-		// search in all corpora (each corpus is a project)
+	private StringVector createAllCorporaList() {
 		ArrayList<String> corpora = new ArrayList<>();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
 		for(IProject p : root.getProjects()) {
 			corpora.add(p.getName());
 		}
+		return new StringVector(corpora.toArray(new String[0]));
+	}
+	
+	public long count(String query) {
+		return corpusManager.count(createAllCorporaList(), QueryToJSON.aqlToJSON(query));
+	}
+	
+	public ArrayList<String> find(String query) {
 		
-		return corpusManager.count(new StringVector(corpora.toArray(new String[0])), QueryToJSON.aqlToJSON(query));
+		ArrayList<String> result = new ArrayList<>();
+		
+		StringVector resultRaw = corpusManager.find(createAllCorporaList(), QueryToJSON.aqlToJSON(query));
+		result.ensureCapacity((int) resultRaw.size());
+		
+		for(long i=0; i < resultRaw.size(); i++) {
+			result.add(resultRaw.get(i).getString());
+		}
+		
+		// TODO: sort the result
+		
+		return result;
 	}
 	
 }

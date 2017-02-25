@@ -1,5 +1,7 @@
 package org.corpus_tools.search.parts;
 
+import java.util.ArrayList;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -55,8 +57,12 @@ public class ANNISSearch {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				long result = search.count(queryField.getText());
-				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result + " matches.");
+				ArrayList<String> result = search.find(queryField.getText());
+				list.removeAll();
+				for(String s : result) {
+					list.add(s);
+				}
+				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result.size() + " matches.");
 				
 			}
 			
