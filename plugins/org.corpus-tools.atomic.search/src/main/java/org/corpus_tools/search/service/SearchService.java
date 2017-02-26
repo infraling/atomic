@@ -26,6 +26,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.emf.common.util.URI;
 
+import annis.service.objects.Match;
+import annis.service.objects.MatchGroup;
+
 @Creatable
 public class SearchService {
 	
@@ -123,20 +126,21 @@ public class SearchService {
 		return corpusManager.count(createAllCorporaList(), QueryToJSON.aqlToJSON(query));
 	}
 	
-	public ArrayList<String> find(String query) {
+	public MatchGroup find(String query) {
 		
-		ArrayList<String> result = new ArrayList<>();
+		
+		ArrayList<Match> result = new ArrayList<>();
 		
 		StringVector resultRaw = corpusManager.find(createAllCorporaList(), QueryToJSON.aqlToJSON(query));
 		result.ensureCapacity((int) resultRaw.size());
 		
 		for(long i=0; i < resultRaw.size(); i++) {
-			result.add(resultRaw.get(i).getString());
+			result.add(Match.parseFromString(resultRaw.get(i).getString()));
 		}
 		
 		// TODO: sort the result
-		
-		return result;
+		return  new MatchGroup(result);
+
 	}
 	
 }

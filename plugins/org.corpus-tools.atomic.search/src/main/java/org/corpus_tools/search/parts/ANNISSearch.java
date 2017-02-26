@@ -1,13 +1,12 @@
 package org.corpus_tools.search.parts;
 
-import java.util.ArrayList;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.corpus_tools.search.service.SearchService;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -15,14 +14,12 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Label;
-import swing2swt.layout.BorderLayout;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.swt.widgets.Text;
+
+import annis.service.objects.Match;
+import annis.service.objects.MatchGroup;
+import swing2swt.layout.BorderLayout;
 
 public class ANNISSearch {
 
@@ -57,12 +54,12 @@ public class ANNISSearch {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ArrayList<String> result = search.find(queryField.getText());
+				MatchGroup result = search.find(queryField.getText());
 				list.removeAll();
-				for(String s : result) {
-					list.add(s);
+				for(Match m : result.getMatches()) {
+					list.add(m.toString());
 				}
-				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result.size() + " matches.");
+				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result.getMatches().size() + " matches.");
 				
 			}
 			
