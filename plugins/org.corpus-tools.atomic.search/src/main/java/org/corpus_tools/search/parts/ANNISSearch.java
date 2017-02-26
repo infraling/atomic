@@ -6,7 +6,12 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.corpus_tools.search.service.SearchService;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.ui.di.UISynchronize;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.swt.SWT;
@@ -14,12 +19,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -34,8 +38,13 @@ public class ANNISSearch {
 	@Inject
 	private SearchService search;
 
-	private Button reindexButton;
+	private Button btReindex;
 	private Table table;
+
+	private Label lblStatus;
+	
+	@Inject
+	private UISynchronize uiSync;
 
 	@PostConstruct
 	public void createPartControl(Composite parent, IEclipseContext context) {
@@ -46,12 +55,12 @@ public class ANNISSearch {
 		RowLayout rl_composite = new RowLayout(SWT.VERTICAL);
 		composite.setLayout(rl_composite);
 
-		reindexButton = new Button(composite, SWT.PUSH);
-		reindexButton.setText("Re-index corpus");
+		btReindex = new Button(composite, SWT.PUSH);
+		btReindex.setText("Re-index corpus");
 
-		final Text queryField = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
-		queryField.setLayoutData(new RowData(204, 143));
-		queryField.addKeyListener(new KeyListener() {
+		final Text txtQuery = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+		txtQuery.setLayoutData(new RowData(204, 143));
+		txtQuery.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -62,15 +71,15 @@ public class ANNISSearch {
 			public void keyPressed(KeyEvent e) {
 				
 				if (e.keyCode == SWT.CR && (e.stateMask & SWT.MOD1) != 0) {
-					executeSearch(parent, queryField.getText());
+					executeSearch(parent, txtQuery.getText());
 					e.doit = false;
 				}
 
 			}
 		});
 
-		final Button executeQuery = new Button(composite, SWT.PUSH);
-		executeQuery.setText("Execute Query");
+		final Button btExecute = new Button(composite, SWT.PUSH);
+		btExecute.setText("Execute Query");
 
 		Composite composite_1 = new Composite(parent, SWT.NONE);
 		composite_1.setLayoutData(BorderLayout.CENTER);
@@ -79,11 +88,15 @@ public class ANNISSearch {
 		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		executeQuery.addSelectionListener(new SelectionListener() {
+		
+		lblStatus = new Label(parent, SWT.NONE);
+		lblStatus.setAlignment(SWT.RIGHT);
+		lblStatus.setLayoutData(BorderLayout.NORTH);
+		btExecute.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				executeSearch(parent, queryField.getText());
+				executeSearch(parent, txtQuery.getText());
 			}
 
 			@Override
@@ -92,7 +105,7 @@ public class ANNISSearch {
 
 			}
 		});
-		reindexButton.addSelectionListener(new SelectionListener() {
+		btReindex.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -109,37 +122,54 @@ public class ANNISSearch {
 	}
 
 	private void executeSearch(Composite parent, String aql) {
-		MatchGroup result = search.find(aql);
+		
+		lblStatus.setText("Searching...");
 		table.removeAll();
 		
 		for(int c=table.getColumnCount()-1; c >= 0; c--) {
 			table.getColumn(c).dispose();
 		}
+		
+		Job j = new Job("Searching in corpus") {
+			
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				
+				MatchGroup result = search.find(aql);
+				
+				uiSync.asyncExec(() -> {
+					// find the maximal number of nodes per match and add a column for each
+					int maxNumNodes = 0;
+					for (Match m : result.getMatches()) {
+						maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
+					}
+					
+					for (int i = 1; i <= maxNumNodes; i++) {
+						TableColumn c = new TableColumn(table, SWT.NULL);
+						c.setText("" + i);
+					}
+					for (Match m : result.getMatches()) {
+						TableItem item = new TableItem(table, SWT.NULL);
+						int nodeIdx = 0;
+						for (URI u : m.getSaltIDs()) {
+							item.setText(nodeIdx, u.getPath() + " " + u.getFragment());
+							nodeIdx++;
+						}
+					}
 
-		// find the maximal number of nodes per match and add a column for each
-		int maxNumNodes = 0;
-		for (Match m : result.getMatches()) {
-			maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
-		}
-		for (int i = 1; i <= maxNumNodes; i++) {
-			TableColumn c = new TableColumn(table, SWT.NULL);
-			c.setText("" + i);
-		}
-
-		for (Match m : result.getMatches()) {
-			TableItem item = new TableItem(table, SWT.NULL);
-			int nodeIdx = 0;
-			for (URI u : m.getSaltIDs()) {
-				item.setText(nodeIdx, u.getPath() + " " + u.getFragment());
-				nodeIdx++;
+					for (int i = 0; i < maxNumNodes; i++) {
+						table.getColumn(i).pack();
+					}
+					lblStatus.setText("Found " + result.getMatches().size() + " matches.");
+					
+				});
+				
+				return Status.OK_STATUS;
 			}
-		}
-
-		for (int i = 0; i < maxNumNodes; i++) {
-			table.getColumn(i).pack();
-		}
-		MessageDialog.openInformation(parent.getShell(), "Query result",
-				"Found " + result.getMatches().size() + " matches.");
+		};
+		j.setPriority(Job.LONG);
+		j.schedule();
+		
 	}
 
 }
