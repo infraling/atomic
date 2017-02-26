@@ -135,6 +135,7 @@
 		<module>tests/org.corpus_tools.atomic.tests.gui</module>
 		<module>plugins/org.corpus-tools.atomic.logging</module>
 		<module>features/org-corpus-tools.atomic.feature</module>
+                <module>features/org-corpus-tools.atomic.unstable_feature</module>
 		<module>repository</module>
 		<module>target-definition</module>
 	</modules>
