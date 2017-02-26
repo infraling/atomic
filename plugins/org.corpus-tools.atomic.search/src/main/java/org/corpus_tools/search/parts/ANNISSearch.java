@@ -1,12 +1,14 @@
 package org.corpus_tools.search.parts;
 
+import java.net.URI;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.corpus_tools.search.service.SearchService;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -14,7 +16,9 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import annis.service.objects.Match;
@@ -27,6 +31,7 @@ public class ANNISSearch {
 	private SearchService search;
 	
 	private Button reindexButton;
+	private Table table;
 	
 	@PostConstruct
 	public void createPartControl(Composite parent, IEclipseContext context) {
@@ -47,17 +52,41 @@ public class ANNISSearch {
 		final Button executeQuery = new Button(composite, SWT.PUSH);
 		executeQuery.setText("Execute Query");
 		
-		ListViewer listViewer = new ListViewer(parent, SWT.BORDER | SWT.V_SCROLL);
-		List list = listViewer.getList();
-		list.setLayoutData(BorderLayout.CENTER);
+		Composite composite_1 = new Composite(parent, SWT.NONE);
+		composite_1.setLayoutData(BorderLayout.CENTER);
+		composite_1.setLayout(new TableColumnLayout());
+		
+		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
 		executeQuery.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				MatchGroup result = search.find(queryField.getText());
-				list.removeAll();
+				table.removeAll();
+				
+				// find the maximal number of nodes per match and add a column for each
+				int maxNumNodes = 0;
 				for(Match m : result.getMatches()) {
-					list.add(m.toString());
+					maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
+				}
+				for(int i=1; i <= maxNumNodes; i++) {
+					TableColumn c = new TableColumn(table, SWT.NULL);
+					c.setText("" + i);
+				}
+				
+				for(Match m : result.getMatches()) {
+					TableItem item = new TableItem(table, SWT.NULL);
+					int nodeIdx = 0;
+					for(URI u : m.getSaltIDs()) {
+						item.setText(nodeIdx, u.getPath() + " " + u.getFragment());
+						nodeIdx++;
+					}
+				}
+				
+				for(int i=0; i < maxNumNodes; i++) {
+					table.getColumn(i).pack();
 				}
 				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result.getMatches().size() + " matches.");
 				
