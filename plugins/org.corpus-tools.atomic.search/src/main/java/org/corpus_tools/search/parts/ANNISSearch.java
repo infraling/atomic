@@ -10,8 +10,12 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -29,93 +33,113 @@ public class ANNISSearch {
 
 	@Inject
 	private SearchService search;
-	
+
 	private Button reindexButton;
 	private Table table;
-	
+
 	@PostConstruct
 	public void createPartControl(Composite parent, IEclipseContext context) {
 		parent.setLayout(new BorderLayout(0, 0));
-		
+
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayoutData(BorderLayout.WEST);
 		RowLayout rl_composite = new RowLayout(SWT.VERTICAL);
 		composite.setLayout(rl_composite);
-		
+
 		reindexButton = new Button(composite, SWT.PUSH);
 		reindexButton.setText("Re-index corpus");
-		
-		
+
 		final Text queryField = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
 		queryField.setLayoutData(new RowData(204, 143));
-		
+		queryField.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				
+				if (e.keyCode == SWT.CR && (e.stateMask & SWT.MOD1) != 0) {
+					executeSearch(parent, queryField.getText());
+					e.doit = false;
+				}
+
+			}
+		});
+
 		final Button executeQuery = new Button(composite, SWT.PUSH);
 		executeQuery.setText("Execute Query");
-		
+
 		Composite composite_1 = new Composite(parent, SWT.NONE);
 		composite_1.setLayoutData(BorderLayout.CENTER);
 		composite_1.setLayout(new TableColumnLayout());
-		
+
 		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		executeQuery.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				MatchGroup result = search.find(queryField.getText());
-				table.removeAll();
-				
-				// find the maximal number of nodes per match and add a column for each
-				int maxNumNodes = 0;
-				for(Match m : result.getMatches()) {
-					maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
-				}
-				for(int i=1; i <= maxNumNodes; i++) {
-					TableColumn c = new TableColumn(table, SWT.NULL);
-					c.setText("" + i);
-				}
-				
-				for(Match m : result.getMatches()) {
-					TableItem item = new TableItem(table, SWT.NULL);
-					int nodeIdx = 0;
-					for(URI u : m.getSaltIDs()) {
-						item.setText(nodeIdx, u.getPath() + " " + u.getFragment());
-						nodeIdx++;
-					}
-				}
-				
-				for(int i=0; i < maxNumNodes; i++) {
-					table.getColumn(i).pack();
-				}
-				MessageDialog.openInformation(parent.getShell(), "Query result", "Found " + result.getMatches().size() + " matches.");
-				
+				executeSearch(parent, queryField.getText());
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		reindexButton.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				search.reindexAllDocuments();
-				
+
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
-		
 	}
-	
 
+	private void executeSearch(Composite parent, String aql) {
+		MatchGroup result = search.find(aql);
+		table.removeAll();
+		
+		for(int c=table.getColumnCount()-1; c >= 0; c--) {
+			table.getColumn(c).dispose();
+		}
+
+		// find the maximal number of nodes per match and add a column for each
+		int maxNumNodes = 0;
+		for (Match m : result.getMatches()) {
+			maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
+		}
+		for (int i = 1; i <= maxNumNodes; i++) {
+			TableColumn c = new TableColumn(table, SWT.NULL);
+			c.setText("" + i);
+		}
+
+		for (Match m : result.getMatches()) {
+			TableItem item = new TableItem(table, SWT.NULL);
+			int nodeIdx = 0;
+			for (URI u : m.getSaltIDs()) {
+				item.setText(nodeIdx, u.getPath() + " " + u.getFragment());
+				nodeIdx++;
+			}
+		}
+
+		for (int i = 0; i < maxNumNodes; i++) {
+			table.getColumn(i).pack();
+		}
+		MessageDialog.openInformation(parent.getShell(), "Query result",
+				"Found " + result.getMatches().size() + " matches.");
+	}
 
 }
