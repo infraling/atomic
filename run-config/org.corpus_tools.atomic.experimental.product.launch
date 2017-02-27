@@ -15,12 +15,12 @@
 <listEntry value="=org.corpus_tools.atomic/src\/main\/java"/>
 <listEntry value="=org.corpus_tools.atomic.pepper/src\/main\/java"/>
 </listAttribute>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/org.corpus_tools.atomic.product"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/org.corpus_tools.atomic.experimental.product"/>
 <booleanAttribute key="default" value="false"/>
 <stringAttribute key="featureDefaultLocation" value="workspace"/>
 <stringAttribute key="featurePluginResolution" value="workspace"/>
 <booleanAttribute key="includeOptional" value="true"/>
-<stringAttribute key="location" value="${workspace_loc}/../runtime-org.corpus_tools.atomic.product"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-org.corpus_tools.atomic.experimental.product"/>
 <mapAttribute key="org.eclipse.debug.core.preferred_launchers">
 <mapEntry key="[debug]" value="org.eclipse.pde.ui.RuntimeWorkbench"/>
 <mapEntry key="[run]" value="org.eclipse.pde.ui.RuntimeWorkbench"/>
@@ -37,7 +37,7 @@
 <stringAttribute key="product" value="org.corpus_tools.atomic.product"/>
 <stringAttribute key="productFile" value="/atomic-parent/repository/org.corpus_tools.atomic.product"/>
 <setAttribute key="selected_features">
-<setEntry value="org.corpus_tools.atomic.experimental:default"/>
+<setEntry value="org.corpus_tools.atomic.feature.experimental:default"/>
 <setEntry value="org.corpus_tools.atomic.feature:default"/>
 <setEntry value="org.eclipse.e4.rcp:default"/>
 <setEntry value="org.eclipse.ecf.core.feature:default"/>
