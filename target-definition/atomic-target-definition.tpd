@@ -61,3 +61,7 @@ location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/" {
 	org.junit
 }
+
+location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/" {
+	org.eclipse.e4.tools.spy
+}
