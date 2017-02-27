@@ -20,7 +20,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -30,7 +29,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.google.common.base.Splitter;
 
@@ -115,7 +113,7 @@ public class ANNISSearch {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				search.reindexAllDocuments();
+				search.reindexAllDocuments(true);
 
 			}
 
@@ -174,6 +172,7 @@ public class ANNISSearch {
 				return Status.OK_STATUS;
 			}
 		};
+		j.setUser(true);
 		j.setPriority(Job.LONG);
 		j.schedule();
 		

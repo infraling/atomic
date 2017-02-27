@@ -61,7 +61,7 @@ public class SearchService {
 		}
 	}
 	
-	public void reindexAllDocuments() {
+	public void reindexAllDocuments(boolean blockUI) {
 		Job job = new Job("Re-indexing documents") {
 			
 			@Override
@@ -88,6 +88,7 @@ public class SearchService {
 				return Status.OK_STATUS;
 			}
 		};
+		job.setUser(blockUI);
 		job.schedule();
 	}
 	
