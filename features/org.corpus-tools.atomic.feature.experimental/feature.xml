@@ -31,6 +31,21 @@
       <import plugin="org.corpus-tools.salt-api" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.common" version="2.12.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="javax.inject"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.e4.ui.model.workbench"/>
+      <import plugin="org.eclipse.e4.ui.di"/>
+      <import plugin="org.eclipse.e4.ui.services"/>
+      <import plugin="org.eclipse.e4.core.di.annotations"/>
+      <import plugin="org.eclipse.e4.ui.workbench" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.core.contexts" version="1.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.jobs" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.corpus-tools.graphannis-api" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.corpus-tools.salt-api" version="3.3.1" match="greaterOrEqual"/>
+      <import plugin="de.hu-berlin.german.korpling.annis.interfaces" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="19.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
    </requires>
 
    <plugin
@@ -42,6 +57,13 @@
 
    <plugin
          id="org.corpus_tools.atomic.visjs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.corpus_tools.atomic.search"
          download-size="0"
          install-size="0"
          version="0.0.0"

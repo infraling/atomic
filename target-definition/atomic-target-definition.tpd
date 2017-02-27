@@ -33,6 +33,7 @@ location "http://download.eclipse.org/releases/neon" {
 
 location "http://corpus-tools.org/p2/" {
 	com.lmax.disruptor [3.3.2,3.4.0)
+	net.sdruskat.fragment.sun.misc 
 	org.corpus-tools.salt-api [3.3.0,3.4.0)
 	org.corpus-tools.pepper-framework [3.1.0,3.1.0]
 	org.corpus-tools.pepper-lib [3.1.0,3.1.0]
@@ -47,6 +48,8 @@ location "http://corpus-tools.org/p2/" {
 	org.eclipse.aether.util
 	com.github.hazendaz.javabean-tester
 	org.eclipse.collections.eclipse-collections
+	
+	org.corpus-tools.graphannis-api
 }
 
 location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
@@ -57,4 +60,8 @@ location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/" {
 	org.junit
+}
+
+location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/" {
+	org.eclipse.e4.tools.spy
 }

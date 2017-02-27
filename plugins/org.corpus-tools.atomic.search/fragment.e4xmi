@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ASCII"?>
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_BxaXACerEeWxCPrV0pAZQQ">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_0HkqkPm0Eea9HtitC0WCyA" featurename="descriptors" parentElementId="xpath:/">
+    <elements xsi:type="basic:PartDescriptor" xmi:id="_77ZMMPm0Eea9HtitC0WCyA" elementId="org.corpus-tools.search.parts.annissearch" label="ANNIS Search" iconURI="platform:/plugin/org.corpus_tools.atomic.search/icons/annis_16.png" category="org.eclipse.e4.primaryDataStack" closeable="true" contributionURI="bundleclass://org.corpus_tools.atomic.search/org.corpus_tools.search.parts.ANNISSearch">
+      <tags>categoryTag:Other</tags>
+    </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_zPTJkPkWEeazr9PeKTMG7w" featurename="menuContributions" parentElementId="xpath:/" positionInList="after=additions">
+    <elements xsi:type="menu:MenuContribution" xmi:id="_OrpJ8PkXEeazr9PeKTMG7w" elementId="org.corpus_tools.atomic.search.menucontribution.0" positionInParent="after=switchworkspace" parentId="org.corpus_tools.atomic.menus.file">
+      <children xsi:type="menu:HandledMenuItem" xmi:id="_TbXocPkXEeazr9PeKTMG7w" elementId="org.corpus_tools.atomic.search.handledmenuitem.search" label="Search in corpus" mnemonics="" command="_ZfbWAPmuEea9HtitC0WCyA"/>
+    </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_RVD8oPmuEea9HtitC0WCyA" featurename="commands" parentElementId="xpath:/">
+    <elements xsi:type="commands:Command" xmi:id="_ZfbWAPmuEea9HtitC0WCyA" elementId="org.corpus-tools.search.command.showsearch" commandName="Show Search"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_USf-IPmuEea9HtitC0WCyA" featurename="handlers" parentElementId="xpath:/">
+    <elements xsi:type="commands:Handler" xmi:id="_YCMjAPmuEea9HtitC0WCyA" elementId="org.corpus-tools.search.handler.0" contributionURI="bundleclass://org.corpus_tools.atomic.search/org.corpus_tools.search.handle.ShowSearchHandler" command="_ZfbWAPmuEea9HtitC0WCyA"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_edGXoPmzEea9HtitC0WCyA" featurename="bindingTables" parentElementId="xpath:/">
+    <elements xsi:type="commands:BindingTable" xmi:id="_g0magPmzEea9HtitC0WCyA" elementId="org.corpus-tools.search.bindingtable.0" bindingContext="_Abw1gPm0Eea9HtitC0WCyA">
+      <bindings xmi:id="_8vexAPmzEea9HtitC0WCyA" elementId="org.corpus-tools.search.keybinding.0" keySequence="M1+M2+S" command="_ZfbWAPmuEea9HtitC0WCyA"/>
+    </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_9rlz8PmzEea9HtitC0WCyA" featurename="bindingContexts" parentElementId="xpath:/">
+    <elements xsi:type="commands:BindingContext" xmi:id="_Abw1gPm0Eea9HtitC0WCyA" elementId="org.eclipse.ui.contexts.window" name="Default"/>
+  </fragments>
+</fragment:ModelFragments>

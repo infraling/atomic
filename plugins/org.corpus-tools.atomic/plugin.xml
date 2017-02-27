@@ -51,12 +51,14 @@
                tooltip="The File menu provides access to basic application funtionalities">
             <command
                   commandId="org.eclipse.ui.newWizard"
+                  id="newproject"
                   label="New Project"
                   mnemonic="P"
                   style="push">
             </command>
             <command
                   commandId="org.corpus_tools.atomic.commands.switchWorkspace"
+                  id="switchworkspace"
                   label="Switch Workspace"
                   mnemonic="W"
                   style="push">
