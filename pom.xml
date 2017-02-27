@@ -136,6 +136,7 @@
 		<module>plugins/org.corpus-tools.atomic.search</module>
 		<module>tests/org.corpus_tools.atomic.tests.gui</module>
 		<module>repository</module>
+		<module>repository-experimental</module>
 		<module>target-definition</module>
 		<module>features/org.corpus-tools.atomic.feature</module>
 		<module>
