@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1487680425">
+<target name="Atomic Target Platform" sequenceNumber="1488192133">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
@@ -11,6 +11,7 @@
       <unit id="org.eclipse.core.runtime" version="3.12.0.v20160606-1342"/>
       <unit id="org.eclipse.ui.navigator" version="3.6.101.v20161006-1120"/>
       <unit id="org.eclipse.ui.ide" version="3.12.2.v20161115-1450"/>
+      <unit id="org.eclipse.ui.ide.application" version="1.1.101.v20160829-0827"/>
       <unit id="org.eclipse.ui" version="3.108.1.v20160929-1045"/>
       <unit id="org.eclipse.core.resources" version="3.11.1.v20161107-2032"/>
       <unit id="org.eclipse.ui.navigator.resources" version="3.5.101.v20161006-0640"/>
