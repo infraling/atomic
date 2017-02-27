@@ -143,5 +143,8 @@
 			features/org.corpus-tools.atomic.feature.experimental
 		</module>
 		<module>plugins/org.corpus-tools.atomic.logging</module>
+		<module>
+			plugins/de.uni_jena.iaa.linktype.atomic.atomical
+		</module>
 	</modules>
 </project>
