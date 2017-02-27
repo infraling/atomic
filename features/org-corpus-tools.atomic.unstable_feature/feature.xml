@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.corpus_tools.atomic.unstable_feature"
-      label="Atomic unstable features"
-      version="0.3.0.qualifier">
+      id="org.corpus_tools.atomic.experimental"
+      label="Atomic Experimental Feature for experimental features"
+      version="0.3.0.qualifier"
+      provider-name="Humboldt-Universität zu Berlin">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
