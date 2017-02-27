@@ -1,6 +1,7 @@
 package org.corpus_tools.search.parts;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -12,7 +13,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.UISynchronize;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+
+import com.google.common.base.Splitter;
 
 import annis.service.objects.Match;
 import annis.service.objects.MatchGroup;
@@ -152,7 +154,8 @@ public class ANNISSearch {
 						TableItem item = new TableItem(table, SWT.NULL);
 						int nodeIdx = 0;
 						for (URI u : m.getSaltIDs()) {
-							item.setText(nodeIdx, u.getPath() + " " + u.getFragment());
+							List<String> path = Splitter.on('/').trimResults().splitToList(u.getPath());
+							item.setText(nodeIdx, path.get(path.size()-1) + " (" + u.getFragment() + ")");
 							nodeIdx++;
 						}
 					}
