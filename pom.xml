@@ -134,8 +134,12 @@
 		<module>plugins/org.corpus-tools.atomic.tokeneditor</module>
 		<module>plugins/org.corpus-tools.atomic.visjs</module>
 		<module>tests/org.corpus_tools.atomic.tests.gui</module>
-		<module>features/org-corpus-tools.atomic.feature</module>
 		<module>repository</module>
 		<module>target-definition</module>
+		<module>features/org.corpus-tools.atomic.feature</module>
+		<module>
+			features/org.corpus-tools.atomic.feature.experimental
+		</module>
+		<module>plugins/org.corpus-tools.atomic.logging</module>
 	</modules>
 </project>
