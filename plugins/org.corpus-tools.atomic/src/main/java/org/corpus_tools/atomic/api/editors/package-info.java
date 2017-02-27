@@ -22,4 +22,4 @@
  * <p>@author Stephan Druskat <stephan.druskat@uni-jena.de>
  *
  */
-package org.corpus_tools.atomic.editors;
+package org.corpus_tools.atomic.api.editors;

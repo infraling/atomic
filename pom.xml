@@ -139,5 +139,6 @@
 		<module>repository</module>
 		<module>repository-experimental</module>
 		<module>target-definition</module>
+		<module>plugins/org.corpus-tools.atomic.tokeneditor</module>
 	</modules>
 </project>

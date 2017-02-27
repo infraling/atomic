@@ -40,3 +40,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.aether.util;bundle-version="1.0.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Export-Package: org.corpus_tools.atomic.api.commands,
+ org.corpus_tools.atomic.api.editors,
+ org.corpus_tools.atomic.api.events,
+ org.corpus_tools.atomic.exceptions

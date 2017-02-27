@@ -37,13 +37,13 @@
       <import plugin="org.eclipse.help.ui" version="4.0.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help.webapp" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.corpus-tools.salt-api" version="3.0.6" match="greaterOrEqual"/>
-      <import plugin="org.corpus-tools.pepper-framework" version="3.0.2" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi.util" version="3.3.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.aether.connector.basic" version="1.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.aether.maven" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="javax.xml"/>
       <import plugin="com.lmax.disruptor" version="3.3.2" match="greaterOrEqual"/>
+      <import plugin="org.corpus-tools.pepper-framework" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.corpus-tools.pepper-lib" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi.services" version="3.5.100" match="greaterOrEqual"/>

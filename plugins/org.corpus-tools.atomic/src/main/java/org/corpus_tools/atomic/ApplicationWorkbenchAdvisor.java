@@ -59,7 +59,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		Bundle ideBundle = Platform.getBundle(IDEWorkbenchPlugin.IDE_WORKBENCH);
 		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT, PATH_OBJECT + "prj_obj.gif", true);
 		declareWorkbenchImage(configurer, ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED, PATH_OBJECT + "cprj_obj.gif", true);
-
 	}
 
 	/**
@@ -90,10 +89,12 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		return workspace.getRoot();
 	}
 
+	@Override
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
 		return new ApplicationWorkbenchWindowAdvisor(configurer);
 	}
 
+	@Override
 	public String getInitialWindowPerspectiveId() {
 		return PERSPECTIVE_ID;
 	}
