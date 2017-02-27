@@ -128,6 +128,7 @@
 
    <features>
       <feature id="org.corpus_tools.atomic.feature" version="0.3.0.qualifier"/>
+      <feature id="org.corpus_tools.atomic.feature.experimental" version="0.3.0.qualifier"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.help"/>
