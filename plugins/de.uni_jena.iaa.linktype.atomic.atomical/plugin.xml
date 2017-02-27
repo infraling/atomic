@@ -2,27 +2,6 @@
 <plugin>
 
    <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:de.uni_jena.iaa.linktype.atomic.menus.viewMenu">
-         <command
-               commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
-               label="AtomicAL Console"
-               style="push"
-               mnemonic="A">
-            <visibleWhen>
-               <with
-                     variable="activeEditorId">
-                  <equals
-                        value="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.editor">
-                  </equals>
-               </with>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective">
@@ -43,20 +22,6 @@
             label="New AtomicAL Console"
             class="de.uni_jena.iaa.linktype.atomic.atomical.console.AtomicalConsoleFactory">
       </consoleFactory>
-   </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            name="Open ConsoleView"
-            id="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand">
-      </command>
-   </extension>
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
-            class="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler">
-      </handler>
    </extension>
    <extension
          id="de.uni_jena.iaa.linktype.atomic.atomical.fragment"
