@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
 <plugin>
+
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -9,13 +9,14 @@
          <command
                commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
                label="AtomicAL Console"
-               mnemonic="A"
-               style="push">
+               style="push"
+               mnemonic="A">
             <visibleWhen>
-            <with variable="activeEditorId">
-                     <equals
-                           value="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.editor">
-                     </equals>
+               <with
+                     variable="activeEditorId">
+                  <equals
+                        value="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.editor">
+                  </equals>
                </with>
             </visibleWhen>
          </command>
@@ -26,36 +27,43 @@
       <perspectiveExtension
             targetID="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective">
          <view
-               closeable="true"
-               id="org.eclipse.ui.console.ConsoleView"
-               moveable="true"
                ratio="0.8f"
-               relationship="bottom"
+               moveable="true"
                relative="org.eclipse.ui.editorss"
-               visible="true">
+               closeable="true"
+               visible="true"
+               id="org.eclipse.ui.console.ConsoleView"
+               relationship="bottom">
          </view>
       </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.console.consoleFactories">
       <consoleFactory
-            class="de.uni_jena.iaa.linktype.atomic.atomical.console.AtomicalConsoleFactory"
-            label="New AtomicAL Console">
+            label="New AtomicAL Console"
+            class="de.uni_jena.iaa.linktype.atomic.atomical.console.AtomicalConsoleFactory">
       </consoleFactory>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
-            name="Open ConsoleView">
+            name="Open ConsoleView"
+            id="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler"
-            commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand">
+            commandId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand"
+            class="de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler">
       </handler>
+   </extension>
+   <extension
+         id="de.uni_jena.iaa.linktype.atomic.atomical.fragment"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi">
+      </fragment>
    </extension>
 
 </plugin>
