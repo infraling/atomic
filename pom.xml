@@ -137,6 +137,7 @@
 		<module>features/org.corpus-tools.atomic.feature</module>
         <module>features/org.corpus-tools.atomic.feature.experimental</module>
 		<module>repository</module>
+		<module>repository-experimental</module>
 		<module>target-definition</module>
 	</modules>
 </project>
