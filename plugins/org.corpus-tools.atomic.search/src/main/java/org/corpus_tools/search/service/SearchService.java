@@ -1,5 +1,6 @@
 package org.corpus_tools.search.service;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.corpus_tools.graphannis.API;
@@ -32,11 +33,14 @@ import annis.service.objects.MatchGroup;
 @Creatable
 public class SearchService {
 	
+	public static final String IDX_FOLDER = "idx-graphannis";
+	
 	private final CorpusStorageManager corpusManager;
 	
 	public SearchService() {
-		// TODO: find a directory inside the workspace
-		this.corpusManager  = new CorpusStorageManager("/tmp/atomic-annis");
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		File corpusIndexLocation  = new File(workspace.getRoot().getLocation().toOSString(), IDX_FOLDER);
+		this.corpusManager  = new CorpusStorageManager(corpusIndexLocation.getAbsolutePath());
 	}
 	
 	private void handleResource(IResource res, String projectName, IProgressMonitor monitor) throws CoreException {
