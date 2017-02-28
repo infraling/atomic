@@ -47,6 +47,7 @@ import com.google.common.collect.Range;
 import com.google.common.collect.TreeMultimap;
 
 import swing2swt.layout.BorderLayout;
+import org.eclipse.swt.widgets.TableColumn;
 
 public class SaltVisualizer extends DocumentGraphEditor {
 
@@ -100,6 +101,10 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		textRangeTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		textRangeTable.setHeaderVisible(true);
 		textRangeTable.setLinesVisible(true);
+		
+		TableColumn tblclmnFilterBySegment = new TableColumn(textRangeTable, SWT.NONE);
+		tblclmnFilterBySegment.setWidth(100);
+		tblclmnFilterBySegment.setText("Filter by segment");
 		btnIncludeSpans.addSelectionListener(new SelectionListener() {
 			
 			@Override
