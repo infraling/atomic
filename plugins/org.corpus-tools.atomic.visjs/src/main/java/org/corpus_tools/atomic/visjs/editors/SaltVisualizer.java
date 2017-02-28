@@ -17,6 +17,7 @@ import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
@@ -94,13 +95,24 @@ public class SaltVisualizer extends DocumentGraphEditor {
 
 		Label lblFilterByAnnotation = new Label(composite, SWT.NONE);
 		lblFilterByAnnotation.setText("Filter by annotation type");
-
-		btnIncludeSpans = new Button(composite, SWT.CHECK);
-		btnIncludeSpans.setSelection(true);
-		btnIncludeSpans.setText("Include Spans");
 		
-		Label seperator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
-		seperator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+				btnIncludeSpans = new Button(composite, SWT.CHECK);
+				btnIncludeSpans.setSelection(true);
+				btnIncludeSpans.setText("Include Spans");
+				btnIncludeSpans.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						updateView();
+						
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent e) {
+						updateView();
+						
+					}
+				});
 		
 		txtSegmentFilter = new Text(composite, SWT.BORDER);
 		txtSegmentFilter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -109,9 +121,12 @@ public class SaltVisualizer extends DocumentGraphEditor {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				
-				calculateSegments(graph, txtSegmentFilter.getText());
+				calculateSegments(graph);
 			}
 		});
+		
+		Label seperator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		seperator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		textRangeTable = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		textRangeTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -121,23 +136,6 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		TableColumn tblclmnFilterBySegment = new TableColumn(textRangeTable, SWT.NONE);
 		tblclmnFilterBySegment.setWidth(100);
 		tblclmnFilterBySegment.setText("Filter by segment");
-		btnIncludeSpans.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateView();
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				updateView();
-				
-			}
-		});
-		
-		calculateSegments(graph, null);
-		updateView();
 		
 		textRangeTable.addSelectionListener(new SelectionListener() {
 			
@@ -153,6 +151,9 @@ public class SaltVisualizer extends DocumentGraphEditor {
 				
 			}
 		});
+		
+		calculateSegments(graph);
+		updateView();
 		
 		parent.addDisposeListener(new DisposeListener() {
 			
@@ -242,8 +243,10 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		}
 	}
 	
-	private void calculateSegments(SDocumentGraph graph, String validAnnoName) {
+	private void calculateSegments(SDocumentGraph graph) {
 		textRangeTable.removeAll();
+		
+		ExportFilter currentFilter = new RootFilter();
 		
 		Multimap<STextualDS, Range<Long>> sortedDS = TreeMultimap.create(new STextualDSComparator(), new RangeComparator<>());
 		
@@ -252,20 +255,7 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		if(roots != null) {
 			for(SNode r : roots) {
 				
-				boolean annoNameMatches = validAnnoName == null || validAnnoName.isEmpty();
-				if(!annoNameMatches) {
-					// iterate over all annotations and check if the name matches
-					if(r.getAnnotations() != null) {
-						for(SAnnotation a : r.getAnnotations()) {
-							if(a.getName().contains(validAnnoName)) {
-								annoNameMatches = true;
-								break;
-							}
-						}
-					}
-				}
-				
-				if(annoNameMatches) {				
+				if(currentFilter.includeNode(r)) {				
 					List<DataSourceSequence> overlappedDS = 
 							graph.getOverlappedDataSourceSequence(r, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
 					if(overlappedDS != null) {
@@ -292,6 +282,42 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		if(textRangeTable.getItemCount() > 0) {
 			textRangeTable.setSelection(0);
 		}
+	}
+	
+	private class RootFilter implements ExportFilter {
+
+		@Override
+		public boolean includeNode(SNode node) {
+			
+			boolean include = false;
+			
+			if(txtSegmentFilter.getText().isEmpty() || (node instanceof SToken)) {
+				include = true;
+			} else {
+				if(node.getAnnotations() != null) {
+					for(SAnnotation anno : node.getAnnotations()) {
+						if(anno.getName().contains(txtSegmentFilter.getText())) {
+							include = true;
+							break;
+						}
+					}
+				}
+			}
+			
+			if(node instanceof SSpan) {
+				include = include && btnIncludeSpans.getSelection();
+			}
+			
+			
+			return include;
+		}
+
+		@Override
+		public boolean includeRelation(SRelation arg0) {
+			
+			return true;
+		}
+		
 	}
 	
 	private class Filter implements ExportFilter {
@@ -329,6 +355,19 @@ public class SaltVisualizer extends DocumentGraphEditor {
 			
 			if(node instanceof SSpan) {
 				include = include && btnIncludeSpans.getSelection();
+			}
+			// additionally check for valid annotation
+			if(include && !txtSegmentFilter.getText().isEmpty() && !(node instanceof SToken)) {
+				if(node.getAnnotations() != null) {
+					boolean annoFound = false;
+					for(SAnnotation anno : node.getAnnotations()) {
+						if(anno.getName().contains(txtSegmentFilter.getText())) {
+							annoFound = true;
+							break;
+						}
+					}
+					include = annoFound;
+				}
 			}
 			
 			return include;
