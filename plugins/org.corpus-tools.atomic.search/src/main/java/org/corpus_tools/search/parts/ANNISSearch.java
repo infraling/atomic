@@ -7,17 +7,28 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.corpus_tools.search.service.SearchService;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.UISynchronize;
+import org.eclipse.e4.ui.workbench.IWorkbench;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowData;
@@ -29,6 +40,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 import com.google.common.base.Splitter;
 
@@ -41,10 +57,17 @@ public class ANNISSearch {
 	@Inject
 	private SearchService search;
 
+	@Inject
+	private IWorkbenchPage page;
+	
+	
 	private Button btReindex;
 	private Table table;
 
 	private Label lblStatus;
+	
+	
+	private final static Splitter pathSplitter = Splitter.on('/').omitEmptyStrings().trimResults();
 	
 	@Inject
 	private UISynchronize uiSync;
@@ -92,7 +115,27 @@ public class ANNISSearch {
 		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
+		table.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseUp(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				if(table.getSelectionCount() > 0) {
+					openMatchInEditor(table.getSelection()[0]);
+				}
+				
+			}
+		});
 		lblStatus = new Label(parent, SWT.NONE);
 		lblStatus.setAlignment(SWT.RIGHT);
 		lblStatus.setLayoutData(BorderLayout.NORTH);
@@ -105,8 +148,7 @@ public class ANNISSearch {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-
+			
 			}
 		});
 		btReindex.addSelectionListener(new SelectionListener() {
@@ -124,7 +166,58 @@ public class ANNISSearch {
 			}
 		});
 	}
-
+	
+	private void openMatchInEditor(Widget selected) {
+		
+		if(selected instanceof TableItem) {
+			TableItem selectedItem = (TableItem) selected;
+			if(selectedItem.getData() instanceof Match) {
+				Match m = (Match) selectedItem.getData();
+				// get first match (which already contains the corpus name and document name)
+				List<String> path = pathSplitter.splitToList(m.getSaltIDs().get(0).getPath());
+				// find the document in the Workspace
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				IWorkspaceRoot root = workspace.getRoot();
+				
+				for(IProject p : root.getProjects()) {
+					if(path.get(0).equals(p.getName())) {
+						try {
+							IFile matchingDoc = searchDocumentInResource(p, path.get(path.size()-1));
+							if(matchingDoc != null) {
+								IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(matchingDoc.getName());
+								page.openEditor(new FileEditorInput(matchingDoc), desc.getId());
+							}
+							
+						} catch (CoreException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	private IFile searchDocumentInResource(IResource res, String documentName) throws CoreException {
+		
+		if(res instanceof IFile) {
+			IFile file = (IFile) res;
+			if((documentName + ".salt").equals(file.getName())) {
+				return file;
+			} 
+		} else if (res instanceof IContainer ){
+			for (IResource child : ((IContainer) res).members()) {
+				IFile foundChild = searchDocumentInResource(child, documentName);
+				if(foundChild != null) {
+					return foundChild;
+				}
+			}
+		}
+		// if nothing was found return null
+		return null;
+	}
+	
 	private void executeSearch(Composite parent, String aql) {
 		
 		lblStatus.setText("Searching...");
@@ -165,8 +258,10 @@ public class ANNISSearch {
 
 						TableItem item = new TableItem(table, SWT.NULL);
 						
+						item.setData(m);
+						
 						if(!m.getSaltIDs().isEmpty()) {
-							List<String> path = Splitter.on('/').omitEmptyStrings().trimResults().splitToList(
+							List<String> path = pathSplitter.splitToList(
 									m.getSaltIDs().iterator().next().getPath());
 							item.setText(0, path.get(0)); // corpus
 							item.setText(1, path.get(path.size()-1)); // document
@@ -180,6 +275,7 @@ public class ANNISSearch {
 							item.setText(2+nodeIdx, u.getFragment());
 							nodeIdx++;
 						}
+						
 						displayMatchCount++;
 						if(displayMatchCount > 10000) {
 							break;

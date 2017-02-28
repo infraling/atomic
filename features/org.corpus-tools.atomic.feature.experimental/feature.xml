@@ -48,6 +48,7 @@
       <import plugin="de.hu-berlin.german.korpling.annis.interfaces" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="com.google.guava" version="19.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
    </requires>
 
    <plugin
