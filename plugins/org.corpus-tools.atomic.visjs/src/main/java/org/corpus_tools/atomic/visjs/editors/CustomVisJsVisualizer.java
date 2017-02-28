@@ -269,6 +269,23 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 	private static final String RESOURCE_FOLDER = System.getProperty("file.separator") + "visjs";
 	private static final String RESOURCE_FOLDER_IMG_NETWORK = "visjs" + System.getProperty("file.separator") + "img"
 			+ System.getProperty("file.separator") + "network";
+	
+	private static final String[] NETWORK_IMAGES = {
+			"zoomExtends.png",
+			"addNodeIcon.png",
+			"upArrow.png",
+			"downArrow.png",
+			"backIcon.png",
+			"minus.png",
+			"rightArrow.png",
+			"editIcon.png",
+			"plus.png",
+			"leftArrow.png",
+			"cross2.png",
+			"deleteIcon.png",
+			"connectIcon.png",
+			"acceptDeleteIcon.png",
+			"cross.png"};
 
 	private HashMap<String, Integer> spanClasses;
 	private int maxSpanOffset = -1;
@@ -859,14 +876,13 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 
 		if (codeSourseFile.isDirectory()) {
 			File imgFolder = new File(classLoader.getResource(RESOURCE_FOLDER_IMG_NETWORK).getFile());
-			File[] imgFiles = imgFolder.listFiles();
-			if (imgFiles != null) {
-				for (File imgFile : imgFiles) {
-					InputStream inputStream = getClass().getResourceAsStream(System.getProperty("file.separator")
-							+ RESOURCE_FOLDER_IMG_NETWORK + System.getProperty("file.separator") + imgFile.getName());
-					copyResourceFile(inputStream, outputFolder.getPath(), IMG_FOLDER_OUT, imgFile.getName());
-				}
+		
+			for (String imgFileName : NETWORK_IMAGES) {
+				InputStream inputStream = getClass().getResourceAsStream(System.getProperty("file.separator")
+						+ RESOURCE_FOLDER_IMG_NETWORK + System.getProperty("file.separator") + imgFileName);
+				copyResourceFile(inputStream, outputFolder.getPath(), IMG_FOLDER_OUT, imgFileName);
 			}
+			
 		} else if (codeSourseFile.getName().endsWith("jar")) {
 			JarFile jarFile = new JarFile(codeSourseFile);
 			Enumeration<JarEntry> entries = jarFile.entries();
