@@ -459,7 +459,7 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 			} catch (SaltParameterException e) {
 				throw new SaltParameterException(e.getMessage());
 			} catch (SaltException e) {
-				throw new SaltException(e.getMessage());
+				throw new SaltException(e.getMessage(), e);
 			}
 
 			writeNodeImmediately = false;
@@ -591,7 +591,7 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 			} catch (SaltParameterException e) {
 				throw new SaltParameterException(e.getMessage());
 			} catch (SaltException e) {
-				throw new SaltException(e.getMessage());
+				throw new SaltException(e.getMessage(), e);
 			}
 
 			if (nNodes < 20) {

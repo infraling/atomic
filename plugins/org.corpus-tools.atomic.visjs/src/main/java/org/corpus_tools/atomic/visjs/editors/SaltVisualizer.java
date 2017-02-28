@@ -15,9 +15,13 @@ import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.STextualDS;
 import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
+import org.corpus_tools.salt.exceptions.SaltException;
 import org.corpus_tools.salt.util.DataSourceSequence;
 import org.corpus_tools.salt.util.ExportFilter;
-import org.corpus_tools.salt.util.VisJsVisualizer;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,6 +30,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -41,6 +46,7 @@ public class SaltVisualizer extends DocumentGraphEditor {
 	private Button btnIncludeSpans;
 	private Table textRangeTable;
 
+	
 	public SaltVisualizer() {
 		super();
 	}
@@ -121,28 +127,53 @@ public class SaltVisualizer extends DocumentGraphEditor {
 	}
 
 	private void updateView() {
-		if (tmpDir != null) {
-			try {
-				FileUtils.deleteDirectory(tmpDir.toFile());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		
+		browser.setText("please wait while visualization is loading...");
+		
+		Job j = new Job("Create Salt visualization") {
+			
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				
+				if (tmpDir != null) {
+					try {
+						FileUtils.deleteDirectory(tmpDir.toFile());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				try {
+					tmpDir = Files.createTempDirectory("atomic-visjs-visualizer-");
+
+					final CustomVisJsVisualizer visjs = new CustomVisJsVisualizer(getGraph().getDocument(), new Filter(), null);
+					
+					Display.getDefault().syncExec(() -> {
+						try {
+							visjs.visualize(org.eclipse.emf.common.util.URI.createFileURI(tmpDir.toString()));
+						} catch (SaltException | IOException | XMLStreamException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						browser.setUrl(tmpDir.resolve("saltVisJs.html").toString());
+					});
+					
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return Status.OK_STATUS;
 			}
-		}
+		};
+		j.setSystem(true);
+		j.schedule();
+		
+		
 
-		try {
-			tmpDir = Files.createTempDirectory("atomic-visjs-visualizer-");
-
-			CustomVisJsVisualizer visjs = new CustomVisJsVisualizer(getGraph().getDocument(), new Filter(), null);
-			
-			visjs.visualize(org.eclipse.emf.common.util.URI.createFileURI(tmpDir.toString()));
-			
-			browser.setUrl(tmpDir.resolve("saltVisJs.html").toString());
-			
-		} catch (IOException | XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 	
 	private void calculateSegments(SDocumentGraph graph) {
@@ -167,11 +198,9 @@ public class SaltVisualizer extends DocumentGraphEditor {
 			}
 		}
 		
-		for(int i=0; i < textRangeTable.getItemCount(); i++) {
-			textRangeTable.select(i);
+		if(textRangeTable.getItemCount() > 0) {
+			textRangeTable.setSelection(0);
 		}
-		
-
 	}
 	
 	private class Filter implements ExportFilter {
