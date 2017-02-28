@@ -3,7 +3,11 @@ package org.corpus_tools.atomic.visjs.editors;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -37,7 +41,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
+import com.google.common.collect.TreeMultimap;
 
 import swing2swt.layout.BorderLayout;
 
@@ -194,8 +201,31 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		
 	}
 	
+	private static class STextualDSComparator implements Comparator<STextualDS> {
+
+		@Override
+		public int compare(STextualDS o1, STextualDS o2) {
+			return ComparisonChain.start().compare(o1.getName(), o2.getName()).result();
+		}
+	}
+	
+	private static class RangeComparator<C extends Comparable> implements Comparator<Range<C>> {
+
+		@Override
+		public int compare(Range<C> o1, Range<C> o2) {
+			
+			return ComparisonChain.start()
+					.compare(o1.lowerEndpoint(), o2.lowerEndpoint())
+					.compare(o1.upperBoundType(), o2.upperBoundType())
+					.result();
+		}
+	}
+	
 	private void calculateSegments(SDocumentGraph graph) {
 		textRangeTable.clearAll();
+		
+		Multimap<STextualDS, Range<Long>> sortedDS = TreeMultimap.create(new STextualDSComparator(), new RangeComparator<>());
+		
 		
 		List<SNode> roots = graph.getRoots();
 		if(roots != null) {
@@ -205,16 +235,22 @@ public class SaltVisualizer extends DocumentGraphEditor {
 				if(overlappedDS != null) {
 					for(DataSourceSequence seq : overlappedDS) {
 						if(seq.getDataSource() instanceof STextualDS) {
-							TableItem item = new TableItem(textRangeTable, SWT.NONE);
-							item.setText(seq.getDataSource().getName() + ": " + seq.getStart() + ".." + seq.getEnd());
-							item.setData("range", Range.closedOpen(seq.getStart().longValue(), 
-									seq.getEnd().longValue()));
-							item.setData("text", seq.getDataSource());
+							sortedDS.put((STextualDS) seq.getDataSource(), 
+									Range.closedOpen(seq.getStart().longValue(), seq.getEnd().longValue()));
+
 						}
 					}
 				}
 			}
 		}
+		
+		for(Map.Entry<STextualDS, Range<Long>> e : sortedDS.entries()) {
+			TableItem item = new TableItem(textRangeTable, SWT.NONE);
+			item.setText(e.getKey().getName() + ": " + e.getValue().lowerEndpoint() + ".." + e.getValue().upperEndpoint());
+			item.setData("range", e.getValue());
+			item.setData("text", e.getKey());
+		}
+		
 		
 		if(textRangeTable.getItemCount() > 0) {
 			textRangeTable.setSelection(0);
