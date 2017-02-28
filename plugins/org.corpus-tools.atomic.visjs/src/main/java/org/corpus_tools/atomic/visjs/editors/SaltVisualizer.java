@@ -17,6 +17,7 @@ import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
 import org.corpus_tools.salt.exceptions.SaltException;
@@ -30,6 +31,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -48,6 +51,7 @@ import com.google.common.collect.TreeMultimap;
 
 import swing2swt.layout.BorderLayout;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 
 public class SaltVisualizer extends DocumentGraphEditor {
 
@@ -55,6 +59,7 @@ public class SaltVisualizer extends DocumentGraphEditor {
 	private Browser browser;
 	private Button btnIncludeSpans;
 	private Table textRangeTable;
+	private Text txtSegmentFilter;
 
 	
 	public SaltVisualizer() {
@@ -97,6 +102,17 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		Label seperator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		seperator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
+		txtSegmentFilter = new Text(composite, SWT.BORDER);
+		txtSegmentFilter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtSegmentFilter.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				
+				calculateSegments(graph, txtSegmentFilter.getText());
+			}
+		});
+		
 		textRangeTable = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		textRangeTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		textRangeTable.setHeaderVisible(true);
@@ -120,7 +136,7 @@ public class SaltVisualizer extends DocumentGraphEditor {
 			}
 		});
 		
-		calculateSegments(graph);
+		calculateSegments(graph, null);
 		updateView();
 		
 		textRangeTable.addSelectionListener(new SelectionListener() {
@@ -226,8 +242,8 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		}
 	}
 	
-	private void calculateSegments(SDocumentGraph graph) {
-		textRangeTable.clearAll();
+	private void calculateSegments(SDocumentGraph graph, String validAnnoName) {
+		textRangeTable.removeAll();
 		
 		Multimap<STextualDS, Range<Long>> sortedDS = TreeMultimap.create(new STextualDSComparator(), new RangeComparator<>());
 		
@@ -235,14 +251,30 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		List<SNode> roots = graph.getRoots();
 		if(roots != null) {
 			for(SNode r : roots) {
-				List<DataSourceSequence> overlappedDS = 
-						graph.getOverlappedDataSourceSequence(r, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
-				if(overlappedDS != null) {
-					for(DataSourceSequence seq : overlappedDS) {
-						if(seq.getDataSource() instanceof STextualDS) {
-							sortedDS.put((STextualDS) seq.getDataSource(), 
-									Range.closedOpen(seq.getStart().longValue(), seq.getEnd().longValue()));
-
+				
+				boolean annoNameMatches = validAnnoName == null || validAnnoName.isEmpty();
+				if(!annoNameMatches) {
+					// iterate over all annotations and check if the name matches
+					if(r.getAnnotations() != null) {
+						for(SAnnotation a : r.getAnnotations()) {
+							if(a.getName().contains(validAnnoName)) {
+								annoNameMatches = true;
+								break;
+							}
+						}
+					}
+				}
+				
+				if(annoNameMatches) {				
+					List<DataSourceSequence> overlappedDS = 
+							graph.getOverlappedDataSourceSequence(r, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
+					if(overlappedDS != null) {
+						for(DataSourceSequence seq : overlappedDS) {
+							if(seq.getDataSource() instanceof STextualDS) {
+								sortedDS.put((STextualDS) seq.getDataSource(), 
+										Range.closedOpen(seq.getStart().longValue(), seq.getEnd().longValue()));
+	
+							}
 						}
 					}
 				}
