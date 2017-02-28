@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -120,6 +122,22 @@ public class SaltVisualizer extends DocumentGraphEditor {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				updateView();
+				
+			}
+		});
+		
+		parent.addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				if (tmpDir != null) {
+					try {
+						FileUtils.deleteDirectory(tmpDir.toFile());
+					} catch (IOException ex) {
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					}
+				}
 				
 			}
 		});
