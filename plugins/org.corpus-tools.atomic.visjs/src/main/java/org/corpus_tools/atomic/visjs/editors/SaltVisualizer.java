@@ -3,24 +3,34 @@ package org.corpus_tools.atomic.visjs.editors;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.FileUtils;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
+import org.corpus_tools.salt.SALT_TYPE;
+import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
+import org.corpus_tools.salt.common.STextualDS;
 import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
+import org.corpus_tools.salt.util.DataSourceSequence;
 import org.corpus_tools.salt.util.ExportFilter;
 import org.corpus_tools.salt.util.VisJsVisualizer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+
+import com.google.common.collect.Range;
 
 import swing2swt.layout.BorderLayout;
 
@@ -29,6 +39,7 @@ public class SaltVisualizer extends DocumentGraphEditor {
 	private Path tmpDir;
 	private Browser browser;
 	private Button btnIncludeSpans;
+	private Table textRangeTable;
 
 	public SaltVisualizer() {
 		super();
@@ -66,6 +77,14 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		btnIncludeSpans = new Button(composite, SWT.CHECK);
 		btnIncludeSpans.setSelection(true);
 		btnIncludeSpans.setText("Include Spans");
+		
+		Label seperator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		seperator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		textRangeTable = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		textRangeTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		textRangeTable.setHeaderVisible(true);
+		textRangeTable.setLinesVisible(true);
 		btnIncludeSpans.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -76,10 +95,13 @@ public class SaltVisualizer extends DocumentGraphEditor {
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
+				updateView();
 				
 			}
 		});
+		
+		calculateSegments(graph);
+		
 
 		updateView();
 
@@ -110,6 +132,32 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		}
 	}
 	
+	private void calculateSegments(SDocumentGraph graph) {
+		textRangeTable.clearAll();
+		
+		List<SNode> roots = graph.getRoots();
+		if(roots != null) {
+			for(SNode r : roots) {
+				List<DataSourceSequence> overlappedDS = 
+						graph.getOverlappedDataSourceSequence(r, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
+				if(overlappedDS != null) {
+					for(DataSourceSequence seq : overlappedDS) {
+						if(seq.getDataSource() instanceof STextualDS) {
+							TableItem item = new TableItem(textRangeTable, SWT.NONE);
+							item.setText(seq.getDataSource().getName() + ": " + seq.getStart() + ".." + seq.getEnd());
+							Range<Long> textRange = Range.closedOpen(seq.getStart().longValue(), seq.getEnd().longValue());
+							item.setData(textRange);
+						}
+					}
+				}
+			}
+		}
+		
+		if(textRangeTable.getItemCount() > 0) {
+			textRangeTable.setSelection(0);
+		}
+	}
+	
 	private class Filter implements ExportFilter {
 
 		@Override
@@ -130,5 +178,4 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		}
 		
 	}
-
 }
