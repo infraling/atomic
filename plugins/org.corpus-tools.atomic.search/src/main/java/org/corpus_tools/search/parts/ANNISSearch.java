@@ -152,6 +152,8 @@ public class ANNISSearch {
 						TableColumn c = new TableColumn(table, SWT.NULL);
 						c.setText("" + i);
 					}
+					
+					int displayMatchCount = 0;
 					for (Match m : result.getMatches()) {
 						TableItem item = new TableItem(table, SWT.NULL);
 						int nodeIdx = 0;
@@ -160,13 +162,21 @@ public class ANNISSearch {
 							item.setText(nodeIdx, path.get(path.size()-1) + " (" + u.getFragment() + ")");
 							nodeIdx++;
 						}
+						displayMatchCount++;
+						if(displayMatchCount > 10000) {
+							break;
+						}
 					}
 
 					for (int i = 0; i < maxNumNodes; i++) {
 						table.getColumn(i).pack();
 					}
-					lblStatus.setText("Found " + result.getMatches().size() + " matches.");
-					
+					long matchCount = result.getMatches().size();
+					if(matchCount > 10000) {
+						lblStatus.setText("Found " + matchCount + " matches. (Only displaying first 10.000 matches)");
+					} else {
+						lblStatus.setText("Found " + matchCount + " matches.");
+					}
 				});
 				
 				return Status.OK_STATUS;
