@@ -133,7 +133,7 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		try {
 			tmpDir = Files.createTempDirectory("atomic-visjs-visualizer-");
 
-			VisJsVisualizer visjs = new VisJsVisualizer(getGraph().getDocument(), new Filter(), null);
+			CustomVisJsVisualizer visjs = new CustomVisJsVisualizer(getGraph().getDocument(), new Filter(), null);
 			
 			visjs.visualize(org.eclipse.emf.common.util.URI.createFileURI(tmpDir.toString()));
 			
