@@ -2,6 +2,8 @@ package org.corpus_tools.search.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 import org.corpus_tools.graphannis.API;
 import org.corpus_tools.graphannis.API.CorpusStorageManager;
@@ -23,9 +25,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.emf.common.util.URI;
+
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
 import annis.service.objects.Match;
 import annis.service.objects.MatchGroup;
@@ -43,8 +49,8 @@ public class SearchService {
 		this.corpusManager  = new CorpusStorageManager(corpusIndexLocation.getAbsolutePath());
 	}
 	
-	private void handleResource(IResource res, String projectName, IProgressMonitor monitor) throws CoreException {
-		
+	private void findDocumentsRecursive(IResource res, String projectName, 
+			IProgressMonitor monitor, Collection<URI> docList) throws CoreException {
 		if(monitor.isCanceled()) {
 			return;
 		}
@@ -53,15 +59,11 @@ public class SearchService {
 			IFile file = (IFile) res;
 			if("salt".equals(file.getFileExtension()) && !"saltProject.salt".equals(file.getName())) {
 				URI location = URI.createURI(file.getLocationURI().toASCIIString());
-
-				monitor.setTaskName("Importing document " + location.lastSegment());
-				SDocumentGraph docGraph = SaltUtil.loadDocumentGraph(location);
-				
-				addDocument(projectName, docGraph);
+				docList.add(location);
 			} 
 		} else if (res instanceof IContainer ){
 			for (IResource child : ((IContainer) res).members()) {
-				handleResource(child, projectName, monitor);
+				findDocumentsRecursive(child, projectName, monitor, docList);
 			}
 		}
 	}
@@ -75,18 +77,35 @@ public class SearchService {
 				// get all documents of workspace
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
 				IWorkspaceRoot root = workspace.getRoot();
+				
+				Multimap<String, URI> docList = LinkedHashMultimap.create();
+				
+				SubMonitor monitorDelete = SubMonitor.convert(monitor, root.getProjects().length);
+				monitorDelete.setTaskName("Deleting old corpora from index");
+				int indexProjects = 0;
 				for(IProject p : root.getProjects()) {
-					// delete all old documents first
-					monitor.setTaskName("Deleting corpus " + p.getName());
-					
+					// delete all old documents first					
 					deleteCorpus(p.getName());
 
 					try {
-						handleResource(p, p.getName(), monitor);
+						findDocumentsRecursive(p, p.getName(), monitor, docList.get(p.getName()));
 					} catch (CoreException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					monitorDelete.worked(indexProjects++);
+				}
+				
+				SubMonitor monitorImport = SubMonitor.convert(monitor, docList.size());
+				monitorImport.setTaskName("Indexing documents");
+				// index each document
+				int indexDocs = 0;
+				for(Map.Entry<String, URI> e : docList.entries()) {
+					SDocumentGraph docGraph = SaltUtil.loadDocumentGraph(e.getValue());
+					
+					addDocument(e.getKey(), docGraph);
+					
+					monitorImport.worked(indexDocs++);
 				}
 				
 				return Status.OK_STATUS;
