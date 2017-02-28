@@ -72,7 +72,6 @@ public class SearchService {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				
-				
 				// get all documents of workspace
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
 				IWorkspaceRoot root = workspace.getRoot();

@@ -21,14 +21,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.UISynchronize;
-import org.eclipse.e4.ui.workbench.IWorkbench;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowData;
@@ -36,6 +33,8 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -115,27 +114,23 @@ public class ANNISSearch {
 		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent e) {
-				
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				if(table.getSelectionCount() > 0) {
-					openMatchInEditor(table.getSelection()[0]);
-				}
-				
-			}
-		});
+		
+		Menu menu = new Menu(table);
+		table.setMenu(menu);
+		
+		MenuItem mntmOpenWithDefault = new MenuItem(menu, SWT.NONE);
+		mntmOpenWithDefault.setText("Open with default editor");
+		mntmOpenWithDefault.addSelectionListener(new OpenMenuListener(null));
+		
+		// find each available editors and add an entry for the editor
+		IEditorDescriptor[] editors = PlatformUI.getWorkbench().getEditorRegistry().getEditors("anything.salt");
+		for(int i=0; i < editors.length; i++) {
+			MenuItem mntOpenWithEditor = new MenuItem(menu, SWT.NONE);
+			mntOpenWithEditor.setText("Open with " + editors[i].getLabel());
+			mntOpenWithEditor.addSelectionListener(new OpenMenuListener(editors[i]));
+		}
+		
+		
 		lblStatus = new Label(parent, SWT.NONE);
 		lblStatus.setAlignment(SWT.RIGHT);
 		lblStatus.setLayoutData(BorderLayout.NORTH);
@@ -167,37 +162,7 @@ public class ANNISSearch {
 		});
 	}
 	
-	private void openMatchInEditor(Widget selected) {
-		
-		if(selected instanceof TableItem) {
-			TableItem selectedItem = (TableItem) selected;
-			if(selectedItem.getData() instanceof Match) {
-				Match m = (Match) selectedItem.getData();
-				// get first match (which already contains the corpus name and document name)
-				List<String> path = pathSplitter.splitToList(m.getSaltIDs().get(0).getPath());
-				// find the document in the Workspace
-				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				IWorkspaceRoot root = workspace.getRoot();
-				
-				for(IProject p : root.getProjects()) {
-					if(path.get(0).equals(p.getName())) {
-						try {
-							IFile matchingDoc = searchDocumentInResource(p, path.get(path.size()-1));
-							if(matchingDoc != null) {
-								IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(matchingDoc.getName());
-								page.openEditor(new FileEditorInput(matchingDoc), desc.getId());
-							}
-							
-						} catch (CoreException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						break;
-					}
-				}
-			}
-		}
-	}
+	
 	
 	private IFile searchDocumentInResource(IResource res, String documentName) throws CoreException {
 		
@@ -276,6 +241,7 @@ public class ANNISSearch {
 							nodeIdx++;
 						}
 						
+						
 						displayMatchCount++;
 						if(displayMatchCount > 10000) {
 							break;
@@ -298,8 +264,69 @@ public class ANNISSearch {
 		};
 		j.setUser(true);
 		j.setPriority(Job.LONG);
-		j.schedule();
+		j.schedule();	
+	}
+	
+	private class OpenMenuListener implements SelectionListener {
+		
+		private final IEditorDescriptor editorDesc;
+
+		public OpenMenuListener(IEditorDescriptor editorDesc) {
+			this.editorDesc = editorDesc;
+		}
+		
+		private void openMatchInEditor(Widget selected) {
+			
+			if(selected instanceof TableItem) {
+				TableItem selectedItem = (TableItem) selected;
+				if(selectedItem.getData() instanceof Match) {
+					Match m = (Match) selectedItem.getData();
+					// get first match (which already contains the corpus name and document name)
+					List<String> path = pathSplitter.splitToList(m.getSaltIDs().get(0).getPath());
+					// find the document in the Workspace
+					IWorkspace workspace = ResourcesPlugin.getWorkspace();
+					IWorkspaceRoot root = workspace.getRoot();
+					
+					for(IProject p : root.getProjects()) {
+						if(path.get(0).equals(p.getName())) {
+							try {
+								IFile matchingDoc = searchDocumentInResource(p, path.get(path.size()-1));
+								if(matchingDoc != null) {
+									
+									if(editorDesc == null) {
+										// use the default editor
+										IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(matchingDoc.getName());
+										page.openEditor(new FileEditorInput(matchingDoc), desc.getId());
+									} else {
+										page.openEditor(new FileEditorInput(matchingDoc), editorDesc.getId());
+									}
+								}
+								
+							} catch (CoreException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			if(table.getSelectionCount() > 0) {
+				openMatchInEditor(table.getSelection()[0]);
+			}
+			
+		}
+
+		@Override
+		public void widgetDefaultSelected(SelectionEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
-
+	
 }
