@@ -101,9 +101,22 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		});
 		
 		calculateSegments(graph);
-		
-
 		updateView();
+		
+		textRangeTable.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateView();
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				updateView();
+				
+			}
+		});
 
 	}
 
@@ -145,17 +158,20 @@ public class SaltVisualizer extends DocumentGraphEditor {
 						if(seq.getDataSource() instanceof STextualDS) {
 							TableItem item = new TableItem(textRangeTable, SWT.NONE);
 							item.setText(seq.getDataSource().getName() + ": " + seq.getStart() + ".." + seq.getEnd());
-							Range<Long> textRange = Range.closedOpen(seq.getStart().longValue(), seq.getEnd().longValue());
-							item.setData(textRange);
+							item.setData("range", Range.closedOpen(seq.getStart().longValue(), 
+									seq.getEnd().longValue()));
+							item.setData("text", seq.getDataSource());
 						}
 					}
 				}
 			}
 		}
 		
-		if(textRangeTable.getItemCount() > 0) {
-			textRangeTable.setSelection(0);
+		for(int i=0; i < textRangeTable.getItemCount(); i++) {
+			textRangeTable.select(i);
 		}
+		
+
 	}
 	
 	private class Filter implements ExportFilter {
@@ -163,12 +179,39 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		@Override
 		public boolean includeNode(SNode node) {
 			
-			if(node instanceof SSpan) {
-				return btnIncludeSpans.getSelection();
+			boolean include = false;
+			
+			
+			// check if the node covers a currently selected range
+			@SuppressWarnings("rawtypes")
+			List<DataSourceSequence> seqList = getGraph().getOverlappedDataSourceSequence(node, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
+			if(seqList != null) {
+				outerLoop:
+				for(DataSourceSequence seq : seqList ) {
+					
+					Range<Long> nodeRange = Range.closedOpen(seq.getStart().longValue(), seq.getEnd().longValue());
+					
+					for(TableItem item : textRangeTable.getSelection()) {
+						
+						Range<Long> itemRange = (Range<Long>) item.getData("range");
+						STextualDS itemText = (STextualDS) item.getData("text");
+						
+						if(itemText == seq.getDataSource()
+								&& nodeRange.isConnected(itemRange)) {
+							include = true;
+							break outerLoop;
+						}
+					
+					}
+				
+				}
 			}
 			
-			// default to true
-			return true;
+			if(node instanceof SSpan) {
+				include = include && btnIncludeSpans.getSelection();
+			}
+			
+			return include;
 		}
 
 		@Override
