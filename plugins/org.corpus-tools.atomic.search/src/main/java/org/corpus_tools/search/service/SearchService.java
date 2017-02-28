@@ -44,6 +44,11 @@ public class SearchService {
 	}
 	
 	private void handleResource(IResource res, String projectName, IProgressMonitor monitor) throws CoreException {
+		
+		if(monitor.isCanceled()) {
+			return;
+		}
+		
 		if(res instanceof IFile) {
 			IFile file = (IFile) res;
 			if("salt".equals(file.getFileExtension()) && !"saltProject.salt".equals(file.getName())) {
