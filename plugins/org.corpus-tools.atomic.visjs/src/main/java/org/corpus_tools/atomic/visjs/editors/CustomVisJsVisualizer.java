@@ -587,18 +587,16 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 
 			xmlWriter.writeStartElement(TAG_SCRIPT);
 			xmlWriter.writeAttribute(ATT_TYPE, "text/javascript");
-			xmlWriter.writeCharacters(NEWLINE + "function frameSize() {" + NEWLINE + "$(document).ready(function() {"
-					+ NEWLINE + "function elementResize() {" + NEWLINE + "var browserWidth = $(window).width()*0.98;"
-					+ NEWLINE + "document.getElementById('mynetwork').style.width = browserWidth;" + NEWLINE + "}"
-					+ NEWLINE + "elementResize();" + NEWLINE + "$(window).bind(\"resize\", function(){" + NEWLINE
-					+ "elementResize();" + NEWLINE + "});" + NEWLINE + "});" + NEWLINE + "}" + NEWLINE);
-			xmlWriter.writeEndElement();
-			xmlWriter.writeCharacters(NEWLINE);
-
-			xmlWriter.writeStartElement(TAG_SCRIPT);
-			xmlWriter.writeAttribute(ATT_TYPE, "text/javascript");
-			xmlWriter.writeCharacters(NEWLINE + "function start(){" + NEWLINE + "loadSaltObjectAndDraw();" + NEWLINE
-					+ "frameSize();" + NEWLINE + "}" + NEWLINE + "var nodesJson = [];" + NEWLINE + "var edgesJson = [];"
+			xmlWriter.writeCharacters(NEWLINE 
+					+ "function elementResize() {" + NEWLINE
+					+ "  var browserWidth = $(window).width()*0.98;" + NEWLINE
+					+ "  document.getElementById('mynetwork').style.width = browserWidth;" + NEWLINE
+					+ "}" + NEWLINE + NEWLINE
+					+ "$(document).ready(function() {" + NEWLINE
+					+ "  elementResize()" +  NEWLINE
+					+ "  loadSaltObjectAndDraw();" + NEWLINE
+					+ "  $(window).bind(\"resize\", elementResize);" + NEWLINE
+					+ "});" + NEWLINE + "var nodesJson = [];" + NEWLINE + "var edgesJson = [];"
 					+ NEWLINE + "var network = null;" + NEWLINE + "function loadSaltObjectAndDraw() {" + NEWLINE
 					+ "var nodesJson = " + NEWLINE);
 			xmlWriter.flush();
@@ -697,7 +695,6 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 			xmlWriter.writeCharacters(NEWLINE);
 
 			xmlWriter.writeStartElement(TAG_BODY);
-			xmlWriter.writeAttribute("onload", "start();");
 			xmlWriter.writeCharacters(NEWLINE);
 
 			if (withPhysics == true) {
