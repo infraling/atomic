@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1488211932">
+<target name="Atomic Target Platform" sequenceNumber="1488298456">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
@@ -9,6 +9,7 @@
       <unit id="org.eclipse.help.feature.group" version="2.2.1.v20161124-1400"/>
       <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.300.v20161122-1740"/>
       <unit id="org.eclipse.core.runtime" version="3.12.0.v20160606-1342"/>
+      <unit id="org.eclipse.ui.workbench" version="3.108.2.v20161025-2029"/>
       <unit id="org.eclipse.ui.navigator" version="3.6.101.v20161006-1120"/>
       <unit id="org.eclipse.ui.ide" version="3.12.2.v20161115-1450"/>
       <unit id="org.eclipse.ui.ide.application" version="1.1.101.v20160829-0827"/>
@@ -63,7 +64,7 @@
       <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.e4.tools.model.spy" version="0.12.0.v20160114-2207"/>
+      <unit id="org.eclipse.e4.tools.spy" version="0.18.0.v20160520-1109"/>
       <repository location="http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/"/>
     </location>
   </locations>
