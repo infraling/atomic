@@ -148,18 +148,36 @@ public class ANNISSearch {
 						maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
 					}
 					
+					// add columns for corpus and document name
+					TableColumn corpusColumn = new TableColumn(table, SWT.NULL);
+					corpusColumn.setText("corpus");
+					
+					TableColumn documentColumn = new TableColumn(table, SWT.NULL);
+					documentColumn.setText("document");
+					
 					for (int i = 1; i <= maxNumNodes; i++) {
 						TableColumn c = new TableColumn(table, SWT.NULL);
-						c.setText("" + i);
+						c.setText("node #" + i);
 					}
 					
 					int displayMatchCount = 0;
 					for (Match m : result.getMatches()) {
+
 						TableItem item = new TableItem(table, SWT.NULL);
+						
+						if(!m.getSaltIDs().isEmpty()) {
+							List<String> path = Splitter.on('/').omitEmptyStrings().trimResults().splitToList(
+									m.getSaltIDs().iterator().next().getPath());
+							item.setText(0, path.get(0)); // corpus
+							item.setText(1, path.get(path.size()-1)); // document
+						} else {
+							item.setText(0, "<unknown>");
+							item.setText(1, "<unknown>");
+						}
+							
 						int nodeIdx = 0;
 						for (URI u : m.getSaltIDs()) {
-							List<String> path = Splitter.on('/').trimResults().splitToList(u.getPath());
-							item.setText(nodeIdx, path.get(path.size()-1) + " (" + u.getFragment() + ")");
+							item.setText(2+nodeIdx, u.getFragment());
 							nodeIdx++;
 						}
 						displayMatchCount++;
@@ -168,7 +186,7 @@ public class ANNISSearch {
 						}
 					}
 
-					for (int i = 0; i < maxNumNodes; i++) {
+					for (int i = 0; i < table.getColumnCount(); i++) {
 						table.getColumn(i).pack();
 					}
 					long matchCount = result.getMatches().size();
