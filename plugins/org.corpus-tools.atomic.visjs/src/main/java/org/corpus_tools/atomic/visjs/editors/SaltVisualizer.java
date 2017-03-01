@@ -3,16 +3,18 @@ package org.corpus_tools.atomic.visjs.editors;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.FileUtils;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
+import org.corpus_tools.atomic.api.editors.SaltNodeSelectable;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SPointingRelation;
@@ -29,6 +31,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.DisposeEvent;
@@ -44,7 +47,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
@@ -52,10 +57,8 @@ import com.google.common.collect.Range;
 import com.google.common.collect.TreeMultimap;
 
 import swing2swt.layout.BorderLayout;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 
-public class SaltVisualizer extends DocumentGraphEditor {
+public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelectable {
 
 	private Path tmpDir;
 	private Browser browser;
@@ -187,6 +190,72 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		});
 
 	}
+	
+	@Override
+	public void setSelection(List<String> nodeIDs) {
+		
+		// sort the available segments by their size (smallest first)
+		List<Integer> segmentIdx = new LinkedList<>();
+		for(int i=0; i < textRangeTable.getItemCount(); i++) {
+			segmentIdx.add(i);
+		}
+		segmentIdx.sort(new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				TableItem item1 = textRangeTable.getItem(o1);
+				TableItem item2 = textRangeTable.getItem(o2);
+				
+				Range<Long> range1 = (Range<Long>) item1.getData("range");
+				Range<Long> range2 = (Range<Long>) item2.getData("range");
+				
+				return ComparisonChain.start()
+						.compare(range1.upperEndpoint() - range1.lowerEndpoint(), range2.upperEndpoint() - range2.lowerEndpoint())
+						.result();
+			}
+		});
+		
+		Set<Integer> selectedIdx = new HashSet<>();
+		
+		// find all segments that include the nodes
+		for(String id : nodeIDs) {
+			SNode n = getGraph().getNode(id);
+			if(n != null) {
+				
+				List<DataSourceSequence> overlappedDS = graph.getOverlappedDataSourceSequence(n,
+						SALT_TYPE.STEXT_OVERLAPPING_RELATION);
+				if (overlappedDS != null) {
+					for (DataSourceSequence seq : overlappedDS) {
+						if (seq.getDataSource() instanceof STextualDS) {
+							Range<Long> selectedNodeRange = Range.closedOpen(seq.getStart().longValue(), seq.getEnd().longValue());
+							
+							for(int idx : segmentIdx) {
+								Range<Long> rangeSegment = (Range<Long>) textRangeTable.getItem(idx).getData("range");
+								if(rangeSegment.encloses(selectedNodeRange)) {
+									selectedIdx.add(idx);
+									break;
+								}
+							}
+
+						}
+					}
+				}
+			}
+		}
+		
+		if(selectedIdx.isEmpty()) {
+			// select all segments since we could not find out which are overlapping
+			textRangeTable.selectAll();
+		} else {
+			// unselect all old segments and only select the overlapping ones
+			textRangeTable.deselectAll();
+			for(int idx : selectedIdx) {
+				textRangeTable.select(idx);
+			}
+		}
+		updateView();
+		
+		
+	}
 
 	private void updateView() {
 
@@ -259,13 +328,23 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		}
 	}
 
-	private static class RangeComparator<C extends Comparable> implements Comparator<Range<C>> {
+	private static class RangeStartComparator<C extends Comparable> implements Comparator<Range<C>> {
 
 		@Override
 		public int compare(Range<C> o1, Range<C> o2) {
 
 			return ComparisonChain.start().compare(o1.lowerEndpoint(), o2.lowerEndpoint())
 					.compare(o1.upperBoundType(), o2.upperBoundType()).result();
+		}
+	}
+	private static class RangeSizeComparator implements Comparator<Range<Long>> {
+
+		@Override
+		public int compare(Range<Long> o1, Range<Long> o2) {
+
+			return ComparisonChain.start()
+					.compare(o1.upperEndpoint() - o1.lowerEndpoint(), o2.upperEndpoint() - o2.lowerEndpoint())
+					.result();
 		}
 	}
 
@@ -275,7 +354,7 @@ public class SaltVisualizer extends DocumentGraphEditor {
 		ExportFilter currentFilter = new RootFilter();
 
 		Multimap<STextualDS, Range<Long>> sortedDS = TreeMultimap.create(new STextualDSComparator(),
-				new RangeComparator<>());
+				new RangeStartComparator<>());
 
 		List<SNode> roots = graph.getRoots();
 		if (roots != null) {

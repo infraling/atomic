@@ -1,11 +1,13 @@
 package org.corpus_tools.search.parts;
 
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.corpus_tools.atomic.api.editors.SaltNodeSelectable;
 import org.corpus_tools.search.service.SearchService;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -41,6 +43,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
@@ -280,9 +283,9 @@ public class ANNISSearch {
 			if(selected instanceof TableItem) {
 				TableItem selectedItem = (TableItem) selected;
 				if(selectedItem.getData() instanceof Match) {
-					Match m = (Match) selectedItem.getData();
+					Match match = (Match) selectedItem.getData();
 					// get first match (which already contains the corpus name and document name)
-					List<String> path = pathSplitter.splitToList(m.getSaltIDs().get(0).getPath());
+					List<String> path = pathSplitter.splitToList(match.getSaltIDs().get(0).getPath());
 					// find the document in the Workspace
 					IWorkspace workspace = ResourcesPlugin.getWorkspace();
 					IWorkspaceRoot root = workspace.getRoot();
@@ -293,12 +296,22 @@ public class ANNISSearch {
 								IFile matchingDoc = searchDocumentInResource(p, path.get(path.size()-1));
 								if(matchingDoc != null) {
 									
+									IEditorPart newEditor = null;
 									if(editorDesc == null) {
 										// use the default editor
 										IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(matchingDoc.getName());
-										page.openEditor(new FileEditorInput(matchingDoc), desc.getId());
+										newEditor = page.openEditor(new FileEditorInput(matchingDoc), desc.getId());
 									} else {
-										page.openEditor(new FileEditorInput(matchingDoc), editorDesc.getId());
+										 newEditor = page.openEditor(new FileEditorInput(matchingDoc), editorDesc.getId());
+										
+									}
+									
+									if(newEditor instanceof SaltNodeSelectable) {
+										List<String> selectedNodeNames = new LinkedList<>();
+										for(URI uri : match.getSaltIDs()) {
+											selectedNodeNames.add(uri.toASCIIString());
+										}
+										((SaltNodeSelectable) newEditor).setSelection(selectedNodeNames);
 									}
 								}
 								
