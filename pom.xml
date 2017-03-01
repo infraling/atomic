@@ -6,29 +6,34 @@
 	<packaging>pom</packaging>
 	<name>Atomic parent project</name>
 	<description>Includes meta files such as parent POM, launch configs, target def, etc.</description>
+
 	<properties>
-		<tycho-version>1.0.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<tycho.version>1.0.0</tycho.version>
+		<maven-site-plugin.version>3.6</maven-site-plugin.version>
+		<maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
+		<exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
 	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
 				<!-- enable tycho version -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-versions-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 			</plugin>
 			<plugin>
 				<!-- enable tycho build extension -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 				<configuration>
 					<resolver>p2</resolver>
 					<target>
@@ -121,12 +126,13 @@
 		</profile>
 	</profiles>
 	<modules>
-		<module>doc/org.corpus_tools.atomic.doc</module>
+		<!-- Documentation is built from within the module itself -->
+		<!-- <module>docs/org.corpus_tools.atomic.doc</module> -->
 		<module>plugins/org.corpus-tools.atomic</module>
 		<module>plugins/org.corpus-tools.atomic.tokeneditor</module>
 		<module>plugins/org.corpus-tools.atomic.visjs</module>
 		<module>plugins/org.corpus-tools.atomic.search</module>
-		<module>tests/org.corpus_tools.atomic.tests.gui</module>
+		<module>tests/org.corpus-tools.atomic.tests.gui</module>
 		<module>repository</module>
 		<module>repository-experimental</module>
 		<module>target-definition</module>
