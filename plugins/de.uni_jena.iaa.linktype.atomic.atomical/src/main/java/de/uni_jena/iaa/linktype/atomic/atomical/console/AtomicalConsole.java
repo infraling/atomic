@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SDominanceRelation;
@@ -58,8 +59,7 @@ import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
 public class AtomicalConsole extends IOConsole implements Runnable, ISelectionProvider {
 
 	private IOConsoleOutputStream out;
-	private SDocumentGraph graph;
-	private IEditorPart editor;
+	private DocumentGraphEditor docGraphEditor;
 	private String edgeSwitch;
 	private IOConsoleOutputStream err;
 	private ListenerList listeners = new ListenerList();
@@ -123,10 +123,8 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 			return;
 		}
 
-		try {
-			editor = getEditor();
-		}
-		catch (NullPointerException e) {
+		DocumentGraphEditor editor = getEditor();
+		if(editor == null) {
 			out.write("No active editor. Command will be ignored.\n");
 		}
 	}
@@ -438,9 +436,7 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 
 	private void addEditorListener() {
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(new IPartListener() {
-
-			AtomicalConsole console = AtomicalConsole.this;
-
+			
 			@Override
 			public void partActivated(IWorkbenchPart part) {
 				activateAtomicalForEditorInput(part);
@@ -450,6 +446,12 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 			 * @param part
 			 */
 			private void activateAtomicalForEditorInput(IWorkbenchPart part) {
+				
+				if(part instanceof DocumentGraphEditor) {
+					docGraphEditor = (DocumentGraphEditor) part;	
+				} else {
+					docGraphEditor = null;
+				}
 //				if (part instanceof GraphEditor) {
 //					IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 //					EditPartViewer editPartViewer = ((GraphEditor) editor).getEditPartViewer();
@@ -517,32 +519,18 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 	/**
 	 * @return the graph
 	 */
-	public SDocumentGraph getGraph() {
-		return graph;
+	public synchronized SDocumentGraph getGraph() {
+		return docGraphEditor == null ? null : docGraphEditor.getGraph();
 	}
 
-	/**
-	 * @param graph
-	 *            the graph to set
-	 */
-	public void setGraph(SDocumentGraph graph) {
-		this.graph = graph;
-	}
 
 	/**
 	 * @return the editor
 	 */
-	public IEditorPart getEditor() {
-		return editor;
+	public DocumentGraphEditor getEditor() {
+		return docGraphEditor;
 	}
 
-	/**
-	 * @param editor
-	 *            the editor to set
-	 */
-	public void setEditor(IEditorPart editor) {
-		this.editor = editor;
-	}
 
 	/**
 	 * @return the edgeSwitch
