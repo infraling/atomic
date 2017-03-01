@@ -9,6 +9,7 @@
   </parent>
   <artifactId>org.corpus_tools.atomic.doc</artifactId>
   <name>Atomic Documentation</name>
+  <description>Developer documentation and API</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <site.path>doc-snapshot</site.path>
