@@ -107,7 +107,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				updateView();
+				updateView(true);
 			}
 
 			@Override
@@ -123,7 +123,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				updateView();
+				updateView(true);
 				
 			}
 			
@@ -140,7 +140,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				updateView();
+				updateView(true);
 			}
 		});
 
@@ -160,18 +160,18 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				updateView();
+				updateView(false);
 
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				updateView();
+				updateView(false);
 
 			}
 		});
 
-		updateView();
+		updateView(true);
 
 		parent.addDisposeListener(new DisposeListener() {
 
@@ -191,9 +191,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 	}
 	
-	@Override
-	public void setSelection(List<String> nodeIDs) {
-		
+	private Set<Integer> getSelectedSegmentIdxForNodes(List<String> nodeIDs) {
 		// sort the available segments by their size (smallest first)
 		List<Integer> segmentIdx = new LinkedList<>();
 		for(int i=0; i < textRangeTable.getItemCount(); i++) {
@@ -242,6 +240,14 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 			}
 		}
 		
+		return selectedIdx;
+	}
+	
+	@Override
+	public void setSelection(List<String> nodeIDs) {
+		
+		Set<Integer> selectedIdx = getSelectedSegmentIdxForNodes(nodeIDs); 
+		
 		if(selectedIdx.isEmpty()) {
 			// select all segments since we could not find out which are overlapping
 			textRangeTable.selectAll();
@@ -252,27 +258,37 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 				textRangeTable.select(idx);
 			}
 		}
-		updateView();
+		updateView(false);
 		
 		
 	}
 
-	private void updateView() {
+	private void updateView(boolean recalculateSegments) {
 
-		// store the old segment selection
-		int[] oldSelectionIdx = textRangeTable.getSelectionIndices();
-		
-		calculateSegments(getGraph());
-		
-		boolean selectedSomeOld = false;
-		for(int idx : oldSelectionIdx) {
-			if(idx >= 0 && idx < textRangeTable.getItemCount()) {
-				textRangeTable.select(idx);
-				selectedSomeOld = true;
+		if(recalculateSegments) {
+			// store the old segment selection
+			List<Range<Long>> oldSelectedRanges = new LinkedList<>();
+			for(TableItem item : textRangeTable.getSelection()) {
+				oldSelectedRanges.add((Range<Long>) item.getData("range"));
 			}
-		}
-		if(!selectedSomeOld && textRangeTable.getItemCount() > 0) {
-			textRangeTable.setSelection(0);
+			
+			calculateSegments(getGraph());
+			
+			textRangeTable.deselectAll();
+			
+			boolean selectedSomeOld = false;
+			for(Range<Long> oldRange : oldSelectedRanges) {
+				for(int idx=0; idx < textRangeTable.getItemCount(); idx++) {
+					Range<Long> itemRange = (Range<Long>) textRangeTable.getItem(idx).getData("range");
+					if(itemRange.encloses(oldRange)) {
+						textRangeTable.select(idx);
+						selectedSomeOld = true;
+					}
+				}
+			}
+			if(!selectedSomeOld && textRangeTable.getItemCount() > 0) {
+				textRangeTable.setSelection(0);
+			}
 		}
 		
 		browser.setText("please wait while visualization is loading...");
