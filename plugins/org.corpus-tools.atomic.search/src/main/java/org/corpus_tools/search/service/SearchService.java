@@ -130,7 +130,7 @@ public class SearchService {
 	
 	public void addDocument(String corpusName, SDocumentGraph docGraph) {
 		CorpusInfo info =  corpusManager.info("pcc2");
-		System.out.print(info.memoryUsageInBytes());
+		
 		SaltImport saltImport = new SaltImport();
 		saltImport.map(docGraph);
 		
