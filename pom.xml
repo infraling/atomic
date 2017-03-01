@@ -132,7 +132,7 @@
 		<module>plugins/org.corpus-tools.atomic.tokeneditor</module>
 		<module>plugins/org.corpus-tools.atomic.visjs</module>
 		<module>plugins/org.corpus-tools.atomic.search</module>
-		<module>tests/org.corpus-tools.atomic.tests.gui</module>
+		<module>tests/org.corpus_tools.atomic.tests.gui</module>
 		<module>repository</module>
 		<module>repository-experimental</module>
 		<module>target-definition</module>
