@@ -164,8 +164,54 @@
               </execution>
             </executions>
           </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>eclipse</id>
+        <build>
+          <plugins>
           <!-- upload the generated documentation to GitHub -->
           <!--<plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-scm-publish-plugin</artifactId><executions><execution><id>scm-publish</id><phase>deploy</phase><goals><goal>publish-scm</goal></goals></execution></executions></plugin>-->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${exec-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>${basedir}/src/main/doxygen/clean-toc.sh</executable>
+              <arguments>
+                <argument>${basedir}/target/doxygen/doc-snapshot/toc.xml</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-resources</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${basedir}/../../plugins/org.corpus-tools.atomic/doc/help/</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.build.directory}/doxygen/doc-snapshot</directory>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
