@@ -1,6 +1,10 @@
 // use 'mvn antlr4:antlr4' to re-generate the parser code
 grammar ConsoleCommand;
 
+options
+{
+  language=Java;
+}
 
 
 start
