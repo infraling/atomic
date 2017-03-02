@@ -17,7 +17,7 @@ public class ConsoleCommandParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, ID=6, NEWLINE=7, STR=8, WS=9;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, WS=6, ID=7, NEWLINE=8, STR=9;
 	public static final int
 		RULE_start = 0, RULE_command = 1, RULE_qname = 2;
 	public static final String[] ruleNames = {
@@ -28,7 +28,7 @@ public class ConsoleCommandParser extends Parser {
 		null, "'a'", "':'", "'help'", "'clear'", "'::'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, null, "ID", "NEWLINE", "STR", "WS"
+		null, null, null, null, null, null, "WS", "ID", "NEWLINE", "STR"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -339,13 +339,13 @@ public class ConsoleCommandParser extends Parser {
 		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\13#\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\3\2\3\2\3\2\3\2\3\2\3\3\3\3\6\3\20\n\3\r\3\16\3\21\3\3\3\3"+
 		"\3\3\5\3\27\n\3\3\3\3\3\5\3\33\n\3\3\4\3\4\3\4\3\4\5\4!\n\4\3\4\2\2\5"+
-		"\2\4\6\2\2$\2\b\3\2\2\2\4\32\3\2\2\2\6 \3\2\2\2\b\t\5\4\3\2\t\n\7\t\2"+
-		"\2\n\13\3\2\2\2\13\f\7\2\2\3\f\3\3\2\2\2\r\17\7\3\2\2\16\20\7\b\2\2\17"+
+		"\2\4\6\2\2$\2\b\3\2\2\2\4\32\3\2\2\2\6 \3\2\2\2\b\t\5\4\3\2\t\n\7\n\2"+
+		"\2\n\13\3\2\2\2\13\f\7\2\2\3\f\3\3\2\2\2\r\17\7\3\2\2\16\20\7\t\2\2\17"+
 		"\16\3\2\2\2\20\21\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2\22\23\3\2\2\2\23"+
-		"\24\5\6\4\2\24\26\7\4\2\2\25\27\7\n\2\2\26\25\3\2\2\2\26\27\3\2\2\2\27"+
+		"\24\5\6\4\2\24\26\7\4\2\2\25\27\7\13\2\2\26\25\3\2\2\2\26\27\3\2\2\2\27"+
 		"\33\3\2\2\2\30\33\7\5\2\2\31\33\7\6\2\2\32\r\3\2\2\2\32\30\3\2\2\2\32"+
-		"\31\3\2\2\2\33\5\3\2\2\2\34\35\7\b\2\2\35\36\7\7\2\2\36!\7\b\2\2\37!\7"+
-		"\b\2\2 \34\3\2\2\2 \37\3\2\2\2!\7\3\2\2\2\6\21\26\32 ";
+		"\31\3\2\2\2\33\5\3\2\2\2\34\35\7\t\2\2\35\36\7\7\2\2\36!\7\t\2\2\37!\7"+
+		"\t\2\2 \34\3\2\2\2 \37\3\2\2\2!\7\3\2\2\2\6\21\26\32 ";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

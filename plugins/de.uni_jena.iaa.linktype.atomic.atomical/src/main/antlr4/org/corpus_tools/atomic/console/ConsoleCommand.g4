@@ -1,6 +1,8 @@
 // use 'mvn antlr4:antlr4' to re-generate the parser code
 grammar ConsoleCommand;
 
+WS : [ \t\r\n\u000C]+ -> skip;
+
 
 start
 	: (command NEWLINE) EOF # CommanChain
@@ -18,7 +20,9 @@ qname
    | name=ID
    ;
 
+
 ID  :	[a-zA-Z0-9_-]+;
 NEWLINE : [\r\n]+ ;
 STR : [^ \t\r\n\u000C]+ ;
-WS : [ \t\r\n\u000C]+ -> skip;
+
+

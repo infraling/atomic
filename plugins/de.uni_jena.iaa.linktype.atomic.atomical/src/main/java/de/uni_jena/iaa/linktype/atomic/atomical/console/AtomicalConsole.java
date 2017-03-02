@@ -7,23 +7,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.atn.ATNConfigSet;
-import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.lang3.tuple.Pair;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
@@ -33,7 +28,6 @@ import org.corpus_tools.atomic.console.ConsoleCommandLexer;
 import org.corpus_tools.atomic.console.ConsoleCommandParser;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.AnnotateCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.HelpCommandContext;
-import org.corpus_tools.atomic.console.ConsoleCommandParser.QnameContext;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SDominanceRelation;
@@ -57,7 +51,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-import de.uni_jena.iaa.linktype.atomic.atomical.parser.AtomicalAnnotationGraphParser;
 import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
 
 /**
