@@ -205,26 +205,6 @@ public class ConsoleCommandParser extends Parser {
 			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitDeleteElementCommand(this);
 		}
 	}
-	public static class NewSpanNodeCommanContext extends CommandContext {
-		public Token STR;
-		public List<Token> elements = new ArrayList<Token>();
-		public Anno_argsContext anno_args() {
-			return getRuleContext(Anno_argsContext.class,0);
-		}
-		public List<TerminalNode> STR() { return getTokens(ConsoleCommandParser.STR); }
-		public TerminalNode STR(int i) {
-			return getToken(ConsoleCommandParser.STR, i);
-		}
-		public NewSpanNodeCommanContext(CommandContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).enterNewSpanNodeComman(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitNewSpanNodeComman(this);
-		}
-	}
 	public static class HelpCommandContext extends CommandContext {
 		public HelpCommandContext(CommandContext ctx) { copyFrom(ctx); }
 		@Override
@@ -311,6 +291,26 @@ public class ConsoleCommandParser extends Parser {
 			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitAnnotateCommand(this);
 		}
 	}
+	public static class NewSpanNodeCommandContext extends CommandContext {
+		public Token STR;
+		public List<Token> elements = new ArrayList<Token>();
+		public Anno_argsContext anno_args() {
+			return getRuleContext(Anno_argsContext.class,0);
+		}
+		public List<TerminalNode> STR() { return getTokens(ConsoleCommandParser.STR); }
+		public TerminalNode STR(int i) {
+			return getToken(ConsoleCommandParser.STR, i);
+		}
+		public NewSpanNodeCommandContext(CommandContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).enterNewSpanNodeCommand(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitNewSpanNodeCommand(this);
+		}
+	}
 
 	public final CommandContext command() throws RecognitionException {
 		CommandContext _localctx = new CommandContext(_ctx, getState());
@@ -392,7 +392,7 @@ public class ConsoleCommandParser extends Parser {
 				}
 				break;
 			case T__3:
-				_localctx = new NewSpanNodeCommanContext(_localctx);
+				_localctx = new NewSpanNodeCommandContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(38);
@@ -406,8 +406,8 @@ public class ConsoleCommandParser extends Parser {
 						{
 						{
 						setState(39);
-						((NewSpanNodeCommanContext)_localctx).STR = match(STR);
-						((NewSpanNodeCommanContext)_localctx).elements.add(((NewSpanNodeCommanContext)_localctx).STR);
+						((NewSpanNodeCommandContext)_localctx).STR = match(STR);
+						((NewSpanNodeCommandContext)_localctx).elements.add(((NewSpanNodeCommandContext)_localctx).STR);
 						}
 						}
 						break;

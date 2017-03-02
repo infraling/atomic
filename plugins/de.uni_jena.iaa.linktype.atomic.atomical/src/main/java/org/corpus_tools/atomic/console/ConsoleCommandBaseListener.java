@@ -52,13 +52,13 @@ public class ConsoleCommandBaseListener implements ConsoleCommandListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx) { }
+	@Override public void enterNewSpanNodeCommand(ConsoleCommandParser.NewSpanNodeCommandContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx) { }
+	@Override public void exitNewSpanNodeCommand(ConsoleCommandParser.NewSpanNodeCommandContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -44,17 +44,17 @@ public interface ConsoleCommandListener extends ParseTreeListener {
 	 */
 	void exitNewStructureNodeCommand(ConsoleCommandParser.NewStructureNodeCommandContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code NewSpanNodeComman}
+	 * Enter a parse tree produced by the {@code NewSpanNodeCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.
 	 * @param ctx the parse tree
 	 */
-	void enterNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx);
+	void enterNewSpanNodeCommand(ConsoleCommandParser.NewSpanNodeCommandContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code NewSpanNodeComman}
+	 * Exit a parse tree produced by the {@code NewSpanNodeCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.
 	 * @param ctx the parse tree
 	 */
-	void exitNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx);
+	void exitNewSpanNodeCommand(ConsoleCommandParser.NewSpanNodeCommandContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code DeleteElementCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.

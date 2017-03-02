@@ -12,13 +12,15 @@ import org.corpus_tools.atomic.console.ConsoleCommandParser;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.Anno_argsContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.AnnotateCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.HelpCommandContext;
+import org.corpus_tools.atomic.console.ConsoleCommandParser.NewSpanNodeCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.NewStructureNodeCommandContext;
 import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SStructure;
 import org.corpus_tools.salt.common.SStructuredNode;
+import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SNode;
-import org.corpus_tools.salt.util.SaltUtil;
 import org.eclipse.emf.common.util.URI;
 
 class CommandExecutor extends ConsoleCommandBaseListener {
@@ -161,6 +163,24 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 			}
 			
 			SStructure newNode = graph.createStructure(children);
+			createAnno(ctx.anno_args(), newNode);
+			updateEditor();
+		}
+	}
+	
+	@Override
+	public void enterNewSpanNodeCommand(NewSpanNodeCommandContext ctx) {
+		if(checkValidEditor()) {
+			List<SToken> children = new LinkedList<>();
+			
+			for(Token e : ctx.elements) {
+				SNode c = getNodeByID(e.getText());
+				if(c != null && c instanceof SToken) {
+					children.add((SToken) c);
+				}
+			}
+			
+			SSpan newNode = graph.createSpan(children);
 			createAnno(ctx.anno_args(), newNode);
 			updateEditor();
 		}
