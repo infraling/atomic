@@ -48,7 +48,6 @@ location "http://corpus-tools.org/p2/" {
 	org.eclipse.aether.transport.http
 	org.eclipse.aether.util
 	com.github.hazendaz.javabean-tester
-	org.eclipse.collections.eclipse-collections
 	
 	org.corpus-tools.graphannis-api
 }

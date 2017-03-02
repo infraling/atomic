@@ -1,8 +1,9 @@
 package org.corpus_tools.atomic.tokeneditor.providers;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.corpus_tools.salt.common.SDocumentGraph;
-import org.eclipse.collections.impl.list.Interval;
+import org.corpus_tools.salt.common.SToken;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
 
 /**
@@ -21,7 +22,11 @@ public class TokenColumnHeaderDataProvider extends DefaultColumnHeaderDataProvid
 		 */
 		public TokenColumnHeaderDataProvider(SDocumentGraph graph) {
 			super(null);
-			this.tokenIndices = Interval.zeroTo(graph.getTokens().size() - 1);
+			List<SToken> tokens = graph.getTokens();
+			this.tokenIndices = new ArrayList<>(tokens.size());
+			for(int i=0; i < tokens.size(); i++) {
+				this.tokenIndices.add(i);
+			}
 		}
 
 		@Override
