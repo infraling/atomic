@@ -68,17 +68,17 @@ public interface ConsoleCommandListener extends ParseTreeListener {
 	 */
 	void exitDeleteElementCommand(ConsoleCommandParser.DeleteElementCommandContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code AddEdgeCommand}
+	 * Enter a parse tree produced by the {@code AddOrDeleteEdgeCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.
 	 * @param ctx the parse tree
 	 */
-	void enterAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx);
+	void enterAddOrDeleteEdgeCommand(ConsoleCommandParser.AddOrDeleteEdgeCommandContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code AddEdgeCommand}
+	 * Exit a parse tree produced by the {@code AddOrDeleteEdgeCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.
 	 * @param ctx the parse tree
 	 */
-	void exitAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx);
+	void exitAddOrDeleteEdgeCommand(ConsoleCommandParser.AddOrDeleteEdgeCommandContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code GroupUnderNewParentCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.

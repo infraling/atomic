@@ -76,13 +76,13 @@ public class ConsoleCommandBaseListener implements ConsoleCommandListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx) { }
+	@Override public void enterAddOrDeleteEdgeCommand(ConsoleCommandParser.AddOrDeleteEdgeCommandContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx) { }
+	@Override public void exitAddOrDeleteEdgeCommand(ConsoleCommandParser.AddOrDeleteEdgeCommandContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -9,12 +9,14 @@ import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
 import org.corpus_tools.atomic.console.ConsoleCommandBaseListener;
 import org.corpus_tools.atomic.console.ConsoleCommandParser;
+import org.corpus_tools.atomic.console.ConsoleCommandParser.AddOrDeleteEdgeCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.Anno_argsContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.AnnotateCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.DeleteElementCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.HelpCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.NewSpanNodeCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.NewStructureNodeCommandContext;
+import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SStructure;
@@ -22,6 +24,8 @@ import org.corpus_tools.salt.common.SStructuredNode;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SNode;
+import org.corpus_tools.salt.core.SRelation;
+import org.corpus_tools.salt.util.SaltUtil;
 import org.eclipse.emf.common.util.URI;
 
 class CommandExecutor extends ConsoleCommandBaseListener {
@@ -65,6 +69,7 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 			((SaltGraphUpdatable) editor).updateSDocumentGraph(graph);
 		}
 	}
+	
 	
 	private SAnnotation createAnno(Anno_argsContext args, SNode node) {
 		if(node != null && args != null) {
@@ -198,6 +203,59 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 				}
 			}
 			updateEditor();
+		}
+	}
+	
+	@Override
+	public void enterAddOrDeleteEdgeCommand(AddOrDeleteEdgeCommandContext ctx) {
+		if(checkValidEditor()) {
+			
+			SNode sourceNode = getNodeByID(ctx.source.getText());
+			SNode targetNode = getNodeByID(ctx.target.getText());
+			if(sourceNode != null && targetNode != null) {
+				
+				String ns = ctx.anno.ns == null ? null : ctx.anno.ns.getText();
+				String name = ctx.anno.name.getText();
+				String value = ctx.value == null ? null : ctx.value.getText();
+				
+				SALT_TYPE relType = SALT_TYPE.SPOINTING_RELATION;
+				switch(ctx.type.getText()) {
+				case "-d":
+					relType = SALT_TYPE.SDOMINANCE_RELATION;
+					break;
+				case "-p":
+					relType = SALT_TYPE.SPOINTING_RELATION;
+					break;
+				case "-r":
+					relType = SALT_TYPE.SSPANNING_RELATION;
+					break;
+				case "-o":
+					relType = SALT_TYPE.SORDER_RELATION;
+					break;
+				}
+				
+				if(value == null) {
+					// delete all edges of the specified type and with a matching annotation between both nodes
+					List<SRelation> outRels = new LinkedList<>(sourceNode.getOutRelations());
+					
+					for(SRelation rel : outRels) {
+						if(rel.getTarget() == targetNode && relType.getJavaType().isInstance(rel)) {
+							boolean hasAnno = false;
+							for(SAnnotation a : rel.getAnnotations()) {
+								if(name.equals(a.getName()) && (ns == null || ns.equals(a.getNamespace()))) {
+									hasAnno = true;
+								}
+							}
+							if(hasAnno) {
+								graph.removeRelation(rel);
+							}
+						}
+					}
+				} else {
+					graph.createRelation(sourceNode, targetNode, relType, SaltUtil.createQName(ns, name) + "=" + value);
+				}
+				updateEditor();
+			}
 		}
 	}
 

@@ -205,6 +205,30 @@ public class ConsoleCommandParser extends Parser {
 			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitDeleteElementCommand(this);
 		}
 	}
+	public static class AddOrDeleteEdgeCommandContext extends CommandContext {
+		public Token type;
+		public Token source;
+		public Token target;
+		public QnameContext anno;
+		public Token value;
+		public TerminalNode TYPE_STR() { return getToken(ConsoleCommandParser.TYPE_STR, 0); }
+		public List<TerminalNode> STR() { return getTokens(ConsoleCommandParser.STR); }
+		public TerminalNode STR(int i) {
+			return getToken(ConsoleCommandParser.STR, i);
+		}
+		public QnameContext qname() {
+			return getRuleContext(QnameContext.class,0);
+		}
+		public AddOrDeleteEdgeCommandContext(CommandContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).enterAddOrDeleteEdgeCommand(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitAddOrDeleteEdgeCommand(this);
+		}
+	}
 	public static class HelpCommandContext extends CommandContext {
 		public HelpCommandContext(CommandContext ctx) { copyFrom(ctx); }
 		@Override
@@ -214,28 +238,6 @@ public class ConsoleCommandParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitHelpCommand(this);
-		}
-	}
-	public static class AddEdgeCommandContext extends CommandContext {
-		public Token type;
-		public Token source;
-		public Token target;
-		public Anno_argsContext anno_args() {
-			return getRuleContext(Anno_argsContext.class,0);
-		}
-		public TerminalNode TYPE_STR() { return getToken(ConsoleCommandParser.TYPE_STR, 0); }
-		public List<TerminalNode> STR() { return getTokens(ConsoleCommandParser.STR); }
-		public TerminalNode STR(int i) {
-			return getToken(ConsoleCommandParser.STR, i);
-		}
-		public AddEdgeCommandContext(CommandContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).enterAddEdgeCommand(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitAddEdgeCommand(this);
 		}
 	}
 	public static class GroupUnderNewParentCommandContext extends CommandContext {
@@ -318,7 +320,7 @@ public class ConsoleCommandParser extends Parser {
 		int _la;
 		try {
 			int _alt;
-			setState(65);
+			setState(69);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
@@ -446,28 +448,40 @@ public class ConsoleCommandParser extends Parser {
 				}
 				break;
 			case T__5:
-				_localctx = new AddEdgeCommandContext(_localctx);
+				_localctx = new AddOrDeleteEdgeCommandContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(51);
 				match(T__5);
 				setState(52);
-				((AddEdgeCommandContext)_localctx).type = match(TYPE_STR);
+				((AddOrDeleteEdgeCommandContext)_localctx).type = match(TYPE_STR);
 				setState(53);
-				((AddEdgeCommandContext)_localctx).source = match(STR);
+				((AddOrDeleteEdgeCommandContext)_localctx).source = match(STR);
 				setState(54);
-				((AddEdgeCommandContext)_localctx).target = match(STR);
+				((AddOrDeleteEdgeCommandContext)_localctx).target = match(STR);
 				setState(55);
-				anno_args();
+				((AddOrDeleteEdgeCommandContext)_localctx).anno = qname();
+				setState(56);
+				match(T__1);
+				setState(58);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la==STR) {
+					{
+					setState(57);
+					((AddOrDeleteEdgeCommandContext)_localctx).value = match(STR);
+					}
+				}
+
 				}
 				break;
 			case T__6:
 				_localctx = new GroupUnderNewParentCommandContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(56);
+				setState(60);
 				match(T__6);
-				setState(58); 
+				setState(62); 
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -475,7 +489,7 @@ public class ConsoleCommandParser extends Parser {
 					case 1:
 						{
 						{
-						setState(57);
+						setState(61);
 						((GroupUnderNewParentCommandContext)_localctx).STR = match(STR);
 						((GroupUnderNewParentCommandContext)_localctx).elements.add(((GroupUnderNewParentCommandContext)_localctx).STR);
 						}
@@ -484,11 +498,11 @@ public class ConsoleCommandParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(60); 
+					setState(64); 
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
-				setState(62);
+				setState(66);
 				anno_args();
 				}
 				break;
@@ -496,7 +510,7 @@ public class ConsoleCommandParser extends Parser {
 				_localctx = new HelpCommandContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(63);
+				setState(67);
 				match(T__7);
 				}
 				break;
@@ -504,7 +518,7 @@ public class ConsoleCommandParser extends Parser {
 				_localctx = new ClearCommandContext(_localctx);
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(64);
+				setState(68);
 				match(T__8);
 				}
 				break;
@@ -550,11 +564,11 @@ public class ConsoleCommandParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(67);
+			setState(71);
 			((Anno_argsContext)_localctx).anno = qname();
-			setState(68);
+			setState(72);
 			match(T__1);
-			setState(69);
+			setState(73);
 			((Anno_argsContext)_localctx).value = match(STR);
 			}
 		}
@@ -596,19 +610,19 @@ public class ConsoleCommandParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(73);
+			setState(77);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
 			case 1:
 				{
-				setState(71);
+				setState(75);
 				((QnameContext)_localctx).ns = match(STR);
-				setState(72);
+				setState(76);
 				match(T__9);
 				}
 				break;
 			}
-			setState(75);
+			setState(79);
 			((QnameContext)_localctx).name = match(STR);
 			}
 		}
@@ -624,28 +638,29 @@ public class ConsoleCommandParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\20P\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\20T\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\3\2\3\2\7\2\r\n\2\f\2\16\2\20\13\2\3\2\3\2\3\2\3\2"+
 		"\3\3\3\3\6\3\30\n\3\r\3\16\3\31\3\3\3\3\3\3\5\3\37\n\3\3\3\3\3\7\3#\n"+
 		"\3\f\3\16\3&\13\3\3\3\3\3\3\3\6\3+\n\3\r\3\16\3,\3\3\3\3\3\3\6\3\62\n"+
-		"\3\r\3\16\3\63\3\3\3\3\3\3\3\3\3\3\3\3\3\3\6\3=\n\3\r\3\16\3>\3\3\3\3"+
-		"\3\3\5\3D\n\3\3\4\3\4\3\4\3\4\3\5\3\5\5\5L\n\5\3\5\3\5\3\5\2\2\6\2\4\6"+
-		"\b\2\2Z\2\n\3\2\2\2\4C\3\2\2\2\6E\3\2\2\2\bK\3\2\2\2\n\16\5\4\3\2\13\r"+
-		"\7\20\2\2\f\13\3\2\2\2\r\20\3\2\2\2\16\f\3\2\2\2\16\17\3\2\2\2\17\21\3"+
-		"\2\2\2\20\16\3\2\2\2\21\22\7\16\2\2\22\23\3\2\2\2\23\24\7\2\2\3\24\3\3"+
-		"\2\2\2\25\27\7\3\2\2\26\30\7\17\2\2\27\26\3\2\2\2\30\31\3\2\2\2\31\27"+
-		"\3\2\2\2\31\32\3\2\2\2\32\33\3\2\2\2\33\34\5\b\5\2\34\36\7\4\2\2\35\37"+
-		"\7\17\2\2\36\35\3\2\2\2\36\37\3\2\2\2\37D\3\2\2\2 $\7\5\2\2!#\7\17\2\2"+
-		"\"!\3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%\'\3\2\2\2&$\3\2\2\2\'D\5\6"+
-		"\4\2(*\7\6\2\2)+\7\17\2\2*)\3\2\2\2+,\3\2\2\2,*\3\2\2\2,-\3\2\2\2-.\3"+
-		"\2\2\2.D\5\6\4\2/\61\7\7\2\2\60\62\7\17\2\2\61\60\3\2\2\2\62\63\3\2\2"+
-		"\2\63\61\3\2\2\2\63\64\3\2\2\2\64D\3\2\2\2\65\66\7\b\2\2\66\67\7\r\2\2"+
-		"\678\7\17\2\289\7\17\2\29D\5\6\4\2:<\7\t\2\2;=\7\17\2\2<;\3\2\2\2=>\3"+
-		"\2\2\2><\3\2\2\2>?\3\2\2\2?@\3\2\2\2@D\5\6\4\2AD\7\n\2\2BD\7\13\2\2C\25"+
-		"\3\2\2\2C \3\2\2\2C(\3\2\2\2C/\3\2\2\2C\65\3\2\2\2C:\3\2\2\2CA\3\2\2\2"+
-		"CB\3\2\2\2D\5\3\2\2\2EF\5\b\5\2FG\7\4\2\2GH\7\17\2\2H\7\3\2\2\2IJ\7\17"+
-		"\2\2JL\7\f\2\2KI\3\2\2\2KL\3\2\2\2LM\3\2\2\2MN\7\17\2\2N\t\3\2\2\2\13"+
-		"\16\31\36$,\63>CK";
+		"\3\r\3\16\3\63\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3=\n\3\3\3\3\3\6\3A\n\3\r"+
+		"\3\16\3B\3\3\3\3\3\3\5\3H\n\3\3\4\3\4\3\4\3\4\3\5\3\5\5\5P\n\5\3\5\3\5"+
+		"\3\5\2\2\6\2\4\6\b\2\2_\2\n\3\2\2\2\4G\3\2\2\2\6I\3\2\2\2\bO\3\2\2\2\n"+
+		"\16\5\4\3\2\13\r\7\20\2\2\f\13\3\2\2\2\r\20\3\2\2\2\16\f\3\2\2\2\16\17"+
+		"\3\2\2\2\17\21\3\2\2\2\20\16\3\2\2\2\21\22\7\16\2\2\22\23\3\2\2\2\23\24"+
+		"\7\2\2\3\24\3\3\2\2\2\25\27\7\3\2\2\26\30\7\17\2\2\27\26\3\2\2\2\30\31"+
+		"\3\2\2\2\31\27\3\2\2\2\31\32\3\2\2\2\32\33\3\2\2\2\33\34\5\b\5\2\34\36"+
+		"\7\4\2\2\35\37\7\17\2\2\36\35\3\2\2\2\36\37\3\2\2\2\37H\3\2\2\2 $\7\5"+
+		"\2\2!#\7\17\2\2\"!\3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%\'\3\2\2\2&"+
+		"$\3\2\2\2\'H\5\6\4\2(*\7\6\2\2)+\7\17\2\2*)\3\2\2\2+,\3\2\2\2,*\3\2\2"+
+		"\2,-\3\2\2\2-.\3\2\2\2.H\5\6\4\2/\61\7\7\2\2\60\62\7\17\2\2\61\60\3\2"+
+		"\2\2\62\63\3\2\2\2\63\61\3\2\2\2\63\64\3\2\2\2\64H\3\2\2\2\65\66\7\b\2"+
+		"\2\66\67\7\r\2\2\678\7\17\2\289\7\17\2\29:\5\b\5\2:<\7\4\2\2;=\7\17\2"+
+		"\2<;\3\2\2\2<=\3\2\2\2=H\3\2\2\2>@\7\t\2\2?A\7\17\2\2@?\3\2\2\2AB\3\2"+
+		"\2\2B@\3\2\2\2BC\3\2\2\2CD\3\2\2\2DH\5\6\4\2EH\7\n\2\2FH\7\13\2\2G\25"+
+		"\3\2\2\2G \3\2\2\2G(\3\2\2\2G/\3\2\2\2G\65\3\2\2\2G>\3\2\2\2GE\3\2\2\2"+
+		"GF\3\2\2\2H\5\3\2\2\2IJ\5\b\5\2JK\7\4\2\2KL\7\17\2\2L\7\3\2\2\2MN\7\17"+
+		"\2\2NP\7\f\2\2OM\3\2\2\2OP\3\2\2\2PQ\3\2\2\2QR\7\17\2\2R\t\3\2\2\2\f\16"+
+		"\31\36$,\63<BGO";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

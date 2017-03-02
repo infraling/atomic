@@ -13,7 +13,7 @@ command
 	| 'n' (elements+=STR)* anno_args # NewStructureNodeCommand
 	| 's' (elements+=STR)+ anno_args # NewSpanNodeCommand
 	| 'd' (elements+=STR)+ # DeleteElementCommand
-	| 'e' type=TYPE_STR source=STR target=STR anno_args # AddEdgeCommand
+	| 'e' type=TYPE_STR source=STR target=STR anno=qname ':' (value=STR)? # AddOrDeleteEdgeCommand
 	| 'p' (elements+=STR)+ anno_args # GroupUnderNewParentCommand
 	| 'help' # HelpCommand
 	| 'clear' # ClearCommand
@@ -27,7 +27,7 @@ qname
    : (ns=STR '::')? name=STR
    ;
 
-TYPE_STR : ('-d' | '-p' | 'r' | 'o') ;
+TYPE_STR : ('-d' | '-p' | '-r' | '-o') ;
 NEWLINE : [\r\n]+;
 STR : ~(' ' | '\n' | '\r' | ':'  )+ ;
 WS : [ \t\r\n]+ -> skip;
