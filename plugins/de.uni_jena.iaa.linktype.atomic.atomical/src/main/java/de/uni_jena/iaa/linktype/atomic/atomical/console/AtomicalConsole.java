@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -18,16 +17,11 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.lang3.tuple.Pair;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
-import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
-import org.corpus_tools.atomic.console.ConsoleCommandBaseListener;
 import org.corpus_tools.atomic.console.ConsoleCommandLexer;
 import org.corpus_tools.atomic.console.ConsoleCommandParser;
-import org.corpus_tools.atomic.console.ConsoleCommandParser.AnnotateCommandContext;
-import org.corpus_tools.atomic.console.ConsoleCommandParser.HelpCommandContext;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SDominanceRelation;
@@ -59,106 +53,7 @@ import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
  */
 public class AtomicalConsole extends IOConsole implements Runnable {
 
-	private final class CommandExecutor extends ConsoleCommandBaseListener {
-
-		private DocumentGraphEditor editor;
-		private SDocumentGraph graph;
-
-		private boolean checkValidEditor() {
-			try {
-
-				if (editor != null && graph != null) {					
-					return true;
-				} else {
-					out.write("No active editor. Command will be ignored.\n");
-				}
-
-			} catch (IOException ex) {
-				// TODO: use logger
-				ex.printStackTrace();
-			}
-			return false;
-		}
-		
-		private void updateEditor() {
-			if(graph != null && editor instanceof SaltGraphUpdatable) {
-				((SaltGraphUpdatable) editor).updateSDocumentGraph(graph);
-			}
-		}
-		
-		@Override
-		public void enterCommanChain(ConsoleCommandParser.CommanChainContext ctx) {
-			editor = getEditor();
-			graph = getGraph();
-
-		}
-
-		@Override
-		public void enterHelpCommand(HelpCommandContext ctx) {
-			displayHelp();
-		}
-
-		@Override
-		public void enterClearCommand(ConsoleCommandParser.ClearCommandContext ctx) {
-			clearConsole();
-		}
-
-		@Override
-		public void enterAnnotateCommand(AnnotateCommandContext ctx) {
-			if(checkValidEditor()) {
-				List<SNode> elementsToAnnotate = new LinkedList<>();
-				
-				for(Token element : ctx.elements) {
-					List<SNode> nodeList = graph.getNodesByName(element.getText());
-					if(nodeList != null) {
-						elementsToAnnotate.addAll(nodeList);
-					}
-				}
-				
-				// get the annotation information
-				String ns = ctx.qname().ns == null ? null : ctx.qname().ns.getText();
-				String name = ctx.qname().name.getText();
-
-				if(ns == null && name != null) {
-					// find first matching namespace of existing annotation
-					ns = "atomic";
-					eachElement:
-					for(SNode n : elementsToAnnotate) {
-						for(SAnnotation anno : n.getAnnotations()) {
-							if(name.equals(anno.getName())) {
-								ns = anno.getNamespace();
-								break eachElement;
-							}
-						}
-					}
-				}
-				String value = ctx.value == null ? null : ctx.value.getText();
-				
-				
-				// add the annotation to each node in the list
-				for(SNode n : elementsToAnnotate) {
-
-					SAnnotation existing = n.getAnnotation(ns, name);
-					if(existing == null && value != null) {
-						n.createAnnotation(ns, name, value);
-					} else {
-						if(value == null) {
-							// delete the annotation
-							n.removeLabel(ns, name);
-						} else {
-							// change annotation value
-							existing.setValue(value);
-						}
-					}
-				}
-				updateEditor();
-			}
-		}
-
-
-	}
-
-	private IOConsoleOutputStream out;
+	IOConsoleOutputStream out;
 	private String edgeSwitch;
 	private IOConsoleOutputStream err;
 	private Combo combo;
@@ -238,7 +133,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				}
 			} else {
 				ParseTreeWalker walker = new ParseTreeWalker();
-				walker.walk(new CommandExecutor(), parsedTree);
+				walker.walk(new CommandExecutor(this), parsedTree);
 			}
 
 		});
@@ -521,7 +416,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		return source;
 	}
 
-	private void displayHelp() {
+	void displayHelp() {
 		try {
 			out.write("Command                           Arguments                               Syntax example\n"
 					+ "n (New structure node)" + /***/

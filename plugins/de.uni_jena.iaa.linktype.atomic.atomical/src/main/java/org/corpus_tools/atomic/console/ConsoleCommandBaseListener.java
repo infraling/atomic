@@ -40,6 +40,66 @@ public class ConsoleCommandBaseListener implements ConsoleCommandListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNewStructureNodeCommand(ConsoleCommandParser.NewStructureNodeCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNewStructureNodeCommand(ConsoleCommandParser.NewStructureNodeCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeleteElementCommand(ConsoleCommandParser.DeleteElementCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeleteElementCommand(ConsoleCommandParser.DeleteElementCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGroupUnderNewParentCommand(ConsoleCommandParser.GroupUnderNewParentCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGroupUnderNewParentCommand(ConsoleCommandParser.GroupUnderNewParentCommandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterHelpCommand(ConsoleCommandParser.HelpCommandContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -64,13 +124,13 @@ public class ConsoleCommandBaseListener implements ConsoleCommandListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx) { }
+	@Override public void enterAnno_args(ConsoleCommandParser.Anno_argsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx) { }
+	@Override public void exitAnno_args(ConsoleCommandParser.Anno_argsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

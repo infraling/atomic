@@ -32,6 +32,66 @@ public interface ConsoleCommandListener extends ParseTreeListener {
 	 */
 	void exitAnnotateCommand(ConsoleCommandParser.AnnotateCommandContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code NewStructureNodeCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewStructureNodeCommand(ConsoleCommandParser.NewStructureNodeCommandContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NewStructureNodeCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewStructureNodeCommand(ConsoleCommandParser.NewStructureNodeCommandContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NewSpanNodeComman}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NewSpanNodeComman}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewSpanNodeComman(ConsoleCommandParser.NewSpanNodeCommanContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DeleteElementCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeleteElementCommand(ConsoleCommandParser.DeleteElementCommandContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DeleteElementCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeleteElementCommand(ConsoleCommandParser.DeleteElementCommandContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AddEdgeCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AddEdgeCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitAddEdgeCommand(ConsoleCommandParser.AddEdgeCommandContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GroupUnderNewParentCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterGroupUnderNewParentCommand(ConsoleCommandParser.GroupUnderNewParentCommandContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GroupUnderNewParentCommand}
+	 * labeled alternative in {@link ConsoleCommandParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitGroupUnderNewParentCommand(ConsoleCommandParser.GroupUnderNewParentCommandContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code HelpCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.
 	 * @param ctx the parse tree
@@ -56,15 +116,15 @@ public interface ConsoleCommandListener extends ParseTreeListener {
 	 */
 	void exitClearCommand(ConsoleCommandParser.ClearCommandContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ConsoleCommandParser#annotate_args}.
+	 * Enter a parse tree produced by {@link ConsoleCommandParser#anno_args}.
 	 * @param ctx the parse tree
 	 */
-	void enterAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx);
+	void enterAnno_args(ConsoleCommandParser.Anno_argsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ConsoleCommandParser#annotate_args}.
+	 * Exit a parse tree produced by {@link ConsoleCommandParser#anno_args}.
 	 * @param ctx the parse tree
 	 */
-	void exitAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx);
+	void exitAnno_args(ConsoleCommandParser.Anno_argsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ConsoleCommandParser#qname}.
 	 * @param ctx the parse tree
