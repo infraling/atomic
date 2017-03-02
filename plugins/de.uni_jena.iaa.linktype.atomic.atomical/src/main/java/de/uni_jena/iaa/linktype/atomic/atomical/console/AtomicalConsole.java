@@ -203,7 +203,6 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		Display.getDefault().syncExec(() -> {
 			if(parser.getNumberOfSyntaxErrors() > 0) {
 				try {
-					err.write(parsedTree.toStringTree() + "\n\n\n");
 					err.write("Could not parse command. Enter \"help\" to get a list of all valid commands.\n");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
