@@ -7,14 +7,33 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.lang3.tuple.Pair;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
+import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
+import org.corpus_tools.atomic.console.ConsoleCommandBaseListener;
+import org.corpus_tools.atomic.console.ConsoleCommandLexer;
+import org.corpus_tools.atomic.console.ConsoleCommandParser;
+import org.corpus_tools.atomic.console.ConsoleCommandParser.AnnotateCommandContext;
+import org.corpus_tools.atomic.console.ConsoleCommandParser.HelpCommandContext;
+import org.corpus_tools.atomic.console.ConsoleCommandParser.QnameContext;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SDominanceRelation;
@@ -41,22 +60,92 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 import de.uni_jena.iaa.linktype.atomic.atomical.parser.AtomicalAnnotationGraphParser;
 import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
 
-
 /**
  * @author Stephan Druskat
  * 
  */
 public class AtomicalConsole extends IOConsole implements Runnable {
 
+	private final class CommandExecutor extends ConsoleCommandBaseListener {
+
+		private DocumentGraphEditor editor;
+		private SDocumentGraph graph;
+
+		private boolean checkValidEditor() {
+			try {
+
+				if (editor != null && graph != null) {					
+					return true;
+				} else {
+					out.write("No active editor. Command will be ignored.\n");
+				}
+
+			} catch (IOException ex) {
+				// TODO: use logger
+				ex.printStackTrace();
+			}
+			return false;
+		}
+		
+		private void updateEditor() {
+			if(graph != null && editor instanceof SaltGraphUpdatable) {
+				((SaltGraphUpdatable) editor).updateSDocumentGraph(graph);
+			}
+		}
+		
+		@Override
+		public void enterCommanChain(ConsoleCommandParser.CommanChainContext ctx) {
+			editor = getEditor();
+			graph = getGraph();
+
+		}
+
+		@Override
+		public void enterHelpCommand(HelpCommandContext ctx) {
+			displayHelp();
+		}
+
+		@Override
+		public void enterClearCommand(ConsoleCommandParser.ClearCommandContext ctx) {
+			clearConsole();
+		}
+
+		@Override
+		public void enterAnnotateCommand(AnnotateCommandContext ctx) {
+			if(checkValidEditor()) {
+				List<SNode> elementsToAnnotate = new LinkedList<>();
+				
+				for(Token element : ctx.elements) {
+					List<SNode> nodeList = graph.getNodesByName(element.getText());
+					if(nodeList != null) {
+						elementsToAnnotate.addAll(nodeList);
+					}
+				}
+				
+				// get the annotation information
+				String ns = ctx.qname().ns == null ? null : ctx.qname().ns.getText();
+				String name = ctx.qname().name.getText();
+				String value = ctx.value == null ? "" : ctx.value.getText();
+				// add the annotation to each node in the list
+				for(SNode n : elementsToAnnotate) {
+					n.createAnnotation(ns, name, value);
+				}
+				updateEditor();
+			}
+		}
+
+
+	}
+
 	private IOConsoleOutputStream out;
 	private String edgeSwitch;
 	private IOConsoleOutputStream err;
 	private Combo combo;
 	private SLayer layer;
-	
+
 	public AtomicalConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
-		
+
 		out = newOutputStream();
 		err = newOutputStream();
 		Thread t = new Thread(this);
@@ -67,8 +156,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	public void run() {
 		try {
 			out.write("To display a list of available commands, type \"help\".\n");
-		}
-		catch (IOException e1) {
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -85,12 +173,10 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				String input = br.readLine();
 				if (input == null) {
 					break;
+				} else {
+					processInput(input + "\n");
 				}
-				else {
-					processInput(input);
-				}
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				// Assume that the console has been closed
 				break;
 			}
@@ -99,58 +185,58 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	}
 
 	private void processInput(String input) throws IOException {
-		String atomicALCommand = AtomicalAnnotationGraphParser.parseCommand(input);
-		String rawParameters = AtomicalAnnotationGraphParser.parseRawParameters(input);
-		HashMap<Object, Object> atomicALParameters = AtomicalAnnotationGraphParser.parseParameters(rawParameters);
-		if (atomicALCommand.equalsIgnoreCase("help")) {
-			displayHelp();
-			return;
-		} else if (atomicALCommand.equalsIgnoreCase("clear")) {
-			clearConsole();
-			return;
-		}
 
-		Display.getDefault().syncExec(() -> {
+		ConsoleCommandLexer lexer = new ConsoleCommandLexer(new ANTLRInputStream(input));
+		ConsoleCommandParser parser = new ConsoleCommandParser(new CommonTokenStream(lexer));
 
-			DocumentGraphEditor editor = getEditor();
-			try {
-				if (editor == null || editor.getGraph() == null) {
-
-					out.write("No active editor. Command will be ignored.\n");
-
-				} else {
-					executeCommand(atomicALCommand, atomicALParameters, editor.getGraph());
-					// TODO: update editor
-				}
-			} catch (IOException ex) {
-				// TODO: use logger
-				ex.printStackTrace();
+		parser.addErrorListener(new BaseErrorListener() {
+			@Override
+			public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+					int charPositionInLine, String msg, RecognitionException e) {
+				Display.getDefault().syncExec(() -> {
+					try {
+						err.write(msg + "\n");
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				});
 			}
 		});
-	}
-	
-	private void executeCommand(String command, Map<Object, Object> params, SDocumentGraph graph) throws IOException {
-		switch(command) {
-		case "a": // Annotate
-			out.write("Not implemented yet!");
-			break;
-		}
+		
+		ConsoleCommandParser.StartContext parsedTree = parser.start();
+
+		// execute the rest of the command execution inside the main thread
+		Display.getDefault().syncExec(() -> {
+			if(parser.getNumberOfSyntaxErrors() > 0) {
+				try {
+					err.write("Could not parse command. Enter \"help\" to get a list of all valid commands.\n");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				ParseTreeWalker walker = new ParseTreeWalker();
+				walker.walk(new CommandExecutor(), parsedTree);
+			}
+
+		});
+
 	}
 
 
-	private void executeCommandWithUndo(final CommandStack commandStack, String atomicALCommand, HashMap<Object, Object> atomicALParameters) throws IOException {
+	private void executeCommandWithUndo(final CommandStack commandStack, String atomicALCommand,
+			HashMap<Object, Object> atomicALParameters) throws IOException {
 		// FIXME TODO Refactor for readability/re-usability + check for uncaught
 		// exceptions
 		char commandChar = 0;
 		try {
 			commandChar = atomicALCommand.charAt(0);
-		}
-		catch (StringIndexOutOfBoundsException e) { // Thrown when only return
-													// is pressed in the
-													// console
+		} catch (StringIndexOutOfBoundsException e) { // Thrown when only return
+														// is pressed in the
+														// console
 			return;
-		}
-		catch (Exception e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		switch (commandChar) {
@@ -159,13 +245,14 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				int layerInt = Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0));
 				if (getGraph().getLayers().size() == layerInt) {
 					// NO ASSIGNED LEVEL is to be activated
-					// getGraphPart().setActiveLayer("\u269B NO ASSIGNED LEVEL \u269B");
+					// getGraphPart().setActiveLayer("\u269B NO ASSIGNED LEVEL
+					// \u269B");
 					out.write("Active layer is now \"\u269B NO ASSIGNED LEVEL \u269B\".\r\n");
 					updateLayerView("\u269B NO ACTIVE LEVEL \u269B");
-				}
-				else {
+				} else {
 					List<SLayer> layerList = new ArrayList<SLayer>(getGraph().getLayers());
-					layer = layerList.get(Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0)));
+					layer = layerList
+							.get(Integer.parseInt(((ArrayList<String>) atomicALParameters.get("integer")).get(0)));
 					out.write("Active layer is now \"" + layer.getName() + "\".\r\n");
 					updateLayerView(layer.getName());
 				}
@@ -178,7 +265,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			// FIXME: Do the following properly
 			if (atomicALParameters.get("attributes") != null) {
 				@SuppressWarnings("unchecked")
-				LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
+				LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters
+						.get("attributes");
 				for (Object key : attributes.keySet()) {
 					SAnnotation anno = SaltFactory.createSAnnotation();
 					String val = (String) attributes.get(key);
@@ -194,22 +282,20 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			if (((ArrayList<String>) atomicALParameters.get("switch")).size() > 0)
 				setEdgeSwitch(((ArrayList<String>) atomicALParameters.get("switch")).get(0));
 			SRelation relation = null;
-			
+
 			if (getEdgeSwitch().equals("d")) {
 				relation = SaltFactory.createSDominanceRelation();
-			}
-			else if (getEdgeSwitch().equals("r")) {
+			} else if (getEdgeSwitch().equals("r")) {
 				relation = SaltFactory.createSSpanningRelation();
-			}
-			else if (getEdgeSwitch().equals("p")) {
+			} else if (getEdgeSwitch().equals("p")) {
 				relation = SaltFactory.createSPointingRelation();
-			}
-			else if (getEdgeSwitch().equals("o")) {
+			} else if (getEdgeSwitch().equals("o")) {
 				relation = SaltFactory.createSOrderRelation();
 			}
 			// FIXME: Do the following properly
 			if (atomicALParameters.get("attributes") != null) {
-				LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
+				LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters
+						.get("attributes");
 				for (Object key : attributes.keySet()) {
 					SAnnotation anno = SaltFactory.createSAnnotation();
 					String val = (String) attributes.get(key);
@@ -222,7 +308,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 
 		case 'a': // Annotate
 			if (atomicALParameters.get("attributes") != null) {
-				final LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
+				final LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters
+						.get("attributes");
 				final ArrayList<Object> keys = (ArrayList<Object>) atomicALParameters.get("keys");
 				ArrayList<String> elementIDs = (ArrayList<String>) atomicALParameters.get("elements");
 				ArrayList<SNode> elementsToAnnotate = new ArrayList<>();
@@ -251,7 +338,7 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 													// for console
 								annotationsToAdd.put(key, Pair.of(namespace, val));
 							}
-							
+
 							for (Object keyObject : keys) {
 								if (attributes.get(keyObject) == null) { // I.e.,
 																			// no
@@ -294,17 +381,17 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				case 'p':
 				case 'P': // SPointingRelation
 					SPointingRelation pointingRelation = (SPointingRelation) getGraph().getNode("P" + iD);
-					
+
 					break;
 				case 'd':
 				case 'D': // SDominanceRelation
 					SDominanceRelation dominanceRelation = (SDominanceRelation) getGraph().getNode("D" + iD);
-					
+
 					break;
 				case 'o':
 				case 'O': // SDominanceRelation
 					SOrderRelation orderRelation = (SOrderRelation) getGraph().getNode("O" + iD);
-					
+
 					break;
 				case 'r':
 				case 'R': // SSpanningRelation
@@ -320,13 +407,13 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			SStructuredNode parent;
 			if (commandChar == 'p') {
 				parent = SaltFactory.createSStructure();
-			}
-			else {
+			} else {
 				parent = SaltFactory.createSSpan();
 			}
 			// FIXME: Do the following properly
 			if (atomicALParameters.get("attributes") != null) {
-				LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters.get("attributes");
+				LinkedHashMap<Object, Object> attributes = (LinkedHashMap<Object, Object>) atomicALParameters
+						.get("attributes");
 				for (Object key : attributes.keySet()) {
 					SAnnotation anno = SaltFactory.createSAnnotation();
 					String val = (String) attributes.get(key);
@@ -358,34 +445,36 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	 */
 	private void updateLayerView(final String layerName) {
 		// FIXME Breaks loose coupling BIG TIME!
-//		IViewPart layerView = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().findView("de.uni_jena.iaa.linktype.atomic.views.layerview");
-//		if (layerView instanceof LayerView) {
-//			final LayerView lv = (LayerView) layerView;
-//			combo = lv.getLayerCombo();
-//			Display.getDefault().syncExec(new Runnable() {
-//				@Override
-//				public void run() {
-//					for (int i = 0; i < combo.getItems().length; i++) {
-//						if (combo.getItems()[i].equals(layerName)) {
-//							combo.select(i);
-//						}
-//					}
-//					for (TableItem item : lv.getLayerTableViewer().getTable().getItems()) {
-//						String tmpLayerName;
-//						if (layerName.equals("\u269B NO ACTIVE LEVEL \u269B")) {
-//							tmpLayerName = "\u269B NO ASSIGNED LEVEL \u269B";
-//						}
-//						else {
-//							tmpLayerName = layerName;
-//						}
-//						if (item.getData().equals(tmpLayerName)) {
-//							item.setChecked(true);
-//							lv.notifySelectionListeners();
-//						}
-//					}
-//				}
-//			});
-//		}
+		// IViewPart layerView =
+		// PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().findView("de.uni_jena.iaa.linktype.atomic.views.layerview");
+		// if (layerView instanceof LayerView) {
+		// final LayerView lv = (LayerView) layerView;
+		// combo = lv.getLayerCombo();
+		// Display.getDefault().syncExec(new Runnable() {
+		// @Override
+		// public void run() {
+		// for (int i = 0; i < combo.getItems().length; i++) {
+		// if (combo.getItems()[i].equals(layerName)) {
+		// combo.select(i);
+		// }
+		// }
+		// for (TableItem item : lv.getLayerTableViewer().getTable().getItems())
+		// {
+		// String tmpLayerName;
+		// if (layerName.equals("\u269B NO ACTIVE LEVEL \u269B")) {
+		// tmpLayerName = "\u269B NO ASSIGNED LEVEL \u269B";
+		// }
+		// else {
+		// tmpLayerName = layerName;
+		// }
+		// if (item.getData().equals(tmpLayerName)) {
+		// item.setChecked(true);
+		// lv.notifySelectionListeners();
+		// }
+		// }
+		// }
+		// });
+		// }
 	}
 
 	private SNode getRelationTarget(HashMap<Object, Object> atomicALParameters) {
@@ -406,19 +495,24 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 		if (atomicALParameters.get("all_nodes") != null) {
 			String key = ((ArrayList<String>) atomicALParameters.get("all_nodes")).get(0);
 			key = key.toUpperCase();
-			source =  getGraph().getNode(key);
+			source = getGraph().getNode(key);
 		}
 		return source;
 	}
 
 	private void displayHelp() {
 		try {
-			out.write("Command                           Arguments                               Syntax example\n" + "n (New structure node)" + /***/
-			"            [key]:[value]                           n pos:np\n" + "s (New span node)" + /***/
-			"                 [element] [element] [key]:[val]         s t1 t2 type:np\n" + "e (New edge)                      -[type] [source] [target] [key]:[value] e -d n1 n2 r:coref\n" + "a (Annotate)" + /***/
-			"                      [element] [key]:[val] / [key]:          a n1 pos:np\n" + "d (Delete element)                [element] [element]                     d t1 n2\n" + "p (Group under new parent)        [element] [element] [key]:[val]         p t1 t2 pos:np\n" + 
-			"l (Switch levels)                 [level index]                           l 1               \n" +
-			"help (Displays this command overview)\n" + "clear (Clears the console)\n"
+			out.write("Command                           Arguments                               Syntax example\n"
+					+ "n (New structure node)" + /***/
+					"            [key]:[value]                           n pos:np\n" + "s (New span node)" + /***/
+					"                 [element] [element] [key]:[val]         s t1 t2 type:np\n"
+					+ "e (New edge)                      -[type] [source] [target] [key]:[value] e -d n1 n2 r:coref\n"
+					+ "a (Annotate)" + /***/
+					"                      [element] [key]:[val] / [key]:          a n1 pos:np\n"
+					+ "d (Delete element)                [element] [element]                     d t1 n2\n"
+					+ "p (Group under new parent)        [element] [element] [key]:[val]         p t1 t2 pos:np\n"
+					+ "l (Switch levels)                 [level index]                           l 1               \n"
+					+ "help (Displays this command overview)\n" + "clear (Clears the console)\n"
 			/*
 			 * +
 			 * "c (New common child)*             [element] [element] [key]:[val] c t1 t2 pos:np\n"
@@ -432,38 +526,33 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			 * "x (Set corpus excerpt to display) [[0-9]*]|[[0-9]*]               x 2|1\n"
 			 * + "\n" + "*Level switches can be used with this command."
 			 */);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	
-
 	/**
 	 * @return the graph
 	 */
-	public synchronized SDocumentGraph getGraph() {
+	public SDocumentGraph getGraph() {
 		DocumentGraphEditor editor = getEditor();
 		return editor == null ? null : editor.getGraph();
 	}
-
 
 	/**
 	 * @return the editor
 	 */
 	public DocumentGraphEditor getEditor() {
-		
+
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if(window != null) {
+		if (window != null) {
 			IEditorPart editor = window.getActivePage().getActiveEditor();
-			if(editor instanceof DocumentGraphEditor) {
+			if (editor instanceof DocumentGraphEditor) {
 				return (DocumentGraphEditor) editor;
 			}
 		}
 		return null;
 	}
-
 
 	/**
 	 * @return the edgeSwitch
