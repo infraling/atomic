@@ -14,6 +14,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.FileUtils;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
+import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
 import org.corpus_tools.atomic.api.editors.SaltNodeSelectable;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SDocumentGraph;
@@ -58,7 +59,7 @@ import com.google.common.collect.TreeMultimap;
 
 import swing2swt.layout.BorderLayout;
 
-public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelectable {
+public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelectable, SaltGraphUpdatable {
 
 	private Path tmpDir;
 	private Browser browser;
@@ -260,6 +261,13 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		}
 		updateView(false);
 		
+		
+	}
+	
+	@Override
+	public void updateSDocumentGraph(SDocumentGraph newGraph) {
+		this.graph = newGraph;
+		updateView(true);
 		
 	}
 

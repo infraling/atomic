@@ -33,7 +33,9 @@
       <import plugin="org.eclipse.emf.common" version="2.12.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
       <import plugin="com.google.guava" version="19.0.0" match="greaterOrEqual"/>
+      <import plugin="json" version="20160810.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.e4.ui.di"/>
+      <import plugin="org.eclipse.e4.ui.model.workbench" version="1.2.0.v20160229-1459" match="greaterOrEqual"/>
       <import plugin="javax.inject"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.jface"/>
@@ -50,8 +52,12 @@
       <import plugin="org.eclipse.ui" version="3.108.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="json" version="20160810.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.e4.ui.model.workbench" version="1.2.0.v20160229-1459" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.common" version="2.7.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.lang3"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.core.di" version="1.6.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -70,6 +76,13 @@
 
    <plugin
          id="org.corpus_tools.atomic.search"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.uni_jena.iaa.linktype.atomic.atomical"
          download-size="0"
          install-size="0"
          version="0.0.0"

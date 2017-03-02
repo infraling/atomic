@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ASCII"?>
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_m8aMkPzwEeaKn6WCMWiu_w">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_vPSMQPzxEeaKn6WCMWiu_w" featurename="menuContributions" parentElementId="xpath:/">
+    <elements xsi:type="menu:MenuContribution" xmi:id="_ypFZoPzxEeaKn6WCMWiu_w" elementId="de.uni_jena.iaa.linktype.atomic.atomical.menucontribution.0" positionInParent="after=switchworkspace" parentId="org.corpus_tools.atomic.menus.file">
+      <children xsi:type="menu:HandledMenuItem" xmi:id="_1KtMYPzyEeaKn6WCMWiu_w" elementId="de.uni_jena.iaa.linktype.atomic.atomical.handledmenuitem.atomicalconsole" label="AtomicAL Console" mnemonics="A" command="__bTH4PzxEeaKn6WCMWiu_w"/>
+    </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_5m_m8PzxEeaKn6WCMWiu_w" featurename="handlers" parentElementId="xpath:/">
+    <elements xsi:type="commands:Handler" xmi:id="_7oVMkPzxEeaKn6WCMWiu_w" elementId="de.uni_jena.iaa.linktype.atomic.atomical.handler.0" contributionURI="bundleclass://de.uni_jena.iaa.linktype.atomic.atomical/de.uni_jena.iaa.linktype.atomic.atomical.console.OpenAtomicalConsoleHandler" command="__bTH4PzxEeaKn6WCMWiu_w"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_-MlSAPzxEeaKn6WCMWiu_w" featurename="commands" parentElementId="xpath:/">
+    <elements xsi:type="commands:Command" xmi:id="__bTH4PzxEeaKn6WCMWiu_w" elementId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand" commandName="Open ConsoleView"/>
+  </fragments>
+</fragment:ModelFragments>
