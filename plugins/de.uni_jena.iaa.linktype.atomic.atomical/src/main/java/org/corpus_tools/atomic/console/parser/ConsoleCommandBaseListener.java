@@ -1,5 +1,5 @@
-// Generated from org/corpus_tools/atomic/console/ConsoleCommand.g4 by ANTLR 4.6
-package org.corpus_tools.atomic.console;
+// Generated from org/corpus_tools/atomic/console/parser/ConsoleCommand.g4 by ANTLR 4.6
+package org.corpus_tools.atomic.console.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
