@@ -13,6 +13,7 @@ import org.corpus_tools.atomic.console.ConsoleCommandParser.AddOrDeleteEdgeComma
 import org.corpus_tools.atomic.console.ConsoleCommandParser.Anno_argsContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.AnnotateCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.DeleteElementCommandContext;
+import org.corpus_tools.atomic.console.ConsoleCommandParser.GroupUnderNewParentCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.HelpCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.NewSpanNodeCommandContext;
 import org.corpus_tools.atomic.console.ConsoleCommandParser.NewStructureNodeCommandContext;
@@ -195,7 +196,6 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 	@Override
 	public void enterDeleteElementCommand(DeleteElementCommandContext ctx) {
 		if(checkValidEditor()) {
-			List<SStructuredNode> toDelete = new LinkedList<>();
 			for(Token e : ctx.elements) {
 				SNode n = getNodeByID(e.getText());
 				if(n != null && n instanceof SStructuredNode) {
@@ -258,5 +258,4 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 			}
 		}
 	}
-
 }

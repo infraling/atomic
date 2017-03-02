@@ -427,7 +427,6 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 					"                      [element] [key]:[val] / [key]:          a n1 pos:np\n"
 					+ "d (Delete element)                [element] [element]                     d t1 n2\n"
 					+ "p (Group under new parent)        [element] [element] [key]:[val]         p t1 t2 pos:np\n"
-					+ "l (Switch levels)                 [level index]                           l 1               \n"
 					+ "help (Displays this command overview)\n" + "clear (Clears the console)\n"
 			/*
 			 * +

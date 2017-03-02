@@ -14,7 +14,6 @@ command
 	| 's' (elements+=STR)+ anno_args # NewSpanNodeCommand
 	| 'd' (elements+=STR)+ # DeleteElementCommand
 	| 'e' type=TYPE_STR source=STR target=STR anno=qname ':' (value=STR)? # AddOrDeleteEdgeCommand
-	| 'p' (elements+=STR)+ anno_args # GroupUnderNewParentCommand
 	| 'help' # HelpCommand
 	| 'clear' # ClearCommand
 	;

@@ -88,18 +88,6 @@ public class ConsoleCommandBaseListener implements ConsoleCommandListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGroupUnderNewParentCommand(ConsoleCommandParser.GroupUnderNewParentCommandContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGroupUnderNewParentCommand(ConsoleCommandParser.GroupUnderNewParentCommandContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterHelpCommand(ConsoleCommandParser.HelpCommandContext ctx) { }
 	/**
 	 * {@inheritDoc}
