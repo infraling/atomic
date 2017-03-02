@@ -118,10 +118,38 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				// get the annotation information
 				String ns = ctx.qname().ns == null ? null : ctx.qname().ns.getText();
 				String name = ctx.qname().name.getText();
-				String value = ctx.value == null ? "" : ctx.value.getText();
+
+				if(ns == null && name != null) {
+					// find first matching namespace of existing annotation
+					ns = "atomic";
+					eachElement:
+					for(SNode n : elementsToAnnotate) {
+						for(SAnnotation anno : n.getAnnotations()) {
+							if(name.equals(anno.getName())) {
+								ns = anno.getNamespace();
+								break eachElement;
+							}
+						}
+					}
+				}
+				String value = ctx.value == null ? null : ctx.value.getText();
+				
+				
 				// add the annotation to each node in the list
 				for(SNode n : elementsToAnnotate) {
-					n.createAnnotation(ns, name, value);
+
+					SAnnotation existing = n.getAnnotation(ns, name);
+					if(existing == null && value != null) {
+						n.createAnnotation(ns, name, value);
+					} else {
+						if(value == null) {
+							// delete the annotation
+							n.removeLabel(ns, name);
+						} else {
+							// change annotation value
+							existing.setValue(value);
+						}
+					}
 				}
 				updateEditor();
 			}
