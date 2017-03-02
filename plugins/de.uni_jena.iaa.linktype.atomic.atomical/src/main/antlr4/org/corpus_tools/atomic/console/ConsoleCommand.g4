@@ -10,7 +10,7 @@ start
 
 command
 	: 'a' (elements+=STR)+  anno=qname ':' (value=STR)? # AnnotateCommand
-	| 'n' anno_args # NewStructureNodeCommand
+	| 'n' (elements+=STR)* anno_args # NewStructureNodeCommand
 	| 's' (elements+=STR)+ anno_args # NewSpanNodeComman
 	| 'd' (elements+=STR)+ # DeleteElementCommand
 	| 'e' type=TYPE_STR source=STR target=STR anno_args # AddEdgeCommand
