@@ -56,6 +56,16 @@ public interface ConsoleCommandListener extends ParseTreeListener {
 	 */
 	void exitClearCommand(ConsoleCommandParser.ClearCommandContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ConsoleCommandParser#annotate_args}.
+	 * @param ctx the parse tree
+	 */
+	void enterAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ConsoleCommandParser#annotate_args}.
+	 * @param ctx the parse tree
+	 */
+	void exitAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ConsoleCommandParser#qname}.
 	 * @param ctx the parse tree
 	 */

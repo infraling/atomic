@@ -17,18 +17,18 @@ public class ConsoleCommandParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, WS=6, ID=7, NEWLINE=8, STR=9;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, NEWLINE=6, STR=7, WS=8;
 	public static final int
-		RULE_start = 0, RULE_command = 1, RULE_qname = 2;
+		RULE_start = 0, RULE_command = 1, RULE_annotate_args = 2, RULE_qname = 3;
 	public static final String[] ruleNames = {
-		"start", "command", "qname"
+		"start", "command", "annotate_args", "qname"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
 		null, "'a'", "':'", "'help'", "'clear'", "'::'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, null, "WS", "ID", "NEWLINE", "STR"
+		null, null, null, null, null, null, "NEWLINE", "STR", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -96,6 +96,10 @@ public class ConsoleCommandParser extends Parser {
 			return getRuleContext(CommandContext.class,0);
 		}
 		public TerminalNode NEWLINE() { return getToken(ConsoleCommandParser.NEWLINE, 0); }
+		public List<TerminalNode> WS() { return getTokens(ConsoleCommandParser.WS); }
+		public TerminalNode WS(int i) {
+			return getToken(ConsoleCommandParser.WS, i);
+		}
 		public CommanChainContext(StartContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -110,17 +114,32 @@ public class ConsoleCommandParser extends Parser {
 	public final StartContext start() throws RecognitionException {
 		StartContext _localctx = new StartContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_start);
+		int _la;
 		try {
 			_localctx = new CommanChainContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(6);
+			setState(8);
 			command();
-			setState(7);
+			setState(12);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==WS) {
+				{
+				{
+				setState(9);
+				match(WS);
+				}
+				}
+				setState(14);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(15);
 			match(NEWLINE);
 			}
-			setState(9);
+			setState(17);
 			match(EOF);
 			}
 		}
@@ -169,16 +188,15 @@ public class ConsoleCommandParser extends Parser {
 		}
 	}
 	public static class AnnotateCommandContext extends CommandContext {
-		public Token ID;
+		public Token STR;
 		public List<Token> elements = new ArrayList<Token>();
 		public Token value;
 		public QnameContext qname() {
 			return getRuleContext(QnameContext.class,0);
 		}
-		public TerminalNode STR() { return getToken(ConsoleCommandParser.STR, 0); }
-		public List<TerminalNode> ID() { return getTokens(ConsoleCommandParser.ID); }
-		public TerminalNode ID(int i) {
-			return getToken(ConsoleCommandParser.ID, i);
+		public List<TerminalNode> STR() { return getTokens(ConsoleCommandParser.STR); }
+		public TerminalNode STR(int i) {
+			return getToken(ConsoleCommandParser.STR, i);
 		}
 		public AnnotateCommandContext(CommandContext ctx) { copyFrom(ctx); }
 		@Override
@@ -197,17 +215,16 @@ public class ConsoleCommandParser extends Parser {
 		int _la;
 		try {
 			int _alt;
-			setState(24);
+			setState(32);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
 				_localctx = new AnnotateCommandContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(11);
+				setState(19);
 				match(T__0);
-				{
-				setState(13); 
+				setState(21); 
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -215,30 +232,29 @@ public class ConsoleCommandParser extends Parser {
 					case 1:
 						{
 						{
-						setState(12);
-						((AnnotateCommandContext)_localctx).ID = match(ID);
-						((AnnotateCommandContext)_localctx).elements.add(((AnnotateCommandContext)_localctx).ID);
+						setState(20);
+						((AnnotateCommandContext)_localctx).STR = match(STR);
+						((AnnotateCommandContext)_localctx).elements.add(((AnnotateCommandContext)_localctx).STR);
 						}
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(15); 
+					setState(23); 
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
-				}
-				setState(17);
+				setState(25);
 				qname();
-				setState(18);
+				setState(26);
 				match(T__1);
-				setState(20);
+				setState(28);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==STR) {
 					{
-					setState(19);
+					setState(27);
 					((AnnotateCommandContext)_localctx).value = match(STR);
 					}
 				}
@@ -249,7 +265,7 @@ public class ConsoleCommandParser extends Parser {
 				_localctx = new HelpCommandContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(22);
+				setState(30);
 				match(T__2);
 				}
 				break;
@@ -257,7 +273,7 @@ public class ConsoleCommandParser extends Parser {
 				_localctx = new ClearCommandContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(23);
+				setState(31);
 				match(T__3);
 				}
 				break;
@@ -276,12 +292,46 @@ public class ConsoleCommandParser extends Parser {
 		return _localctx;
 	}
 
+	public static class Annotate_argsContext extends ParserRuleContext {
+		public Annotate_argsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_annotate_args; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).enterAnnotate_args(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitAnnotate_args(this);
+		}
+	}
+
+	public final Annotate_argsContext annotate_args() throws RecognitionException {
+		Annotate_argsContext _localctx = new Annotate_argsContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_annotate_args);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static class QnameContext extends ParserRuleContext {
 		public Token ns;
 		public Token name;
-		public List<TerminalNode> ID() { return getTokens(ConsoleCommandParser.ID); }
-		public TerminalNode ID(int i) {
-			return getToken(ConsoleCommandParser.ID, i);
+		public List<TerminalNode> STR() { return getTokens(ConsoleCommandParser.STR); }
+		public TerminalNode STR(int i) {
+			return getToken(ConsoleCommandParser.STR, i);
 		}
 		public QnameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -299,29 +349,24 @@ public class ConsoleCommandParser extends Parser {
 
 	public final QnameContext qname() throws RecognitionException {
 		QnameContext _localctx = new QnameContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_qname);
+		enterRule(_localctx, 6, RULE_qname);
 		try {
-			setState(30);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(38);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 			case 1:
-				enterOuterAlt(_localctx, 1);
 				{
-				setState(26);
-				((QnameContext)_localctx).ns = match(ID);
-				setState(27);
+				setState(36);
+				((QnameContext)_localctx).ns = match(STR);
+				setState(37);
 				match(T__4);
-				setState(28);
-				((QnameContext)_localctx).name = match(ID);
 				}
 				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(29);
-				((QnameContext)_localctx).name = match(ID);
-				}
-				break;
+			}
+			setState(40);
+			((QnameContext)_localctx).name = match(STR);
 			}
 		}
 		catch (RecognitionException re) {
@@ -336,16 +381,18 @@ public class ConsoleCommandParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\13#\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\3\2\3\2\3\2\3\2\3\2\3\3\3\3\6\3\20\n\3\r\3\16\3\21\3\3\3\3"+
-		"\3\3\5\3\27\n\3\3\3\3\3\5\3\33\n\3\3\4\3\4\3\4\3\4\5\4!\n\4\3\4\2\2\5"+
-		"\2\4\6\2\2$\2\b\3\2\2\2\4\32\3\2\2\2\6 \3\2\2\2\b\t\5\4\3\2\t\n\7\n\2"+
-		"\2\n\13\3\2\2\2\13\f\7\2\2\3\f\3\3\2\2\2\r\17\7\3\2\2\16\20\7\t\2\2\17"+
-		"\16\3\2\2\2\20\21\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2\22\23\3\2\2\2\23"+
-		"\24\5\6\4\2\24\26\7\4\2\2\25\27\7\13\2\2\26\25\3\2\2\2\26\27\3\2\2\2\27"+
-		"\33\3\2\2\2\30\33\7\5\2\2\31\33\7\6\2\2\32\r\3\2\2\2\32\30\3\2\2\2\32"+
-		"\31\3\2\2\2\33\5\3\2\2\2\34\35\7\t\2\2\35\36\7\7\2\2\36!\7\t\2\2\37!\7"+
-		"\t\2\2 \34\3\2\2\2 \37\3\2\2\2!\7\3\2\2\2\6\21\26\32 ";
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\n-\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\3\2\3\2\7\2\r\n\2\f\2\16\2\20\13\2\3\2\3\2\3\2\3\2"+
+		"\3\3\3\3\6\3\30\n\3\r\3\16\3\31\3\3\3\3\3\3\5\3\37\n\3\3\3\3\3\5\3#\n"+
+		"\3\3\4\3\4\3\5\3\5\5\5)\n\5\3\5\3\5\3\5\2\2\6\2\4\6\b\2\2.\2\n\3\2\2\2"+
+		"\4\"\3\2\2\2\6$\3\2\2\2\b(\3\2\2\2\n\16\5\4\3\2\13\r\7\n\2\2\f\13\3\2"+
+		"\2\2\r\20\3\2\2\2\16\f\3\2\2\2\16\17\3\2\2\2\17\21\3\2\2\2\20\16\3\2\2"+
+		"\2\21\22\7\b\2\2\22\23\3\2\2\2\23\24\7\2\2\3\24\3\3\2\2\2\25\27\7\3\2"+
+		"\2\26\30\7\t\2\2\27\26\3\2\2\2\30\31\3\2\2\2\31\27\3\2\2\2\31\32\3\2\2"+
+		"\2\32\33\3\2\2\2\33\34\5\b\5\2\34\36\7\4\2\2\35\37\7\t\2\2\36\35\3\2\2"+
+		"\2\36\37\3\2\2\2\37#\3\2\2\2 #\7\5\2\2!#\7\6\2\2\"\25\3\2\2\2\" \3\2\2"+
+		"\2\"!\3\2\2\2#\5\3\2\2\2$%\3\2\2\2%\7\3\2\2\2&\'\7\t\2\2\')\7\7\2\2(&"+
+		"\3\2\2\2()\3\2\2\2)*\3\2\2\2*+\7\t\2\2+\t\3\2\2\2\7\16\31\36\"(";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

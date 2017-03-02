@@ -64,6 +64,18 @@ public class ConsoleCommandBaseListener implements ConsoleCommandListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAnnotate_args(ConsoleCommandParser.Annotate_argsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterQname(ConsoleCommandParser.QnameContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -1,28 +1,28 @@
 // use 'mvn antlr4:antlr4' to re-generate the parser code
 grammar ConsoleCommand;
 
-WS : [ \t\r\n\u000C]+ -> skip;
 
 
 start
-	: (command NEWLINE) EOF # CommanChain
+	: (command WS* NEWLINE) EOF # CommanChain
 	;
 
 
 command
-	: 'a' (elements+=ID+) qname ':' (value=STR)? # AnnotateCommand
+	: 'a' (elements+=STR)+  qname ':' (value=STR)? # AnnotateCommand
 	| 'help' # HelpCommand
 	| 'clear' # ClearCommand
 	;
 
+annotate_args
+    :
+    ;
+
 qname
-   : ns=ID '::' name=ID
-   | name=ID
+   : (ns=STR '::')? name=STR
    ;
 
 
-ID  :	[a-zA-Z0-9_-]+;
-NEWLINE : [\r\n]+ ;
-STR : [^ \t\r\n\u000C]+ ;
-
-
+NEWLINE : [\r\n]+;
+STR : ~(' ' | '\n' | '\r' | ':'  )+ ;
+WS : [ \t\r\n]+ -> skip;
