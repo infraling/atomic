@@ -14,6 +14,7 @@ import org.corpus_tools.atomic.console.ConsoleCommandParser.HelpCommandContext;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SNode;
+import org.eclipse.emf.common.util.URI;
 
 class CommandExecutor extends ConsoleCommandBaseListener {
 
@@ -80,9 +81,10 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 			List<SNode> elementsToAnnotate = new LinkedList<>();
 			
 			for(Token element : ctx.elements) {
-				List<SNode> nodeList = graph.getNodesByName(element.getText());
-				if(nodeList != null) {
-					elementsToAnnotate.addAll(nodeList);
+				URI newNodeURI = graph.getPath().appendFragment(element.getText());
+				SNode newNode = graph.getNode(newNodeURI.toString());
+				if(newNode != null) {
+					elementsToAnnotate.add(newNode);
 				}
 			}
 			
