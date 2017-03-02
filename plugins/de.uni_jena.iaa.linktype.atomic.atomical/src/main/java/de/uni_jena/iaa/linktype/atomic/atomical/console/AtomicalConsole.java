@@ -28,25 +28,15 @@ import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SLayer;
 import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
-
 
 import de.uni_jena.iaa.linktype.atomic.atomical.parser.AtomicalAnnotationGraphParser;
 import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
@@ -56,19 +46,17 @@ import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
  * @author Stephan Druskat
  * 
  */
-public class AtomicalConsole extends IOConsole implements Runnable, ISelectionProvider {
+public class AtomicalConsole extends IOConsole implements Runnable {
 
 	private IOConsoleOutputStream out;
-	private DocumentGraphEditor docGraphEditor;
 	private String edgeSwitch;
 	private IOConsoleOutputStream err;
-	private ListenerList listeners = new ListenerList();
 	private Combo combo;
 	private SLayer layer;
 	
 	public AtomicalConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
-		addEditorListener();
+		
 		out = newOutputStream();
 		err = newOutputStream();
 		Thread t = new Thread(this);
@@ -117,24 +105,40 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 		if (atomicALCommand.equalsIgnoreCase("help")) {
 			displayHelp();
 			return;
-		}
-		else if (atomicALCommand.equalsIgnoreCase("clear")) {
+		} else if (atomicALCommand.equalsIgnoreCase("clear")) {
 			clearConsole();
 			return;
 		}
 
-		DocumentGraphEditor editor = getEditor();
-		if(editor == null) {
-			out.write("No active editor. Command will be ignored.\n");
+		Display.getDefault().syncExec(() -> {
+
+			DocumentGraphEditor editor = getEditor();
+			try {
+				if (editor == null || editor.getGraph() == null) {
+
+					out.write("No active editor. Command will be ignored.\n");
+
+				} else {
+					executeCommand(atomicALCommand, atomicALParameters, editor.getGraph());
+					// TODO: update editor
+				}
+			} catch (IOException ex) {
+				// TODO: use logger
+				ex.printStackTrace();
+			}
+		});
+	}
+	
+	private void executeCommand(String command, Map<Object, Object> params, SDocumentGraph graph) throws IOException {
+		switch(command) {
+		case "a": // Annotate
+			out.write("Not implemented yet!");
+			break;
 		}
 	}
 
-	private boolean validateInput(String atomicALCommand, HashMap<Object, Object> atomicALParameters) {
-		// FIXME: Implement
-		return true;
-	}
 
-	private void executeCommand(final CommandStack commandStack, String atomicALCommand, HashMap<Object, Object> atomicALParameters) throws IOException {
+	private void executeCommandWithUndo(final CommandStack commandStack, String atomicALCommand, HashMap<Object, Object> atomicALParameters) throws IOException {
 		// FIXME TODO Refactor for readability/re-usability + check for uncaught
 		// exceptions
 		char commandChar = 0;
@@ -434,93 +438,14 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 		}
 	}
 
-	private void addEditorListener() {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(new IPartListener() {
-			
-			@Override
-			public void partActivated(IWorkbenchPart part) {
-				activateAtomicalForEditorInput(part);
-			}
-
-			/**
-			 * @param part
-			 */
-			private void activateAtomicalForEditorInput(IWorkbenchPart part) {
-				
-				if(part instanceof DocumentGraphEditor) {
-					docGraphEditor = (DocumentGraphEditor) part;	
-				} else {
-					docGraphEditor = null;
-				}
-//				if (part instanceof GraphEditor) {
-//					IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-//					EditPartViewer editPartViewer = ((GraphEditor) editor).getEditPartViewer();
-//					console.setGraphPart((GraphPart) editPartViewer.getContents());
-//					if (getGraphPart().getModel() == getGraph()) {
-//						return;
-//					}
-//					console.setGraph(getGraphPart().getModel());
-//					console.setEditor(editor);
-//					String excerpt = null;
-//					String text = getGraph().getSTextualDSs().get(0).getSText();
-//					if (text.length() >= 50) {
-//						excerpt = getGraph().getSTextualDSs().get(0).getSText().substring(0, 49) + "...";
-//					}
-//					else {
-//						excerpt = text;
-//					}
-//					try {
-//						console.out.write("Working on " + editor.getEditorInput().getName() + " (\"" + excerpt + "\").\n");
-//					}
-//					catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//				else if (part instanceof IEditorPart) {
-//					try {
-//						console.out.write("AtomicAL is not (yet) available for this editor type.\n");
-//					}
-//					catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-			}
-
-			@Override
-			public void partBroughtToTop(IWorkbenchPart part) {
-			}
-
-			@Override
-			public void partClosed(IWorkbenchPart part) {
-				IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-				try {
-					activePage.hideView(activePage.findView(IConsoleConstants.ID_CONSOLE_VIEW));
-				}
-				catch (NullPointerException e) {
-					// Do nothing. Will throw an NPE when exiting the
-					// application with the Console View open, as
-					// activePage will be null.
-				}
-			}
-
-			@Override
-			public void partDeactivated(IWorkbenchPart part) {
-			}
-
-			@Override
-			public void partOpened(IWorkbenchPart part) {
-			}
-
-		});
-	}
+	
 
 	/**
 	 * @return the graph
 	 */
 	public synchronized SDocumentGraph getGraph() {
-		return docGraphEditor == null ? null : docGraphEditor.getGraph();
+		DocumentGraphEditor editor = getEditor();
+		return editor == null ? null : editor.getGraph();
 	}
 
 
@@ -528,7 +453,15 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 	 * @return the editor
 	 */
 	public DocumentGraphEditor getEditor() {
-		return docGraphEditor;
+		
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if(window != null) {
+			IEditorPart editor = window.getActivePage().getActiveEditor();
+			if(editor instanceof DocumentGraphEditor) {
+				return (DocumentGraphEditor) editor;
+			}
+		}
+		return null;
 	}
 
 
@@ -552,41 +485,6 @@ public class AtomicalConsole extends IOConsole implements Runnable, ISelectionPr
 	 */
 	public IOConsoleOutputStream getOut() {
 		return out;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
-	@Override
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		listeners.add(listener);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-	 */
-	@Override
-	public ISelection getSelection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
-	@Override
-	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-	 */
-	@Override
-	public void setSelection(ISelection selection) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
