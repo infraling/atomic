@@ -40,7 +40,7 @@ import annis.service.objects.MatchGroup;
 @Creatable
 public class SearchService {
 	
-	public static final String IDX_FOLDER = "idx-graphannis";
+	public static final String IDX_FOLDER = ".idx-graphannis";
 	
 	private final CorpusStorageManager corpusManager;
 	
