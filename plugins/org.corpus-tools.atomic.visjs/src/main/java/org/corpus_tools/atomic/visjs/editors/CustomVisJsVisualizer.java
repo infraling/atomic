@@ -735,27 +735,13 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 			}
 
 			xmlWriter.writeStartElement(TAG_H2);
-			xmlWriter.writeCharacters("Dokument-Id: " + docId);
+			xmlWriter.writeCharacters("Document-Id: " + docId);
 			xmlWriter.writeEndElement();
 			xmlWriter.writeCharacters(NEWLINE);
 
 			xmlWriter.writeStartElement(TAG_DIV);
 			xmlWriter.writeAttribute(ATT_STYLE, TEXT_STYLE);
 			xmlWriter.writeEndElement();
-			xmlWriter.writeCharacters(NEWLINE);
-
-			xmlWriter.writeStartElement("p");
-
-			xmlWriter.writeEmptyElement(TAG_INPUT);
-			xmlWriter.writeAttribute(ATT_TYPE, "button");
-			xmlWriter.writeAttribute(ATT_ID, "btn-UD");
-			xmlWriter.writeAttribute(ATT_VALUE, "Up-Down");
-			xmlWriter.writeCharacters(NEWLINE);
-
-			xmlWriter.writeEmptyElement(TAG_INPUT);
-			xmlWriter.writeAttribute(ATT_TYPE, "button");
-			xmlWriter.writeAttribute(ATT_ID, "btn-DU");
-			xmlWriter.writeAttribute(ATT_VALUE, "Down-Up");
 			xmlWriter.writeCharacters(NEWLINE);
 
 			xmlWriter.writeEmptyElement(TAG_INPUT);
@@ -765,9 +751,6 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 			xmlWriter.writeAttribute(ATT_VALUE, "UD");
 			xmlWriter.writeCharacters(NEWLINE);
 
-			// p
-			xmlWriter.writeEndElement();
-			xmlWriter.writeCharacters(NEWLINE);
 
 			xmlWriter.writeStartElement(TAG_DIV);
 			xmlWriter.writeAttribute(ATT_ID, "mynetwork");

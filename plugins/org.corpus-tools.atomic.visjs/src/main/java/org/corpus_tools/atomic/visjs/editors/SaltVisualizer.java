@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.DisposeEvent;
@@ -51,6 +50,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.part.EditorPart;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
@@ -267,6 +267,8 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 	@Override
 	public void updateSDocumentGraph(SDocumentGraph newGraph) {
 		this.graph = newGraph;
+		this.dirty = true;
+		firePropertyChange(EditorPart.PROP_DIRTY);
 		updateView(true);
 		
 	}

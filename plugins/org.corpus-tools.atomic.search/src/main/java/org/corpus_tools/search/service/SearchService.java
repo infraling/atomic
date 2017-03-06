@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.corpus_tools.graphannis.API;
 import org.corpus_tools.graphannis.API.CorpusStorageManager;
-import org.corpus_tools.graphannis.API.CorpusStorageManager.CorpusInfo;
 import org.corpus_tools.graphannis.API.GraphUpdate;
 import org.corpus_tools.graphannis.API.StringVector;
 import org.corpus_tools.graphannis.QueryToJSON;
@@ -29,6 +28,8 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -69,6 +70,12 @@ public class SearchService {
 	}
 	
 	public void reindexAllDocuments(boolean blockUI) {
+		
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		if(page != null) {
+			page.saveAllEditors(true);
+		}
+		
 		Job job = new Job("Re-indexing documents") {
 			
 			@Override
