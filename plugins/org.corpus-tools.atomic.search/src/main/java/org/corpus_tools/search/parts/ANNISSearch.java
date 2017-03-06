@@ -7,6 +7,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.SaltNodeSelectable;
 import org.corpus_tools.search.service.SearchService;
 import org.eclipse.core.resources.IContainer;
@@ -60,6 +62,8 @@ import annis.service.objects.MatchGroup;
 
 public class ANNISSearch {
 
+	private static final Logger log = LogManager.getLogger(ANNISSearch.class);
+	
 	@Inject
 	private SearchService search;
 
@@ -332,9 +336,8 @@ public class ANNISSearch {
 									}
 								}
 								
-							} catch (CoreException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+							} catch (CoreException ex) {
+								log.error("Could not open match in editor", ex);
 							}
 							break;
 						}

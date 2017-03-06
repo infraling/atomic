@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.graphannis.API;
 import org.corpus_tools.graphannis.API.CorpusStorageManager;
 import org.corpus_tools.graphannis.API.GraphUpdate;
@@ -42,6 +44,8 @@ public class SearchService {
 	
 	public static final String IDX_FOLDER = ".idx-graphannis";
 	
+	private static final Logger log = LogManager.getLogger(SearchService.class);
+	
 	private final CorpusStorageManager corpusManager;
 	
 	
@@ -72,6 +76,7 @@ public class SearchService {
 	
 	public void reindexAllDocuments(boolean blockUI) {
 		
+		
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		if(page != null) {
 			page.saveAllEditors(true);
@@ -96,10 +101,10 @@ public class SearchService {
 					deleteCorpus(p.getName());
 
 					try {
+						log.trace("Finding documents for project {}", p.getName());
 						findDocumentsRecursive(p, p.getName(), monitor, docList.get(p.getName()));
-					} catch (CoreException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} catch (CoreException ex) {
+						log.error("Could not get find documents for project {}", p.getName(), ex);
 					}
 					monitorDelete.worked(indexProjects++);
 				}
@@ -124,6 +129,9 @@ public class SearchService {
 	}
 	
 	public void deleteCorpus(String corpusName) {
+		
+		log.trace("Deleting all nodes from corpus {}", corpusName);
+		
 		// find all nodes of the corpus and delete them
 		StringVector nodes = corpusManager.find(new StringVector(corpusName), QueryToJSON.aqlToJSON("node"));
 		GraphUpdate update = new GraphUpdate();
