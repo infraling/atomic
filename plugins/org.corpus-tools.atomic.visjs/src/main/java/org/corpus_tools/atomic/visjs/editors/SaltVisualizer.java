@@ -13,6 +13,8 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
 import org.corpus_tools.atomic.api.editors.SaltNodeSelectable;
@@ -56,11 +58,11 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
 import com.google.common.collect.TreeMultimap;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.FillLayout;
 
 public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelectable, SaltGraphUpdatable {
 
+	private static final Logger log = LogManager.getLogger(SaltVisualizer.class);
+	
 	private Path tmpDir;
 	private Browser browser;
 	private Button btnIncludeSpans;
@@ -78,9 +80,8 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		if (tmpDir != null) {
 			try {
 				FileUtils.deleteDirectory(tmpDir.toFile());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IOException ex) {
+				log.error("Could not delete temporary directory {}", tmpDir.toString(), ex);
 			}
 		}
 
@@ -182,8 +183,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 					try {
 						FileUtils.deleteDirectory(tmpDir.toFile());
 					} catch (IOException ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
+						log.error("Could not delete temporary directory {}", tmpDir.toString(), ex);
 					}
 				}
 
@@ -311,9 +311,8 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 				if (tmpDir != null) {
 					try {
 						FileUtils.deleteDirectory(tmpDir.toFile());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} catch (IOException ex) {
+						log.error("Could not delete temporary directory {}", tmpDir.toString(), ex);
 					}
 				}
 
@@ -326,16 +325,14 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 					Display.getDefault().syncExec(() -> {
 						try {
 							visjs.visualize(org.eclipse.emf.common.util.URI.createFileURI(tmpDir.toString()));
-						} catch (SaltException | IOException | XMLStreamException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						} catch (SaltException | IOException | XMLStreamException ex) {
+							log.error("Something went wrong when creating the HTML for the Salt visualization", ex);
 						}
 						browser.setUrl(tmpDir.resolve("saltVisJs.html").toString());
 					});
 
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (IOException ex) {
+					log.error("Something went wrong when creating the HTML for the Salt visualization", ex);
 				}
 
 				return Status.OK_STATUS;
