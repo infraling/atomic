@@ -44,6 +44,7 @@ public class SearchService {
 	
 	private final CorpusStorageManager corpusManager;
 	
+	
 	public SearchService() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		File corpusIndexLocation  = new File(workspace.getRoot().getLocation().toOSString(), IDX_FOLDER);
@@ -62,7 +63,7 @@ public class SearchService {
 				URI location = URI.createURI(file.getLocationURI().toASCIIString());
 				docList.add(location);
 			} 
-		} else if (res instanceof IContainer ){
+		} else if (res instanceof IContainer ) {
 			for (IResource child : ((IContainer) res).members()) {
 				findDocumentsRecursive(child, projectName, monitor, docList);
 			}

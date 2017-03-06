@@ -23,12 +23,14 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.UISynchronize;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
@@ -51,11 +53,10 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import com.google.common.base.Splitter;
 
+import annis.exceptions.AnnisQLSemanticsException;
+import annis.exceptions.AnnisQLSyntaxException;
 import annis.service.objects.Match;
 import annis.service.objects.MatchGroup;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.custom.StackLayout;
 
 public class ANNISSearch {
 
@@ -208,70 +209,78 @@ public class ANNISSearch {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				
-				MatchGroup result = search.find(aql);
-				
-				uiSync.asyncExec(() -> {
-					// find the maximal number of nodes per match and add a column for each
-					int maxNumNodes = 0;
-					for (Match m : result.getMatches()) {
-						maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
-					}
+				try {
+					MatchGroup result = search.find(aql);
 					
-					// add columns for corpus and document name
-					TableColumn corpusColumn = new TableColumn(table, SWT.NULL);
-					corpusColumn.setText("corpus");
-					
-					TableColumn documentColumn = new TableColumn(table, SWT.NULL);
-					documentColumn.setText("document");
-					
-					for (int i = 1; i <= maxNumNodes; i++) {
-						TableColumn c = new TableColumn(table, SWT.NULL);
-						c.setText("node #" + i);
-					}
-					
-					int displayMatchCount = 0;
-					for (Match m : result.getMatches()) {
-
-						TableItem item = new TableItem(table, SWT.NULL);
-						
-						item.setData(m);
-						
-						if(!m.getSaltIDs().isEmpty()) {
-							List<String> path = pathSplitter.splitToList(
-									m.getSaltIDs().iterator().next().getPath());
-							item.setText(0, path.get(0)); // corpus
-							item.setText(1, path.get(path.size()-1)); // document
-						} else {
-							item.setText(0, "<unknown>");
-							item.setText(1, "<unknown>");
+					uiSync.asyncExec(() -> {
+						// find the maximal number of nodes per match and add a column for each
+						int maxNumNodes = 0;
+						for (Match m : result.getMatches()) {
+							maxNumNodes = Math.max(maxNumNodes, m.getSaltIDs().size());
 						}
+						
+						// add columns for corpus and document name
+						TableColumn corpusColumn = new TableColumn(table, SWT.NULL);
+						corpusColumn.setText("corpus");
+						
+						TableColumn documentColumn = new TableColumn(table, SWT.NULL);
+						documentColumn.setText("document");
+						
+						for (int i = 1; i <= maxNumNodes; i++) {
+							TableColumn c = new TableColumn(table, SWT.NULL);
+							c.setText("node #" + i);
+						}
+						
+						int displayMatchCount = 0;
+						for (Match m : result.getMatches()) {
+
+							TableItem item = new TableItem(table, SWT.NULL);
 							
-						int nodeIdx = 0;
-						for (URI u : m.getSaltIDs()) {
-							item.setText(2+nodeIdx, u.getFragment());
-							nodeIdx++;
+							item.setData(m);
+							
+							if(!m.getSaltIDs().isEmpty()) {
+								List<String> path = pathSplitter.splitToList(
+										m.getSaltIDs().iterator().next().getPath());
+								item.setText(0, path.get(0)); // corpus
+								item.setText(1, path.get(path.size()-1)); // document
+							} else {
+								item.setText(0, "<unknown>");
+								item.setText(1, "<unknown>");
+							}
+								
+							int nodeIdx = 0;
+							for (URI u : m.getSaltIDs()) {
+								item.setText(2+nodeIdx, u.getFragment());
+								nodeIdx++;
+							}
+							
+							
+							displayMatchCount++;
+							if(displayMatchCount > 10000) {
+								break;
+							}
 						}
-						
-						
-						displayMatchCount++;
-						if(displayMatchCount > 10000) {
-							break;
-						}
-					}
 
-					for (int i = 0; i < table.getColumnCount(); i++) {
-						table.getColumn(i).pack();
-					}
-					long matchCount = result.getMatches().size();
-					if(matchCount > 10000) {
-						lblStatus.setText("Found " + matchCount + " matches. (Only displaying first 10.000 matches)");
-					} else {
-						lblStatus.setText("Found " + matchCount + " matches.");
-					}
-				});
-				
+						for (int i = 0; i < table.getColumnCount(); i++) {
+							table.getColumn(i).pack();
+						}
+						long matchCount = result.getMatches().size();
+						if(matchCount > 10000) {
+							lblStatus.setText("Found " + matchCount + " matches. (Only displaying first 10.000 matches)");
+						} else {
+							lblStatus.setText("Found " + matchCount + " matches.");
+						}
+					});
+									
+				} catch(AnnisQLSyntaxException | AnnisQLSemanticsException ex ) {
+					uiSync.asyncExec(() -> {
+						lblStatus.setText("ERROR: " + ex.getMessage());
+						MessageDialog.openError(parent.getShell(), "Can't parse AQL", ex.getMessage());
+					});
+				}
 				return Status.OK_STATUS;
 			}
+				
 		};
 		j.setUser(true);
 		j.setPriority(Job.LONG);
