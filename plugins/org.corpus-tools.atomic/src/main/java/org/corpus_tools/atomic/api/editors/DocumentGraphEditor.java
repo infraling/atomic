@@ -11,10 +11,12 @@ import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SaltProject;
+import org.corpus_tools.salt.util.SaltUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.widgets.Composite;
@@ -49,12 +51,17 @@ public abstract class DocumentGraphEditor extends EditorPart {
 
 	protected boolean dirty;
 
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
+		IPath resPath = ((FileEditorInput) getEditorInput()).getPath();
+		SaltUtil.saveDocumentGraph(getGraph(), URI.createFileURI(resPath.toOSString()));
+		
+		this.dirty = false;
+		firePropertyChange(EditorPart.PROP_DIRTY);
 
 	}
 
