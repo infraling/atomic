@@ -58,6 +58,7 @@
       <import plugin="org.eclipse.emf.ecore" version="2.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.300" match="greaterOrEqual"/>
       <import plugin="org.eclipse.e4.core.di" version="1.6.1" match="greaterOrEqual"/>
+      <import plugin="org.antlr.antlr4-runtime" version="4.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
