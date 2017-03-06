@@ -50,7 +50,7 @@ public abstract class DocumentGraphEditor extends EditorPart {
 
 
 	protected boolean dirty;
-
+	
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
@@ -69,9 +69,19 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
 	 */
 	@Override
-	public void doSaveAs() {
-		// TODO Auto-generated method stub
-
+	public void doSaveAs() {	
+//		IPath origResPath = ((FileEditorInput) getEditorInput()).getPath();
+//		FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+//		// use the folder of the current file as argument
+//		dlg.setFilterPath(origResPath.toFile().getParent());
+//		dlg.setFilterExtensions(new String[] {"*.salt", "*.*"});
+//		String path = dlg.open();
+//		if(path != null) {
+//			SaltUtil.saveDocumentGraph(getGraph(), URI.createFileURI(path));
+//			
+//			this.dirty = false;
+//			firePropertyChange(EditorPart.PROP_DIRTY);
+//		}
 	}
 
 	/* (non-Javadoc)
