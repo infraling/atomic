@@ -65,6 +65,7 @@
             </command>
             <command
                   commandId="org.corpus_tools.atomic.commands.exit"
+                  id="exit"
                   label="Exit"
                   mnemonic="x"
                   style="push"
