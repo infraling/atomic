@@ -120,8 +120,7 @@ public class SearchService {
 		StringVector nodes = corpusManager.find(new StringVector(corpusName), QueryToJSON.aqlToJSON("node"));
 		GraphUpdate update = new GraphUpdate();
 		for(long i=0; i < nodes.size(); i++) {
-			URI nodeURI = URI.createURI(nodes.get(i).getString());
-			update.deleteNode(nodeURI.fragment());
+			update.deleteNode(nodes.get(i).getString().replaceFirst("^salt:/", ""));
 		}
 		update.finish();
 		corpusManager.applyUpdate(corpusName, update);
