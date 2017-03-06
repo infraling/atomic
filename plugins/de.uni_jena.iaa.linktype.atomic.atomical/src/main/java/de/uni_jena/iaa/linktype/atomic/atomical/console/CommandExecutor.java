@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.v4.runtime.Token;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
 import org.corpus_tools.atomic.console.parser.ConsoleCommandBaseListener;
@@ -30,6 +32,8 @@ import org.eclipse.emf.common.util.URI;
 
 class CommandExecutor extends ConsoleCommandBaseListener {
 
+	private static final Logger log = LogManager.getLogger(AtomicalConsole.class);
+	
 	/**
 	 * 
 	 */
@@ -48,9 +52,8 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 	private void out(String msg) {
 		try {
 			this.atomicalConsole.getOut().write(msg);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException ex) {
+			log.error("Can't write to console output stream", ex);
 		}
 	}
 

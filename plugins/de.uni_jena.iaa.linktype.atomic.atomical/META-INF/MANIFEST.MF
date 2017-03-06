@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.ui.model.workbench;bundle-version="1.2.0.v20160229-1459",
  org.eclipse.e4.core.di;bundle-version="1.6.1",
  org.eclipse.e4.ui.workbench;bundle-version="1.4.0",
- org.antlr.antlr4-runtime;bundle-version="4.6.0"
+ org.antlr.antlr4-runtime;bundle-version="4.6.0",
+ org.corpus_tools.atomic.logging;bundle-version="0.3.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -13,6 +13,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.console.parser.ConsoleCommandLexer;
 import org.corpus_tools.atomic.console.parser.ConsoleCommandParser;
@@ -33,6 +35,8 @@ import de.uni_jena.iaa.linktype.atomic.atomical.utils.AtomicalConsoleUtils;
  */
 public class AtomicalConsole extends IOConsole implements Runnable {
 
+	private static final Logger log = LogManager.getLogger(AtomicalConsole.class);
+	
 	private IOConsoleOutputStream out;
 	private IOConsoleOutputStream err;
 	
@@ -49,9 +53,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 	public void run() {
 		try {
 			out.write("To display a list of available commands, type \"help\".\n");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException ex) {
+			log.error("Can't write to console output stream", ex);
 		}
 		Display.getDefault().syncExec(new Runnable() {
 			@Override
@@ -89,9 +92,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				Display.getDefault().syncExec(() -> {
 					try {
 						err.write(msg + "\n");
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					} catch (IOException ex) {
+						log.error("Can't write to console output stream", ex);
 					}
 				});
 			}
@@ -104,9 +106,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			if(parser.getNumberOfSyntaxErrors() > 0) {
 				try {
 					err.write("Could not parse command. Enter \"help\" to get a list of all valid commands.\n");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (IOException ex) {
+					log.error("Can't write to console output stream", ex);
 				}
 			} else {
 				ParseTreeWalker walker = new ParseTreeWalker();
@@ -141,8 +142,8 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 			 * "x (Set corpus excerpt to display) [[0-9]*]|[[0-9]*]               x 2|1\n"
 			 * + "\n" + "*Level switches can be used with this command."
 			 */);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ex) {
+			log.error("Can't write to console output stream", ex);
 		}
 	}
 
