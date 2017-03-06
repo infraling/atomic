@@ -13,13 +13,13 @@ start
 
 
 command
-	: 'a' (elements+=STR)+  anno=qname ':' (value=STR)? # AnnotateCommand
-	| 'n' (elements+=STR)* anno_args # NewStructureNodeCommand
-	| 's' (elements+=STR)+ anno_args # NewSpanNodeCommand
-	| 'd' (elements+=STR)+ # DeleteElementCommand
-	| 'e' type=TYPE_STR source=STR target=STR anno=qname ':' (value=STR)? # AddOrDeleteEdgeCommand
-	| 'help' # HelpCommand
-	| 'clear' # ClearCommand
+	: {"a".equals(getCurrentToken().getText())}? cmd=STR (elements+=STR)+  anno=qname ':' (value=STR)? # AnnotateCommand
+	| {"n".equals(getCurrentToken().getText())}? cmd=STR (elements+=STR)* anno_args # NewStructureNodeCommand
+	| {"s".equals(getCurrentToken().getText())}? cmd=STR (elements+=STR)+ anno_args # NewSpanNodeCommand
+	| {"d".equals(getCurrentToken().getText())}? cmd=STR (elements+=STR)+ # DeleteElementCommand
+	| {"e".equals(getCurrentToken().getText())}? cmd=STR type=TYPE_STR source=STR target=STR anno=qname ':' (value=STR)? # AddOrDeleteEdgeCommand
+	| {"help".equals(getCurrentToken().getText())}? cmd=STR # HelpCommand
+	| {"clear".equals(getCurrentToken().getText())}? cmd=STR # ClearCommand
 	;
 
 anno_args

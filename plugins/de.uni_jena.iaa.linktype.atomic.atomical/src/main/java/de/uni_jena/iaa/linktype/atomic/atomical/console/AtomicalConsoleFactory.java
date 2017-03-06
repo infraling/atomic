@@ -3,8 +3,6 @@
  */
 package de.uni_jena.iaa.linktype.atomic.atomical.console;
 
-import java.io.IOException;
-
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -19,7 +17,7 @@ import org.eclipse.ui.console.IConsoleManager;
  * 
  */
 public class AtomicalConsoleFactory implements IConsoleFactory {
-
+	
 	private static AtomicalConsole _console;
 
 	/*

@@ -7,7 +7,7 @@
       <editor
             name="Salt visualizer"
             extensions="salt"
-            icon="icons/sample.gif"
+            icon="icons/salt.png"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.corpus_tools.atomic.visjs.editors.SaltVisualizer"
             id="org.corpus_tools.atomic.visjs.editors.SaltVisualizer">

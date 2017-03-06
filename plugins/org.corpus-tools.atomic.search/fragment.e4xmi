@@ -5,8 +5,8 @@
       <tags>categoryTag:Other</tags>
     </elements>
   </fragments>
-  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_zPTJkPkWEeazr9PeKTMG7w" featurename="menuContributions" parentElementId="xpath:/" positionInList="after=additions">
-    <elements xsi:type="menu:MenuContribution" xmi:id="_OrpJ8PkXEeazr9PeKTMG7w" elementId="org.corpus_tools.atomic.search.menucontribution.0" positionInParent="after=switchworkspace" parentId="org.corpus_tools.atomic.menus.file">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_zPTJkPkWEeazr9PeKTMG7w" featurename="menuContributions" parentElementId="xpath:/" positionInList="">
+    <elements xsi:type="menu:MenuContribution" xmi:id="_OrpJ8PkXEeazr9PeKTMG7w" elementId="org.corpus_tools.atomic.search.menucontribution.0" positionInParent="before=exit" parentId="org.corpus_tools.atomic.menus.file">
       <children xsi:type="menu:HandledMenuItem" xmi:id="_TbXocPkXEeazr9PeKTMG7w" elementId="org.corpus_tools.atomic.search.handledmenuitem.search" label="Search in corpus" mnemonics="" command="_ZfbWAPmuEea9HtitC0WCyA"/>
     </elements>
   </fragments>
@@ -18,7 +18,7 @@
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_edGXoPmzEea9HtitC0WCyA" featurename="bindingTables" parentElementId="xpath:/">
     <elements xsi:type="commands:BindingTable" xmi:id="_g0magPmzEea9HtitC0WCyA" elementId="org.corpus-tools.search.bindingtable.0" bindingContext="_Abw1gPm0Eea9HtitC0WCyA">
-      <bindings xmi:id="_8vexAPmzEea9HtitC0WCyA" elementId="org.corpus-tools.search.keybinding.0" keySequence="M1+M2+S" command="_ZfbWAPmuEea9HtitC0WCyA"/>
+      <bindings xmi:id="_8vexAPmzEea9HtitC0WCyA" elementId="org.corpus-tools.search.keybinding.0" keySequence="M1+H" command="_ZfbWAPmuEea9HtitC0WCyA"/>
     </elements>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_9rlz8PmzEea9HtitC0WCyA" featurename="bindingContexts" parentElementId="xpath:/">

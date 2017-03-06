@@ -9,10 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
 import org.corpus_tools.atomic.api.editors.SaltNodeSelectable;
@@ -57,10 +61,10 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
 import com.google.common.collect.TreeMultimap;
 
-import swing2swt.layout.BorderLayout;
-
 public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelectable, SaltGraphUpdatable {
 
+	private static final Logger log = LogManager.getLogger(SaltVisualizer.class);
+	
 	private Path tmpDir;
 	private Browser browser;
 	private Button btnIncludeSpans;
@@ -78,9 +82,8 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		if (tmpDir != null) {
 			try {
 				FileUtils.deleteDirectory(tmpDir.toFile());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IOException ex) {
+				log.error("Could not delete temporary directory {}", tmpDir.toString(), ex);
 			}
 		}
 
@@ -89,13 +92,13 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 	@Override
 	public void createEditorPartControl(Composite parent) {
-
-		parent.setLayout(new BorderLayout());
+		parent.setLayout(new GridLayout(2, false));
 
 		browser = new Browser(parent, SWT.NONE);
+		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(BorderLayout.EAST);
+		composite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
 		composite.setLayout(new GridLayout(1, false));
 
 		Label lblFilterByAnnotation = new Label(composite, SWT.NONE);
@@ -182,8 +185,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 					try {
 						FileUtils.deleteDirectory(tmpDir.toFile());
 					} catch (IOException ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
+						log.error("Could not delete temporary directory {}", tmpDir.toString(), ex);
 					}
 				}
 
@@ -272,6 +274,26 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		updateView(true);
 		
 	}
+	
+	private List<Integer> getSegmentIdxSortedByLength() {
+		List<Integer> result = IntStream.range(0, textRangeTable.getItemCount()).boxed().collect(Collectors.toList());
+		
+		result.sort(new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				
+				// get both ranges from the container
+				Range<Long> r1 = (Range<Long>) textRangeTable.getItem(o1).getData("range");
+				Range<Long> r2 = (Range<Long>) textRangeTable.getItem(o2).getData("range");
+				
+				return ComparisonChain.start()
+						.compare(r1.upperEndpoint() - r1.lowerEndpoint(), r2.upperEndpoint() - r2.lowerEndpoint())
+						.result();
+			}
+		});
+		
+		return result;
+	}
 
 	private void updateView(boolean recalculateSegments) {
 
@@ -286,13 +308,19 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 			
 			textRangeTable.deselectAll();
 			
+			// sort the segments by their length
+			List<Integer> sortedIdx = getSegmentIdxSortedByLength();
+			
+			// for each old segment select the first (and thus smallest) segment in the new list
 			boolean selectedSomeOld = false;
 			for(Range<Long> oldRange : oldSelectedRanges) {
-				for(int idx=0; idx < textRangeTable.getItemCount(); idx++) {
+				for(int idx : sortedIdx) {
 					Range<Long> itemRange = (Range<Long>) textRangeTable.getItem(idx).getData("range");
 					if(itemRange.encloses(oldRange)) {
 						textRangeTable.select(idx);
 						selectedSomeOld = true;
+						// only select the first one
+						break;
 					}
 				}
 			}
@@ -311,9 +339,8 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 				if (tmpDir != null) {
 					try {
 						FileUtils.deleteDirectory(tmpDir.toFile());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} catch (IOException ex) {
+						log.error("Could not delete temporary directory {}", tmpDir.toString(), ex);
 					}
 				}
 
@@ -326,16 +353,14 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 					Display.getDefault().syncExec(() -> {
 						try {
 							visjs.visualize(org.eclipse.emf.common.util.URI.createFileURI(tmpDir.toString()));
-						} catch (SaltException | IOException | XMLStreamException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						} catch (SaltException | IOException | XMLStreamException ex) {
+							log.error("Something went wrong when creating the HTML for the Salt visualization", ex);
 						}
 						browser.setUrl(tmpDir.resolve("saltVisJs.html").toString());
 					});
 
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (IOException ex) {
+					log.error("Something went wrong when creating the HTML for the Salt visualization", ex);
 				}
 
 				return Status.OK_STATUS;
@@ -361,16 +386,6 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 			return ComparisonChain.start().compare(o1.lowerEndpoint(), o2.lowerEndpoint())
 					.compare(o1.upperBoundType(), o2.upperBoundType()).result();
-		}
-	}
-	private static class RangeSizeComparator implements Comparator<Range<Long>> {
-
-		@Override
-		public int compare(Range<Long> o1, Range<Long> o2) {
-
-			return ComparisonChain.start()
-					.compare(o1.upperEndpoint() - o1.lowerEndpoint(), o2.upperEndpoint() - o2.lowerEndpoint())
-					.result();
 		}
 	}
 

@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="de.uni_jena.iaa.linktype.atomic.editors.grapheditor.perspective">
+            targetID="org.corpus_tools.atomic.perspectives.navigation">
          <view
                ratio="0.8f"
                moveable="true"
