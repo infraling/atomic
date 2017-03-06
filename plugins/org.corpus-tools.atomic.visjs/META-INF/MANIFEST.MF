@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: VisJS
 Bundle-SymbolicName: org.corpus_tools.atomic.visjs;singleton:=true
 Bundle-Version: 0.3.0.qualifier
-Bundle-ClassPath: .,
- swing2swt.jar
+Bundle-ClassPath: .
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.jface.text,

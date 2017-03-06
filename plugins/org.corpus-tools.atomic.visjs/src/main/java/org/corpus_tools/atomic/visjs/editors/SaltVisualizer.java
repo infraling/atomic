@@ -56,8 +56,8 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
 import com.google.common.collect.TreeMultimap;
-
-import swing2swt.layout.BorderLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.FillLayout;
 
 public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelectable, SaltGraphUpdatable {
 
@@ -89,13 +89,13 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 	@Override
 	public void createEditorPartControl(Composite parent) {
-
-		parent.setLayout(new BorderLayout());
+		parent.setLayout(new GridLayout(2, false));
 
 		browser = new Browser(parent, SWT.NONE);
+		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(BorderLayout.EAST);
+		composite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
 		composite.setLayout(new GridLayout(1, false));
 
 		Label lblFilterByAnnotation = new Label(composite, SWT.NONE);
