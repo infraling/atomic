@@ -69,4 +69,5 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016052021185
 
 location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/" {
 	org.eclipse.e4.tools.spy
+	org.eclipse.e4.tools.model.spy
 }
