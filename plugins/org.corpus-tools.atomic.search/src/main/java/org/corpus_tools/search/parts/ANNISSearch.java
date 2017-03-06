@@ -23,13 +23,14 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.UISynchronize;
-import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -52,7 +53,9 @@ import com.google.common.base.Splitter;
 
 import annis.service.objects.Match;
 import annis.service.objects.MatchGroup;
-import swing2swt.layout.BorderLayout;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.custom.StackLayout;
 
 public class ANNISSearch {
 
@@ -64,22 +67,28 @@ public class ANNISSearch {
 	
 	
 	private Button btReindex;
-	private Table table;
-
-	private Label lblStatus;
 	
 	
 	private final static Splitter pathSplitter = Splitter.on('/').omitEmptyStrings().trimResults();
 	
 	@Inject
 	private UISynchronize uiSync;
+	private Table table;
+
+	private Label lblStatus;
 
 	@PostConstruct
 	public void createPartControl(Composite parent, IEclipseContext context) {
-		parent.setLayout(new BorderLayout(0, 0));
+		GridLayout gl_parent = new GridLayout(3, false);
+		parent.setLayout(gl_parent);
+		
+		lblStatus = new Label(parent, SWT.NONE);
+		lblStatus.setAlignment(SWT.RIGHT);
+		lblStatus.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+		new Label(parent, SWT.NONE);
 
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(BorderLayout.WEST);
+		composite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1));
 		RowLayout rl_composite = new RowLayout(SWT.VERTICAL);
 		composite.setLayout(rl_composite);
 
@@ -111,9 +120,12 @@ public class ANNISSearch {
 		btExecute.setText("Execute Query");
 
 		Composite composite_1 = new Composite(parent, SWT.NONE);
-		composite_1.setLayoutData(BorderLayout.CENTER);
-		composite_1.setLayout(new TableColumnLayout());
-
+		composite_1.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_composite_1.heightHint = 107;
+		gd_composite_1.widthHint = 109;
+		composite_1.setLayoutData(gd_composite_1);
+		
 		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -123,6 +135,7 @@ public class ANNISSearch {
 		
 		MenuItem mntmOpenWithDefault = new MenuItem(menu, SWT.NONE);
 		mntmOpenWithDefault.setText("Open with default editor");
+		new Label(parent, SWT.NONE);
 		mntmOpenWithDefault.addSelectionListener(new OpenMenuListener(null));
 		
 		// find each available editors and add an entry for the editor
@@ -132,11 +145,6 @@ public class ANNISSearch {
 			mntOpenWithEditor.setText("Open with " + editors[i].getLabel());
 			mntOpenWithEditor.addSelectionListener(new OpenMenuListener(editors[i]));
 		}
-		
-		
-		lblStatus = new Label(parent, SWT.NONE);
-		lblStatus.setAlignment(SWT.RIGHT);
-		lblStatus.setLayoutData(BorderLayout.NORTH);
 		btExecute.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -341,5 +349,4 @@ public class ANNISSearch {
 		}
 		
 	}
-	
 }
