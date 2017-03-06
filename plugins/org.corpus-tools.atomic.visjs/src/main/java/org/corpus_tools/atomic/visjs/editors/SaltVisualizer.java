@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -272,6 +274,26 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		updateView(true);
 		
 	}
+	
+	private List<Integer> getSegmentIdxSortedByLength() {
+		List<Integer> result = IntStream.range(0, textRangeTable.getItemCount()).boxed().collect(Collectors.toList());
+		
+		result.sort(new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				
+				// get both ranges from the container
+				Range<Long> r1 = (Range<Long>) textRangeTable.getItem(o1).getData("range");
+				Range<Long> r2 = (Range<Long>) textRangeTable.getItem(o2).getData("range");
+				
+				return ComparisonChain.start()
+						.compare(r1.upperEndpoint() - r1.lowerEndpoint(), r2.upperEndpoint() - r2.lowerEndpoint())
+						.result();
+			}
+		});
+		
+		return result;
+	}
 
 	private void updateView(boolean recalculateSegments) {
 
@@ -286,13 +308,19 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 			
 			textRangeTable.deselectAll();
 			
+			// sort the segments by their length
+			List<Integer> sortedIdx = getSegmentIdxSortedByLength();
+			
+			// for each old segment select the first (and thus smallest) segment in the new list
 			boolean selectedSomeOld = false;
 			for(Range<Long> oldRange : oldSelectedRanges) {
-				for(int idx=0; idx < textRangeTable.getItemCount(); idx++) {
+				for(int idx : sortedIdx) {
 					Range<Long> itemRange = (Range<Long>) textRangeTable.getItem(idx).getData("range");
 					if(itemRange.encloses(oldRange)) {
 						textRangeTable.select(idx);
 						selectedSomeOld = true;
+						// only select the first one
+						break;
 					}
 				}
 			}
@@ -358,16 +386,6 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 			return ComparisonChain.start().compare(o1.lowerEndpoint(), o2.lowerEndpoint())
 					.compare(o1.upperBoundType(), o2.upperBoundType()).result();
-		}
-	}
-	private static class RangeSizeComparator implements Comparator<Range<Long>> {
-
-		@Override
-		public int compare(Range<Long> o1, Range<Long> o2) {
-
-			return ComparisonChain.start()
-					.compare(o1.upperEndpoint() - o1.lowerEndpoint(), o2.upperEndpoint() - o2.lowerEndpoint())
-					.result();
 		}
 	}
 
