@@ -11,4 +11,12 @@
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_-MlSAPzxEeaKn6WCMWiu_w" featurename="commands" parentElementId="xpath:/">
     <elements xsi:type="commands:Command" xmi:id="__bTH4PzxEeaKn6WCMWiu_w" elementId="de.uni_jena.iaa.linktype.atomic.atomical.openAtomicalConsoleCommand" commandName="Open ConsoleView"/>
   </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_L3wfIAKxEeedsMiTPu2VlQ" featurename="bindingTables" parentElementId="xpath:/">
+    <elements xsi:type="commands:BindingTable" xmi:id="_OpuQcAKxEeedsMiTPu2VlQ" elementId="de.uni_jena.iaa.linktype.atomic.atomical.bindingtable.0" bindingContext="_YzRTUAKxEeedsMiTPu2VlQ">
+      <bindings xmi:id="_PJbrQAKxEeedsMiTPu2VlQ" elementId="de.uni_jena.iaa.linktype.atomic.atomical.keybinding.0" keySequence="M1+M3+C" command="__bTH4PzxEeaKn6WCMWiu_w"/>
+    </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_V0LsAAKxEeedsMiTPu2VlQ" featurename="bindingContexts" parentElementId="xpath:/">
+    <elements xsi:type="commands:BindingContext" xmi:id="_YzRTUAKxEeedsMiTPu2VlQ" elementId="org.eclipse.ui.contexts.window" name="Default"/>
+  </fragments>
 </fragment:ModelFragments>
