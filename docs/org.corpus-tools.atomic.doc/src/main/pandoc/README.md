@@ -4,6 +4,10 @@
 
 ### How to build
 
+**Requirements**
+
+- pandoc >= v1.19.2.1 on PATH
+
     pandoc -s -S -f markdown+yaml_metadata_block -t docbook5 atomic-user-guide.md -o ../docbook/atomic-user-guide.xml -M date="`date "+%Y-%m-%d"`"
 
 **Maven version in pandoc as `date` metadate**
