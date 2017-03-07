@@ -16,13 +16,13 @@ public class ConsoleCommandBaseListener implements ConsoleCommandListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCommanChain(ConsoleCommandParser.CommanChainContext ctx) { }
+	@Override public void enterCommandChain(ConsoleCommandParser.CommandChainContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCommanChain(ConsoleCommandParser.CommanChainContext ctx) { }
+	@Override public void exitCommandChain(ConsoleCommandParser.CommandChainContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -108,7 +108,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		lblFilterByAnnotation.setText("Filter by annotation type");
 
 		btnIncludeSpans = new Button(composite, SWT.CHECK);
-		btnIncludeSpans.setSelection(true);
+		btnIncludeSpans.setSelection(false);
 		btnIncludeSpans.setText("Include Spans");
 		btnIncludeSpans.addSelectionListener(new SelectionListener() {
 
@@ -154,7 +154,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		Label seperator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		seperator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
-		textRangeTable = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		textRangeTable = new Table(composite, SWT.BORDER | SWT.CHECK | SWT.FULL_SELECTION | SWT.MULTI);
 		textRangeTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		textRangeTable.setHeaderVisible(true);
 		textRangeTable.setLinesVisible(true);
@@ -330,6 +330,11 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 			if(!selectedSomeOld && textRangeTable.getItemCount() > 0) {
 				textRangeTable.setSelection(0);
 			}
+		}
+		
+		// update the status check for each item
+		for(int idx=0; idx < textRangeTable.getItemCount(); idx++) {
+			textRangeTable.getItem(idx).setChecked(textRangeTable.isSelected(idx));
 		}
 		
 		browser.setText("please wait while visualization is loading...");

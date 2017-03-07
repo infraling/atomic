@@ -8,17 +8,17 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ConsoleCommandListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by the {@code CommanChain}
+	 * Enter a parse tree produced by the {@code CommandChain}
 	 * labeled alternative in {@link ConsoleCommandParser#start}.
 	 * @param ctx the parse tree
 	 */
-	void enterCommanChain(ConsoleCommandParser.CommanChainContext ctx);
+	void enterCommandChain(ConsoleCommandParser.CommandChainContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code CommanChain}
+	 * Exit a parse tree produced by the {@code CommandChain}
 	 * labeled alternative in {@link ConsoleCommandParser#start}.
 	 * @param ctx the parse tree
 	 */
-	void exitCommanChain(ConsoleCommandParser.CommanChainContext ctx);
+	void exitCommandChain(ConsoleCommandParser.CommandChainContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code AnnotateCommand}
 	 * labeled alternative in {@link ConsoleCommandParser#command}.

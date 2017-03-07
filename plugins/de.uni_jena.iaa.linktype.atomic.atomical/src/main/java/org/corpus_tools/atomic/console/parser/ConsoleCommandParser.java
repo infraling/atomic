@@ -90,7 +90,7 @@ public class ConsoleCommandParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class CommanChainContext extends StartContext {
+	public static class CommandChainContext extends StartContext {
 		public TerminalNode EOF() { return getToken(ConsoleCommandParser.EOF, 0); }
 		public CommandContext command() {
 			return getRuleContext(CommandContext.class,0);
@@ -100,14 +100,14 @@ public class ConsoleCommandParser extends Parser {
 		public TerminalNode WS(int i) {
 			return getToken(ConsoleCommandParser.WS, i);
 		}
-		public CommanChainContext(StartContext ctx) { copyFrom(ctx); }
+		public CommandChainContext(StartContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).enterCommanChain(this);
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).enterCommandChain(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitCommanChain(this);
+			if ( listener instanceof ConsoleCommandListener ) ((ConsoleCommandListener)listener).exitCommandChain(this);
 		}
 	}
 
@@ -116,7 +116,7 @@ public class ConsoleCommandParser extends Parser {
 		enterRule(_localctx, 0, RULE_start);
 		int _la;
 		try {
-			_localctx = new CommanChainContext(_localctx);
+			_localctx = new CommandChainContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			{

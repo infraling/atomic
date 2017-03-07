@@ -91,7 +91,7 @@ class CommandExecutor extends ConsoleCommandBaseListener {
 	}
 	
 	@Override
-	public void enterCommanChain(ConsoleCommandParser.CommanChainContext ctx) {
+	public void enterCommandChain(ConsoleCommandParser.CommandChainContext ctx) {
 		editor = atomicalConsole.getEditor();
 		graph = atomicalConsole.getGraph();
 
