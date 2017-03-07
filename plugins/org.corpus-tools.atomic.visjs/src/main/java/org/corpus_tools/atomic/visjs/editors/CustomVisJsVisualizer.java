@@ -734,11 +734,6 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 				xmlWriter.writeCharacters(NEWLINE);
 			}
 
-			xmlWriter.writeStartElement(TAG_H2);
-			xmlWriter.writeCharacters("Document-Id: " + docId);
-			xmlWriter.writeEndElement();
-			xmlWriter.writeCharacters(NEWLINE);
-
 			xmlWriter.writeStartElement(TAG_DIV);
 			xmlWriter.writeAttribute(ATT_STYLE, TEXT_STYLE);
 			xmlWriter.writeEndElement();

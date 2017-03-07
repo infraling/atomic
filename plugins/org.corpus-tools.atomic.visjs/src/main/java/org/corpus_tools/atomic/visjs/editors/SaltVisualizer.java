@@ -92,6 +92,9 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 
 	@Override
 	public void createEditorPartControl(Composite parent) {
+		
+		setPartName(getGraph() != null ? getGraph().getId() : "<unknown document>");
+		
 		parent.setLayout(new GridLayout(2, false));
 
 		browser = new Browser(parent, SWT.NONE);
