@@ -108,7 +108,7 @@ public class SaltVisualizer extends DocumentGraphEditor implements SaltNodeSelec
 		lblFilterByAnnotation.setText("Filter by annotation type");
 
 		btnIncludeSpans = new Button(composite, SWT.CHECK);
-		btnIncludeSpans.setSelection(true);
+		btnIncludeSpans.setSelection(false);
 		btnIncludeSpans.setText("Include Spans");
 		btnIncludeSpans.addSelectionListener(new SelectionListener() {
 
