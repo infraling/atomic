@@ -8,7 +8,7 @@ options
 
 
 start
-	: (command WS* NEWLINE) EOF # CommanChain
+	: (command WS* NEWLINE) EOF # CommandChain
 	;
 
 

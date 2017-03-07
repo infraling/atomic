@@ -77,11 +77,18 @@ public class AtomicalConsole extends IOConsole implements Runnable {
 				break;
 			}
 		}
+		log.trace("AtomicAL console was closed");
+		
 
 	}
 
 	private void processInput(String input) throws IOException {
 
+		if(input == null || input.trim().isEmpty()) {
+			// don't try to parse an empty command
+			return;
+		}
+		
 		ConsoleCommandLexer lexer = new ConsoleCommandLexer(new ANTLRInputStream(input));
 		ConsoleCommandParser parser = new ConsoleCommandParser(new CommonTokenStream(lexer));
 
