@@ -54,7 +54,7 @@ location "http://corpus-tools.org/p2/" {
 	com.github.hazendaz.javabean-tester
 	org.antlr.antlr4-runtime
 	
-	org.corpus-tools.graphannis-api [0.2.0.20170302171504, 0.3.0)
+	org.corpus-tools.graphannis-api [0.2.0, 0.3.0)
 }
 
 location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
