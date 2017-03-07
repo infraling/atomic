@@ -524,14 +524,14 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 			xmlWriter.writeAttribute(ATT_TYPE, "text/css");
 			xmlWriter.writeCharacters(NEWLINE);
 			xmlWriter.writeCharacters("body {" + NEWLINE + "font: 10pt sans;" + NEWLINE + "}" + NEWLINE + "#mynetwork {"
-					+ NEWLINE + "height: 90%;" + NEWLINE + "width: 90%;" + NEWLINE + "border: 1px solid lightgray; "
+					+ NEWLINE + "height: 100%;" + NEWLINE + "width: 90%;" + NEWLINE + "border: 1px solid lightgray; "
 					+ NEWLINE + "text-align: center;" + NEWLINE + "}" + NEWLINE + "#loadingBar {" + NEWLINE
 					+ "position:absolute;" + NEWLINE + "top:0px;" + NEWLINE + "left:0px;" + NEWLINE + "width: 0px;"
 					+ NEWLINE + "height: 0px;" + NEWLINE + "background-color:rgba(200,200,200,0.8);" + NEWLINE
 					+ "-webkit-transition: all 0.5s ease;" + NEWLINE + "-moz-transition: all 0.5s ease;" + NEWLINE
 					+ "-ms-transition: all 0.5s ease;" + NEWLINE + "-o-transition: all 0.5s ease;" + NEWLINE
 					+ "transition: all 0.5s ease;" + NEWLINE + "opacity:1;" + NEWLINE + "}" + NEWLINE + "#wrapper {"
-					+ NEWLINE + "position:absolute;" + NEWLINE + "width: 1200px;" + NEWLINE + "height: 90%;" + NEWLINE
+					+ NEWLINE + "position:absolute;" + NEWLINE + "width: 1200px;" + NEWLINE + "height: 99%;" + NEWLINE
 					+ "}" + NEWLINE + "#text {" + NEWLINE + "position:absolute;" + NEWLINE + "top:8px;" + NEWLINE
 					+ "left:530px;" + NEWLINE + "width:30px;" + NEWLINE + "height:50px;" + NEWLINE
 					+ "margin:auto auto auto auto;" + NEWLINE + "font-size:16px;" + NEWLINE + "color: #000000;"
@@ -749,12 +749,6 @@ public class CustomVisJsVisualizer implements GraphTraverseHandler {
 
 			xmlWriter.writeStartElement(TAG_DIV);
 			xmlWriter.writeAttribute(ATT_ID, "mynetwork");
-			xmlWriter.writeCharacters(NEWLINE);
-			xmlWriter.writeEndElement();
-			xmlWriter.writeCharacters(NEWLINE);
-
-			xmlWriter.writeStartElement(TAG_P);
-			xmlWriter.writeAttribute(ATT_ID, "selection");
 			xmlWriter.writeCharacters(NEWLINE);
 			xmlWriter.writeEndElement();
 			xmlWriter.writeCharacters(NEWLINE);
