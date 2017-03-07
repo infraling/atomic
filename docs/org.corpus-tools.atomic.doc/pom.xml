@@ -16,8 +16,8 @@
     <!-- override in your settings -->
     <siteMainDirectory>${user.home}</siteMainDirectory>
     <scmPubCheckoutDirectory>\${siteMainDirectory}/salt-content-scm</scmPubCheckoutDirectory>
-   <timestamp>${maven.build.timestamp}</timestamp>
-   <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
   </properties>
   <build>
     <plugins>
@@ -70,161 +70,229 @@
               ${project.version} (${site.path})
               Original revision is
               ${buildNumber}.</checkinComment>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <!-- end doxygen -->
-  </build>
-  <profiles>
-    <profile>
-      <id>release</id>
-      <properties>
-        <site.path>doc</site.path>
-      </properties>
-    </profile>
-    <!-- preview releases still push their documentation to doc snapshot -->
-    <profile>
-      <id>preview</id>
-      <properties>
-        <site.path>${site.path}</site.path>
-      </properties>
-    </profile>
-    <profile>
-      <id>docbook</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>${exec-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>build-docbook</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>pandoc</executable>
-                  <!--<workingDirectory>${project.build.directory}/doxygen/</workingDirectory>-->
-                  <arguments>
-                    <argument>-s</argument>
-                    <argument>-S</argument>
-                    <argument>-f</argument>
-                    <argument>markdown+yaml_metadata_block</argument>
-                    <argument>-t</argument>
-                    <argument>docbook5</argument>
-                    <argument>${project.basedir}/src/main/pandoc/atomic-user-guide.md</argument>
-                    <argument>-o</argument>
-                    <argument>${project.basedir}/src/main/docbook/atomic-user-guide.xml</argument>
-                    <argument>-M</argument>
-                    <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>build-pdf</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>pandoc</executable>
-                  <!--<workingDirectory>${project.build.directory}/doxygen/</workingDirectory>-->
-                  <arguments>
-                    <argument>-s</argument>
-                    <argument>-S</argument>
-                    <argument>-f</argument>
-                    <argument>markdown+yaml_metadata_block</argument>
-                    <argument>${project.basedir}/src/main/pandoc/atomic-user-guide.md</argument>
-                    <argument>-o</argument>
-                    <argument>atomic-user-guide.pdf</argument>
-                    <argument>-M</argument>
-                    <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>com.agilejava.docbkx</groupId>
-            <artifactId>docbkx-maven-plugin</artifactId>
-            <version>${docbkx-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>generate-html</goal>
-                  <goal>generate-eclipse</goal>
-                </goals>
-                <!--<phase>generate-sources</phase>-->
-                <phase>compile</phase>
-              </execution>
-            </executions>
-            <configuration>
-              <sourceDirectory>src/main/docbook</sourceDirectory>
-              <htmlStylesheet>css/style.css</htmlStylesheet>
-              <postProcess>
-                <copy todir="${project.build.directory}/docbkx/html/css">
-                  <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
-                </copy>
-              </postProcess>
-              <chunkedOutput>true</chunkedOutput>
             </configuration>
           </plugin>
         </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>doxygen</id>
-      <build>
-        <plugins>
-          <!-- make sure all paths are correct by replacing the properties -->
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-resources</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.directory}/doxygen-generated</outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>${basedir}/src/main/doxygen/</directory>
-                      <filtering>true</filtering>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
+      </pluginManagement>
+      <!-- end doxygen -->
+    </build>
+    <profiles>
+      <profile>
+        <id>release</id>
+        <properties>
+          <site.path>doc</site.path>
+        </properties>
+      </profile>
+      <!-- preview releases still push their documentation to doc snapshot -->
+      <profile>
+        <id>preview</id>
+        <properties>
+          <site.path>${site.path}</site.path>
+        </properties>
+      </profile>
+      <profile>
+        <id>docbook</id>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>${exec-maven-plugin.version}</version>
+              <executions>
+                <execution>
+                  <id>build-docbook</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>exec</goal>
+                  </goals>
+                  <configuration>
+                    <executable>pandoc</executable>
+                    <!--<workingDirectory>${project.build.directory}/doxygen/</workingDirectory>-->
+                    <arguments>
+                      <argument>-s</argument>
+                      <argument>-S</argument>
+                      <argument>-f</argument>
+                      <argument>markdown+yaml_metadata_block</argument>
+                      <argument>-t</argument>
+                      <argument>docbook5</argument>
+                      <argument>${project.basedir}/src/main/pandoc/atomic-user-guide.md</argument>
+                      <argument>-o</argument>
+                      <argument>${project.basedir}/src/main/docbook/atomic-user-guide.xml</argument>
+                      <argument>-M</argument>
+                      <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
+                    </arguments>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>build-pdf</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>exec</goal>
+                  </goals>
+                  <configuration>
+                    <executable>pandoc</executable>
+                    <!--<workingDirectory>${project.build.directory}/doxygen/</workingDirectory>-->
+                    <arguments>
+                      <argument>-s</argument>
+                      <argument>-S</argument>
+                      <argument>-f</argument>
+                      <argument>markdown+yaml_metadata_block</argument>
+                      <argument>${project.basedir}/src/main/pandoc/atomic-user-guide.md</argument>
+                      <argument>-o</argument>
+                      <argument>${basedir}/src/main/resources/atomic-user-guide.pdf</argument>
+                      <argument>-M</argument>
+                      <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
+                    </arguments>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <version>${maven-resources-plugin.version}</version>
+              <executions>
+                <execution>
+                  <id>copy-pdf</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.directory}/pandoc/pdf</outputDirectory>
+                    <resources>
+                      <resource>
+                        <directory>${basedir}/src/main/resources</directory>
+                      </resource>
+                    </resources>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>copy-eclipse-help</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${basedir}/../../plugins/org.corpus-tools.atomic/doc/help/</outputDirectory>
+                    <resources>
+                      <resource>
+                        <directory>${project.build.directory}/docbkx/eclipse/</directory>
+                      </resource>
+                    </resources>
+                  </configuration>
+                </execution>
+
+              </executions>
+            </plugin>
+
+            <plugin>
+              <groupId>com.agilejava.docbkx</groupId>
+              <artifactId>docbkx-maven-plugin</artifactId>
+              <version>${docbkx-maven-plugin.version}</version>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>generate-html</goal>
+                    <goal>generate-eclipse</goal>
+                  </goals>
+                  <!--<phase>generate-sources</phase>-->
+                  <phase>compile</phase>
+                </execution>
+              </executions>
+              <configuration>
+                <sourceDirectory>src/main/docbook</sourceDirectory>
+                <htmlStylesheet>css/style.css</htmlStylesheet>
+                <postProcess>
+                  <copy todir="${project.build.directory}/docbkx/html/css">
+                    <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
+                  </copy>
+                </postProcess>
+                <chunkedOutput>true</chunkedOutput>
+              </configuration>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
+      <profile>
+        <id>doxygen</id>
+        <build>
+          <plugins>
+            <!-- make sure all paths are correct by replacing the properties -->
+            <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>copy-resources</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.directory}/doxygen-generated</outputDirectory>
+                    <resources>
+                      <resource>
+                        <directory>${basedir}/src/main/doxygen/</directory>
+                        <filtering>true</filtering>
+                      </resource>
+                    </resources>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
           <!-- use the filtered source files to actually generate the doxygen 
-            output -->
+          output -->
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <version>${exec-maven-plugin.version}</version>
             <executions>
               <execution>
+                <id>build-doxygen</id>
                 <phase>compile</phase>
                 <goals>
                   <goal>exec</goal>
                 </goals>
+                <configuration>
+                  <executable>doxygen</executable>
+                  <workingDirectory>${project.build.directory}/doxygen/</workingDirectory>
+                  <arguments>
+                    <argument>${project.build.directory}/doxygen-generated/Doxyfile</argument>
+                  </arguments>
+                </configuration>
               </execution>
+              <execution>
+                <id>remove-plugin.xml</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${project.basedir}/src/main/doxygen/clean-toc.sh</executable>
+                  <workingDirectory>${project.basedir}/src/main/doxygen/</workingDirectory>
+                  <arguments>
+                    <argument>${project.build.directory}/doxygen/doc-snapshot/toc.xml</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>copy-eclipse-help</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${project.basedir}/src/main/doxygen/clean-toc.sh</executable>
+                  <workingDirectory>${project.basedir}/src/main/doxygen/</workingDirectory>
+                  <arguments>
+                    <argument>${project.build.directory}/doxygen/doc-snapshot/toc.xml</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+
             </executions>
-            <configuration>
-              <executable>doxygen</executable>
-              <workingDirectory>${project.build.directory}/doxygen/</workingDirectory>
-              <arguments>
-                <argument>${project.build.directory}/doxygen-generated/Doxyfile</argument>
-              </arguments>
-            </configuration>
           </plugin>
           <!-- some doxygen versions don't delete the huge doxygen_sqlite3.db 
-            file -->
+          file -->
           <plugin>
             <artifactId>maven-clean-plugin</artifactId>
             <version>${maven-clean-plugin.version}</version>
@@ -247,54 +315,6 @@
                       </includes>
                     </fileset>
                   </filesets>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>eclipse</id>
-      <build>
-        <plugins>
-          <!-- upload the generated documentation to GitHub -->
-          <!--<plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-scm-publish-plugin</artifactId><executions><execution><id>scm-publish</id><phase>deploy</phase><goals><goal>publish-scm</goal></goals></execution></executions></plugin>-->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>${exec-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <executable>${basedir}/src/main/doxygen/clean-toc.sh</executable>
-              <arguments>
-                <argument>${basedir}/target/doxygen/doc-snapshot/toc.xml</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-resources</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${basedir}/../../plugins/org.corpus-tools.atomic/doc/help/</outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>${project.build.directory}/doxygen/doc-snapshot</directory>
-                    </resource>
-                  </resources>
                 </configuration>
               </execution>
             </executions>
