@@ -1,0 +1,5 @@
+var classorg_1_1corpus__tools_1_1atomic_1_1tokeneditor_1_1configuration_1_1_token_editor_key_configuration =
+[
+    [ "TokenEditorKeyConfiguration", "classorg_1_1corpus__tools_1_1atomic_1_1tokeneditor_1_1configuration_1_1_token_editor_key_configuration.html#a86fcd1f6927abf4791a9901e584bf1e5", null ],
+    [ "configureUiBindings", "classorg_1_1corpus__tools_1_1atomic_1_1tokeneditor_1_1configuration_1_1_token_editor_key_configuration.html#ab46ca9b417e99f0c2a24fa3a8a8639fd", null ]
+];

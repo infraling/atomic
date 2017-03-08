@@ -1,0 +1,4 @@
+var classorg_1_1corpus__tools_1_1atomic_1_1tokeneditor_1_1configuration_1_1_editor_popup_menu_configbae862e2109bf19961ba4dafe86d4f2d =
+[
+    [ "addMenuItem", "classorg_1_1corpus__tools_1_1atomic_1_1tokeneditor_1_1configuration_1_1_editor_popup_menu_configbae862e2109bf19961ba4dafe86d4f2d.html#a0744dba8b39dd0b2316be28caa0958ce", null ]
+];
