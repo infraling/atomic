@@ -8,11 +8,7 @@ Change directory to `docs/org.corpus-tools.atomic.doc/`.
 
 Run
 
-    mvn clean package -P doxygen
-
-Run
-
-    mvn verify -P eclipse
+    mvn clean package -P docs
 
 Change directory to project root.
 
@@ -23,6 +19,6 @@ Run
     mvn clean install
 
 ---
-When using Jenkins, don't run `mvn verify -P eclipse`, instead move the profile functionality to an *Execute shell* step in the Build Job Config.
+Cf. JENKINS.md for setup in Jenkins
 
 ---
