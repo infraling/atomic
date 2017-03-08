@@ -46,7 +46,7 @@
       </plugin>
       <!-- end: maven site plugin -->
     </plugins>
-    <!-- start doxygen -->
+    <!-- start docs -->
     <pluginManagement>
       <plugins>
         <plugin>
@@ -70,184 +70,149 @@
               ${project.version} (${site.path})
               Original revision is
               ${buildNumber}.</checkinComment>
-            </configuration>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <!-- end doxygen -->
+  </build>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <properties>
+        <site.path>doc</site.path>
+      </properties>
+    </profile>
+    <!-- preview releases still push their documentation to doc snapshot -->
+    <profile>
+      <id>preview</id>
+      <properties>
+        <site.path>${site.path}</site.path>
+      </properties>
+    </profile>
+    <profile>
+      <id>docs</id>
+      <build>
+        <plugins>
+
+          <plugin>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>${maven-clean-plugin.version}</version>
+            <executions>
+              <!-- Remove old Eclipse help files from .atomic/doc/help -->
+              <execution>
+                <id>remove-old-eclipse-help</id>
+                <!-- PHASE: CLEAN -->
+                <phase>clean</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <filesets>
+                    <fileset>
+                      <directory>${project.basedir}/../../plugins/org.corpus-tools.atomic/doc/help/</directory>
+                      <includes>
+                        <include>**/*</include>
+                      </includes>
+                      <excludes>
+                        <exclude>README.txt</exclude>
+                      </excludes>
+                    </fileset>
+                  </filesets>
+                </configuration>
+              </execution>
+              <!-- Delete the huge doxygen_sqlite3.db file if it exists -->
+              <execution>
+                <id>remove-doxygen-sqlitedb</id>
+                <!-- PHASE: PREPARE-PACKAGE -->
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                  <filesets>
+                    <fileset>
+                      <directory>${project.build.directory}/doxygen/</directory>
+                      <includes>
+                        <include>**/doxygen_sqlite3.db</include>
+                      </includes>
+                    </fileset>
+                  </filesets>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
-        </plugins>
-      </pluginManagement>
-      <!-- end doxygen -->
-    </build>
-    <profiles>
-      <profile>
-        <id>release</id>
-        <properties>
-          <site.path>doc</site.path>
-        </properties>
-      </profile>
-      <!-- preview releases still push their documentation to doc snapshot -->
-      <profile>
-        <id>preview</id>
-        <properties>
-          <site.path>${site.path}</site.path>
-        </properties>
-      </profile>
-      <profile>
-        <id>docbook</id>
-        <build>
-          <plugins>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <version>${exec-maven-plugin.version}</version>
-              <executions>
-                <execution>
-                  <id>build-docbook</id>
-                  <phase>generate-sources</phase>
-                  <goals>
-                    <goal>exec</goal>
-                  </goals>
-                  <configuration>
-                    <executable>pandoc</executable>
-                    <!--<workingDirectory>${project.build.directory}/doxygen/</workingDirectory>-->
-                    <arguments>
-                      <argument>-s</argument>
-                      <argument>-S</argument>
-                      <argument>-f</argument>
-                      <argument>markdown+yaml_metadata_block</argument>
-                      <argument>-t</argument>
-                      <argument>docbook5</argument>
-                      <argument>${project.basedir}/src/main/pandoc/atomic-user-guide.md</argument>
-                      <argument>-o</argument>
-                      <argument>${project.basedir}/src/main/docbook/atomic-user-guide.xml</argument>
-                      <argument>-M</argument>
-                      <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
-                    </arguments>
-                  </configuration>
-                </execution>
-                <execution>
-                  <id>build-pdf</id>
-                  <phase>generate-sources</phase>
-                  <goals>
-                    <goal>exec</goal>
-                  </goals>
-                  <configuration>
-                    <executable>pandoc</executable>
-                    <!--<workingDirectory>${project.build.directory}/doxygen/</workingDirectory>-->
-                    <arguments>
-                      <argument>-s</argument>
-                      <argument>-S</argument>
-                      <argument>-f</argument>
-                      <argument>markdown+yaml_metadata_block</argument>
-                      <argument>${project.basedir}/src/main/pandoc/atomic-user-guide.md</argument>
-                      <argument>-o</argument>
-                      <argument>${basedir}/src/main/resources/atomic-user-guide.pdf</argument>
-                      <argument>-M</argument>
-                      <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
-                    </arguments>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-            <plugin>
-              <artifactId>maven-resources-plugin</artifactId>
-              <version>${maven-resources-plugin.version}</version>
-              <executions>
-                <execution>
-                  <id>copy-pdf</id>
-                  <phase>generate-sources</phase>
-                  <goals>
-                    <goal>copy-resources</goal>
-                  </goals>
-                  <configuration>
-                    <outputDirectory>${project.build.directory}/pandoc/pdf</outputDirectory>
-                    <resources>
-                      <resource>
-                        <directory>${basedir}/src/main/resources</directory>
-                      </resource>
-                    </resources>
-                  </configuration>
-                </execution>
-                <execution>
-                  <id>copy-eclipse-help</id>
-                  <phase>generate-sources</phase>
-                  <goals>
-                    <goal>copy-resources</goal>
-                  </goals>
-                  <configuration>
-                    <outputDirectory>${basedir}/../../plugins/org.corpus-tools.atomic/doc/help/</outputDirectory>
-                    <resources>
-                      <resource>
-                        <directory>${project.build.directory}/docbkx/eclipse/</directory>
-                      </resource>
-                    </resources>
-                  </configuration>
-                </execution>
 
-              </executions>
-            </plugin>
-
-            <plugin>
-              <groupId>com.agilejava.docbkx</groupId>
-              <artifactId>docbkx-maven-plugin</artifactId>
-              <version>${docbkx-maven-plugin.version}</version>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>generate-html</goal>
-                    <goal>generate-eclipse</goal>
-                  </goals>
-                  <!--<phase>generate-sources</phase>-->
-                  <phase>compile</phase>
-                </execution>
-              </executions>
-              <configuration>
-                <sourceDirectory>src/main/docbook</sourceDirectory>
-                <htmlStylesheet>css/style.css</htmlStylesheet>
-                <postProcess>
-                  <copy todir="${project.build.directory}/docbkx/html/css">
-                    <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
-                  </copy>
-                </postProcess>
-                <chunkedOutput>true</chunkedOutput>
-              </configuration>
-            </plugin>
-          </plugins>
-        </build>
-      </profile>
-      <profile>
-        <id>doxygen</id>
-        <build>
-          <plugins>
-            <!-- make sure all paths are correct by replacing the properties -->
-            <plugin>
-              <artifactId>maven-resources-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>copy-resources</id>
-                  <phase>generate-sources</phase>
-                  <goals>
-                    <goal>copy-resources</goal>
-                  </goals>
-                  <configuration>
-                    <outputDirectory>${project.build.directory}/doxygen-generated</outputDirectory>
-                    <resources>
-                      <resource>
-                        <directory>${basedir}/src/main/doxygen/</directory>
-                        <filtering>true</filtering>
-                      </resource>
-                    </resources>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-          <!-- use the filtered source files to actually generate the doxygen 
-          output -->
+          <!-- Build user docs with pandoc -->
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <version>${exec-maven-plugin.version}</version>
             <executions>
+              <!-- Build user doc DocBook from Markdown via pandoc -->
+              <execution>
+                <id>build-docbook</id>
+                <!-- PHASE: GENERATE-SOURCES -->
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>pandoc</executable>
+                  <arguments>
+                    <argument>-s</argument>
+                    <argument>-S</argument>
+                    <argument>-f</argument>
+                    <argument>markdown+yaml_metadata_block</argument>
+                    <argument>-t</argument>
+                    <argument>docbook5</argument>
+                    <!-- Add Markdown documents to be compiled in the right order as arguments.
+                      One file per argument!
+                      Don't forget to add them in the "build-pdf" execution below as well! -->
+                    <argument>${project.basedir}/src/main/pandoc/01-introduction.md</argument>
+                    <!-- end Markdown documents -->
+                    <argument>-o</argument>
+                    <argument>${project.basedir}/src/main/docbook/atomic-user-guide.xml</argument>
+                    <!-- Hack: misuse author metadate to display in all versions), Markdown source uses date metadate for author name -->
+                    <argument>-M</argument>
+                    <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <!-- Build user doc PDF from Markdown via pandoc -->
+              <execution>
+                <id>build-pdf</id>
+                <!-- PHASE: GENERATE-SOURCES -->
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>pandoc</executable>
+                  <arguments>
+                    <argument>-s</argument>
+                    <argument>-S</argument>
+                    <argument>-f</argument>
+                    <argument>markdown+yaml_metadata_block</argument>
+                    <!-- Add Markdown documents to be compiled in the right order as arguments.
+                      One file per argument!
+                      Don't forget to add them in the "build-pdf" execution below as well! -->
+                    <argument>${project.basedir}/src/main/pandoc/01-introduction.md</argument>
+                    <!-- end Markdown documents -->
+                    <argument>-o</argument>
+                    <argument>${basedir}/src/main/resources/atomic-user-guide.pdf</argument>
+                    <!-- Hack: misuse author metadate to display in all versions), Markdown source uses date metadate for author name -->
+                    <argument>-M</argument>
+                    <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <!-- Use the Doxygen sources with replaces variables to generate developer docs -->
+              <!-- Build developer documentation with Doxygen -->
               <execution>
                 <id>build-doxygen</id>
+                <!-- PHASE: COMPILE -->
                 <phase>compile</phase>
                 <goals>
                   <goal>exec</goal>
@@ -260,65 +225,115 @@
                   </arguments>
                 </configuration>
               </execution>
+              <!-- Fix Eclipse Help's toc.xml to point to correct path -->
               <execution>
-                <id>remove-plugin.xml</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>${project.basedir}/src/main/doxygen/clean-toc.sh</executable>
-                  <workingDirectory>${project.basedir}/src/main/doxygen/</workingDirectory>
-                  <arguments>
-                    <argument>${project.build.directory}/doxygen/doc-snapshot/toc.xml</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>copy-eclipse-help</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>${project.basedir}/src/main/doxygen/clean-toc.sh</executable>
-                  <workingDirectory>${project.basedir}/src/main/doxygen/</workingDirectory>
-                  <arguments>
-                    <argument>${project.build.directory}/doxygen/doc-snapshot/toc.xml</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-
-            </executions>
-          </plugin>
-          <!-- some doxygen versions don't delete the huge doxygen_sqlite3.db 
-          file -->
-          <plugin>
-            <artifactId>maven-clean-plugin</artifactId>
-            <version>${maven-clean-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>remove-doxygen-sqlitedb</id>
+                <id>fix-paths-in-toc.xml</id>
                 <phase>prepare-package</phase>
                 <goals>
-                  <goal>clean</goal>
+                  <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                  <filesets>
-                    <fileset>
-                      <directory>${project.build.directory}/doxygen/</directory>
-                      <includes>
-                        <include>**/doxygen_sqlite3.db</include>
-                        <!-- Also delete the plugin.xml file generated by Doxygen -->
-                        <include>**/plugin.xml</include>
-                      </includes>
-                    </fileset>
-                  </filesets>
+                  <executable>${project.basedir}/src/main/docbook/clean-toc.sh</executable>
+                  <arguments>
+                    <argument>${project.basedir}/../../plugins/org.corpus-tools.atomic/doc/help/toc.xml</argument>
+                  </arguments>
                 </configuration>
               </execution>
             </executions>
           </plugin>
+
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven-resources-plugin.version}</version>
+            <executions>
+              <!-- Copy the user doc PDF from src/main/resources/ to target/pandoc/pdf/ -->
+              <execution>
+                <id>copy-pdf</id>
+               <!-- PHASE: GENERATE-RESOURCES -->
+               <phase>generate-resources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.basedir}/../../features/org.corpus-tools.atomic.feature/rootfiles/</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${basedir}/src/main/resources</directory>
+                      <includes>
+                        <include>atomic-user-guide.pdf</include>
+                      </includes>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+              <!-- Filter developer documentation to temporary path, i.e., replace Maven variables in sources with actual values -->
+              <execution>
+                <id>replace-variables</id>
+               <!-- PHASE: GENERATE-SOURCES -->
+               <phase>generate-resources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/doxygen-generated/</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${basedir}/src/main/doxygen/</directory>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+              <!-- Copy the user doc Eclipse Help files from target/docbkx/eclipse to plugins/o.c-t.atomic/doc/help -->
+              <execution>
+                <id>copy-eclipse-help</id>
+                <!-- PHASE: COMPILE -->
+                <phase>compile</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${basedir}/../../plugins/org.corpus-tools.atomic/doc/help/</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.build.directory}/docbkx/eclipse/</directory>
+                      <excludes>
+                        <exclude>plugin.xml</exclude>
+                      </excludes>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Generate HTML and Eclipse Help from pandoc-built DocBook-->
+          <plugin>
+            <groupId>com.agilejava.docbkx</groupId>
+            <artifactId>docbkx-maven-plugin</artifactId>
+            <version>${docbkx-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate-html</goal>
+                  <goal>generate-eclipse</goal>
+                </goals>
+                <!-- PHASE: PROCESS-SOURCES -->
+                <phase>process-sources</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <sourceDirectory>src/main/docbook</sourceDirectory>
+              <htmlStylesheet>css/style.css</htmlStylesheet>
+              <postProcess>
+                <copy todir="${project.build.directory}/docbkx/html/css">
+                  <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
+                </copy>
+              </postProcess>
+              <chunkedOutput>true</chunkedOutput>
+            </configuration>
+          </plugin>
+
         </plugins>
       </build>
     </profile>
