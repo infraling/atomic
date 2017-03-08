@@ -1,9 +1,0 @@
-var classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_properties =
-[
-    [ "PropertyNameComparator", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_prope0ae3478383e566343d0bb0b0b424279e.html", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_prope0ae3478383e566343d0bb0b0b424279e" ],
-    [ "PepperWizardPageProperties", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_properties.html#a5b534e8d886d9f921862a988c2ec7cc8", null ],
-    [ "createControl", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_properties.html#ac26397942a7456867155a41fed8cefec", null ],
-    [ "setVisible", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_properties.html#a1f6b5ad6ba88cc2df7fead61ad738f3b", null ],
-    [ "pepperWizard", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_properties.html#a4beebf2db8a20aadd45fae310968ad9e", null ],
-    [ "tableViewer", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1_pepper_wizard_page_properties.html#aabdee6d31167ae32381f6de8125d2ddc", null ]
-];

@@ -1,4 +1,0 @@
-var classorg_1_1corpus__tools_1_1atomic_1_1tokeneditor_1_1configuration_1_1_editor_popup_menu_config0e1c9ad1faa6ca40257837109ce8a649 =
-[
-    [ "run", "classorg_1_1corpus__tools_1_1atomic_1_1tokeneditor_1_1configuration_1_1_editor_popup_menu_config0e1c9ad1faa6ca40257837109ce8a649.html#a8c8c64d5a5920fffd8fa4605363dbc60", null ]
-];

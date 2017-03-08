@@ -1,4 +1,8 @@
-/META-INF
-/OSGI-INF
-/target
-/docs/
+**/META-INF
+**/OSGI-INF
+**/target
+/docs
+doctemp/
+userdoctemp/
+features/
+plugins/
