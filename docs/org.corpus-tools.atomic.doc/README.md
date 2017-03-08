@@ -40,15 +40,25 @@ Note that all files to be included in the documentation must be added to the pan
 
 ### User documentation
 
-The Maven build for the user documentation itself is as follows
+The Maven build for the user documentation itself is as follows.
 
 | Maven phase | Build execution |
 |---|---|
-| `clean` | Removes the old Eclipse help files from the core plugin |
-|---|---|
+| `clean` | Remove the old Eclipse help files from the core plugin |
 | `generate-sources` | Build DocBook from Markdown via pandoc |
 || Build PDF from Markdown via pandoc |
 || Copy generated PDF to target directory structure |
-|---|---|
 | `process-sources` | Generate HTML from generated DocBook |
 |  | Generate Eclipse Help files from generated DocBook |
+| `compile` | Copy generated Eclipse Help files to core plugin |
+| `prepare-package` | Change the file references in `toc.xml` (Eclipse Help) to point to correct sub-directory (using a script `clean-toc.sh`)|
+
+### Developer documentation
+
+The Maven build for the developer documentation itself is as follows.
+
+| Maven phase | Build execution |
+|---|---|
+| `generate-sources` | Replace Maven variables in Doxygen sources with actual values (via filtering in Maven Resources Plugin) |
+| `compile` | Generate HTML with Doxygen |
+| `prepare-package` | Clean unneeded files from Doxygen build |
