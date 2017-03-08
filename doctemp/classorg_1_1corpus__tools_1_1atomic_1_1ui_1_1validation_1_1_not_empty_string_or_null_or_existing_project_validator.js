@@ -1,5 +1,0 @@
-var classorg_1_1corpus__tools_1_1atomic_1_1ui_1_1validation_1_1_not_empty_string_or_null_or_existing_project_validator =
-[
-    [ "NotEmptyStringOrNullOrExistingProjectValidator", "classorg_1_1corpus__tools_1_1atomic_1_1ui_1_1validation_1_1_not_empty_string_or_null_or_existing_project_validator.html#ad638228606d208a8042642072409e0b1", null ],
-    [ "validate", "classorg_1_1corpus__tools_1_1atomic_1_1ui_1_1validation_1_1_not_empty_string_or_null_or_existing_project_validator.html#a2d704831e65d8a78ecfb86335dfd23a8", null ]
-];
