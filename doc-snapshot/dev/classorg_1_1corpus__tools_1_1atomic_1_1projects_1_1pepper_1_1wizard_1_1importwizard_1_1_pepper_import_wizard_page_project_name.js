@@ -1,0 +1,10 @@
+var classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name =
+[
+    [ "PepperImportWizardPageProjectName", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name.html#aa2b67dad0adfaa2b326efed93a3c6c19", null ],
+    [ "createControl", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name.html#a45fd00e56e0f85ded32c79832949283d", null ],
+    [ "getProjectName", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name.html#a1b919229ad34f3c8876ec210fd8867e1", null ],
+    [ "setVisible", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name.html#a724c4115310edd3a7bb5232125d38484", null ],
+    [ "updatePageComplete", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name.html#aa074bf3d10045416385ccad31e5a9e1c", null ],
+    [ "pepperImportWizard", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name.html#a3dc0222efd4db071a94176df7f1921f6", null ],
+    [ "text", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_pepper_import_wizard_page_project_name.html#a000d224bff65f487ee5d0e8b13b4a34e", null ]
+];
