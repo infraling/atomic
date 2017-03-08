@@ -11,9 +11,11 @@ This script is set up to be used in a Jenkins build of Atomic, for building the 
     git checkout gh-pages
     git pull origin gh-pages
     if [ -d doc-snapshot ]; then
-      rm ./doc-snapshot/dev/placeholder
-      rm ./doc-snapshot/user/placeholder
+      rm -r -f doc-snapshot
     fi
+    mkdir ./doc-snapshot
+    mkdir ./doc-snapshot/dev
+    mkdir ./doc-snapshot/user
     mv ./doctemp/* ./doc-snapshot/dev/
     mv ./userdoctemp/* ./doc-snapshot/user/
     git add $(git ls-files --others --exclude-standard)
