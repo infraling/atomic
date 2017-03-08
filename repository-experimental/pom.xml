@@ -17,7 +17,7 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-director-plugin</artifactId>
-        <version>${tycho-version}</version>
+        <version>${tycho.version}</version>
         <executions>
           <execution>
             <!-- install the product using the p2 director -->
@@ -48,7 +48,7 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
-        <version>${tycho-version}</version>
+        <version>${tycho.version}</version>
         <configuration>
           <environments>
             <environment>
