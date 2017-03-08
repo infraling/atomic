@@ -1,6 +1,0 @@
-var classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_import_module_runnable =
-[
-    [ "ImportModuleRunnable", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_import_module_runnable.html#a2008c3fc6932217ce004522f18f0f61f", null ],
-    [ "createExporterParams", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_import_module_runnable.html#a019403bb72d8bb68af7552ce6d78873b", null ],
-    [ "createImporterParams", "classorg_1_1corpus__tools_1_1atomic_1_1projects_1_1pepper_1_1wizard_1_1importwizard_1_1_import_module_runnable.html#aa7fc74c860715dc8a69daef7cfce717b", null ]
-];
