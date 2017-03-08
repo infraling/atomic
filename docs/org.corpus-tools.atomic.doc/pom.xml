@@ -173,7 +173,7 @@
                     <argument>${project.basedir}/src/main/pandoc/01-introduction.md</argument>
                     <!-- end Markdown documents -->
                     <argument>-o</argument>
-                    <argument>${project.basedir}/src/main/docbook/atomic-user-guide.xml</argument>
+                    <argument>${project.basedir}/src/main/docbook/index.xml</argument>
                     <!-- Hack: misuse author metadate to display in all versions), Markdown source uses date metadate for author name -->
                     <argument>-M</argument>
                     <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
