@@ -27,15 +27,28 @@ The sources for the **user documentation** are found in `src/main/pandoc`.
 
 The sources for the **developer documentation** are found in `src/main/doxygen`.
 
-### Workflow
-
-#### User documentation
+### User documentation
 
 User documentation is written in chapters, where the Markdown file should be named `[dd]-[chaptername].md`, e.g., `01-introduction.md`.
 Note that all files to be included in the documentation must be added to the pandoc build in `pom.xml`, cf. comments there.
 
+## Build
+
+**Requirements**
+
+- `pandoc` >= v1.19.2.1 on PATH
+
+### User documentation
+
 The Maven build for the user documentation itself is as follows
 
 | Maven phase | Build execution |
----
-| `clean` ||
+|---|---|
+| `clean` | Removes the old Eclipse help files from the core plugin |
+|---|---|
+| `generate-sources` | Build DocBook from Markdown via pandoc |
+|| Build PDF from Markdown via pandoc |
+|| Copy generated PDF to target directory structure |
+|---|---|
+| `process-sources` | Generate HTML from generated DocBook |
+|  | Generate Eclipse Help files from generated DocBook |
