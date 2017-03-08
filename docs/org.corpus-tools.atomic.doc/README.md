@@ -37,6 +37,7 @@ Note that all files to be included in the documentation must be added to the pan
 **Requirements**
 
 - `pandoc` >= v1.19.2.1 on PATH
+- `doxygen` >= v1.8.11 on PATH
 
 ### User documentation
 
