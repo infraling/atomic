@@ -166,7 +166,7 @@
                     <argument>-f</argument>
                     <argument>markdown+yaml_metadata_block</argument>
                     <argument>-t</argument>
-                    <argument>docbook5</argument>
+                    <argument>docbook</argument>
                     <!-- Add Markdown documents to be compiled in the right order as arguments.
                       One file per argument!
                       Don't forget to add them in the "build-pdf" execution below as well! -->
