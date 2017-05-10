@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1488871329">
+<target name="Atomic Target Platform" sequenceNumber="1494399353">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.rcp.feature.group" version="4.6.2.v20161124-1400"/>
-      <unit id="org.eclipse.equinox.p2.extras.feature.feature.group" version="1.2.201.v20161116-1353"/>
-      <unit id="org.eclipse.help.feature.group" version="2.2.1.v20161124-1400"/>
+      <unit id="org.eclipse.rcp.feature.group" version="4.6.3.v20170301-0400"/>
+      <unit id="org.eclipse.equinox.p2.extras.feature.feature.group" version="1.2.203.v20170131-1444"/>
+      <unit id="org.eclipse.help.feature.group" version="2.2.2.v20170301-0400"/>
       <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.300.v20161122-1740"/>
       <unit id="org.eclipse.core.runtime" version="3.12.0.v20160606-1342"/>
-      <unit id="org.eclipse.ui.workbench" version="3.108.2.v20161025-2029"/>
+      <unit id="org.eclipse.ui.workbench" version="3.108.3.v20170216-1539"/>
       <unit id="org.eclipse.ui.navigator" version="3.6.101.v20161006-1120"/>
-      <unit id="org.eclipse.ui.ide" version="3.12.2.v20161115-1450"/>
+      <unit id="org.eclipse.ui.ide" version="3.12.3.v20170119-0935"/>
       <unit id="org.eclipse.ui.ide.application" version="1.1.101.v20160829-0827"/>
       <unit id="org.eclipse.ui" version="3.108.1.v20160929-1045"/>
       <unit id="org.eclipse.ui.console" version="3.6.201.v20161107-0337"/>
@@ -26,13 +26,16 @@
       <unit id="org.eclipse.jface.databinding" version="1.8.1.v20161026-1531"/>
       <unit id="com.ibm.icu" version="56.1.0.v201601250100"/>
       <unit id="org.eclipse.help" version="3.7.0.v20160602-1307"/>
-      <unit id="com.google.guava" version="15.0.0.v201403281430"/>
+      <unit id="com.google.guava" version="18.0.0.v20161115-1643"/>
       <unit id="org.eclipse.osgi.services" version="3.5.100.v20160504-1419"/>
       <unit id="org.eclipse.osgi.util" version="3.3.100.v20150423-1351"/>
-      <unit id="org.eclipse.osgi" version="3.11.2.v20161107-1947"/>
+      <unit id="org.eclipse.osgi" version="3.11.3.v20170209-1843"/>
       <unit id="org.eclipse.aether.maven" version="3.1.0.v20140706-2237"/>
-      <unit id="org.eclipse.nebula.widgets.nattable.core" version="1.4.0.201606011907"/>
       <repository location="http://download.eclipse.org/releases/neon"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.nebula.widgets.nattable.core" version="1.5.0.201703192131"/>
+      <repository location="http://download.eclipse.org/nattable/releases/1.5.0/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="com.lmax.disruptor" version="3.3.2"/>
