@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hexatomic Grid Editor
+Bundle-SymbolicName: org.corpus_tools.hexatomic.grideditor;singleton:=true
+Bundle-Version: 0.3.0.qualifier
+Bundle-Activator: org.corpus_tools.hexatomic.grideditor.Activator
+Bundle-Vendor: Humboldt-Universität zu Berlin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.corpus_tools.atomic,
+ org.eclipse.nebula.widgets.nattable.core,
+ com.google.guava;bundle-version="19.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
