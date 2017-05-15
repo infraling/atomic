@@ -7,10 +7,9 @@
       <editor
             name="Grid Editor"
             extensions="salt"
-            icon="icons/sample.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="org.corpus_tools.hexatomic.grideditor.GridEditor"
-            id="org.corpus_tools.hexatomic.grideditor.GridEditor">
+            class="org.corpus_tools.atomic.grideditor.GridEditor"
+            id="org.corpus_tools.atomic.grideditor.GridEditor">
       </editor>
    </extension>
 
