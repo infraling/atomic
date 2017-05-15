@@ -90,7 +90,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.corpus_tools.hexatomic.grideditor"
+         id="org.corpus_tools.atomic.grideditor"
          download-size="0"
          install-size="0"
          version="0.0.0"
