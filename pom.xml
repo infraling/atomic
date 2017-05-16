@@ -145,5 +145,6 @@
 		<module>
 			plugins/de.uni_jena.iaa.linktype.atomic.atomical
 		</module>
+		<module>plugins/org.corpus-tools.atomic.grideditor</module>
 	</modules>
 </project>
