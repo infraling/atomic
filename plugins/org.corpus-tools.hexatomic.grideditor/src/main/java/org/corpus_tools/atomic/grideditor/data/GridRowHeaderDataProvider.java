@@ -3,6 +3,7 @@
  */
 package org.corpus_tools.atomic.grideditor.data;
 
+import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
 
 import com.google.common.collect.Table;
