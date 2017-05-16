@@ -1,8 +1,6 @@
 package org.corpus_tools.atomic.grideditor;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
@@ -38,6 +36,12 @@ import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Stephan Druskat
+ * 
+ * // TODO Add description
+ *
+ */
 public class GridEditor extends DocumentGraphEditor {
 
 	private AnnotationGridDataProvider dataProvider = null;
@@ -51,7 +55,7 @@ public class GridEditor extends DocumentGraphEditor {
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
-		annotationTable = compileAnnotationTable(graph);
+		annotationTable = compileAnnotationGrid(graph);
 	}
 	
 	@Override
@@ -107,16 +111,22 @@ public class GridEditor extends DocumentGraphEditor {
 	}
 	
 	/**
-	 * Compiles a table set up like this:
+	 * Compiles and lays out an instance of {@link AnnotationGrid}
+	 * for the current {@link SDocumentGraph}.
 	 * 
-	 * | Row index = index of token in list of graph's sorted tokens | Token text | Token annotation key  1 (random order) | Token annotation key 2 | Token annotation key n | Span annotation key 1 (random order) | Span annotation  key 2 | Span annotation key n |
-	 * |-------------------------------------------------------------|------------|----------------------------------------|------------------------|------------------------|--------------------------------------|------------------------|-----------------------|
-	 * | Integer | String | SAnnotation | SAnnotation | SAnnotation | SAnnotation | SAnnotation | SAnnotation |
+	 * Row indices are thereby got from the index of a specific
+	 * token in the list of tokens ordered by text returned from
+	 * {@link SDocumentGraph#getSortedTokenByText()}. Cell values
+	 * are, apart from the first column which is the token's text
+	 * returned by {@link SDocumentGraph#getText(SNode)}, of type
+	 * {@link SAnnotation}, and for each token, the token's annotations
+	 * are added to the grid first, then the annotations for each
+	 * span that is governing the token, etc.
 	 * 
 	 * @param graph
 	 * @return
 	 */
-	private AnnotationGrid compileAnnotationTable(SDocumentGraph graph) {
+	private AnnotationGrid compileAnnotationGrid(SDocumentGraph graph) {
 		AnnotationGrid grid = new AnnotationGrid();
 		final List<SToken> orderedTokens = graph.getSortedTokenByText();
 		for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {
