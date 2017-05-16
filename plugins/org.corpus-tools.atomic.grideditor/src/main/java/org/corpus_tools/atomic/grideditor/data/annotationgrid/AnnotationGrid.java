@@ -3,75 +3,79 @@
  */
 package org.corpus_tools.atomic.grideditor.data.annotationgrid;
 
-import java.util.Collections; 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import org.corpus_tools.salt.common.SSpan;
+import org.corpus_tools.salt.common.SToken;
+import org.corpus_tools.salt.core.SAnnotation;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 /**
- * @author Stephan Druskat
+ * A custom data structure for annotation data.
  * 
- * // TODO Add description
+ * In an annotation grid, {@link SToken} and
+ * {@link SSpan} {@link SAnnotation}s are mapped
+ * to a grid.
+ * 
+ * The layout of the grid is as follows.
+ * 
+ * | Row index = index of token in list of graph's sorted tokens | Token text | Token annotation key  1 (random order) | Token annotation key 2 | Token annotation key n | Span annotation key 1 (random order) | Span annotation  key 2 | Span annotation key n |
+ * |-------------------------------------------------------------|------------|----------------------------------------|------------------------|------------------------|--------------------------------------|------------------------|-----------------------|
+ * | {@link Integer} | {@link String} | {@link SAnnotation} | {@link SAnnotation} | {@link SAnnotation} | {@link SAnnotation} | {@link SAnnotation} | {@link SAnnotation} |
  *
+ * @author Stephan Druskat
  */
 public class AnnotationGrid {
-
-	/**
-		 * @author Stephan Druskat
-		 * 
-		 * // TODO Add description
-		 *
-		 */
-	public class Cell {
-
-		private Object object;
-		private String header;
-
-		public Cell(Object object, String header) {
-			this.object = object;
-			this.header = header;
-		}
-
-		/**
-		 * @return the object
-		 */
-		public Object getObject() {
-			return object;
-		}
-
-		/**
-		 * @return the header
-		 */
-		public String getHeader() {
-			return header;
-		}
-
-	}
 
 	Map<Integer, Row> rowMap = new HashMap<>();
 	BiMap<Integer, String> headerMap = HashBiMap.create();
 
-	public void record(int rowIndex, int colIndex, String header, Object object) {
+	/**
+	 * Top-level method for adding content to the grid.
+	 * 
+	 * Takes row and column indices, a header for the
+	 * column in which the cell to be constructed down
+	 * the line should be placed, and the value object.
+	 * 
+	 * If no {@link Row} exists at the respective row
+	 * index, a new one is initialized, otherwise, the
+	 * existing {@link Row} is used. The arguments
+	 * `colIndex`, `header` and `value` are then passed
+	 * to {@link Row#put(int, String, Object)}, and the
+	 * row put (back) in the {@link #rowMap}.
+	 * 
+	 * @param rowIndex The row index for the passed value.
+	 * @param colIndex The column index for the passed value.
+	 * @param header The column header for the passed value.
+	 * @param value The value object.
+	 */
+	public void record(int rowIndex, int colIndex, String header, Object value) {
 		Row row = rowMap.get(rowIndex);
 		if (row == null) {
 			row = new Row();
 		}
-		row.put(colIndex, header, object);
+		row.put(colIndex, header, value);
 		rowMap.put(rowIndex, row);
 	}
 
+	/**
+	 * Retrieves the value object from the cell
+	 * located at the give row index and column
+	 * index.
+	 * 
+	 * @param rowIndex The row index for the value to be retrieved.
+	 * @param colIndex The column index for the value to be retrieved.
+	 * @return The value of the cell which is located at rowIndex:colIndex in the grid.
+	 */
 	public Object get(int rowIndex, int colIndex) {
 		Row row = rowMap.get(rowIndex);
-		return row.get(colIndex).getObject();
+		return row.get(colIndex).getValue();
 	}
 
 	/**
@@ -88,89 +92,158 @@ public class AnnotationGrid {
 		return rowMap;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < rowMap.size(); i++) {
-			Row row = rowMap.get(i);
-			for (int j = 0; j < row.cells.size(); j++) {
-				Object cell = row.cells.get(i);
-				if (cell != null)
-				sb.append(" | " + cell.toString());
-			}
-			sb.append(" |\n");
-		}
-		return sb.toString();
-	}
-
 	/**
-	 * @author Stephan Druskat
+	 * Lays out the annotation grid so that it can be used
+	 * for display.
 	 * 
-	 *         // TODO Add description
-	 *
+	 * Before this method is run for the first time, there
+	 * may be {@link Row}s in the annotation grid which
+	 * contain less cells than others. This is due to the
+	 * fact the the grid is constructed row by row, and
+	 * the process will not know about the contents of
+	 * any other row. Hence it is necessary to evaluate
+	 * whether all rows contain cells for all existing
+	 * column headers across the grid.
+	 * 
+	 * The method iterates over the {@link #rowMap} and
+	 * checks whether for each row, there is a cell for
+	 * each column header (using the {@link #headerMap},
+	 * which at this point must be complete, i.e., this
+	 * method should only be run after all values have 
+	 * been added to the grid, and re-run after each 
+	 * change to the grid's contents; also using a
+	 * newly streamed map from headers to cell values
+	 * for each {@link Row}).
+	 * 
+	 * If there is no cell for a column header, a new
+	 * cell is added to the {@link Row}, using the
+	 * respective index for the column header from the
+	 * {@link #headerMap}, the value from the created
+	 * header-to-cell-value map, and the header from
+	 * the {@link #headerMap}. 
 	 */
-	public class Row {
-	
-		Map<Integer, Cell> cells = new HashMap<>();
-	
-		public void put(int colIndex, String header, Object object) {
-			// Check if header already exists
-			if (headerMap.inverse().containsKey(header)) {
-				colIndex = headerMap.inverse().get(header);
-			}
-			headerMap.put(colIndex, header);
-			cells.put(colIndex, new Cell(object, header));
-		}
-	
-		public Cell get(int colIndex) {
-			return cells.get(colIndex);
-		}
-		
-		public String getHeader(int colIndex) {
-			return cells.get(colIndex).getHeader();
-		}
-		
-		public Object getObject(int colIndex) {
-			return cells.get(colIndex).getObject();
-		}
-
-		public Map<Integer, Cell> getCells() {
-			return cells;
-		}
-	
-	}
-
 	public void layout() {
-		Map<java.lang.Integer, Row> sortedMap = sortByValue(rowMap);
-		Iterator<Entry<Integer, Row>> it = sortedMap.entrySet().iterator();
+		Iterator<Entry<Integer, Row>> it = rowMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<Integer, Row> current = it.next();
 			Row currentRow = current.getValue();
 			if (headerMap.size() != currentRow.getCells().size()) {
-				Map<String, Object> cellHeaderMap = currentRow.getCells().entrySet().stream().collect(Collectors.toMap(e -> e.getValue().getHeader(), e -> e.getValue().getObject()));
+				Map<String, Object> cellHeaderMap = currentRow.getCells().entrySet().stream().collect(Collectors.toMap(e -> e.getValue().getColumnHeader(), e -> e.getValue().getValue()));
 				for (Entry<String, Integer> headerEntry : headerMap.inverse().entrySet()) {
 					currentRow.getCells().put(headerEntry.getValue(), new Cell(cellHeaderMap.get(headerEntry.getKey()), headerEntry.getKey()));
 				}
 			}
 		}
 	}
-	
-	public static <Integer, Row extends Comparable<? super AnnotationGrid.Row>> Map<Integer, AnnotationGrid.Row> sortByValue(Map<Integer, AnnotationGrid.Row> map) {
-		List<Map.Entry<Integer, AnnotationGrid.Row>> list = new LinkedList<>(map.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<Integer, AnnotationGrid.Row>>() {
-			@Override
-			public int compare(Map.Entry<Integer, AnnotationGrid.Row> e1, Map.Entry<Integer, AnnotationGrid.Row> e2) {
-				int e1Size = e1.getValue().getCells().size();
-				int e2Size = e2.getValue().getCells().size();
-				return e2Size - e1Size;
-			}
-		});
 
-		Map<Integer, AnnotationGrid.Row> result = new LinkedHashMap<>();
-		for (Map.Entry<Integer, AnnotationGrid.Row> entry : list) {
-			result.put(entry.getKey(), entry.getValue());
-		}
-		return result;
-	}
+	/**
+	 * @author Stephan Druskat
+	 * 
+	 * Objects of this type represent rows in an
+	 * annotation grid of type {@link AnnotationGrid}.
+	 * 
+	 * They are backed by a map of cells ({@link #cells}),
+	 * which is keyed on the position of the row in the grid.
+	 */
+	public class Row {
 	
+		private final Map<Integer, Cell> cells = new HashMap<>();
+	
+		/**
+		 * Adds cells to this row.
+		 * 
+		 * First, the method performs a check whether the given
+		 * column header already exists in the global header map.
+		 * If so, `colIndex` is overwritten with the column
+		 * index from the global header map for pre-sorting.
+		 * Otherwise, the passed column header is added to the
+		 * header map with the passed column index as key.
+		 * 
+		 * Subsequently, a new {@link Cell} is constructed
+		 * with the passed column index and the passed
+		 * column header, and keyed with the column index.
+		 * 
+		 * @param colIndex The index of the column where the cell should be located in the grid (this may change during layout).
+		 * @param colHeader The header of the column the constructed cell should be in.
+		 * @param value The cell value.
+		 */
+		public void put(int colIndex, String colHeader, Object value) {
+			// Check if columnHeader already exists
+			if (headerMap.inverse().containsKey(colHeader)) {
+				colIndex = headerMap.inverse().get(colHeader);
+			} 
+			else { 
+				headerMap.put(colIndex, colHeader);
+			}
+			cells.put(colIndex, new Cell(value, colHeader));
+		}
+	
+		/**
+		 * @param colIndex A column index.
+		 * @return The {@link Cell} at the respective column index.
+		 */
+		public Cell get(int colIndex) {
+			return cells.get(colIndex);
+		}
+		
+		/**
+		 * @param colIndex A column index.
+		 * @return The header of the {@link Cell} at the respective column index.
+		 */
+		public String getHeader(int colIndex) {
+			return cells.get(colIndex).getColumnHeader();
+		}
+		
+		/**
+		 * @param colIndex A column index.
+		 * @return The value object of the {@link Cell} at the respective column index.
+		 */
+		public Object getValue(int colIndex) {
+			return cells.get(colIndex).getValue();
+		}
+
+		/**
+		 * @return The map of cells for this row, keyed by index.
+		 */
+		public Map<Integer, Cell> getCells() {
+			return cells;
+		}
+	
+	}
+
+	/**
+	 * @author Stephan Druskat
+	 * 
+	 * A bean representing a cell in an annotation grid of
+	 * type {@link AnnotationGrid}.
+	 * 
+	 * A cell contains a value and is sorted under
+	 * a column header.
+	 */
+	public class Cell {
+	
+		private Object value;
+		private String columnHeader;
+	
+		public Cell(Object value, String columnHeader) {
+			this.value = value;
+			this.columnHeader = columnHeader;
+		}
+	
+		/**
+		 * @return the value
+		 */
+		public Object getValue() {
+			return value;
+		}
+	
+		/**
+		 * @return the columnHeader
+		 */
+		public String getColumnHeader() {
+			return columnHeader;
+		}
+	
+	}
+
 }
