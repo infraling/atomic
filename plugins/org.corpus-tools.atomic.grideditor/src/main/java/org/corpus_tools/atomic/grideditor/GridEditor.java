@@ -72,9 +72,8 @@ public class GridEditor extends DocumentGraphEditor {
 		 * ############################################
 		 */
 		dataProvider = createDataProvider();
-//		final DataLayer bodyDataLayer = new DataLayer(dataProvider);
-		AutomaticSpanningDataProvider prov = new AutomaticSpanningDataProvider(dataProvider, false, true);
-		SpanningDataLayer bodyDataLayer = new SpanningDataLayer(prov);
+		AutomaticSpanningDataProvider spanningProvider = new AutomaticSpanningDataProvider(dataProvider, false, true);
+		SpanningDataLayer bodyDataLayer = new SpanningDataLayer(spanningProvider);
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
 //		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationTable));
 		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
@@ -127,6 +126,9 @@ public class GridEditor extends DocumentGraphEditor {
 	 * @return
 	 */
 	private AnnotationGrid compileAnnotationGrid(SDocumentGraph graph) {
+		// FIXME TODO: In order to only display values, I probably need a custom implementation of SAnnotation, whose 
+		// toString returns another custom String wrapper, so that the annotation objects are the same, but the
+		// grid views them as differently
 		AnnotationGrid grid = new AnnotationGrid();
 		final List<SToken> orderedTokens = graph.getSortedTokenByText();
 		for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {

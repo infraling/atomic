@@ -3,20 +3,8 @@
  */
 package org.corpus_tools.atomic.grideditor.data;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
-import org.eclipse.nebula.widgets.nattable.data.ISpanningDataProvider;
-import org.eclipse.nebula.widgets.nattable.layer.cell.DataCell;
-
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
-import com.google.common.collect.TreeBasedTable;
 
 /**
  * @author Stephan Druskat
@@ -38,15 +26,6 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public Object getDataValue(int columnIndex, int rowIndex) {
-////		Object node = null;
-//		LinkedHashMap colMap = (LinkedHashMap) annotationTable.columnMap();
-////		colMap.gete
-//		Object cell = annotationTable.get(rowIndex, ((LinkedHashMap<String, Object>)annotationTable.columnMap()).get);
-////		SortedMap<String, Object> sortedRow = (SortedMap<String, Object>) annotationTable.rowMap().get(rowIndex);
-////		if (sortedRow.values().size() > columnIndex) {
-////			node = sortedRow.values().toArray()[columnIndex];
-////		}
-//		System.err.println("GOT NODE");
 		return annotationTable.get(rowIndex, columnIndex);
 	}
 
