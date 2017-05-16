@@ -133,19 +133,13 @@ public class GridEditor extends DocumentGraphEditor {
 	 * @return
 	 */
 	private AnnotationGrid compileAnnotationTable(SDocumentGraph graph) {
-//		TreeBasedTable<Integer, String, Object> table = TreeBasedTable.create();//HashBasedTable.create();
 		AnnotationGrid grid = new AnnotationGrid();
 		final List<SToken> orderedTokens = graph.getSortedTokenByText();
-//		int index = 0;
-//		Multimap<String, Integer> indexMap = ArrayListMultimap.create();
 		for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {
 			int colIndex = 0;
 		
 			SToken t = orderedTokens.get(rowIndex);
 			grid.record(rowIndex, 0, "Text", graph.getText(t));
-//			table.put(orderedTokens.indexOf(t), "Text", graph.getText(t));
-////			keyMap.put(index, "Text");
-//			indexMap.put("Text", index);
 			for (SAnnotation a : t.getAnnotations()) {
 				grid.record(rowIndex, ++colIndex, a.getQName(), a);
 			}
@@ -155,16 +149,10 @@ public class GridEditor extends DocumentGraphEditor {
 				if ((src = r.getSource()) instanceof SSpan) {
 					for (SAnnotation a : src.getAnnotations()) {
 						grid.record(rowIndex, ++colIndex, a.getQName(), a);
-//						table.put(idx, a.getQName().toString(), a);
-////						keyMap.put(index++, a.getQName());
-//						indexMap.put(a.getQName(), ++index);
 					}
 				}
 			}
 		}
-//		for (an : indexMap.asMap().e)
-//		for (integerColl : indexMap.entries())
-		
 		return grid;
 	}
 
