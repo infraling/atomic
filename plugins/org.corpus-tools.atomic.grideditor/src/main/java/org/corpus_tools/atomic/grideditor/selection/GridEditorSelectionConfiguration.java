@@ -3,6 +3,7 @@
  */
 package org.corpus_tools.atomic.grideditor.selection;
 
+import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.eclipse.nebula.widgets.nattable.selection.config.DefaultSelectionLayerConfiguration;
 
 import com.google.common.collect.TreeBasedTable;
@@ -15,15 +16,15 @@ import com.google.common.collect.TreeBasedTable;
  */
 public class GridEditorSelectionConfiguration extends DefaultSelectionLayerConfiguration {
 
-	private TreeBasedTable<Integer, String, Object> annotationTable;
+	private AnnotationGrid annotationGrid;
 
-	public GridEditorSelectionConfiguration(TreeBasedTable<Integer, String, Object> annotationTable) {
-		this.annotationTable = annotationTable;
+	public GridEditorSelectionConfiguration(AnnotationGrid annotationGrid) {
+		this.annotationGrid = annotationGrid;
 	}
 	
 	@Override
 	protected void addSelectionUIBindings() {
-//		addConfiguration(new GridEditorSelectionBindings());
+		addConfiguration(new GridEditorSelectionBindings());
 	}
 
 }

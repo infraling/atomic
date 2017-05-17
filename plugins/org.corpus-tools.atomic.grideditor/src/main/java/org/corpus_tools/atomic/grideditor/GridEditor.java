@@ -3,9 +3,11 @@ package org.corpus_tools.atomic.grideditor;
 import java.util.List;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
+import org.corpus_tools.atomic.grideditor.data.GridAnnotation;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.atomic.grideditor.selection.GridEditorSelectionConfiguration;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
@@ -45,7 +47,7 @@ import org.eclipse.swt.SWT;
 public class GridEditor extends DocumentGraphEditor {
 
 	private AnnotationGridDataProvider dataProvider = null;
-	private AnnotationGrid annotationTable;
+	private AnnotationGrid annotationGrid;
 	
 	public GridEditor() {
 		super();
@@ -55,7 +57,7 @@ public class GridEditor extends DocumentGraphEditor {
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
-		annotationTable = compileAnnotationGrid(graph);
+		annotationGrid = compileAnnotationGrid(graph);
 	}
 	
 	@Override
@@ -75,17 +77,17 @@ public class GridEditor extends DocumentGraphEditor {
 		AutomaticSpanningDataProvider spanningProvider = new AutomaticSpanningDataProvider(dataProvider, false, true);
 		SpanningDataLayer bodyDataLayer = new SpanningDataLayer(spanningProvider);
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
-//		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationTable));
+		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationGrid));
 		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 		
 		// Column header layer stack
-		IDataProvider colHeaderDataProvider = new GridColumnHeaderDataProvider(annotationTable);
+		IDataProvider colHeaderDataProvider = new GridColumnHeaderDataProvider(annotationGrid);
 		DataLayer colHeaderDataLayer = new DataLayer(colHeaderDataProvider);
 		ILayer columnHeaderLayer = new ColumnHeaderLayer(colHeaderDataLayer, viewportLayer, selectionLayer);
 
 		// Row header layer stack
-		IDataProvider rowHeaderDataProvider = new GridRowHeaderDataProvider(annotationTable);
+		IDataProvider rowHeaderDataProvider = new GridRowHeaderDataProvider(annotationGrid);
 		DataLayer rowHeaderDataLayer = new DataLayer(rowHeaderDataProvider);
 		ILayer rowHeaderLayer = new RowHeaderLayer(rowHeaderDataLayer, viewportLayer, selectionLayer);
 //
@@ -106,7 +108,7 @@ public class GridEditor extends DocumentGraphEditor {
 	}
 	
 	private AnnotationGridDataProvider createDataProvider() {
-		return new AnnotationGridDataProvider(annotationTable);
+		return new AnnotationGridDataProvider(annotationGrid);
 	}
 	
 	/**

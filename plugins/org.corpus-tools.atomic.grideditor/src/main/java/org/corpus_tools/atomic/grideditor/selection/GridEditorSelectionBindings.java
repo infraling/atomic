@@ -103,16 +103,18 @@ public class GridEditorSelectionBindings extends DefaultSelectionBindings {
 					selectionLayer = (SelectionLayer) scrollLayer;
 				}
 				try {
-					int selectedCol = selectionLayer.getSelectedColumnPositions()[0];
-					int lastItemIndex = selectionLayer.getColumnCount() - 1;
-					int jumpPosition = selectedCol + distance;
+					int selectedRow = selectionLayer.getSelectedRowPositions().iterator().next().start;
+//					int selectedRow = selectionLayer.getSelectedColumnPositions()[0];
+					int lastItemIndex = selectionLayer.getRowCount() - 1;
+					int jumpPosition = selectedRow + distance;
 					if (jumpPosition > lastItemIndex) {
 						jumpPosition = lastItemIndex;
 					}
 					else if (jumpPosition < 0) {
 						jumpPosition = 0;
 					}
-					selectionLayer.selectColumn(jumpPosition, 0, false, false);
+					selectionLayer.selectRow(0, jumpPosition, false, false);
+//					selectionLayer.selectColumn(jumpPosition, 0, false, false);
 				}
 				catch (ArrayIndexOutOfBoundsException e) {
 					// Ignore
