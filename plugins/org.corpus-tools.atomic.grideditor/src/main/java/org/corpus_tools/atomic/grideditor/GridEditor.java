@@ -1,6 +1,10 @@
 package org.corpus_tools.atomic.grideditor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.grideditor.config.GridEditConfiguration;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
@@ -16,11 +20,14 @@ import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.data.AutomaticSpanningDataProvider;
@@ -46,6 +53,7 @@ import org.eclipse.swt.SWT;
  */
 public class GridEditor extends DocumentGraphEditor {
 
+	private static final Logger log = LogManager.getLogger(GridEditor.class);
 	private AnnotationGridDataProvider dataProvider = null;
 	private AnnotationGrid annotationGrid;
 	
@@ -129,31 +137,63 @@ public class GridEditor extends DocumentGraphEditor {
 	 * @return
 	 */
 	private AnnotationGrid compileAnnotationGrid(SDocumentGraph graph) {
-		// FIXME TODO: In order to only display values, I probably need a custom implementation of SAnnotation, whose 
-		// toString returns another custom String wrapper, so that the annotation objects are the same, but the
-		// grid views them as differently
-		AnnotationGrid grid = new AnnotationGrid();
-		final List<SToken> orderedTokens = graph.getSortedTokenByText();
-		for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {
-			int colIndex = 0;
-		
-			SToken t = orderedTokens.get(rowIndex);
-			grid.record(rowIndex, 0, "Text", graph.getText(t));
-			for (SAnnotation a : t.getAnnotations()) {
-				grid.record(rowIndex, ++colIndex, a.getQName(), a);
-			}
-			List<SRelation<SNode, SNode>> rels = graph.getInRelations(t.getId());
-			for (SRelation<SNode, SNode> r : rels) {
-				SNode src = null;
-				if ((src = r.getSource()) instanceof SSpan) {
-					for (SAnnotation a : src.getAnnotations()) {
-						grid.record(rowIndex, ++colIndex, a.getQName(), a);
+		AnnotationGridCompilation compilationRunnable = new AnnotationGridCompilation(graph.getSortedTokenByText());
+		try {
+			new ProgressMonitorDialog(Display.getDefault().getActiveShell()).run(true, true, compilationRunnable);
+		}
+		catch (InvocationTargetException | InterruptedException e) {
+			GridEditor.log.error("An error occurred during the compilation of the annotation grid.", e);
+		}
+		return compilationRunnable.getGrid();
+	}
+
+	public class AnnotationGridCompilation implements IRunnableWithProgress {
+
+		private final AnnotationGrid grid;
+		private final List<SToken> orderedTokens;
+
+		public AnnotationGridCompilation(List<SToken> sortedTokenByText) {
+			this.orderedTokens = sortedTokenByText;
+			this.grid = new AnnotationGrid();
+		}
+
+		public AnnotationGrid getGrid() {
+			return grid;
+		}
+
+		@Override
+		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			
+			monitor.beginTask("Compiling annotation grid", this.orderedTokens.size() + 1);
+			monitor.subTask("Compiling rows per token");
+
+			for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {
+				int colIndex = 0;
+
+				SToken t = orderedTokens.get(rowIndex);
+				grid.record(rowIndex, 0, "Text", graph.getText(t));
+				for (SAnnotation a : t.getAnnotations()) {
+					grid.record(rowIndex, ++colIndex, a.getQName(), a);
+				}
+				List<SRelation<SNode, SNode>> rels = graph.getInRelations(t.getId());
+				for (SRelation<SNode, SNode> r : rels) {
+					SNode src = null;
+					if ((src = r.getSource()) instanceof SSpan) {
+						for (SAnnotation a : src.getAnnotations()) {
+							grid.record(rowIndex, ++colIndex, a.getQName(), a);
+						}
 					}
 				}
+				monitor.worked(1);
+			}
+			monitor.subTask("Laying out grid");
+			grid.layout();
+			monitor.worked(1);
+			monitor.done();
+			if (monitor.isCanceled()) {
+				throw new InterruptedException("Annotation grid compilation has been cancelled.");
 			}
 		}
-		grid.layout();
-		return grid;
 	}
 
 }
