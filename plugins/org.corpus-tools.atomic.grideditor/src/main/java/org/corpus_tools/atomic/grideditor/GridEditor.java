@@ -2,8 +2,8 @@ package org.corpus_tools.atomic.grideditor;
 
 import java.util.List;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
+import org.corpus_tools.atomic.grideditor.config.GridEditConfiguration;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
-import org.corpus_tools.atomic.grideditor.data.GridAnnotation;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
@@ -104,6 +104,7 @@ public class GridEditor extends DocumentGraphEditor {
 //		natTable.addConfiguration(new EditorPopupMenuConfiguration(natTable, graph));
 //		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
+		natTable.addConfiguration(new GridEditConfiguration());
 		natTable.configure();
 	}
 	
