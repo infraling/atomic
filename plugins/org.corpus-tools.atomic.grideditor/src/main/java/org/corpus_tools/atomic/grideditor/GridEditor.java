@@ -1,7 +1,12 @@
 package org.corpus_tools.atomic.grideditor;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,9 +30,15 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.data.AutomaticSpanningDataProvider;
@@ -39,9 +50,13 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
 import org.eclipse.nebula.widgets.nattable.layer.SpanningDataLayer;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
+import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.selection.ISelectionModel;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
+import org.eclipse.nebula.widgets.nattable.selection.event.ISelectionEvent;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 
@@ -51,11 +66,14 @@ import org.eclipse.swt.SWT;
  * // TODO Add description
  *
  */
-public class GridEditor extends DocumentGraphEditor {
+public class GridEditor extends DocumentGraphEditor implements ISelectionProvider {
 
 	private static final Logger log = LogManager.getLogger(GridEditor.class);
 	private AnnotationGridDataProvider dataProvider = null;
 	private AnnotationGrid annotationGrid;
+	
+	private ListenerList<ISelectionChangedListener> selectionListeners = new ListenerList<>();
+	
 	
 	public GridEditor() {
 		super();
@@ -73,6 +91,7 @@ public class GridEditor extends DocumentGraphEditor {
 		super.dispose();
 	}
 	
+	@PostConstruct
 	@Override
 	public void createEditorPartControl(Composite parent) {
 		parent.setLayout(new GridLayout());
@@ -88,6 +107,18 @@ public class GridEditor extends DocumentGraphEditor {
 		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationGrid));
 		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
+		
+		// Selection
+		selectionLayer.addLayerListener(new ILayerListener() {
+			
+			@Override
+			public void handleLayerEvent(ILayerEvent event) {
+				if (event instanceof ISelectionEvent) {
+					setSelection(new StructuredSelection(((ISelectionEvent) event).getSelectionLayer().getSelectedCells()));
+				}
+				
+			}
+		});
 		
 		// Column header layer stack
 		IDataProvider colHeaderDataProvider = new GridColumnHeaderDataProvider(annotationGrid);
@@ -114,6 +145,13 @@ public class GridEditor extends DocumentGraphEditor {
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 		natTable.addConfiguration(new GridEditConfiguration());
 		natTable.configure();
+		
+		getSite().setSelectionProvider(this);
+	}
+	
+	@PreDestroy
+	public void tearDown() {
+		getSite().setSelectionProvider(null);
 	}
 	
 	private AnnotationGridDataProvider createDataProvider() {
@@ -147,29 +185,80 @@ public class GridEditor extends DocumentGraphEditor {
 		return compilationRunnable.getGrid();
 	}
 
-	public class AnnotationGridCompilation implements IRunnableWithProgress {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionListeners.add(listener);
+	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		return new StructuredSelection();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 */
+	@Override
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionListeners.remove(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public void setSelection(ISelection selection) {
+		if (!(selection instanceof StructuredSelection)) {
+			return;
+		}
+		else {
+			@SuppressWarnings("unchecked")
+			Collection<ILayerCell> cells = (Collection<ILayerCell>) ((StructuredSelection) selection).getFirstElement();
+			List<Object> selections = new ArrayList<>();
+			for (ILayerCell cell : cells) {
+				if (cell.getDataValue() instanceof String) {
+					selections.add(graph.getSortedTokenByText().get(cell.getRowIndex()));
+				}
+				else {
+					selections.add(cell.getDataValue());
+				}
+			}
+			Object[] listeners = selectionListeners.getListeners();
+			for (int i = 0; i < listeners.length; i++) {
+				((ISelectionChangedListener) listeners[i]).selectionChanged(new SelectionChangedEvent(this, new StructuredSelection(selections)));
+			}
+		}
+	}
+
+	public class AnnotationGridCompilation implements IRunnableWithProgress {
+	
 		private final AnnotationGrid grid;
 		private final List<SToken> orderedTokens;
-
+	
 		public AnnotationGridCompilation(List<SToken> sortedTokenByText) {
 			this.orderedTokens = sortedTokenByText;
 			this.grid = new AnnotationGrid();
 		}
-
+	
 		public AnnotationGrid getGrid() {
 			return grid;
 		}
-
+	
 		@Override
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			
 			monitor.beginTask("Compiling annotation grid", this.orderedTokens.size() + 1);
 			monitor.subTask("Compiling rows per token");
-
+	
 			for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {
 				int colIndex = 0;
-
+	
 				SToken t = orderedTokens.get(rowIndex);
 				grid.record(rowIndex, 0, "Text", graph.getText(t));
 				for (SAnnotation a : t.getAnnotations()) {
