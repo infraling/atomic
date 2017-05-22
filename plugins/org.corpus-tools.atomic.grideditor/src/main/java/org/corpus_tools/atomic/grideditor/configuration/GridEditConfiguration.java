@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.corpus_tools.atomic.grideditor.config;
+package org.corpus_tools.atomic.grideditor.configuration;
 
 import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
