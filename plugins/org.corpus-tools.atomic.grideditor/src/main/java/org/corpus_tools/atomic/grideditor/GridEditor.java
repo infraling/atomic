@@ -11,8 +11,9 @@ import javax.annotation.PreDestroy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
-import org.corpus_tools.atomic.grideditor.config.GridEditConfiguration;
+import org.corpus_tools.atomic.grideditor.configuration.GridEditConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorSelectionConfiguration;
+import org.corpus_tools.atomic.grideditor.configuration.GridSpanningDataProvider;
 import org.corpus_tools.atomic.grideditor.selection.MultiCellSelection;
 import org.corpus_tools.atomic.grideditor.selection.SingleCellSelection;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
@@ -104,7 +105,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		 * ############################################
 		 */
 		dataProvider = createDataProvider();
-		AutomaticSpanningDataProvider spanningProvider = new AutomaticSpanningDataProvider(dataProvider, false, true);
+		GridSpanningDataProvider spanningProvider = new GridSpanningDataProvider(dataProvider, false, true);
 		SpanningDataLayer bodyDataLayer = new SpanningDataLayer(spanningProvider);
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
 		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationGrid));
