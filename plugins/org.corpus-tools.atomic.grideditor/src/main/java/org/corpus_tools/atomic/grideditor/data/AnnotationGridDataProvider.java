@@ -14,10 +14,10 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
  */
 public class AnnotationGridDataProvider implements IDataProvider {
 
-	private AnnotationGrid annotationTable;
+	private AnnotationGrid annotationGrid;
 
 	public AnnotationGridDataProvider(AnnotationGrid annotationTable) {
-		this.annotationTable = annotationTable;
+		this.annotationGrid = annotationTable;
 //		System.err.println("CREATE PROVIDER");
 	}
 
@@ -26,11 +26,11 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public Object getDataValue(int columnIndex, int rowIndex) {
-		return annotationTable.get(rowIndex, columnIndex);
+		return annotationGrid.get(rowIndex, columnIndex);
 	}
 
 //	private Object getColumnIndex() {
-//		colKeySet = annotationTable.columnKeySet()
+//		colKeySet = annotationGrid.columnKeySet()
 //		return null;
 //	}
 
@@ -48,7 +48,7 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public int getColumnCount() {
-		return annotationTable.getHeaderMap().size();
+		return annotationGrid.getHeaderMap().size();
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +56,7 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public int getRowCount() {
-		return annotationTable.getRowMap().size();
+		return annotationGrid.getRowMap().size();
 	}
 
 //	/* (non-Javadoc)
@@ -69,17 +69,17 @@ public class AnnotationGridDataProvider implements IDataProvider {
 //	}
 
 	/**
-	 * @return the annotationTable
+	 * @return the annotationGrid
 	 */
 	public AnnotationGrid getAnnotationTable() {
-		return annotationTable;
+		return annotationGrid;
 	}
 
 	/**
-	 * @param annotationTable the annotationTable to set
+	 * @param annotationGrid the annotationGrid to set
 	 */
 	public void setAnnotationTable(AnnotationGrid annotationTable) {
-		this.annotationTable = annotationTable;
+		this.annotationGrid = annotationTable;
 	}
 
 }
