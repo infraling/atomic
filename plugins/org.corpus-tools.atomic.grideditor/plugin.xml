@@ -12,5 +12,19 @@
             id="org.corpus_tools.atomic.grideditor.GridEditor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.newColumn"
+            name="New Column Command">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.NewColumnHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.newColumn">
+      </handler>
+   </extension>
 
 </plugin>

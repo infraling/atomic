@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
@@ -20,6 +17,7 @@ import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
@@ -44,7 +42,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
-import org.eclipse.nebula.widgets.nattable.data.AutomaticSpanningDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.layer.ColumnHeaderLayer;
@@ -95,7 +92,6 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		getSite().setSelectionProvider(null);
 	}
 	
-	@PostConstruct
 	@Override
 	public void createEditorPartControl(Composite parent) {
 		parent.setLayout(new GridLayout());
@@ -112,24 +108,6 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 		
-		// Selection
-		selectionLayer.addLayerListener(new ILayerListener() {
-			
-			@Override
-			public void handleLayerEvent(ILayerEvent event) {
-				if (event instanceof ISelectionEvent) {
-					Collection<ILayerCell> selectedCells = ((ISelectionEvent) event).getSelectionLayer().getSelectedCells();
-					if (selectedCells.size() == 1) {
-						setSelection(new SingleCellSelection(selectedCells.iterator().next()));
-					}
-					else {
-						setSelection(new MultiCellSelection(new ArrayList<ILayerCell>(selectedCells)));
-					}
-					setSelection(new StructuredSelection(((ISelectionEvent) event).getSelectionLayer().getSelectedCells()));
-				}
-				
-			}
-		});
 		
 		// Column header layer stack
 		IDataProvider colHeaderDataProvider = new GridColumnHeaderDataProvider(annotationGrid);
@@ -151,12 +129,31 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	            | SWT.H_SCROLL | SWT.BORDER, compositeLayer, false);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
 
-//		natTable.addConfiguration(new EditorPopupMenuConfiguration(natTable, graph));
+		natTable.addConfiguration(new GridPopupMenuConfiguration(annotationGrid, natTable));
 //		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 		natTable.addConfiguration(new GridEditConfiguration());
 		natTable.configure();
 		
+		// Selection
+		selectionLayer.addLayerListener(new ILayerListener() {
+			
+			@Override
+			public void handleLayerEvent(ILayerEvent event) {
+				if (event instanceof ISelectionEvent) {
+					Collection<ILayerCell> selectedCells = ((ISelectionEvent) event).getSelectionLayer().getSelectedCells();
+					if (selectedCells.size() == 1) {
+						setSelection(new SingleCellSelection(selectedCells.iterator().next()));
+					}
+					else {
+						setSelection(new MultiCellSelection(new ArrayList<ILayerCell>(selectedCells)));
+					}
+					setSelection(new StructuredSelection(((ISelectionEvent) event).getSelectionLayer().getSelectedCells()));
+				}
+				
+			}
+		});
+
 		getSite().setSelectionProvider(this);
 	}
 	
