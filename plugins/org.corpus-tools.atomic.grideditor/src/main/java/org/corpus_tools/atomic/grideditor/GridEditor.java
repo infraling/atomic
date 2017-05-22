@@ -250,7 +250,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 				int colIndex = 0;
 	
 				SToken t = orderedTokens.get(rowIndex);
-				grid.record(rowIndex, 0, "Text", graph.getText(t));
+				grid.record(rowIndex, 0, "Token", graph.getText(t));
 				for (SAnnotation a : t.getAnnotations()) {
 					grid.record(rowIndex, ++colIndex, a.getQName(), a);
 				}
