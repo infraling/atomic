@@ -12,11 +12,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.grideditor.config.GridEditConfiguration;
+import org.corpus_tools.atomic.grideditor.configuration.GridEditorSelectionConfiguration;
+import org.corpus_tools.atomic.grideditor.selection.MultiCellSelection;
+import org.corpus_tools.atomic.grideditor.selection.SingleCellSelection;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
-import org.corpus_tools.atomic.grideditor.selection.GridEditorSelectionConfiguration;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
@@ -89,6 +91,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	@Override
 	public void dispose() {
 		super.dispose();
+		getSite().setSelectionProvider(null);
 	}
 	
 	@PostConstruct
@@ -114,6 +117,13 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 			@Override
 			public void handleLayerEvent(ILayerEvent event) {
 				if (event instanceof ISelectionEvent) {
+					Collection<ILayerCell> selectedCells = ((ISelectionEvent) event).getSelectionLayer().getSelectedCells();
+					if (selectedCells.size() == 1) {
+						setSelection(new SingleCellSelection(selectedCells.iterator().next()));
+					}
+					else {
+						setSelection(new MultiCellSelection(new ArrayList<ILayerCell>(selectedCells)));
+					}
 					setSelection(new StructuredSelection(((ISelectionEvent) event).getSelectionLayer().getSelectedCells()));
 				}
 				
@@ -147,11 +157,6 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		natTable.configure();
 		
 		getSite().setSelectionProvider(this);
-	}
-	
-	@PreDestroy
-	public void tearDown() {
-		getSite().setSelectionProvider(null);
 	}
 	
 	private AnnotationGridDataProvider createDataProvider() {
@@ -214,25 +219,9 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	 */
 	@Override
 	public void setSelection(ISelection selection) {
-		if (!(selection instanceof StructuredSelection)) {
-			return;
-		}
-		else {
-			@SuppressWarnings("unchecked")
-			Collection<ILayerCell> cells = (Collection<ILayerCell>) ((StructuredSelection) selection).getFirstElement();
-			List<Object> selections = new ArrayList<>();
-			for (ILayerCell cell : cells) {
-				if (cell.getDataValue() instanceof String) {
-					selections.add(graph.getSortedTokenByText().get(cell.getRowIndex()));
-				}
-				else {
-					selections.add(cell.getDataValue());
-				}
-			}
-			Object[] listeners = selectionListeners.getListeners();
-			for (int i = 0; i < listeners.length; i++) {
-				((ISelectionChangedListener) listeners[i]).selectionChanged(new SelectionChangedEvent(this, new StructuredSelection(selections)));
-			}
+		Object[] listeners = selectionListeners.getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			((ISelectionChangedListener) listeners[i]).selectionChanged(new SelectionChangedEvent(this, selection));
 		}
 	}
 

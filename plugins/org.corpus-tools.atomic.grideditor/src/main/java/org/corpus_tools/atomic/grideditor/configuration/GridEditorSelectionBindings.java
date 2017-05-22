@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.corpus_tools.atomic.grideditor.selection;
+package org.corpus_tools.atomic.grideditor.configuration;
 
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;

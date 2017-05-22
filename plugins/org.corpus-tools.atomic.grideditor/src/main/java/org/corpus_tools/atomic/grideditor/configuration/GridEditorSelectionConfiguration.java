@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.corpus_tools.atomic.grideditor.selection;
+package org.corpus_tools.atomic.grideditor.configuration;
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.eclipse.nebula.widgets.nattable.selection.config.DefaultSelectionLayerConfiguration;
