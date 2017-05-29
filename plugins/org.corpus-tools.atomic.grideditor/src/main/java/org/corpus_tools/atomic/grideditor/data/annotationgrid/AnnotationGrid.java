@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
@@ -51,6 +52,11 @@ public class AnnotationGrid {
 
 	Map<Integer, Row> rowMap = new HashMap<>();
 	BiMap<Integer, String> headerMap = HashBiMap.create();
+	private final SDocumentGraph graph;
+
+	public AnnotationGrid(SDocumentGraph graph) {
+		this.graph = graph;
+	}
 
 	/**
 	 * Top-level method for adding content to the grid.
@@ -260,6 +266,13 @@ public class AnnotationGrid {
 			return columnHeader;
 		}
 	
+	}
+
+	/**
+	 * @return the graph
+	 */
+	public SDocumentGraph getGraph() {
+		return graph;
 	}
 
 }

@@ -4,6 +4,10 @@
 package org.corpus_tools.atomic.grideditor.data;
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SSpan;
+import org.corpus_tools.salt.common.SToken;
+import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 
 /**
@@ -16,8 +20,8 @@ public class AnnotationGridDataProvider implements IDataProvider {
 
 	private AnnotationGrid annotationGrid;
 
-	public AnnotationGridDataProvider(AnnotationGrid annotationTable) {
-		this.annotationGrid = annotationTable;
+	public AnnotationGridDataProvider(AnnotationGrid annotationGrid) {
+		this.annotationGrid = annotationGrid;
 //		System.err.println("CREATE PROVIDER");
 	}
 
@@ -39,8 +43,31 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-		// TODO Auto-generated method stub
-
+		System.err.println("SET VALUE");
+		Object previous = getDataValue(columnIndex, rowIndex); 
+		SDocumentGraph graph = annotationGrid.getGraph();
+		if (previous instanceof SAnnotation) {
+			((SAnnotation) previous).setValue(newValue);
+		}
+		else if (previous == null) {
+			SToken token = graph.getSortedTokenByText().get(rowIndex);
+			SSpan span = graph.createSpan(token);
+			SAnnotation newAnno = span.createAnnotation(null, annotationGrid.getHeaderMap().get(columnIndex), newValue); // FIXME Introduce namespace
+			annotationGrid.record(rowIndex, columnIndex, annotationGrid.getHeaderMap().get(columnIndex), newAnno);
+		}
+		else {
+			// Not null, not an SAnnotation
+			throw new UnsupportedOperationException("Not supperted yet!");
+		}
+		// FIXME: Remove below
+		for (SSpan s : graph.getSpans()) {
+			for (SAnnotation a : s.getAnnotations()) {
+				System.err.println(a);
+			}
+			System.err.println("---");
+		}
+//		NEW COLUMN NEW VALUE WORKS IN GRAPH, BUT TABLE ISN'T UPDATED AS ANNOTATIONGRID ISN'T CHANGED
+		
 	}
 
 	/* (non-Javadoc)

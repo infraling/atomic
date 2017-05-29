@@ -108,7 +108,6 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 		
-		
 		// Column header layer stack
 		IDataProvider colHeaderDataProvider = new GridColumnHeaderDataProvider(annotationGrid);
 		DataLayer colHeaderDataLayer = new DataLayer(colHeaderDataProvider);
@@ -129,6 +128,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	            | SWT.H_SCROLL | SWT.BORDER, compositeLayer, false);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
 
+		
 		natTable.addConfiguration(new GridPopupMenuConfiguration(annotationGrid, natTable));
 //		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
@@ -150,6 +150,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 					}
 					setSelection(new StructuredSelection(((ISelectionEvent) event).getSelectionLayer().getSelectedCells()));
 				}
+//				natTable.refresh();
 				
 			}
 		});
@@ -230,7 +231,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	
 		public AnnotationGridCompilation(List<SToken> sortedTokenByText) {
 			this.orderedTokens = sortedTokenByText;
-			this.grid = new AnnotationGrid();
+			this.grid = new AnnotationGrid(graph);
 		}
 	
 		public AnnotationGrid getGrid() {
