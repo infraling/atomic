@@ -3,11 +3,18 @@
  */
 package org.corpus_tools.atomic.grideditor.menu;
 
+import java.util.HashSet;
+
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
+import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayer;
+import org.eclipse.nebula.widgets.nattable.layer.IUniqueIndexLayer;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
+import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.command.SelectCellCommand;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.ui.action.IMouseAction;
@@ -16,6 +23,7 @@ import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
 import org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider;
 import org.eclipse.nebula.widgets.nattable.ui.menu.MenuItemProviders;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
+import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,6 +32,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 
 /**
@@ -69,6 +78,23 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 					executeCreateColumnCommand();
 				}
 			});
+			
+			/* 
+			 * TODO
+			 * Add new menu item for multi selection, in handler do
+			 * System.err.println(">>> " + ((HashSet<?>) ((StructuredSelection) HandlerUtil.getCurrentSelectionChecked(event)).getFirstElement()).size());
+			 * And check on size to see how to process multi selection
+			 * 
+			 * To do this for enabling only when multiple selection of cells, do:
+			 * ILayer underlyingLayer = natTable.getLayer();
+		if (underlyingLayer instanceof GridLayer) {
+			ILayer bodyLayer = ((GridLayer) underlyingLayer).getBodyLayer();
+			if (bodyLayer instanceof ViewportLayer) {
+				IUniqueIndexLayer scrollLayer = ((ViewportLayer) bodyLayer).getScrollableLayer();
+				if (scrollLayer instanceof SelectionLayer) {
+					selectionLayer = (SelectionLayer) scrollLayer;
+				}
+			 */
 		}
 
 	}
