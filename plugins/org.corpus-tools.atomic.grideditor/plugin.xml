@@ -22,6 +22,10 @@
             id="org.corpus_tools.atomic.grideditor.commands.createSpan"
             name="Create Span Command">
       </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.deleteClickedSpanAnnotation"
+            name="Delete Clicked Span Annotation Command">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -32,6 +36,10 @@
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.CreateSpanHandler"
             commandId="org.corpus_tools.atomic.grideditor.commands.createSpan">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.DeleteClickedSpanAnnotationHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.deleteClickedSpanAnnotation">
       </handler>
    </extension>
 
