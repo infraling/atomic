@@ -15,15 +15,23 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="org.corpus_tools.atomic.grideditor.commands.newColumn"
-            name="New Column Command">
+            id="org.corpus_tools.atomic.grideditor.commands.newAnnotationColumn"
+            name="New Annotation Column Command">
+      </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.createSpan"
+            name="Create Span Command">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.corpus_tools.atomic.grideditor.commands.NewColumnHandler"
-            commandId="org.corpus_tools.atomic.grideditor.commands.newColumn">
+            class="org.corpus_tools.atomic.grideditor.commands.NewAnnotationColumnHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.newAnnotationColumn">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.CreateSpanHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.createSpan">
       </handler>
    </extension>
 
