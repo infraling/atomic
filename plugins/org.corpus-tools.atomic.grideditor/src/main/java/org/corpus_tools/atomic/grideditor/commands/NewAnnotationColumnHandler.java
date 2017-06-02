@@ -22,13 +22,12 @@ import org.eclipse.swt.widgets.Event;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-public class NewColumnHandler extends DocumentGraphAwareHandler {
+public class NewAnnotationColumnHandler extends DocumentGraphAwareHandler {
 	
 	/** 
-	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "NewColumnHandler".
+	 * Defines a static logger variable so that it references the {@link org.apache.logging.log4j.Logger} instance named "NewAnnotationColumnHandler".
 	 */
-	private static final Logger log = LogManager.getLogger(NewColumnHandler.class);
-
+	private static final Logger log = LogManager.getLogger(NewAnnotationColumnHandler.class);
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
