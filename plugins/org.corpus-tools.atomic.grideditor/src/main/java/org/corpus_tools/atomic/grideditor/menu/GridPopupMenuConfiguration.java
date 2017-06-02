@@ -3,9 +3,13 @@
  */
 package org.corpus_tools.atomic.grideditor.menu;
 
+import java.util.Collection;
+
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.ui.NatEventData;
 import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
@@ -43,7 +47,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
         this.menu = new PopupMenuBuilder(natTable)
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
-                .withVisibleState(MENU_CREATE_SPAN, new MultiCellSelectionInOneColumnMenuItemState())
+                .withVisibleState(MENU_CREATE_SPAN, new MultiEmptyCellSelectionInOneColumnMenuItemState())
                 .build();
     }
 
@@ -146,11 +150,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
 	 * 
 	 */
-	public class MultiCellSelectionInOneColumnMenuItemState implements IMenuItemState {
+	public class MultiEmptyCellSelectionInOneColumnMenuItemState implements IMenuItemState {
 
-		// FIXME: Also check for empty cells below, otherwise offer other span menu item
-		// Or disable completely when more than one annotaion value below
-		
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -160,9 +161,22 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 		 */
 		@Override
 		public boolean isActive(NatEventData natEventData) {
-			int noOfSelCells = selectionLayer.getSelectedCells().size();
+			Collection<ILayerCell> selectedCells = selectionLayer.getSelectedCells();
+			int noOfSelCells = selectedCells.size();
 			int noOfSelCols = selectionLayer.getSelectedColumnPositions().length;
-			return noOfSelCells > 1 && noOfSelCols == 1;
+			final boolean allCellsEmpty = selectedCells.stream().allMatch(c -> {
+				Object val = c.getDataValue();
+				/*
+				 * Checks whether cell data is either `null`, or if it isn't,
+				 * then if it is an SAnnnotation, and if it is,
+				 * then if the annotation value is either `null` or an empty String.
+				 */
+				if (val == null || (val instanceof SAnnotation && (((SAnnotation) val).getValue() == null) || ((SAnnotation) val).getValue_STEXT().isEmpty())) {
+					return true;
+				}
+				return false;
+			});
+			return noOfSelCells > 1 && noOfSelCols == 1 && allCellsEmpty;
 		}
 
 	}
