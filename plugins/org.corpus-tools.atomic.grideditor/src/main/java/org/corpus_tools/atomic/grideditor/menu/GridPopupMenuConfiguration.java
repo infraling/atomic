@@ -3,9 +3,10 @@
  */
 package org.corpus_tools.atomic.grideditor.menu;
 
-import java.util.Collection;
+import java.util.Collection; 
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
@@ -37,9 +38,12 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 
 	private static final String MENU_NEW_COLUMN = "New annotation column";
 	private static final String MENU_CREATE_SPAN = "Create span";
+	private static final String MENU_DELETE_CLICKED_SPAN_ANNOTATION = "Delete clicked on span annotation";
+	private static final String MENU_DELETE_SELECTED_SPAN_ANNOTATION = "Delete span annotation(s) in selection";
 	private final Menu menu;
 	private final SelectionLayer selectionLayer;
 	private final AnnotationGrid grid;
+	private ILayerCell clickedCell;
 
     public GridPopupMenuConfiguration(final NatTable natTable, final AnnotationGrid grid, final SelectionLayer selectionLayer) {
     	this.grid = grid;
@@ -48,6 +52,9 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
                 .withVisibleState(MENU_CREATE_SPAN, new MultiEmptyCellSelectionInOneColumnMenuItemState())
+                .withMenuItemProvider(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new DeleteClickedSpanAnnotationMenuItemProvider())
+                .withVisibleState(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedSpanMenuItemState())
+//                .withMenuItemProvider(MENU_DELETE_SELECTED_SPAN_ANNOTATION, null)//new DeleteClickedSpanAnnotationMenuItemProvider())
                 .build();
     }
 
@@ -142,6 +149,54 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	}
 
 	/**
+		 * // TODO Add description
+		 * 
+		 * TODO Check if this can be refactored to be used for token annotations as well
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class DeleteClickedSpanAnnotationMenuItemProvider implements IMenuItemProvider {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+            menuItem.setText("Delete annotation");
+            menuItem.setEnabled(true);
+
+			menuItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent event) {
+					executeDeleteSpanAnnotationCommand();
+				}
+
+				private void executeDeleteSpanAnnotationCommand() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getService(IHandlerService.class);
+
+					Event event = new Event();
+					if (clickedCell == null) {
+						throw new RuntimeException("The clicked on object is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
+					}
+					event.data = new Object[]{clickedCell, grid};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.deleteClickedSpanAnnotation", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException(
+								"Command org.corpus_tools.atomic.grideditor.commands.deleteClickedSpanAnnotation not found!", e1);
+					}
+				}
+			});
+		}
+	
+	}
+
+	/**
 	 * An {@link IMenuItemState} which is active only when
 	 * more than one cells in the {@link NatTable} are
 	 * selected, and all of the selected cells are in a
@@ -167,7 +222,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 			final boolean allCellsEmpty = selectedCells.stream().allMatch(c -> {
 				Object val = c.getDataValue();
 				/*
-				 * Checks whether cell data is either `null`, or if it isn't,
+				 * Check whether cell data is either `null`, or if it isn't,
 				 * then if it is an SAnnnotation, and if it is,
 				 * then if the annotation value is either `null` or an empty String.
 				 */
@@ -180,6 +235,56 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 		}
 
 	}
+
+	/**
+		 * // TODO Add description
+		 * 
+		 * Works only on the clicked on cell, not the selection
+		 * 
+		 * TODO implement for selection as extra menu item
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class ClickedOnAnnotatedSpanMenuItemState implements IMenuItemState {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
+		 */
+		@Override
+		public boolean isActive(NatEventData natEventData) {
+			GridPopupMenuConfiguration.this.clickedCell = natEventData.getNatTable().getCellByPosition(natEventData.getColumnPosition(), natEventData.getRowPosition());
+			Object value = clickedCell.getDataValue();
+			if (value != null && value instanceof SAnnotation && ((SAnnotation) value).getContainer() instanceof SSpan) {
+				return true;
+			}
+			return false;
+		}
+	
+	}
+	
+	// TODO Use for checking for cell selection
+//	/* (non-Javadoc)
+//	 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
+//	 */
+//	@Override
+//	public boolean isActive(NatEventData natEventData) {
+//		boolean selectedCellsIncludeAnnotatedSpan = selectionLayer.getSelectedCells().stream().anyMatch(c -> {
+//			Object val = c.getDataValue();
+//			/*
+//			 * Check whether any of the selected cells includes a non-empty
+//			 * cell, and if they do,
+//			 * then if its value is an SAnnotation, and if it is,
+//			 * then whether the annotation container is a span.
+//			 */
+//			if (val != null && val instanceof SAnnotation && ((SAnnotation) val).getContainer() instanceof SSpan){// && (((SAnnotation) val).getValue() != null || !((SAnnotation) val).getValue_STEXT().isEmpty())) {
+//				return true;
+//			}
+//			return false;
+//		});
+//		return selectedCellsIncludeAnnotatedSpan;
+//	}
+
 
 }
 //}
