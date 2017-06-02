@@ -35,7 +35,7 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 		// Configure cell editing
 		configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new AnnotationCellEditor(), DisplayMode.EDIT, null);
 		// Automatically open the editor for the cell below FIXME Make this configurable
-		configRegistry.registerConfigAttribute(EditConfigAttributes.OPEN_ADJACENT_EDITOR, true);
+//		configRegistry.registerConfigAttribute(EditConfigAttributes.OPEN_ADJACENT_EDITOR, true);
 		// Switch off out-of-the-box multi-cell editing
 		configRegistry.registerConfigAttribute(EditConfigAttributes.SUPPORT_MULTI_EDIT, false);
 	}
