@@ -54,7 +54,6 @@ import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
 import org.eclipse.nebula.widgets.nattable.layer.SpanningDataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
-import org.eclipse.nebula.widgets.nattable.selection.ISelectionModel;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.event.ISelectionEvent;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
@@ -105,7 +104,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		SpanningDataLayer bodyDataLayer = new SpanningDataLayer(spanningProvider);
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
 		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationGrid));
-		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
+//		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 		
 		// Column header layer stack
@@ -129,13 +128,16 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
 
 		
-		natTable.addConfiguration(new GridPopupMenuConfiguration(annotationGrid, natTable));
+		natTable.addConfiguration(new GridPopupMenuConfiguration(natTable, annotationGrid, selectionLayer));
 //		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 		natTable.addConfiguration(new GridEditConfiguration());
 		natTable.configure();
 		
-		// Selection
+		/* #################################
+		 * Selection
+		 * #################################
+		 */
 		selectionLayer.addLayerListener(new ILayerListener() {
 			
 			@Override
@@ -150,8 +152,6 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 					}
 					setSelection(new StructuredSelection(((ISelectionEvent) event).getSelectionLayer().getSelectedCells()));
 				}
-//				natTable.refresh();
-				
 			}
 		});
 
