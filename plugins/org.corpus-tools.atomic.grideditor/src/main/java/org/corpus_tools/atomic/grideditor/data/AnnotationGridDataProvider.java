@@ -43,11 +43,11 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-		System.err.println("SET VALUE");
 		Object previous = getDataValue(columnIndex, rowIndex); 
 		SDocumentGraph graph = annotationGrid.getGraph();
 		if (previous instanceof SAnnotation) {
 			((SAnnotation) previous).setValue(newValue);
+			annotationGrid.record(rowIndex, columnIndex, annotationGrid.getHeaderMap().get(columnIndex), previous);
 		}
 		else if (previous == null) {
 			SToken token = graph.getSortedTokenByText().get(rowIndex);
@@ -59,15 +59,6 @@ public class AnnotationGridDataProvider implements IDataProvider {
 			// Not null, not an SAnnotation
 			throw new UnsupportedOperationException("Not supperted yet!");
 		}
-		// FIXME: Remove below
-		for (SSpan s : graph.getSpans()) {
-			for (SAnnotation a : s.getAnnotations()) {
-				System.err.println(a);
-			}
-			System.err.println("---");
-		}
-//		NEW COLUMN NEW VALUE WORKS IN GRAPH, BUT TABLE ISN'T UPDATED AS ANNOTATIONGRID ISN'T CHANGED
-		
 	}
 
 	/* (non-Javadoc)
