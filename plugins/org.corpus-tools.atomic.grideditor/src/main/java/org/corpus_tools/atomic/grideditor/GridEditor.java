@@ -131,7 +131,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		natTable.addConfiguration(new GridPopupMenuConfiguration(natTable, annotationGrid, selectionLayer));
 //		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-		natTable.addConfiguration(new GridEditConfiguration());
+		natTable.addConfiguration(new GridEditConfiguration(this));
 		natTable.configure();
 		
 		/* #################################

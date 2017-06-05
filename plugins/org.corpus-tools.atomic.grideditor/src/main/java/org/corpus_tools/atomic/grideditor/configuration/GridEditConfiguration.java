@@ -3,6 +3,7 @@
  */
 package org.corpus_tools.atomic.grideditor.configuration;
 
+import org.corpus_tools.atomic.grideditor.GridEditor;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
@@ -14,6 +15,8 @@ import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.edit.editor.TextCellEditor;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer.MoveDirectionEnum;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Stephan Druskat
@@ -22,6 +25,12 @@ import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
  *
  */
 public class GridEditConfiguration extends AbstractRegistryConfiguration {
+
+	private final GridEditor editor;
+
+	public GridEditConfiguration(GridEditor gridEditor) {
+		this.editor = gridEditor;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.nebula.widgets.nattable.config.IConfiguration#configureRegistry(org.eclipse.nebula.widgets.nattable.config.IConfigRegistry)
@@ -67,9 +76,20 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 		 * 
 		 */
 	public class AnnotationCellEditor extends TextCellEditor {
+		
+		private Object originalCanonicalValue = null;
+
+		@Override
+	    protected Control activateCell(final Composite parent, Object originalCanonicalValue) {
+			this.originalCanonicalValue = GridEditConfiguration.this.getAnnotationValueConverter().canonicalToDisplayValue(originalCanonicalValue);
+			return super.activateCell(parent, originalCanonicalValue);
+		}
 
 		@Override
 		public boolean commit(MoveDirectionEnum direction, boolean closeAfterCommit, boolean skipValidation) {
+			if (!getCanonicalValue().equals(originalCanonicalValue)) {
+				GridEditConfiguration.this.editor.setDirty(true);
+			}
 			return super.commit(MoveDirectionEnum.DOWN, true, true);
 		}
 	}
