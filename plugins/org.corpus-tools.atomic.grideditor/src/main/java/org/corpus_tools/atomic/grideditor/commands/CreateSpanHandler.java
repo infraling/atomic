@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.corpus_tools.atomic.grideditor.GridEditor;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
@@ -73,6 +74,7 @@ public class CreateSpanHandler extends AbstractHandler {
 		tokenIndices.stream().forEach(i -> {
 			grid.record(i, col, colName, annotation);
 		});
+		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
 		return null;
 	}
 	

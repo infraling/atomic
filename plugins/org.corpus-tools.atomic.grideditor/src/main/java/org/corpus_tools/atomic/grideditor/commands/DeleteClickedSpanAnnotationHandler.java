@@ -5,6 +5,8 @@ package org.corpus_tools.atomic.grideditor.commands;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.corpus_tools.atomic.grideditor.GridEditor;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid.Row;
 import org.corpus_tools.salt.common.SSpan;
@@ -15,6 +17,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * // TODO Add description
@@ -78,6 +81,7 @@ public class DeleteClickedSpanAnnotationHandler extends AbstractHandler {
 			}
 			table.refresh();
 		}
+		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
 		return null;
 	}
 
