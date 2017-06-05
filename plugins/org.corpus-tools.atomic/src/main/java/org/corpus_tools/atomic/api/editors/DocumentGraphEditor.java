@@ -190,7 +190,7 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	/**
 	 * @param dirty the dirty to set
 	 */
-	protected final void setDirty(boolean dirty) {
+	public final void setDirty(boolean dirty) {
 		this.dirty = dirty;
 		firePropertyChange(PROP_DIRTY);
 	}
