@@ -6,6 +6,7 @@ package org.corpus_tools.atomic.grideditor.menu;
 import java.util.Collection; 
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.SplitClickedSpanAnnotationMenuItemProvider;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.NatTable;
@@ -40,6 +41,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	private static final String MENU_CREATE_SPAN = "Create span";
 	private static final String MENU_DELETE_CLICKED_SPAN_ANNOTATION = "Delete clicked on span annotation";
 	private static final String MENU_DELETE_SELECTED_SPAN_ANNOTATION = "Delete span annotation(s) in selection";
+	private static final String MENU_SPLIT_CLICKED_SPAN_ANNOTATION = "Split clicked-on multi-cell span";
 	private final Menu menu;
 	private final SelectionLayer selectionLayer;
 	private final AnnotationGrid grid;
@@ -54,6 +56,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 .withVisibleState(MENU_CREATE_SPAN, new MultiEmptyCellSelectionInOneColumnMenuItemState())
                 .withMenuItemProvider(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new DeleteClickedSpanAnnotationMenuItemProvider())
                 .withVisibleState(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedSpanMenuItemState())
+                .withMenuItemProvider(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new SplitClickedSpanAnnotationMenuItemProvider())
+                .withVisibleState(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedMultiCellSpanMenuItemState())
 //                .withMenuItemProvider(MENU_DELETE_SELECTED_SPAN_ANNOTATION, null)//new DeleteClickedSpanAnnotationMenuItemProvider())
                 .build();
     }
@@ -197,6 +201,51 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	}
 
 	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class SplitClickedSpanAnnotationMenuItemProvider implements IMenuItemProvider {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+            menuItem.setText("Split span");
+            menuItem.setEnabled(true);
+
+			menuItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent event) {
+					executeSplitSpanCommand();
+				}
+
+				private void executeSplitSpanCommand() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getService(IHandlerService.class);
+
+					Event event = new Event();
+					if (clickedCell == null) {
+						throw new RuntimeException("The clicked on object is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
+					}
+					event.data = new Object[]{clickedCell, grid};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.splitClickedSpanAnnotation", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException(
+								"Command org.corpus_tools.atomic.grideditor.commands.splitClickedSpanAnnotation not found!", e1);
+					}
+				}
+			});
+		}
+	}
+
+	/**
 	 * An {@link IMenuItemState} which is active only when
 	 * more than one cells in the {@link NatTable} are
 	 * selected, and all of the selected cells are in a
@@ -263,6 +312,24 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	
 	}
 	
+	public class ClickedOnAnnotatedMultiCellSpanMenuItemState implements IMenuItemState {
+		
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
+		 */
+		@Override
+		public boolean isActive(NatEventData natEventData) {
+			GridPopupMenuConfiguration.this.clickedCell = natEventData.getNatTable().getCellByPosition(natEventData.getColumnPosition(), natEventData.getRowPosition());
+			Object value = clickedCell.getDataValue();
+			if (value != null && value instanceof SAnnotation && ((SAnnotation) value).getContainer() instanceof SSpan && clickedCell.isSpannedCell()) {
+				return true;
+			}
+			return false;
+		}
+	
+	}
+	
+
 	// TODO Use for checking for cell selection
 //	/* (non-Javadoc)
 //	 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
