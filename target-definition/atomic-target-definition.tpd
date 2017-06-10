@@ -68,6 +68,7 @@ location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/" {
 	org.junit
+	org.mockito [1.9.5, 2.0.0)
 }
 
 location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/" {
