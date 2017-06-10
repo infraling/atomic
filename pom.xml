@@ -149,6 +149,8 @@
 		<module>plugins/org.corpus-tools.atomic.visjs</module>
 		<module>plugins/org.corpus-tools.atomic.search</module>
 		<module>tests/org.corpus_tools.atomic.tests.gui</module>
+		<module>plugins/org.corpus-tools.atomic.grideditor</module>
+		<module>tests/org.corpus_tool.atomic.grideditor.tests</module>
 		<module>repository</module>
 		<module>repository-experimental</module>
 		<module>target-definition</module>
@@ -159,6 +161,5 @@
 		<module>
 			plugins/de.uni_jena.iaa.linktype.atomic.atomical
 		</module>
-		<module>plugins/org.corpus-tools.atomic.grideditor</module>
 	</modules>
 </project>
