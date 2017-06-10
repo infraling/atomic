@@ -22,7 +22,7 @@ public class CellUtils {
 			int distanceThisRowStartRow = rowPosition - startRowPositition;
 			int rowIndex = cell.getRowIndex();
 			int startIndex = rowIndex - distanceThisRowStartRow;
-			return Range.closedOpen(startIndex, startIndex + cell.getRowSpan() - 1);
+			return Range.closed(startIndex, startIndex + cell.getRowSpan() - 1);
 		}
 		else {
 			return Range.closed(cell.getRowIndex(), cell.getRowIndex());
