@@ -28,7 +28,7 @@
 		</plugins>
 	</build>
 
-	<profiles>
+	<!--<profiles>
     <profile>
         <id>travis</id>
         <build>
@@ -44,6 +44,6 @@
             </plugins>
         </build>
     </profile>
-</profiles>
+</profiles>-->
 
 </project>
