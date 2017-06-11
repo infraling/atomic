@@ -30,6 +30,10 @@
             id="org.corpus_tools.atomic.grideditor.commands.splitClickedSpanAnnotation"
             name="Split Clicked Span Annotation Command">
       </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.deleteSelectedSpanAnnotation"
+            name="Delete Selected Cell Annotations Command ">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -48,6 +52,10 @@
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.SplitClickedSpanAnnotationHandler"
             commandId="org.corpus_tools.atomic.grideditor.commands.splitClickedSpanAnnotation">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.DeleteSelectedSpanAnnotationHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.deleteSelectedSpanAnnotation">
       </handler>
    </extension>
 

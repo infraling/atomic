@@ -6,6 +6,8 @@ package org.corpus_tools.atomic.grideditor.menu;
 import java.util.Collection; 
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.DeleteSelectedSpanAnnotationMenuItemProvider;
+import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.MultiSpanCellSelectionMenuItemState;
 import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.SplitClickedSpanAnnotationMenuItemProvider;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.core.SAnnotation;
@@ -46,6 +48,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	private final SelectionLayer selectionLayer;
 	private final AnnotationGrid grid;
 	private ILayerCell clickedCell;
+	private Collection<ILayerCell> selectedCells = null;
 
     public GridPopupMenuConfiguration(final NatTable natTable, final AnnotationGrid grid, final SelectionLayer selectionLayer) {
     	this.grid = grid;
@@ -58,6 +61,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 .withVisibleState(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedSpanMenuItemState())
                 .withMenuItemProvider(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new SplitClickedSpanAnnotationMenuItemProvider())
                 .withVisibleState(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedMultiCellSpanMenuItemState())
+                .withMenuItemProvider(MENU_DELETE_SELECTED_SPAN_ANNOTATION, new DeleteSelectedSpanAnnotationMenuItemProvider())
+                .withVisibleState(MENU_DELETE_SELECTED_SPAN_ANNOTATION, new MultiSpanCellSelectionMenuItemState())
 //                .withMenuItemProvider(MENU_DELETE_SELECTED_SPAN_ANNOTATION, null)//new DeleteClickedSpanAnnotationMenuItemProvider())
                 .build();
     }
@@ -206,6 +211,52 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
 		 * 
 		 */
+	public class DeleteSelectedSpanAnnotationMenuItemProvider implements IMenuItemProvider {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+            menuItem.setText("Delete selected");
+            menuItem.setEnabled(true);
+
+			menuItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent event) {
+					executeDeleteSelectedSpanCommand();
+				}
+
+				private void executeDeleteSelectedSpanCommand() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getService(IHandlerService.class);
+
+					Event event = new Event();
+					if (selectedCells == null) {
+						throw new RuntimeException("The collection of selected cells is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
+					}
+					event.data = new Object[]{selectedCells, grid};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.deleteSelectedSpanAnnotation", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException(
+								"Command org.corpus_tools.atomic.grideditor.commands.deleteSelectedSpanAnnotation not found!", e1);
+					}
+				}
+			});
+		}
+	
+	}
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
 	public class SplitClickedSpanAnnotationMenuItemProvider implements IMenuItemProvider {
 	
 		/* (non-Javadoc)
@@ -283,6 +334,39 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 			return noOfSelCells > 1 && noOfSelCols == 1 && allCellsEmpty;
 		}
 
+	}
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class MultiSpanCellSelectionMenuItemState implements IMenuItemState {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
+		 */
+		@Override
+		public boolean isActive(NatEventData natEventData) {
+			Collection<ILayerCell> selectedCells = selectionLayer.getSelectedCells();
+			/*
+			 * Check whether at least one cell is selected, and whether the
+			 * data value is not null and is an instance of SAnnotation and
+			 * whether the annotation value is not null and not the empty String.
+			 */
+			if (selectedCells.size() > 0) {
+				for (ILayerCell cell : selectedCells) {
+					Object val = cell.getDataValue();
+					if (val != null && (val instanceof SAnnotation && (((SAnnotation) val).getValue() != null) && !((SAnnotation) val).getValue_STEXT().isEmpty())) {
+						GridPopupMenuConfiguration.this.selectedCells = selectedCells;
+						return true;
+					} 
+				}
+			}
+			return false;
+		}
+	
 	}
 
 	/**
