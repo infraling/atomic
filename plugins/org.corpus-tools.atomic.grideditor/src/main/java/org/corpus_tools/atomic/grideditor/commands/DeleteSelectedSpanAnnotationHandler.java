@@ -48,7 +48,7 @@ public class DeleteSelectedSpanAnnotationHandler extends AbstractHandler {
 				// Remove this annotation from the parent span
 				(parent = (SSpan) ((SAnnotation) value).getContainer()).removeLabel(((SAnnotation) value).getQName());
 				// If, now, the parent span doesn't contain any annotations, delete it
-				if (parent.getAnnotations().size() == 0) {
+				if (parent.getAnnotations().isEmpty()) {
 					parent.getGraph().removeNode(parent);
 				}
 				Row row = grid.getRowMap().get(rowIndex);
