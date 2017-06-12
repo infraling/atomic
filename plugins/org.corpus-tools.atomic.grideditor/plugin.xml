@@ -46,6 +46,10 @@
             id="org.corpus_tools.atomic.grideditor.commands.deleteToken"
             name="Delete Token Command">
       </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.mergeTokens"
+            name="Merge Tokens Command">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -80,6 +84,10 @@
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.DeleteTokenHandler"
             commandId="org.corpus_tools.atomic.grideditor.commands.deleteToken">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.MergeTokensHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.mergeTokens">
       </handler>
    </extension>
 

@@ -6,6 +6,7 @@ package org.corpus_tools.atomic.grideditor.menu;
 import java.util.Collection;
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
+import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.MergeTokenMenuItemProvider;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
@@ -46,6 +47,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	private static final String MENU_CREATE_TOKEN_AFTER_THIS = "Create token after the clicked one";
 	private static final String MENU_CREATE_TOKEN_BEFORE_FIRST = "Create token before first";
 	private static final String MENU_DELETE_TOKEN = "Delete token";
+	private static final String MENU_MERGE_TOKEN = "Merge token";
 	private final Menu menu;
 	private final SelectionLayer selectionLayer;
 	private final AnnotationGrid grid;
@@ -63,6 +65,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 .withVisibleState(MENU_CREATE_TOKEN_BEFORE_FIRST, new TokenMenuBeforeFirstItemState())
                 .withMenuItemProvider(MENU_DELETE_TOKEN, new DeleteTokenMenuItemProvider())
                 .withVisibleState(MENU_DELETE_TOKEN, new TokenMenuItemState())
+                .withMenuItemProvider(MENU_MERGE_TOKEN, new MergeTokenMenuItemProvider())
+                .withVisibleState(MENU_MERGE_TOKEN, new MultiTokenSelectionMenuItemState())
         		// Spans
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
@@ -182,6 +186,47 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
 		 * 
 		 */
+	public class MergeTokenMenuItemProvider implements IMenuItemProvider {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+            menuItem.setText("Merge token");
+            menuItem.setEnabled(true);
+
+            menuItem.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent event) {
+                    executeCreateAnnotationColumn();
+                }
+
+				private void executeCreateAnnotationColumn() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
+					
+					Event event = new Event();
+					event.data = new Object[]{selectedCells, grid};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.mergeTokens", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException("Command org.corpus_tools.atomic.grideditor.commands.mergeTokens not found!", e1);
+					}
+				}
+            });
+		}
+	
+	}
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
 	public class NewAnnotationColumnMenuItemProvider implements IMenuItemProvider {
 	
 		/* (non-Javadoc)
@@ -286,7 +331,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 							.getService(IHandlerService.class);
 
-					Event event = new Event();
+					Event event = new Event(
+							);
 					if (selectedCells == null) {
 						throw new RuntimeException("The collection of selected cells is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
 					}
@@ -480,6 +526,30 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 			GridPopupMenuConfiguration.this.clickedCell = natEventData.getNatTable().getCellByPosition(natEventData.getColumnPosition(), natEventData.getRowPosition());
 			Object value = clickedCell.getDataValue();
 			return value instanceof SToken && clickedCell.getRowIndex() == 0;
+		}
+	
+	}
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class MultiTokenSelectionMenuItemState implements IMenuItemState {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
+		 */
+		@Override
+		public boolean isActive(NatEventData natEventData) {
+			Collection<ILayerCell> selectedCells = selectionLayer.getSelectedCells();
+			GridPopupMenuConfiguration.this.selectedCells = selectedCells;
+			int noOfSelCells = selectedCells.size();
+			int noOfSelCols = selectionLayer.getSelectedColumnPositions().length;
+			return noOfSelCells > 1 && noOfSelCols == 1 && selectedCells.stream().allMatch(c -> {
+				return c.getColumnIndex() == 0;
+			});
 		}
 	
 	}

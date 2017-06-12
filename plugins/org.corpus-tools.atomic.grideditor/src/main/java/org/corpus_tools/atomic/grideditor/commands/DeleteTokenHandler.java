@@ -51,7 +51,6 @@ public class DeleteTokenHandler extends AbstractHandler {
 		SDocumentGraph graph = grid.getGraph();
 		// Update grid
 		grid.getRowMap().remove(clickedCell.getRowIndex());
-		Map<Integer, Row> tempRowMap = new HashMap<>();
 		List<Entry<Integer, Row>> remainingTokens = grid.getRowMap().entrySet().stream().filter(e -> e.getKey() > clickedCell.getRowIndex()).collect(Collectors.toList());
 		grid.getRowMap().entrySet().removeIf(row -> {return row.getKey() > clickedCell.getRowIndex();});
 		remainingTokens.stream().forEach(e -> {
