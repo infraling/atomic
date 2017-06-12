@@ -4,7 +4,9 @@
 package org.corpus_tools.atomic.grideditor.configuration;
 
 import org.corpus_tools.atomic.grideditor.GridEditor;
+import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
+import org.corpus_tools.salt.core.SNode;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
@@ -61,6 +63,13 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 			public Object canonicalToDisplayValue(Object canonicalValue) {
 				if (canonicalValue instanceof SAnnotation) {
 					return ((SAnnotation) canonicalValue).getValue();
+				}
+				else if (canonicalValue instanceof SToken) {
+					if (((SToken) canonicalValue).getGraph().getText((SNode) canonicalValue).isEmpty()) {
+						return "∅";
+						// FIXME: Use different colourinng or similar
+					}
+					return ((SToken) canonicalValue).getGraph().getText((SNode) canonicalValue);
 				}
 				else {
 					return canonicalValue;
