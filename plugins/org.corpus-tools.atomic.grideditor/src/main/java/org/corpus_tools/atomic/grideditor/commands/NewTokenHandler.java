@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.corpus_tools.atomic.grideditor.GridEditor;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid.Row;
 import org.corpus_tools.atomic.grideditor.gui.TokenTextInputDialog;
@@ -25,6 +27,7 @@ import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * // TODO Add description
@@ -102,7 +105,7 @@ public class NewTokenHandler extends AbstractHandler {
 				});
 			});
 			// Create new token
-			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace);
+			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst);
 			// Update grid
 			Map<Integer, Row> tempRowMap = new HashMap<>();
 			for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
@@ -127,6 +130,7 @@ public class NewTokenHandler extends AbstractHandler {
 			ds.setText(newText);
 			// Change indices for following tokens
 			List<SToken> sortedTokens = graph.getSortedTokenByText();
+			// FIXME: Use intStream as in DeleteTokenHandler to use fromm tokenindex + 1!
 			sortedTokens.stream().forEach(t -> {
 				t.getOutRelations().forEach(r -> {
 					if (r instanceof STextualRelation) {
@@ -138,7 +142,7 @@ public class NewTokenHandler extends AbstractHandler {
 				});
 			});
 			// Create new token
-			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace);
+			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst);
 			// Update grid
 			Map<Integer, Row> tempRowMap = new HashMap<>();
 			for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
@@ -150,16 +154,19 @@ public class NewTokenHandler extends AbstractHandler {
 			tempRowMap.entrySet().stream().forEach(e -> grid.getRowMap().put(e.getKey(), e.getValue()));
 		}
 		table.refresh();
+		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
+		System.err.println(ds.getText());
+		System.err.println(graph.getText(graph.getSortedTokenByText().get(0)));
 		return null;
 	}
 
-	private SToken createToken(int startIndex, int realTokenLength, STextualDS ds, SDocumentGraph graph, boolean addWhitespace) {
+	private SToken createToken(int startIndex, int realTokenLength, STextualDS ds, SDocumentGraph graph, boolean addWhitespace, boolean addBeforeFirst) {
 		SToken token = SaltFactory.createSToken();
 		graph.addNode(token);
 		STextualRelation textRel = SaltFactory.createSTextualRelation();
 		textRel.setSource(token);
 		textRel.setTarget(ds);
-		int start = addWhitespace ? startIndex + 1 : startIndex;
+		int start = addWhitespace ? (addBeforeFirst ? 0 : startIndex + 1) : startIndex;
 		textRel.setStart(start);
 		int end = start + realTokenLength;
 		textRel.setEnd(end);
