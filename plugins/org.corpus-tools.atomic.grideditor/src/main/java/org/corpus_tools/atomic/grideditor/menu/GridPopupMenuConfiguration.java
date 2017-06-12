@@ -5,8 +5,6 @@ package org.corpus_tools.atomic.grideditor.menu;
 
 import java.util.Collection;
 
-import javax.annotation.processing.SupportedAnnotationTypes;
-
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
@@ -47,6 +45,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	private static final String MENU_MERGE_TO_SPAN = "Merge annotations into span";
 	private static final String MENU_CREATE_TOKEN_AFTER_THIS = "Create token after the clicked one";
 	private static final String MENU_CREATE_TOKEN_BEFORE_FIRST = "Create token before first";
+	private static final String MENU_DELETE_TOKEN = "Delete token";
 	private final Menu menu;
 	private final SelectionLayer selectionLayer;
 	private final AnnotationGrid grid;
@@ -62,6 +61,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 .withVisibleState(MENU_CREATE_TOKEN_AFTER_THIS, new TokenMenuItemState())
                 .withMenuItemProvider(MENU_CREATE_TOKEN_BEFORE_FIRST, new CreateTokenMenuItemProvider(true))
                 .withVisibleState(MENU_CREATE_TOKEN_BEFORE_FIRST, new TokenMenuBeforeFirstItemState())
+                .withMenuItemProvider(MENU_DELETE_TOKEN, new DeleteTokenMenuItemProvider())
+                .withVisibleState(MENU_DELETE_TOKEN, new TokenMenuItemState())
         		// Spans
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
@@ -128,6 +129,46 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 					}
 					catch (Exception e1) {
 						throw new RuntimeException("Command org.corpus_tools.atomic.grideditor.commands.newToken not found!", e1);
+					}
+				}
+            });
+		}
+	
+	}
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class DeleteTokenMenuItemProvider implements IMenuItemProvider {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+            menuItem.setText("Delete token");
+            menuItem.setEnabled(true);
+            menuItem.addSelectionListener(new SelectionAdapter() {
+            	@Override
+            	public void widgetSelected(SelectionEvent event) {
+            		executeDeleteTokenCommand();
+            	}
+
+				private void executeDeleteTokenCommand() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
+					
+					Event event = new Event();
+					event.data = new Object[]{clickedCell, grid};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.deleteToken", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException("Command org.corpus_tools.atomic.grideditor.commands.deleteToken not found!", e1);
 					}
 				}
             });

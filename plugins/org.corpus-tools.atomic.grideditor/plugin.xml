@@ -42,6 +42,10 @@
             id="org.corpus_tools.atomic.grideditor.commands.newToken"
             name="New Token Command">
       </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.deleteToken"
+            name="Delete Token Command">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -72,6 +76,10 @@
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.NewTokenHandler"
             commandId="org.corpus_tools.atomic.grideditor.commands.newToken">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.DeleteTokenHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.deleteToken">
       </handler>
    </extension>
 
