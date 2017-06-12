@@ -3,13 +3,13 @@
  */
 package org.corpus_tools.atomic.grideditor.menu;
 
-import java.util.Collection; 
+import java.util.Collection;
+
+import javax.annotation.processing.SupportedAnnotationTypes;
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
-import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.DeleteSelectedSpanAnnotationMenuItemProvider;
-import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.MultiSpanCellSelectionMenuItemState;
-import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.SplitClickedSpanAnnotationMenuItemProvider;
 import org.corpus_tools.salt.common.SSpan;
+import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
@@ -44,6 +44,9 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	private static final String MENU_DELETE_CLICKED_SPAN_ANNOTATION = "Delete clicked on span annotation";
 	private static final String MENU_DELETE_SELECTED_SPAN_ANNOTATION = "Delete span annotation(s) in selection";
 	private static final String MENU_SPLIT_CLICKED_SPAN_ANNOTATION = "Split clicked-on multi-cell span";
+	private static final String MENU_MERGE_TO_SPAN = "Merge annotations into span";
+	private static final String MENU_CREATE_TOKEN_AFTER_THIS = "Create token after the clicked one";
+	private static final String MENU_CREATE_TOKEN_BEFORE_FIRST = "Create token before first";
 	private final Menu menu;
 	private final SelectionLayer selectionLayer;
 	private final AnnotationGrid grid;
@@ -54,16 +57,23 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
     	this.grid = grid;
     	this.selectionLayer = selectionLayer;
         this.menu = new PopupMenuBuilder(natTable)
+        		// Tokens
+        		.withMenuItemProvider(MENU_CREATE_TOKEN_AFTER_THIS, new CreateTokenMenuItemProvider(false))
+                .withVisibleState(MENU_CREATE_TOKEN_AFTER_THIS, new TokenMenuItemState())
+                .withMenuItemProvider(MENU_CREATE_TOKEN_BEFORE_FIRST, new CreateTokenMenuItemProvider(true))
+                .withVisibleState(MENU_CREATE_TOKEN_BEFORE_FIRST, new TokenMenuBeforeFirstItemState())
+        		// Spans
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
                 .withVisibleState(MENU_CREATE_SPAN, new MultiEmptyCellSelectionInOneColumnMenuItemState())
-                .withMenuItemProvider(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new DeleteClickedSpanAnnotationMenuItemProvider())
-                .withVisibleState(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedSpanMenuItemState())
+//                .withMenuItemProvider(MENU_MERGE_TO_SPAN, new MergeCellsToSpanMenuItemProvider())
+//                .withVisibleState(MENU_MERGE_TO_SPAN, new MultiSpanCellSelectionMenuItemState())
                 .withMenuItemProvider(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new SplitClickedSpanAnnotationMenuItemProvider())
                 .withVisibleState(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedMultiCellSpanMenuItemState())
+                .withMenuItemProvider(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new DeleteClickedSpanAnnotationMenuItemProvider())
+                .withVisibleState(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedSpanMenuItemState())
                 .withMenuItemProvider(MENU_DELETE_SELECTED_SPAN_ANNOTATION, new DeleteSelectedSpanAnnotationMenuItemProvider())
                 .withVisibleState(MENU_DELETE_SELECTED_SPAN_ANNOTATION, new MultiSpanCellSelectionMenuItemState())
-//                .withMenuItemProvider(MENU_DELETE_SELECTED_SPAN_ANNOTATION, null)//new DeleteClickedSpanAnnotationMenuItemProvider())
                 .build();
     }
 
@@ -73,6 +83,57 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 new MouseEventMatcher(SWT.NONE, null, 3),
                 new PopupMenuAction(this.menu));
     }
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class CreateTokenMenuItemProvider implements IMenuItemProvider {
+	
+		private final boolean isFirstToken;
+
+		public CreateTokenMenuItemProvider(boolean isLastToken) {
+			this.isFirstToken = isLastToken;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+			if (!isFirstToken) {
+				menuItem.setText("Create new token");
+			}
+			else {
+				menuItem.setText("Create new first token");
+			}
+            menuItem.setEnabled(true);
+            menuItem.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent event) {
+                    executeCreateAnnotationColumn();
+                }
+
+				private void executeCreateAnnotationColumn() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
+					
+					Event event = new Event();
+					event.data = new Object[]{clickedCell, grid, isFirstToken};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.newToken", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException("Command org.corpus_tools.atomic.grideditor.commands.newToken not found!", e1);
+					}
+				}
+            });
+		}
+	
+	}
 
 	/**
 		 * // TODO Add description
@@ -128,7 +189,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 		@Override
 		public void addMenuItem(NatTable natTable, Menu popupMenu) {
             MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
-            menuItem.setText("Create span");
+            menuItem.setText("Create new span");
             menuItem.setEnabled(true);
 
 			menuItem.addSelectionListener(new SelectionAdapter() {
@@ -159,6 +220,52 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 
 	/**
 		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class MergeCellsToSpanMenuItemProvider implements IMenuItemProvider {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+            menuItem.setText("Create span");
+            menuItem.setEnabled(true);
+
+			menuItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent event) {
+					executeMergeCellsToSpanCommand();
+				}
+
+				private void executeMergeCellsToSpanCommand() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getService(IHandlerService.class);
+
+					Event event = new Event();
+					if (selectedCells == null) {
+						throw new RuntimeException("The collection of selected cells is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
+					}
+					event.data = new Object[]{selectedCells, grid};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.mergeCellsToSpan", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException(
+								"Command org.corpus_tools.atomic.grideditor.commands.mergeCellsToSpan not found!", e1);
+					}
+				}
+			});
+		}
+	
+	}
+
+	/**
+		 * // TODO Add description
 		 * 
 		 * TODO Check if this can be refactored to be used for token annotations as well
 		 *
@@ -173,7 +280,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 		@Override
 		public void addMenuItem(NatTable natTable, Menu popupMenu) {
 			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
-            menuItem.setText("Delete annotation");
+            menuItem.setText("Delete cell annotation");
             menuItem.setEnabled(true);
 
 			menuItem.addSelectionListener(new SelectionAdapter() {
@@ -297,6 +404,46 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	}
 
 	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class TokenMenuItemState implements IMenuItemState {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
+		 */
+		@Override
+		public boolean isActive(NatEventData natEventData) {
+			GridPopupMenuConfiguration.this.clickedCell = natEventData.getNatTable().getCellByPosition(natEventData.getColumnPosition(), natEventData.getRowPosition());
+			Object value = clickedCell.getDataValue();
+			return value instanceof SToken;
+		}
+	
+	}
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class TokenMenuBeforeFirstItemState implements IMenuItemState {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemState#isActive(org.eclipse.nebula.widgets.nattable.ui.NatEventData)
+		 */
+		@Override
+		public boolean isActive(NatEventData natEventData) {
+			GridPopupMenuConfiguration.this.clickedCell = natEventData.getNatTable().getCellByPosition(natEventData.getColumnPosition(), natEventData.getRowPosition());
+			Object value = clickedCell.getDataValue();
+			return value instanceof SToken && clickedCell.getRowIndex() == 0;
+		}
+	
+	}
+
+	/**
 	 * An {@link IMenuItemState} which is active only when
 	 * more than one cells in the {@link NatTable} are
 	 * selected, and all of the selected cells are in a
@@ -326,7 +473,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 				 * then if it is an SAnnnotation, and if it is,
 				 * then if the annotation value is either `null` or an empty String.
 				 */
-				if (val == null || (val instanceof SAnnotation && (((SAnnotation) val).getValue() == null) || ((SAnnotation) val).getValue_STEXT().isEmpty())) {
+				if (val == null || (val instanceof SAnnotation && (((SAnnotation) val).getValue() == null) || (val instanceof SAnnotation && ((SAnnotation) val).getValue_STEXT().isEmpty()))) {
 					return true;
 				}
 				return false;
