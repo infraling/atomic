@@ -155,8 +155,6 @@ public class NewTokenHandler extends AbstractHandler {
 		}
 		table.refresh();
 		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
-		System.err.println(ds.getText());
-		System.err.println(graph.getText(graph.getSortedTokenByText().get(0)));
 		return null;
 	}
 
