@@ -97,6 +97,9 @@ public class AnnotationGrid {
 	 */
 	public Object get(int rowIndex, int colIndex) {
 		Row row = rowMap.get(rowIndex);
+		if (row.get(colIndex) == null) {
+			return null;
+		}
 		return row.get(colIndex).getValue();
 	}
 
