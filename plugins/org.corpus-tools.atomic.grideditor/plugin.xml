@@ -34,6 +34,14 @@
             id="org.corpus_tools.atomic.grideditor.commands.deleteSelectedSpanAnnotation"
             name="Delete Selected Cell Annotations Command ">
       </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.mergeCellsToSpan"
+            name="Merge Cells To Span Command">
+      </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.newToken"
+            name="New Token Command">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -56,6 +64,14 @@
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.DeleteSelectedSpanAnnotationHandler"
             commandId="org.corpus_tools.atomic.grideditor.commands.deleteSelectedSpanAnnotation">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.MergeCellsToSpanHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.mergeCellsToSpan">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.NewTokenHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.newToken">
       </handler>
    </extension>
 
