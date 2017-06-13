@@ -43,7 +43,7 @@ public class TokenTextInputDialog extends Dialog {
         Composite composite = (Composite) super.createDialogArea(parent);
         // create message
             Label label = new Label(composite, SWT.WRAP);
-            label.setText("Please enter the text which the new token should cover");
+            label.setText("Please enter the text which the new token should cover.");
             GridData data = new GridData(GridData.GRAB_HORIZONTAL
                     | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_CENTER);
@@ -53,7 +53,6 @@ public class TokenTextInputDialog extends Dialog {
         text = new Text(composite, SWT.SINGLE | SWT.BORDER);
         text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-//        text.addModifyListener(e -> validateInput());
         
         btnCheckButton = new Button(composite, SWT.CHECK);
         btnCheckButton.setText("Add single whitespace before and after.");
