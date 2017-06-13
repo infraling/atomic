@@ -50,6 +50,10 @@
             id="org.corpus_tools.atomic.grideditor.commands.mergeTokens"
             name="Merge Tokens Command">
       </command>
+      <command
+            id="org.corpus_tools.atomic.grideditor.commands.splitToken"
+            name="Split Token Command">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -88,6 +92,10 @@
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.MergeTokensHandler"
             commandId="org.corpus_tools.atomic.grideditor.commands.mergeTokens">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.SplitTokenHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.splitToken">
       </handler>
    </extension>
 
