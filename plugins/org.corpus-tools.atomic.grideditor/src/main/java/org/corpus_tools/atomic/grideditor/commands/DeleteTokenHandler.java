@@ -3,9 +3,7 @@
  */
 package org.corpus_tools.atomic.grideditor.commands;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -63,7 +61,7 @@ public class DeleteTokenHandler extends AbstractHandler {
 		Integer start = null;
 		Integer end = null;
 		relLoop:
-		for (SRelation rel : tokenToDelete.getOutRelations()) {
+		for (SRelation<?, ?> rel : tokenToDelete.getOutRelations()) {
 			if (rel instanceof STextualRelation) {
 				ds = (STextualDS) rel.getTarget();
 				start = ((STextualRelation) rel).getStart();
