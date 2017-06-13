@@ -67,6 +67,9 @@ public class NewTokenHandler extends AbstractHandler {
 			newTokenText = inputDial.getValue().trim();
 			addWhitespace = inputDial.addWhitespace();
 		}
+		else {
+			return null;
+		}
 		int realTokenLength = newTokenText.length();
 		List<SRelation> tokenOutRelations = clickedToken.getOutRelations();
 		STextualRelation textRel = null;
