@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.MergeTokenMenuItemProvider;
+import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.SplitTokenMenuItemProvider;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
@@ -48,6 +49,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	private static final String MENU_CREATE_TOKEN_BEFORE_FIRST = "Create token before first";
 	private static final String MENU_DELETE_TOKEN = "Delete token";
 	private static final String MENU_MERGE_TOKEN = "Merge token";
+	private static final String MENU_SPLIT_TOKEN = "Split token";
 	private final Menu menu;
 	private final SelectionLayer selectionLayer;
 	private final AnnotationGrid grid;
@@ -67,6 +69,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 .withVisibleState(MENU_DELETE_TOKEN, new TokenMenuItemState())
                 .withMenuItemProvider(MENU_MERGE_TOKEN, new MergeTokenMenuItemProvider())
                 .withVisibleState(MENU_MERGE_TOKEN, new MultiTokenSelectionMenuItemState())
+                .withMenuItemProvider(MENU_SPLIT_TOKEN, new SplitTokenMenuItemProvider())
+                .withVisibleState(MENU_SPLIT_TOKEN, new TokenMenuItemState())
         		// Spans
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
@@ -200,10 +204,10 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
             menuItem.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent event) {
-                    executeCreateAnnotationColumn();
+                    executeMergeTokenCommand();
                 }
 
-				private void executeCreateAnnotationColumn() {
+				private void executeMergeTokenCommand() {
 					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
 					
 					Event event = new Event();
@@ -214,6 +218,47 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 					}
 					catch (Exception e1) {
 						throw new RuntimeException("Command org.corpus_tools.atomic.grideditor.commands.mergeTokens not found!", e1);
+					}
+				}
+            });
+		}
+	
+	}
+
+	/**
+		 * // TODO Add description
+		 *
+		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+		 * 
+		 */
+	public class SplitTokenMenuItemProvider implements IMenuItemProvider {
+	
+		/* (non-Javadoc)
+		 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+		 */
+		@Override
+		public void addMenuItem(NatTable natTable, Menu popupMenu) {
+			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+            menuItem.setText("Split token");
+            menuItem.setEnabled(true);
+
+            menuItem.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent event) {
+                    executeSplitTokenCommand();
+                }
+
+				private void executeSplitTokenCommand() {
+					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
+					
+					Event event = new Event();
+					event.data = new Object[]{clickedCell, grid};
+					event.widget = natTable;
+					try {
+						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.splitToken", event);
+					}
+					catch (Exception e1) {
+						throw new RuntimeException("Command org.corpus_tools.atomic.grideditor.commands.splitToken not found!", e1);
 					}
 				}
             });
