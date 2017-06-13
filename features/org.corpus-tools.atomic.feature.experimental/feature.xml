@@ -62,13 +62,6 @@
    </requires>
 
    <plugin
-         id="org.corpus_tools.atomic.tokeneditor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.corpus_tools.atomic.visjs"
          download-size="0"
          install-size="0"
@@ -89,12 +82,11 @@
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
+   <plugin
          id="org.corpus_tools.atomic.grideditor"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   
 </feature>

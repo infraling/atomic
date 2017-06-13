@@ -145,7 +145,6 @@
 		<!-- Documentation is built from within the module itself -->
 		<!-- <module>docs/org.corpus_tools.atomic.doc</module> -->
 		<module>plugins/org.corpus-tools.atomic</module>
-		<module>plugins/org.corpus-tools.atomic.tokeneditor</module>
 		<module>plugins/org.corpus-tools.atomic.visjs</module>
 		<module>plugins/org.corpus-tools.atomic.search</module>
 		<module>tests/org.corpus_tools.atomic.tests.gui</module>
