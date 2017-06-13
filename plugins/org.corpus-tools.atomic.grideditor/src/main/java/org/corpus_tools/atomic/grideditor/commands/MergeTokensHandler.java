@@ -7,30 +7,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import org.corpus_tools.atomic.grideditor.GridEditor;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid.Row;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.STextualDS;
 import org.corpus_tools.salt.common.STextualRelation;
 import org.corpus_tools.salt.common.SToken;
-import org.corpus_tools.salt.core.SNode;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * // TODO Add description
@@ -86,35 +82,33 @@ public class MergeTokensHandler extends AbstractHandler {
 		tokensToMerge.stream().forEach(t -> {
 			grid.getGraph().removeNode(t);
 		});
-		for (ILayerCell cell : cells) {
-			grid.getRowMap().remove(cell.getRowIndex());
-			grid.record(cell.getRowIndex(), 0, grid.getHeaderMap().get(0), mergedToken);
-		}
-//		int lastMergedIndex = cells.get(cells.size() - 1).getRowIndex();
-//		int lastIndex = grid.getRowMap().size() - 1;
-//		for (int i = 1; i < cells.size(); i++) {
-//			grid.getRowMap().remove(i);
-//		}
 		// Update grid
-//		int secondCellIndex = cells.get(1).getRowIndex();
-//		int lastCellIndex = cells.get(cells.size() - 1).getRowIndex();
-//		int noOfCellsTouched = lastCellIndex - secondCellIndex;
-//		
-//		Map<Integer, Row> tempRowMap = new HashMap<>();
-//		for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
-//			Entry<Integer, Row> entry = iterator.next();
-//			if (entry.getKey() >= secondCellIndex + 1) {
-//				tempRowMap.put(entry.getKey() - noOfCellsTouched, entry.getValue());
-//				iterator.remove();
-//			}
-//		}
-//		grid.getRowMap().remove(cells.get(0).getRowIndex());
-//		grid.record(cells.get(0).getRowIndex(), 0, "Token", mergedToken);
-//		tempRowMap.entrySet().stream().forEach(e -> grid.getRowMap().put(e.getKey(), e.getValue()));
-//
-//		
+		int firstRowIndex = cells.get(0).getRowIndex();
+		int lastRowIndex = cells.get(cells.size() - 1).getRowIndex();
+		int surplusRowsCount = lastRowIndex - firstRowIndex;
+		// Add new token to first row
+		grid.getRowMap().remove(firstRowIndex);
+		grid.record(firstRowIndex, 0, grid.getHeaderMap().get(0), mergedToken);
+		// Remove remaining merged rows and record all rows after them
+		List<Entry<Integer, Row>> tempRowList = new ArrayList<>();
+		Iterator<Entry<Integer, Row>> rowIterator = grid.getRowMap().entrySet().iterator();
+		while (rowIterator.hasNext()) {
+			Map.Entry<Integer,Row> entry = rowIterator.next();
+			if (entry.getKey() > firstRowIndex && entry.getKey() <= lastRowIndex) {
+				rowIterator.remove();
+			}
+			else 
+				if (entry.getKey() > lastRowIndex) {
+					tempRowList.add(entry);
+					rowIterator.remove();
+				}
+		}
+		// Change key on remaining rows
+		for (Entry<Integer, Row> entry : tempRowList) {
+			grid.getRowMap().put(entry.getKey() - surplusRowsCount, entry.getValue());
+		}
 		table.refresh();
-		System.err.println(grid.getGraph().getTokens().size());
+		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
 		return null;
 	}
 

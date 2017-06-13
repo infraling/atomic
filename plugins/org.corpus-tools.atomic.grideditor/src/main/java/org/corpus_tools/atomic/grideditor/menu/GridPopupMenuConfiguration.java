@@ -65,8 +65,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 .withVisibleState(MENU_CREATE_TOKEN_BEFORE_FIRST, new TokenMenuBeforeFirstItemState())
                 .withMenuItemProvider(MENU_DELETE_TOKEN, new DeleteTokenMenuItemProvider())
                 .withVisibleState(MENU_DELETE_TOKEN, new TokenMenuItemState())
-//                .withMenuItemProvider(MENU_MERGE_TOKEN, new MergeTokenMenuItemProvider())
-//                .withVisibleState(MENU_MERGE_TOKEN, new MultiTokenSelectionMenuItemState())
+                .withMenuItemProvider(MENU_MERGE_TOKEN, new MergeTokenMenuItemProvider())
+                .withVisibleState(MENU_MERGE_TOKEN, new MultiTokenSelectionMenuItemState())
         		// Spans
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
