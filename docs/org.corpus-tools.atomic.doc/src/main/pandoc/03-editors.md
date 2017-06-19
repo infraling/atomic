@@ -20,7 +20,7 @@ The currently available operations are:
 - **Delete selected**: Deletes the annotations in the selected cells.
 - **Create new span**: Creates a span over the selected cells in one column. If the selection is discontinuous, the span will also be discontinuous, and annotations (or other actions) made in any region of the span will affect the whole span.
 - **Split span**: Splits a span into single cells and commits the annotation value of the span to all of them.
-- **Create new token**: Creates a new token *below* the clicked-on. The token text will be queried from the user, as well as whether the token should be pre- and suffixed with additional whitespaces. New "null tokens", i.e., tokens covering text of length 0 (i.e., a point between characters) in the primary text, are displayed as `∅`.
+- **Create new token**: Creates a new token *below* the clicked-on. The token text will be queried from the user, as well as whether the token should be pre- and suffixed with additional whitespaces. New "null tokens", i.e., tokens covering text of length 0 (i.e., a point between characters) in the primary text, are displayed as &Oslash; (cf. [*Empty tokens*](#empty-tokens)).
 - **Create new first token**: Active when clicking on the first token only. Will create a new token *above* the first one. Same functionality as above.
 - **Delete token**: Deletes the clicked-on token.
 - **Merge token**: Merges tokens. Note that all annotations on the single tokens are deleted in the process.
