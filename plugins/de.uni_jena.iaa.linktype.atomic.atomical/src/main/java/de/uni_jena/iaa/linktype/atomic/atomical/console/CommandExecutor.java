@@ -1,6 +1,6 @@
 package de.uni_jena.iaa.linktype.atomic.atomical.console;
 
-import java.io.IOException;
+import java.io.IOException; 
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.Token;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
-import org.corpus_tools.atomic.api.editors.SaltGraphUpdatable;
+import org.corpus_tools.atomic.api.salt.SaltGraphUpdatable;
 import org.corpus_tools.atomic.console.parser.ConsoleCommandBaseListener;
 import org.corpus_tools.atomic.console.parser.ConsoleCommandParser;
 import org.corpus_tools.atomic.console.parser.ConsoleCommandParser.AddOrDeleteEdgeCommandContext;

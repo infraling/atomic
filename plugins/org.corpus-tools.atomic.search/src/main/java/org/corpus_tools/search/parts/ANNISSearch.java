@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.api.editors.SaltNodeSelectable;
+import org.corpus_tools.atomic.api.salt.SaltNodeSelectable;
 import org.corpus_tools.search.service.SearchService;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
