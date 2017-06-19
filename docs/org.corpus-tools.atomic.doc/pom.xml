@@ -152,6 +152,29 @@
             <executions>
               <!-- Build user doc DocBook from Markdown via pandoc -->
               <execution>
+                <id>merge</id>
+                <!-- PHASE: GENERATE-SOURCES -->
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>pandoc</executable>
+                  <arguments>
+                    <argument>-s</argument>
+                      <!-- Add Markdown documents to be compiled in the right order as arguments.
+                      One file per argument! -->
+                    <argument>${project.basedir}/src/main/pandoc/01-introduction.md</argument>
+                    <argument>${project.basedir}/src/main/pandoc/03-editors.md</argument>
+                    <argument>-o</argument>
+                    <argument>${project.basedir}/src/main/pandoc/documentation.md</argument>
+                    <!-- Hack: misuse author metadate to display in all versions), Markdown source uses date metadate for author name -->
+                    <argument>-M</argument>
+                    <argument>author=&quot;Version ${project.version} (${timestamp})&quot;</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
                 <id>build-docbook</id>
                 <!-- PHASE: GENERATE-SOURCES -->
                 <phase>generate-sources</phase>
@@ -167,11 +190,7 @@
                     <argument>markdown+yaml_metadata_block</argument>
                     <argument>-t</argument>
                     <argument>docbook</argument>
-                    <!-- Add Markdown documents to be compiled in the right order as arguments.
-                      One file per argument!
-                      Don't forget to add them in the "build-pdf" execution below as well! -->
-                    <argument>${project.basedir}/src/main/pandoc/01-introduction.md</argument>
-                    <argument>${project.basedir}/src/main/pandoc/03-editors.md</argument>
+                    <argument>${project.basedir}/src/main/pandoc/documentation.md</argument>
                     <!-- end Markdown documents -->
                     <argument>-o</argument>
                     <argument>${project.basedir}/src/main/docbook/index.xml</argument>
@@ -196,11 +215,7 @@
                     <argument>-S</argument>
                     <argument>-f</argument>
                     <argument>markdown+yaml_metadata_block</argument>
-                    <!-- Add Markdown documents to be compiled in the right order as arguments.
-                      One file per argument!
-                      Don't forget to add them in the "build-pdf" execution below as well! -->
-                    <argument>${project.basedir}/src/main/pandoc/01-introduction.md</argument>
-                    <argument>${project.basedir}/src/main/pandoc/03-editors.md</argument>
+                    <argument>${project.basedir}/src/main/pandoc/documentation.md</argument>
                     <!-- end Markdown documents -->
                     <argument>-o</argument>
                     <argument>${basedir}/src/main/resources/atomic-user-guide.pdf</argument>
