@@ -66,7 +66,7 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public int getColumnCount() {
-		return annotationGrid.getHeaderMap().size();
+		return annotationGrid != null ? annotationGrid.getHeaderMap().size() : 0;
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +74,7 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public int getRowCount() {
-		return annotationGrid.getRowMap().size();
+		return annotationGrid != null ? annotationGrid.getRowMap().size() : 0;
 	}
 
 //	/* (non-Javadoc)

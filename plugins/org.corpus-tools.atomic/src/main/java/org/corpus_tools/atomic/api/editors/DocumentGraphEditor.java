@@ -19,7 +19,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -44,12 +46,18 @@ import org.eclipse.ui.part.FileEditorInput;
 public abstract class DocumentGraphEditor extends EditorPart {
 	
 	private static final Logger log = LogManager.getLogger(DocumentGraphEditor.class);
+
+
+	private static final String SALT_PROJECT_FILE_NAME = "saltProject.salt";
 	
 	
 	protected SDocumentGraph graph = null;
 
 
 	protected boolean dirty;
+
+
+	private boolean isValidInput = true;
 	
 	
 	/* (non-Javadoc)
@@ -84,22 +92,46 @@ public abstract class DocumentGraphEditor extends EditorPart {
 //		}
 	}
 
-	/* (non-Javadoc)
+	/** 
+	 * Handles initialization of the editor.
+	 * 
+	 * Clients should check against {@link #isInputValid()} after calling
+	 * `super.init(site, input)` in order to catch any exceptions that
+	 * may occur when the initialization is aborted (e.g., due to the
+	 * user trying to open a Salt project file with a document editor
+	 * extending this class).
+	 * 
 	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+		// Site and input must be set in init
+		setSite(site);
+		setInput(input);
+		
 		if (!(input instanceof FileEditorInput)) {
 			log.error("Input for editors of type {} must be of type {}, but the provided input is of type {}!", this.getClass().getName(), FileEditorInput.class.getName(), input.getClass().getName(), new AtomicGeneralException());
 		}
 		else {
 			String filePath = ((FileEditorInput) input).getPath().makeAbsolute().toOSString();
 			log.trace("Input for editor {} is file '{}'.", this.getClass().getName(), filePath);
+			if (filePath.endsWith(SALT_PROJECT_FILE_NAME)) {
+				MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Cannot open project file", "This editor does work only on Salt document files, but you have tried to open a Salt project file (\"" + SALT_PROJECT_FILE_NAME + "\").\n\nClosing editor.");
+				isValidInput = false;
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						getSite().getPage().closeEditor(DocumentGraphEditor.this, false); 
+					}
+				});
+				log.info("Attempt to open editor for Salt documents (" + this.getClass().getSimpleName() + ") with Salt project file aborted.");
+				return;
+			}
 			IProject iProject = ((FileEditorInput) input).getFile().getProject();
 			IFile saltProjectResource = null;
 			try {
 				for (IResource member : iProject.members()) {
-					if (member instanceof IFile && member.getName().equalsIgnoreCase("saltProject.salt")) { // FIXME Externalize and treat for case, etc
+					if (member instanceof IFile && member.getName().equalsIgnoreCase(SALT_PROJECT_FILE_NAME)) { // FIXME Externalize and treat for case, etc
 						saltProjectResource = (IFile) member;
 					}
 				}
@@ -118,8 +150,6 @@ public abstract class DocumentGraphEditor extends EditorPart {
 				}
 			}
 			log.trace("Loaded document graph {}.", graph);
-			setSite(site);
-			setInput(input);
 			
 			// Set up editor for automatic context switches on activation/deactivation 
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new PartContextListener(site.getId(), site.getPluginId()));
@@ -193,6 +223,13 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	public final void setDirty(boolean dirty) {
 		this.dirty = dirty;
 		firePropertyChange(PROP_DIRTY);
+	}
+
+	/**
+	 * @return the isValidInput
+	 */
+	public final boolean isInputValid() {
+		return isValidInput;
 	}
 
 }

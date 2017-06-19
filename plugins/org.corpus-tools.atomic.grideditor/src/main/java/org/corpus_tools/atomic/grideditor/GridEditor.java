@@ -82,7 +82,9 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
-		annotationGrid = compileAnnotationGrid(graph);
+		if (isInputValid()) {
+			annotationGrid = compileAnnotationGrid(graph);
+		}
 	}
 	
 	@Override
