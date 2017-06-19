@@ -21,7 +21,7 @@ Developer documentation is made available as
 
 ## Workflow
 
-Apart from the auto-generated API documentation, all documentation for Atomic is written in [Markdown](https://en.wikipedia.org/wiki/Markdown).
+Apart from the auto-generated API documentation, all documentation for Atomic is written in [Markdown](https://en.wikipedia.org/wiki/Markdown). Note that all documentation Markdown files must end with a blank line.
 
 The sources for the **user documentation** are found in `src/main/pandoc`.
 
@@ -29,7 +29,7 @@ The sources for the **developer documentation** are found in `src/main/doxygen`.
 
 ### User documentation
 
-User documentation is written in chapters, where the Markdown file should be named `[dd]-[chaptername].md`, e.g., `01-introduction.md`.
+User documentation is written in chapters, where the Markdown file should be named `[dd]-[chaptername].md`, e.g., `01-introduction.md`, where `[dd]` represents the toc level.
 Note that all files to be included in the documentation must be added to the pandoc build in `pom.xml`, cf. comments there.
 
 ## Build
@@ -42,7 +42,9 @@ Note that all files to be included in the documentation must be added to the pan
 
 ### User documentation
 
-The Maven build for the user documentation itself is as follows.
+The build is triggered by calling `mvn clean package -P docs` in this folder.
+
+The Maven build for the user documentation does the following.
 
 | Maven phase | Build execution |
 |---|---|
@@ -57,7 +59,7 @@ The Maven build for the user documentation itself is as follows.
 
 ### Developer documentation
 
-The Maven build for the developer documentation itself is as follows.
+The Maven build for the developer documentation does the following.
 
 | Maven phase | Build execution |
 |---|---|
