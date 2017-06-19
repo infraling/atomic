@@ -200,6 +200,7 @@
                       One file per argument!
                       Don't forget to add them in the "build-pdf" execution below as well! -->
                     <argument>${project.basedir}/src/main/pandoc/01-introduction.md</argument>
+                    <argument>${project.basedir}/src/main/pandoc/03-editors.md</argument>
                     <!-- end Markdown documents -->
                     <argument>-o</argument>
                     <argument>${basedir}/src/main/resources/atomic-user-guide.pdf</argument>
