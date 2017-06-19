@@ -1,1 +1,1 @@
-The documentation is dynamically created by executing an Ant build from inside Eclipse using thedocs/user/build.xml file in the top-level folder.
+The documentation is dynamically created by a separate Maven build on docs/org.corpus_tools.atomic.doc.
