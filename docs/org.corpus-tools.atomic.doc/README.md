@@ -30,7 +30,7 @@ The sources for the **developer documentation** are found in `src/main/doxygen`.
 ### User documentation
 
 User documentation is written in chapters, where the Markdown file should be named `[dd]-[chaptername].md`, e.g., `01-introduction.md`, where `[dd]` represents the toc level.
-Note that all files to be included in the documentation must be added to the pandoc build in `pom.xml` in two places (for HTML and PDF), cf. comments there.
+Note that all files to be included in the documentation must be added to the pandoc build in `pom.xml` in the `merge` execution, cf. comments there.
 
 ## Build
 
