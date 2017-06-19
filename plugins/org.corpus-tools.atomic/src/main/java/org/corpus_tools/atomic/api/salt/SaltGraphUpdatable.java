@@ -1,4 +1,4 @@
-package org.corpus_tools.atomic.api.editors;
+package org.corpus_tools.atomic.api.salt;
 
 import org.corpus_tools.salt.common.SDocumentGraph;
 
