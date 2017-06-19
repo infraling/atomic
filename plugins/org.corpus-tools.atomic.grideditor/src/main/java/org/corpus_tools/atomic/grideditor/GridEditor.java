@@ -60,10 +60,10 @@ import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 
 /**
- * @author Stephan Druskat
- * 
  * // TODO Add description
  *
+ * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+ * 
  */
 public class GridEditor extends DocumentGraphEditor implements ISelectionProvider {
 
