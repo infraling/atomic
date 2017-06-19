@@ -6,8 +6,6 @@ package org.corpus_tools.atomic.grideditor.menu;
 import java.util.Collection;
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
-import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.MergeTokenMenuItemProvider;
-import org.corpus_tools.atomic.grideditor.menu.GridPopupMenuConfiguration.SplitTokenMenuItemProvider;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
@@ -75,8 +73,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
         		.withMenuItemProvider(MENU_NEW_COLUMN, new NewAnnotationColumnMenuItemProvider())
                 .withMenuItemProvider(MENU_CREATE_SPAN, new CreateSpanMenuItemProvider())
                 .withVisibleState(MENU_CREATE_SPAN, new MultiEmptyCellSelectionInOneColumnMenuItemState())
-//                .withMenuItemProvider(MENU_MERGE_TO_SPAN, new MergeCellsToSpanMenuItemProvider())
-//                .withVisibleState(MENU_MERGE_TO_SPAN, new MultiSpanCellSelectionMenuItemState())
+                .withMenuItemProvider(MENU_MERGE_TO_SPAN, new MergeCellsToSpanMenuItemProvider())
+                .withVisibleState(MENU_MERGE_TO_SPAN, new MultiSpanCellSelectionMenuItemState())
                 .withMenuItemProvider(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new SplitClickedSpanAnnotationMenuItemProvider())
                 .withVisibleState(MENU_SPLIT_CLICKED_SPAN_ANNOTATION, new ClickedOnAnnotatedMultiCellSpanMenuItemState())
                 .withMenuItemProvider(MENU_DELETE_CLICKED_SPAN_ANNOTATION, new DeleteClickedSpanAnnotationMenuItemProvider())
