@@ -30,6 +30,7 @@ import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -48,7 +49,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * @author Michael Grübsch
- * @author Stephan Druskat
+ * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  */
 public class PepperWizardPageProperties extends WizardPage implements IWizardPage {
 	/** 
@@ -121,6 +122,7 @@ public class PepperWizardPageProperties extends WizardPage implements IWizardPag
 
 		tableViewerColumn.setEditingSupport(new EditingSupport(tableViewer) {
 			TextCellEditor textCellEditor = null;
+			CheckboxCellEditor boolCellEditor = null;
 
 			@Override
 			protected boolean canEdit(Object element) {
@@ -129,16 +131,36 @@ public class PepperWizardPageProperties extends WizardPage implements IWizardPag
 
 			@Override
 			protected CellEditor getCellEditor(Object element) {
-				if (textCellEditor == null) {
-					textCellEditor = new TextCellEditor((Composite) tableViewer.getControl());
+				Object value = getValue(element);
+				if (value instanceof String) {
+					if (textCellEditor == null) {
+						textCellEditor = new TextCellEditor((Composite) tableViewer.getControl());
+					}
+					return textCellEditor;
 				}
-				return textCellEditor;
+				else if (value instanceof Boolean) {
+					if (boolCellEditor == null) {
+						boolCellEditor = new CheckboxCellEditor((Composite) tableViewer.getControl(),
+								SWT.CHECK | SWT.READ_ONLY);
+					}
+					return boolCellEditor;
+				}
+				else {
+					return null;
+				}
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			protected void setValue(Object element, Object value) {
-				((PepperModuleProperty<?>) element).setValueString(value != null ? value.toString() : null);
+				if (value instanceof String) {
+					((PepperModuleProperty<?>) element).setValueString(value != null ? value.toString() : null);
+				}
+				else if (value instanceof Boolean) {
+					((PepperModuleProperty<Boolean>) element).setValue(value != null ? (Boolean) value : null);
+				}
 				tableViewer.refresh(element, true);
+
 			}
 
 			@Override
