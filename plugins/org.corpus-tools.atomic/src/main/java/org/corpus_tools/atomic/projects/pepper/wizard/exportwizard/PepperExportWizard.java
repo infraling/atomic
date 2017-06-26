@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.corpus_tools.atomic.projects.pepper.wizard.AbstractPepperWizard;
-import org.corpus_tools.atomic.projects.pepper.wizard.AbstractPepperWizard.WizardMode;
 import org.corpus_tools.atomic.projects.pepper.wizard.PepperModuleRunnable;
 import org.corpus_tools.atomic.projects.pepper.wizard.PepperWizardPageDirectory;
 import org.corpus_tools.atomic.projects.pepper.wizard.PepperWizardPageFormat;
@@ -42,8 +41,10 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * An implementation of {@link AbstractPepperWizard} for corpus exports.
- * 
+ *
  * @author Michael Grübsch
+ * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+ * 
  */
 public class PepperExportWizard extends AbstractPepperWizard implements IExportWizard {
 	protected IProject selectedProject = null;
