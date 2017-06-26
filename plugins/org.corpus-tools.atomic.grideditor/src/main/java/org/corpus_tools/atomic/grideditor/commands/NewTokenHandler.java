@@ -30,7 +30,6 @@ import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.part.ISetSelectionTarget;
 
 /**
  * // TODO Add description
@@ -74,10 +73,11 @@ public class NewTokenHandler extends AbstractHandler {
 			return null;
 		}
 		int realTokenLength = newTokenText.length();
+		@SuppressWarnings("rawtypes")
 		List<SRelation> tokenOutRelations = clickedToken.getOutRelations();
 		STextualRelation textRel = null;
 		relLoop:
-		for (SRelation rel : tokenOutRelations) {
+		for (@SuppressWarnings("rawtypes") SRelation rel : tokenOutRelations) {
 			if (rel instanceof STextualRelation) {
 				textRel = (STextualRelation) rel;
 				break relLoop;
