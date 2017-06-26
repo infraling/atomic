@@ -15,10 +15,12 @@ import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid.Row
 import org.corpus_tools.atomic.grideditor.gui.TokenTextInputDialog;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SOrderRelation;
 import org.corpus_tools.salt.common.STextualDS;
 import org.corpus_tools.salt.common.STextualRelation;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SRelation;
+import org.corpus_tools.salt.graph.Node;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -28,6 +30,7 @@ import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.part.ISetSelectionTarget;
 
 /**
  * // TODO Add description
@@ -108,7 +111,7 @@ public class NewTokenHandler extends AbstractHandler {
 				});
 			});
 			// Create new token
-			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst);
+			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst, clickedToken);
 			// Update grid
 			Map<Integer, Row> tempRowMap = new HashMap<>();
 			for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
@@ -145,7 +148,7 @@ public class NewTokenHandler extends AbstractHandler {
 				});
 			});
 			// Create new token
-			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst);
+			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst, clickedToken);
 			// Update grid
 			Map<Integer, Row> tempRowMap = new HashMap<>();
 			for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
@@ -161,7 +164,7 @@ public class NewTokenHandler extends AbstractHandler {
 		return null;
 	}
 
-	private SToken createToken(int startIndex, int realTokenLength, STextualDS ds, SDocumentGraph graph, boolean addWhitespace, boolean addBeforeFirst) {
+	private SToken createToken(int startIndex, int realTokenLength, STextualDS ds, SDocumentGraph graph, boolean addWhitespace, boolean addBeforeFirst, SToken clickedToken) {
 		SToken token = SaltFactory.createSToken();
 		graph.addNode(token);
 		STextualRelation textRel = SaltFactory.createSTextualRelation();
@@ -172,6 +175,34 @@ public class NewTokenHandler extends AbstractHandler {
 		int end = start + realTokenLength;
 		textRel.setEnd(end);
 		graph.addRelation(textRel);
+		// Change/add order relations
+		SToken nextToken = null;
+		SOrderRelation oldOrderRelation = null;
+		if (!addBeforeFirst) {
+			for (SRelation<?, ?> outRel : clickedToken.getOutRelations()) {
+				if (outRel instanceof SOrderRelation) {
+					Node target = outRel.getTarget();
+					if (target instanceof SToken) {
+						nextToken = (SToken) target;
+						oldOrderRelation = (SOrderRelation) outRel;
+					}
+				}
+			}
+			String type = null;
+			if (nextToken != null && oldOrderRelation != null) {
+				oldOrderRelation.setSource(token);
+				if (oldOrderRelation.getType() != null) {
+					type = oldOrderRelation.getType();
+				}
+			}
+			SOrderRelation newOrderRelation = SaltFactory.createSOrderRelation();
+			newOrderRelation.setSource(clickedToken);
+			newOrderRelation.setTarget(token);
+			if (type != null) {
+				newOrderRelation.setType(type);
+			}
+			graph.addRelation(newOrderRelation);
+		}
 		return token;
 	}
 
