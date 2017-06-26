@@ -57,7 +57,8 @@ import org.osgi.framework.ServiceReference;
 /**
  * An abstract base class for Pepper Wizards, i.e., import and export wizards.
  *
- * @author Stephan Druskat <mail@sdruskat.net>
+ * @author Michael Grübsch
+ * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  */
 public abstract class AbstractPepperWizard extends Wizard {
 
