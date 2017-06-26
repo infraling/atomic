@@ -18,15 +18,13 @@
  *******************************************************************************/
 package org.corpus_tools.atomic.commands;
 
-import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertVisible;
+import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertVisible; 
 import static org.junit.Assert.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Before;
 import org.junit.Test;
