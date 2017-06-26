@@ -67,7 +67,7 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 				else if (canonicalValue instanceof SToken) {
 					if (((SToken) canonicalValue).getGraph().getText((SNode) canonicalValue).isEmpty()) {
 						return "∅";
-						// FIXME: Use different colourinng or similar
+						// FIXME: Use different colouring or similar
 					}
 					return ((SToken) canonicalValue).getGraph().getText((SNode) canonicalValue);
 				}
@@ -78,12 +78,6 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 		};
 	}
 
-	/**
-		 * // TODO Add description
-		 *
-		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
-		 * 
-		 */
 	public class AnnotationCellEditor extends TextCellEditor {
 		
 		private Object originalCanonicalValue = null;
