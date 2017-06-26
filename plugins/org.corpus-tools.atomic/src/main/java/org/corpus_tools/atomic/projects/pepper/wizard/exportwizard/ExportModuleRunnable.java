@@ -21,7 +21,6 @@
 package org.corpus_tools.atomic.projects.pepper.wizard.exportwizard;
 
 import java.io.File;
-
 import org.corpus_tools.atomic.projects.pepper.wizard.PepperModuleRunnable;
 import org.corpus_tools.atomic.projects.pepper.wizard.importwizard.ImportModuleRunnable;
 import org.corpus_tools.pepper.common.CorpusDesc;
@@ -39,6 +38,7 @@ import org.eclipse.emf.common.util.URI;
  *
  */
 public class ExportModuleRunnable extends PepperModuleRunnable {
+	
 	public ExportModuleRunnable(PepperExportWizard pepperWizard, IProject project, boolean cancelable) {
 		super(pepperWizard, project, cancelable);
 	}
@@ -61,11 +61,12 @@ public class ExportModuleRunnable extends PepperModuleRunnable {
 	@Override
 	protected StepDesc createExporterParams() {
 		StepDesc stepDesc = new StepDesc();
-		stepDesc.setCorpusDesc(new CorpusDesc());
-		stepDesc.getCorpusDesc().setCorpusPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath()));
 		stepDesc.setName(pepperWizard.getPepperModule().getName());
-		// stepDesc.setVersion(saltXMLImporter.getVersion());
+		stepDesc.setVersion(pepperWizard.getPepperModule().getVersion());
+		stepDesc.setCorpusDesc(new CorpusDesc().setCorpusPath(URI.createFileURI(new File(pepperWizard.getExchangeTargetPath()).getAbsolutePath())));
+		stepDesc.setProps(pepperWizard.getPepperModuleProperties().getProperties());
 		stepDesc.setModuleType(MODULE_TYPE.EXPORTER);
 		return (stepDesc);
+
 	}
 }
