@@ -497,5 +497,19 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <category
+            id="org.corpus_tools.atomic.AtomicExportWizardCategory"
+            name="Atomic">
+      </category>
+      <wizard
+            category="org.corpus_tools.atomic.AtomicExportWizardCategory"
+            class="org.corpus_tools.atomic.projects.pepper.wizard.exportwizard.PepperExportWizard"
+            icon="icons/obj16/pepper16.png"
+            id="org.corpus_tools.atomic.exportPepperWizard"
+            name="Corpus Export">
+      </wizard>
+   </extension>
 
 </plugin>
