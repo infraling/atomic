@@ -15,8 +15,31 @@ geometry: margin=1in
 # Note
 
 Atomic is currently undergoing a complete overhaul.
+The features in this version are preliminary implementations and may change in the future.
 
-This does not make it feasible to publish any user documentation at this point. All released versions of Atomic will, however, include comprehensive user documentation in different formats.
+# License
+
+Atomic is licensed under the Apache License, Version 2.0.
+
+-----------------------------------------------------------------------------------------------
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     [`http://www.apache.org/licenses/LICENSE-2.0`](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-----------------------------------------------------------------------------------------------
+
+# Citation
+
+If you have used Atomic in your work, please cite as:
+
+- Stephan Druskat, Lennart Bierkandt, Volker Gast, Christoph Rzymski, and Florian Zipser (2014): "Atomic: an open-source software platform for multi-level corpus annotation". In *Proceedings of the 12th Konferenz zur Verarbeitung natürlicher Sprache (KONVENS 2014)*, Hildesheim, vol. 1, pp. 228–234. Available at: <http://nbn-resolving.de/urn:nbn:de:gbv:hil2-opus-2866>. 
 
 # Introduction
 
