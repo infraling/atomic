@@ -40,11 +40,12 @@
       </product>
    </extension>
    <extension
+   		 id="org.corpus_tools.atomic.review.product"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.corpus_tools.atomic.application"
             description="An extensible OS-independent multi-level annotation platform for linguistic corpora"
-            name="Atomic (Experimental)">
+            name="Atomic (Review)">
          <property
                name="appName"
                value="Atomic">
