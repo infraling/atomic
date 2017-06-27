@@ -55,7 +55,8 @@ public class Atomic implements IApplication {
 		log.trace("Start Atomic");
 		Display display = PlatformUI.createDisplay();
 		instanceLocation = Platform.getInstanceLocation();
-		boolean exit = checkWorkspaceSetup(display);
+		// Ask for workspace only if no data is supplied
+		boolean exit = instanceLocation.getURL() == null ? checkWorkspaceSetup(display) : false;
 		if (exit) {
 			return IApplication.EXIT_OK;
 		}
