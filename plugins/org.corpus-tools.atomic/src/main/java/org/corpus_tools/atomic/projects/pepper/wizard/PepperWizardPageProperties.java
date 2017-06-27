@@ -146,7 +146,10 @@ public class PepperWizardPageProperties extends WizardPage implements IWizardPag
 					return boolCellEditor;
 				}
 				else {
-					return null;
+					if (textCellEditor == null) {
+						textCellEditor = new TextCellEditor((Composite) tableViewer.getControl());
+					}
+					return textCellEditor;
 				}
 			}
 
