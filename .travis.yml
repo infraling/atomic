@@ -1,3 +1,26 @@
+sudo: false
+
 language: java
-jdk:
-  - oraclejdk8
+
+jdk: oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+
+env: DISPLAY=:99.0
+
+install: true
+
+addons:
+  apt:
+    packages:
+    - metacity
+
+#before_install:
+# - sudo apt-get update
+# - sudo apt-get install metacity
+
+before_script:
+ - sh -e /etc/init.d/xvfb start
+ - metacity --sm-disable --replace 2> metacity.err &
