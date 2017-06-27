@@ -34,7 +34,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"/>
 <stringAttribute key="pde.version" value="3.3"/>
-<stringAttribute key="product" value="org.corpus_tools.atomic.product"/>
+<stringAttribute key="product" value="org.corpus_tools.atomic.experimental.product"/>
 <stringAttribute key="productFile" value="/atomic-parent/repository/org.corpus_tools.atomic.product"/>
 <setAttribute key="selected_features">
 <setEntry value="org.corpus_tools.atomic.feature.experimental:default"/>
