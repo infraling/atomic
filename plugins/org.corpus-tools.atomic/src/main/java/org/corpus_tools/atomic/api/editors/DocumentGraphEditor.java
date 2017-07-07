@@ -196,14 +196,14 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	 */
 	public abstract void createEditorPartControl(Composite parent);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
-	}
+//	/* (non-Javadoc)
+//	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+//	 */
+//	@Override
+//	public void setFocus() {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 	/**
 	 * Returns the single instance of {@link SDocumentGraph} that
@@ -230,6 +230,16 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	 */
 	public final boolean isInputValid() {
 		return isValidInput;
+	}
+	
+	@Override
+	public void setFocus() {
+		/*
+		 * Empty implementation here prevents forced
+		 * implementation down the inheritance line
+		 * but can still be overridden to provide
+		 * customized implementations.
+		 */
 	}
 
 }
