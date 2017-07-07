@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.nattable.data.convert.DisplayConverter;
 import org.eclipse.nebula.widgets.nattable.data.convert.IDisplayConverter;
 import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.edit.editor.TextCellEditor;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer.MoveDirectionEnum;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.swt.widgets.Composite;
@@ -26,12 +27,15 @@ import org.eclipse.swt.widgets.Control;
  * // TODO Add description
  *
  */
-public class GridEditConfiguration extends AbstractRegistryConfiguration {
+public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 
+	private static final String TOKEN_TEXT_COLUMN_LABEL = "Token";
 	private final GridEditor editor;
+	private final ColumnOverrideLabelAccumulator accumulator;
 
-	public GridEditConfiguration(GridEditor gridEditor) {
+	public GridEditorConfiguration(GridEditor gridEditor, ColumnOverrideLabelAccumulator columnLabelAccumulator) {
 		this.editor = gridEditor;
+		this.accumulator = columnLabelAccumulator; 
 	}
 
 	/* (non-Javadoc)
@@ -39,6 +43,8 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 	 */
 	@Override
 	public void configureRegistry(IConfigRegistry configRegistry) {
+		// Register configuration labels on (some) columns
+		registerConfigLabelsOnColumns();
 		// Make cells editable
 		configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
 		// Configure what to show in the grid
@@ -49,6 +55,13 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 //		configRegistry.registerConfigAttribute(EditConfigAttributes.OPEN_ADJACENT_EDITOR, true);
 		// Switch off out-of-the-box multi-cell editing
 		configRegistry.registerConfigAttribute(EditConfigAttributes.SUPPORT_MULTI_EDIT, false);
+		// Disable editing of token text
+		configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.NEVER_EDITABLE, DisplayMode.EDIT, TOKEN_TEXT_COLUMN_LABEL);
+	}
+
+	private void registerConfigLabelsOnColumns() {
+		accumulator.registerColumnOverrides(0, TOKEN_TEXT_COLUMN_LABEL);
+		
 	}
 
 	private IDisplayConverter getAnnotationValueConverter() {
@@ -84,14 +97,14 @@ public class GridEditConfiguration extends AbstractRegistryConfiguration {
 
 		@Override
 	    protected Control activateCell(final Composite parent, Object originalCanonicalValue) {
-			this.originalCanonicalValue = GridEditConfiguration.this.getAnnotationValueConverter().canonicalToDisplayValue(originalCanonicalValue);
+			this.originalCanonicalValue = GridEditorConfiguration.this.getAnnotationValueConverter().canonicalToDisplayValue(originalCanonicalValue);
 			return super.activateCell(parent, originalCanonicalValue);
 		}
 
 		@Override
 		public boolean commit(MoveDirectionEnum direction, boolean closeAfterCommit, boolean skipValidation) {
 			if (!getCanonicalValue().equals(originalCanonicalValue)) {
-				GridEditConfiguration.this.editor.setDirty(true);
+				GridEditorConfiguration.this.editor.setDirty(true);
 			}
 			return super.commit(MoveDirectionEnum.DOWN, true, true);
 		}

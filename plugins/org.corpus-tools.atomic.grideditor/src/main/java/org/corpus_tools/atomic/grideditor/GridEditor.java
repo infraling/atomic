@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
-import org.corpus_tools.atomic.grideditor.configuration.GridEditConfiguration;
+import org.corpus_tools.atomic.grideditor.configuration.GridEditorConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorSelectionConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridSpanningDataProvider;
 import org.corpus_tools.atomic.grideditor.selection.MultiCellSelection;
@@ -52,6 +52,7 @@ import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
 import org.eclipse.nebula.widgets.nattable.layer.SpanningDataLayer;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
@@ -104,6 +105,16 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		dataProvider = createDataProvider();
 		GridSpanningDataProvider spanningProvider = new GridSpanningDataProvider(dataProvider, false, true);
 		SpanningDataLayer bodyDataLayer = new SpanningDataLayer(spanningProvider);
+		/* 
+		 * Register the accumulator on the body data layer.
+		 * This ensures that the labels are bound to the column index and are
+		 * unaffected by column order.
+		 * The Accumulator registers label constants for all columns,
+		 * which makes them addressable for column-based customizations.
+		 */
+        final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayer);
+        bodyDataLayer.setConfigLabelAccumulator(columnLabelAccumulator);
+        // Selection layer
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
 		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationGrid));
 //		final ISelectionModel selectionModel = selectionLayer.getSelectionModel();
@@ -133,7 +144,7 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		natTable.addConfiguration(new GridPopupMenuConfiguration(natTable, annotationGrid, selectionLayer));
 //		natTable.addConfiguration(new TokenEditorKeyConfiguration(text));
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-		natTable.addConfiguration(new GridEditConfiguration(this));
+		natTable.addConfiguration(new GridEditorConfiguration(this, columnLabelAccumulator));
 		natTable.configure();
 		
 		/* #################################
