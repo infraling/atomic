@@ -237,8 +237,8 @@
                   <executable>cp</executable>
                   <arguments>
                     <argument>-a</argument>
-                    <argument>./images</argument>
-                    <argument>./src/main/docbook/images</argument>
+                    <argument>./images/</argument>
+                    <argument>./src/main/docbook/</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -363,12 +363,16 @@
                 <copy todir="${project.build.directory}/docbkx/html/css">
                   <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
                 </copy>
+                <copy todir="${project.build.directory}/docbkx/eclipse/css">
+                  <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
+                </copy>
                 <copy todir="${project.build.directory}/docbkx/html/images">
-                  <fileset dir="${basedir}/src/main/docbook/images/" includes="**/*"/>
+                  <fileset dir="${basedir}/src/main/docbook/images/"/>
                 </copy>
-                <copy todir="${basedir}/../../plugins/org.corpus-tools.atomic/doc/help/images">
-                  <fileset dir="${basedir}/src/main/docbook/images/" includes="**/*"/>
+                <copy todir="${project.build.directory}/docbkx/eclipse/images">
+                  <fileset dir="${basedir}/src/main/docbook/images/"/>
                 </copy>
+                
               </postProcess>
               <chunkedOutput>true</chunkedOutput>
             </configuration>
