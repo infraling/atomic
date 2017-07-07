@@ -22,7 +22,6 @@ public class AnnotationGridDataProvider implements IDataProvider {
 
 	public AnnotationGridDataProvider(AnnotationGrid annotationGrid) {
 		this.annotationGrid = annotationGrid;
-//		System.err.println("CREATE PROVIDER");
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +56,7 @@ public class AnnotationGridDataProvider implements IDataProvider {
 		}
 		else {
 			// Not null, not an SAnnotation
-			throw new UnsupportedOperationException("Not supperted yet!");
+			throw new UnsupportedOperationException("Not supported yet!");
 		}
 	}
 
