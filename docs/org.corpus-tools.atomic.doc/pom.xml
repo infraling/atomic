@@ -225,6 +225,23 @@
                   </arguments>
                 </configuration>
               </execution>
+              <!-- Copy images -->
+              <execution>
+                <id>copy-images-to-docbook</id>
+                <!-- PHASE: GENERATE-SOURCES -->
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>cp</executable>
+                  <arguments>
+                    <argument>-a</argument>
+                    <argument>./images</argument>
+                    <argument>./src/main/docbook/images</argument>
+                  </arguments>
+                </configuration>
+              </execution>
               <!-- Use the Doxygen sources with replaces variables to generate developer docs -->
               <!-- Build developer documentation with Doxygen -->
               <execution>
@@ -345,6 +362,12 @@
               <postProcess>
                 <copy todir="${project.build.directory}/docbkx/html/css">
                   <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
+                </copy>
+                <copy todir="${project.build.directory}/docbkx/html/images">
+                  <fileset dir="${basedir}/src/main/docbook/images/" includes="**/*"/>
+                </copy>
+                <copy todir="${basedir}/../../plugins/org.corpus-tools.atomic/doc/help/images">
+                  <fileset dir="${basedir}/src/main/docbook/images/" includes="**/*"/>
                 </copy>
               </postProcess>
               <chunkedOutput>true</chunkedOutput>
