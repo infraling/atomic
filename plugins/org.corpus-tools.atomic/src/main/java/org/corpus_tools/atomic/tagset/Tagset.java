@@ -3,6 +3,8 @@
  */
 package org.corpus_tools.atomic.tagset;
 
+import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
 
 import org.corpus_tools.salt.SALT_TYPE;
@@ -42,12 +44,57 @@ import org.corpus_tools.salt.core.SLayer;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-interface Tagset {
+interface Tagset extends Serializable {
 
-	boolean add(TagsetEntry entry);
+	/**
+	 * Adds a tagset entry to the tagset.
+	 * 
+	 * @param entry The {@link TagsetEntry} to be added
+	 * @return `true` if the tagset has changed as a result of this call
+	 */
+	boolean addEntry(TagsetEntry entry);
 	
-	boolean remove(TagsetEntry entry);
+	/**
+	 * Removes a tagset entry from the tagset.
+	 * 
+	 * @param entry The {@link TagsetEntry} to be removed
+	 * @return `true` if the entry has been removed as a result of this call
+	 */
+	boolean removeEntry(TagsetEntry entry);
 	
-	List<String> getValidValues(TagsetEntry entry);
-
+	/**
+	 * Provides a list of all entries in the tagset.
+	 * 
+	 * @return a {@link List} of all {@link TagsetEntry}s currently in the tagset
+	 */
+	List<TagsetEntry> getEntries();
+	
+	/**
+	 * Loads a tagset from the provided URI.
+	 * 
+	 * @param uri The {@link URI} from which to load the tagset
+	 * @return The tagset which has been serialized at the given URI, or `null` if no tagset could be loaded
+	 */
+	Tagset load(URI uri);
+	
+	/**
+	 * Saves the tagset at the given URI
+	 * 
+	 * @param uri The URI where the tagset should be saved
+	 * @return `true` if the tagset has been successfully save at the given URI
+	 */
+	boolean save(URI uri);
+	
+	/**
+	 * @return the name of the tagset
+	 */
+	String getName();
+	
+	/**
+	 * Sets the name of the tagset
+	 * 
+	 * @param name The tagset's name
+	 */
+	void setName(String name);
+	
 }
