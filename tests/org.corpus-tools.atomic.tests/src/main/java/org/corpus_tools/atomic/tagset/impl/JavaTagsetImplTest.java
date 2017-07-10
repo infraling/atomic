@@ -8,8 +8,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
 import org.corpus_tools.atomic.tagset.Tagset;
@@ -66,11 +68,26 @@ public class JavaTagsetImplTest {
 	 */
 	@Test
 	public final void testSaveAndLoad() {
-		testSave();
 		String userHome = System.getProperty("user.home");
 		String path = userHome + "/atomic-tagset.ats";
+		getFixture().save(URI.createFileURI(path));
 		Tagset success = getFixture().load(URI.createFileURI(path));
 		assertThat(success, IsInstanceOf.instanceOf(Tagset.class));
+		try {
+			Files.delete(Paths.get(path));
+		}
+		catch (
+
+		NoSuchFileException x) {
+			fail(path + ": no such file or directory");
+		}
+		catch (DirectoryNotEmptyException x) {
+			fail(path + " not empty");
+		}
+		catch (IOException x) {
+			// File permission problems are caught here.
+			System.err.println(x);
+		}
 	}
 
 	/**
@@ -83,6 +100,21 @@ public class JavaTagsetImplTest {
 		boolean success = getFixture().save(URI.createFileURI(path));
 		assertTrue(Files.exists(Paths.get(path)));
 		assertTrue(success);
+		try {
+			Files.delete(Paths.get(path));
+		}
+		catch (
+
+		NoSuchFileException x) {
+			fail(path + ": no such file or directory");
+		}
+		catch (DirectoryNotEmptyException x) {
+			fail(path + " not empty");
+		}
+		catch (IOException x) {
+			// File permission problems are caught here.
+			System.err.println(x);
+		}
 	}
 
 	/**
