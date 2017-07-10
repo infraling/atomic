@@ -225,6 +225,23 @@
                   </arguments>
                 </configuration>
               </execution>
+              <!-- Copy images -->
+              <execution>
+                <id>copy-images-to-docbook</id>
+                <!-- PHASE: GENERATE-SOURCES -->
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>cp</executable>
+                  <arguments>
+                    <argument>-a</argument>
+                    <argument>./images/</argument>
+                    <argument>./src/main/docbook/</argument>
+                  </arguments>
+                </configuration>
+              </execution>
               <!-- Use the Doxygen sources with replaces variables to generate developer docs -->
               <!-- Build developer documentation with Doxygen -->
               <execution>
@@ -346,6 +363,16 @@
                 <copy todir="${project.build.directory}/docbkx/html/css">
                   <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
                 </copy>
+                <copy todir="${project.build.directory}/docbkx/eclipse/css">
+                  <fileset dir="${basedir}/src/main/docbook/css/" includes="**/*.css"/>
+                </copy>
+                <copy todir="${project.build.directory}/docbkx/html/images">
+                  <fileset dir="${basedir}/src/main/docbook/images/"/>
+                </copy>
+                <copy todir="${project.build.directory}/docbkx/eclipse/images">
+                  <fileset dir="${basedir}/src/main/docbook/images/"/>
+                </copy>
+                
               </postProcess>
               <chunkedOutput>true</chunkedOutput>
             </configuration>

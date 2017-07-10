@@ -4,7 +4,7 @@
 
 The *Grid Editor* is a simple, table-like editor for editing tokens and spans.
 
-[IMAGE HERE]
+![A screenshot of the Grid Editor showing a document from the [Georgetown University Multilayer Corpus](https://corpling.uis.georgetown.edu/gum/), Version 2.3.2.](images/grid-editor.png)
 
 It works on documents and is opened by right-clicking a `<document-name>.salt` file in the Navigation view > *Open with* > *Grid Editor*.
 
