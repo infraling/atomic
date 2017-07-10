@@ -20,7 +20,7 @@ import org.corpus_tools.salt.core.SLayer;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-interface TagsetEntry {
+public interface TagsetEntry {
 	
 	/**
 	 * @param layers The list of layers for which the entry's values are valid
