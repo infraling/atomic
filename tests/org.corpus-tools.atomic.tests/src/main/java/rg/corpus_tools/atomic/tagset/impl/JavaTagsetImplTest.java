@@ -3,7 +3,6 @@
  */
 package rg.corpus_tools.atomic.tagset.impl;
 
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
