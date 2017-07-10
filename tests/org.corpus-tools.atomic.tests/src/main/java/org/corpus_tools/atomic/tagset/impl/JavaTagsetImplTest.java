@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rg.corpus_tools.atomic.tagset.impl;
+package org.corpus_tools.atomic.tagset.impl;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
