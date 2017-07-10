@@ -4,12 +4,12 @@
 package org.corpus_tools.atomic.tagset;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.List;
 
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SLayer;
+import org.eclipse.emf.common.util.URI;
 
 /**
  * A tagset defining valid annotation values for combinations of layers, Salt
@@ -44,7 +44,7 @@ import org.corpus_tools.salt.core.SLayer;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-interface Tagset extends Serializable {
+public interface Tagset extends Serializable {
 
 	/**
 	 * Adds a tagset entry to the tagset.
