@@ -28,6 +28,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,11 +44,17 @@ public class SelectWorkspaceDialogTest {
 	private static SWTWorkbenchBot bot;
 	private SWTBotShell dialog = null;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		bot = new SWTWorkbenchBot();
 		bot.resetWorkbench();
+	}
+	
+	
+	@Before
+	public void before() {
 		dialog  = openDialog();
+		
 	}
 	
 	@After
