@@ -12,7 +12,7 @@ import org.corpus_tools.salt.core.SLayer;
  * An entry in a {@link Tagset}.
  * 
  * A {@link TagsetEntry} provides valid values of type 
- * {@link TagsetValue} for specific constraint which is
+ * {@link TagsetValue} for a specific constraint which is
  * a combination of layers, Salt element types, 
  * annotation namespaces and annotation names for
  * which a list of annotation values is valid.
