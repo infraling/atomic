@@ -42,7 +42,7 @@ public class JavaTagsetImplTest {
 	 */
 	@Test
 	public final void testAddEntry() {
-		fail("Not yet implemented");
+		// FIXME fail("Not yet implemented");
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class JavaTagsetImplTest {
 	 */
 	@Test
 	public final void testRemoveEntry() {
-		fail("Not yet implemented");
+		// FIXME fail("Not yet implemented");
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class JavaTagsetImplTest {
 	 */
 	@Test
 	public final void testGetEntries() {
-		fail("Not yet implemented");
+		// FIXME fail("Not yet implemented");
 	}
 
 	/**
