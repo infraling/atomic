@@ -10,7 +10,7 @@ package org.corpus_tools.atomic.tagset;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-interface TagsetValue {
+public interface TagsetValue {
 	
 	/**
 	 * @param value The value to set
