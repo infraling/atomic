@@ -71,5 +71,15 @@ public interface TagsetEntry {
 	 * @return the list of values which are valid while honouring the constraints of this entry
 	 */
 	List<TagsetValue> getValidValues();
+	
+	/**
+	 * @param tagset The tagset which contains this tagset entry
+	 */
+	void setTagset(Tagset tagset);
+	
+	/**
+	 * @return the tagset which contains this tagset entry
+	 */
+	Tagset getTagset();
 
 }

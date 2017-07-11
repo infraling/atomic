@@ -10,7 +10,7 @@ package org.corpus_tools.atomic.tagset;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-public interface TagsetValue {
+public abstract interface TagsetValue {
 	
 	/**
 	 * @param value The value to set
@@ -31,5 +31,15 @@ public interface TagsetValue {
 	 * @return the value description
 	 */
 	String getDescription();
+	
+	/**
+	 * @return whether the value of this tagset value is a regular expression
+	 */
+	boolean isRegexValue();
+	
+	/**
+	 * @param isRegexValue Whether the value of this tagset value is a regular expression
+	 */
+	void setRegexValue(boolean isRegexValue);
 	
 }

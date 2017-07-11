@@ -36,7 +36,8 @@ public class JavaTagsetImplTest {
 	 */
 	@Before
 	public void setUp() {
-		this.setFixture(new JavaTagsetImpl());
+		
+		this.setFixture(TagsetFactory.createTagset(graph, "test"));
 	}
 
 	/**
@@ -60,7 +61,8 @@ public class JavaTagsetImplTest {
 	 */
 	@Test
 	public final void testGetEntries() {
-		// FIXME fail("Not yet implemented");
+		assertTrue(getFixture().getEntries().isEmpty());
+//		getFixture().addEntry(ITagsetFactory)
 	}
 
 	/**
