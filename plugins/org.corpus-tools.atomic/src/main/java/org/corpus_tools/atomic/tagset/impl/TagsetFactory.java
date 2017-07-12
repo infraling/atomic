@@ -3,6 +3,7 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.corpus_tools.atomic.tagset.Tagset;
@@ -31,11 +32,11 @@ import org.eclipse.core.runtime.Assert;
 public class TagsetFactory {
 	
 	private static Tagset tagset;
-	private List<String> layers = null;
-	private List<SALT_TYPE> elementTypes = null;
-	private List<String> namespaces = null;
-	private List<String> names = null;
-	private List<TagsetValue> values = null;
+	private String[] layers = null;
+	private SALT_TYPE[] elementTypes = null;
+	private String[] namespaces = null;
+	private String[] names = null;
+	private TagsetValue[] values = null;
 	
 	private static final ITagsetFactory factory = new JavaTagsetFactoryImpl();
 	
@@ -93,11 +94,12 @@ public class TagsetFactory {
 	 * Delegates the creation of a {@link TagsetValue}
 	 * to the factory implementation.
 	 * 
+	 * @param tagset The tagset this entry is being assigned to 
 	 * @param values The list of annotation values for this entry 
 	 * 
 	 * @return a tagset entry configures with the passed values 
 	 */
-	public static TagsetFactory newTagsetEntry(List<TagsetValue> values) {
+	public static TagsetFactory newTagsetEntry(Tagset tagset, TagsetValue ... values) {
 		TagsetFactory self = new TagsetFactory();
 		self.values = values;
 		return self;
@@ -109,7 +111,7 @@ public class TagsetFactory {
 	 * @param layers The layers to include in the tagset entry build
 	 * @return the configured {@link TagsetFactory}
 	 */
-	public TagsetFactory withLayers(List<String> layers) {
+	public TagsetFactory withLayers(String ... layers) {
 		this.layers = layers;
 		return this;
 	}
@@ -120,7 +122,7 @@ public class TagsetFactory {
 	 * @param elementTypes The element types to include in the tagset entry build
 	 * @return the configured {@link TagsetFactory}
 	 */
-	public TagsetFactory withElementTypes(List<SALT_TYPE> elementTypes) {
+	public TagsetFactory withElementTypes(SALT_TYPE ... elementTypes) {
 		this.elementTypes = elementTypes;
 		return this;
 	}
@@ -131,7 +133,7 @@ public class TagsetFactory {
 	 * @param namespaces The namespaces to include in the tagset entry build
 	 * @return the configured {@link TagsetFactory}
 	 */
-	public TagsetFactory withNamespaces(List<String> namespaces) {
+	public TagsetFactory withNamespaces(String ... namespaces) {
 		this.namespaces = namespaces;
 		return this;
 	}
@@ -142,7 +144,7 @@ public class TagsetFactory {
 	 * @param names The names to include in the tagset entry build
 	 * @return the configures {@link TagsetFactory}
 	 */
-	public TagsetFactory withNames(List<String> names) {
+	public TagsetFactory withNames(String ... names) {
 		this.names = names;
 		return this;
 	}
@@ -156,7 +158,12 @@ public class TagsetFactory {
 	 */
 	public TagsetEntry build() {
 		validate();
-		return factory.createTagsetEntry(layers, elementTypes, namespaces, names, values, tagset);
+		return factory.createTagsetEntry(layers == null ? null : Arrays.asList(layers),
+				elementTypes == null ? null : Arrays.asList(elementTypes),
+				namespaces == null ? null : Arrays.asList(namespaces), 
+				names == null ? null : Arrays.asList(names),
+				values == null ? null : Arrays.asList(values), 
+				tagset);
 	}
 
 	/**
@@ -165,6 +172,7 @@ public class TagsetFactory {
 	 */
 	private void validate() {
 		Assert.isNotNull(values, "A tagset entry needs to have at least one value!");
+		Assert.isNotNull(tagset, "A tagset entry needs to be assigned to a tagset!");
 	}
 
 }
