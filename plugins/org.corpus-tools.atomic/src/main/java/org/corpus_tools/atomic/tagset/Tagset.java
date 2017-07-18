@@ -5,6 +5,7 @@ package org.corpus_tools.atomic.tagset;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
@@ -69,6 +70,18 @@ public interface Tagset extends Serializable {
 	 * @return a {@link List} of all {@link TagsetEntry}s currently in the tagset
 	 */
 	List<TagsetEntry> getEntries();
+	
+	/**
+	 * Retrieves the valid values for the given combination of layer,
+	 * element type, namespace and name.
+	 * 
+	 * @param layer The layer name for which the returned values are valid
+	 * @param elementType The element type for which the returned values are valid
+	 * @param namespace The annotation namespace for which the returned values are valid
+	 * @param name The annotation name for which the returned values are valid
+	 * @return The valid values for the given combination of parameters as a {@link Set}
+	 */
+	Set<TagsetValue> getValidValues(String layer, SALT_TYPE elementType, String namespace, String name);
 	
 	/**
 	 * Loads a tagset from the provided URI.

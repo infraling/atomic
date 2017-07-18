@@ -3,7 +3,7 @@
  */
 package org.corpus_tools.atomic.tagset;
 
-import java.util.List;
+import java.util.Set;
 
 import org.corpus_tools.salt.SALT_TYPE;
 
@@ -12,9 +12,9 @@ import org.corpus_tools.salt.SALT_TYPE;
  * 
  * A {@link TagsetEntry} provides valid values of type 
  * {@link TagsetValue} for a specific constraint which is
- * a combination of layers, Salt element types, 
- * annotation namespaces and annotation names for
- * which a list of annotation values is valid.
+ * a combination of layer name, Salt element type, 
+ * annotation namespace and annotation name for
+ * which a set of annotation values is valid.
  *
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
@@ -22,54 +22,54 @@ import org.corpus_tools.salt.SALT_TYPE;
 public interface TagsetEntry {
 	
 	/**
-	 * @param layers The list of layers for which the entry's values are valid
+	 * @param layer The name of the layer for which the entry's values are valid
 	 */
-	void setLayers(List<String> layers);
+	void setLayer(String layer);
 	
 	/**
-	 * @return the list of layers for which the entry's values are valid
+	 * @return the name of the layer for which the entry's values are valid
 	 */
-	List<String> getLayers();
+	String getLayer();
 	
 	/**
-	 * @param elementTypes The list of Salt element types for which the entry's values are valid
+	 * @param elementType The Salt element type for which the entry's values are valid
 	 */
-	void setElementTypes(List<SALT_TYPE> elementTypes);
+	void setElementType(SALT_TYPE elementType);
 	
 	/**
-	 * @return the list of Salt element types for which the entry's values are valid
+	 * @return the Salt element type for which the entry's values are valid
 	 */
-	List<SALT_TYPE> getElementTypes();
+	SALT_TYPE getElementType();
 	
 	/**
-	 * @param namespaces The list of annotation namespaces for which the entry's values are valid
+	 * @param namespace The annotation namespace for which the entry's values are valid
 	 */
-	void setNamespaces(List<String> namespaces);
+	void setNamespace(String namespace);
 	
 	/**
-	 * @return the list of annotation namespaces for which the entry's values are valid
+	 * @return the annotation namespace for which the entry's values are valid
 	 */
-	List<String> getNamespaces();
+	String getNamespace();
 	
 	/**
-	 * @param names The list of annotation names for which the entry's values are valid
+	 * @param name The annotation name for which the entry's values are valid
 	 */
-	void setNames(List<String> names);
+	void setName(String name);
 	
 	/**
-	 * @return the list of annotation names for which the entry's values are valid
+	 * @return the annotation name for which the entry's values are valid
 	 */
-	List<String> getNames();
+	String getName();
 	
 	/**
-	 * @param values The list of values which are valid while honouring the constraints of this entry
+	 * @param values The values which are valid while honouring the constraints of this entry
 	 */
-	void setValidValues(List<TagsetValue> values);
+	void setValidValues(TagsetValue... values);
 	
 	/**
-	 * @return the list of values which are valid while honouring the constraints of this entry
+	 * @return the values which are valid while honouring the constraints of this entry
 	 */
-	List<TagsetValue> getValidValues();
+	Set<TagsetValue> getValidValues();
 	
 	/**
 	 * @param tagset The tagset which contains this tagset entry

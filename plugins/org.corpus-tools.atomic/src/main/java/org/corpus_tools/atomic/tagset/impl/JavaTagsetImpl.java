@@ -12,12 +12,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetEntry;
+import org.corpus_tools.atomic.tagset.TagsetValue;
+import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
 import org.eclipse.emf.common.util.URI;
 
@@ -148,6 +154,14 @@ public class JavaTagsetImpl implements Tagset {
 	@Override
 	public SCorpus getCorpus() {
 		return corpus;
+	}
+
+	@Override
+	public Set<TagsetValue> getValidValues(String layer, SALT_TYPE elementType, String namespace, String name) {
+		Set<TagsetValue> validValues = new HashSet<>();
+		Stream<TagsetEntry> allValidEntries = getEntries().stream().filter(e -> (e.getLayer().equals(layer) && e.getElementType() == elementType && e.getNamespace().equals(namespace) && e.getName().equals(name)));
+		allValidEntries.forEach(e -> validValues.addAll(e.getValidValues()));
+		return validValues;
 	}
 
 }

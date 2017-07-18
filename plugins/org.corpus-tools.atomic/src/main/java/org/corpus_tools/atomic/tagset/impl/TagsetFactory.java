@@ -3,9 +3,6 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetEntry;
 import org.corpus_tools.atomic.tagset.ITagsetFactory;
@@ -21,8 +18,8 @@ import org.eclipse.core.runtime.Assert;
  * creation options exist: 
  * 
  * 1. passing values traditionally to a
- * full-argument method {@link #createTagsetEntry(List, List, List, List, List, Tagset)};
- * 2. creating the entry fluently, with {@link #newTagsetEntry(List)}
+ * full-argument method {@link #createTagsetEntry(Tagset, String, SALT_TYPE, String, String, TagsetValue...)};
+ * 2. creating the entry fluently, with {@link #newTagsetEntry(Tagset, TagsetValue...)}
  * as the entry point configuring the required minimum *values*, several
  * `withX()` methods for further configuration, and {@link #build()} for
  * the creation of the actual {@link TagsetEntry} object.
@@ -32,10 +29,10 @@ import org.eclipse.core.runtime.Assert;
 public class TagsetFactory {
 	
 	private static Tagset tagset;
-	private String[] layers = null;
-	private SALT_TYPE[] elementTypes = null;
-	private String[] namespaces = null;
-	private String[] names = null;
+	private String layer = null;
+	private SALT_TYPE elementType = null;
+	private String namespace = null;
+	private String name = null;
 	private TagsetValue[] values = null;
 	
 	private static final ITagsetFactory factory = new JavaTagsetFactoryImpl();
@@ -56,22 +53,22 @@ public class TagsetFactory {
 	/**
 	 * Traditional implementation of tagset entry creation.
 	 * For a fluent builder implementation, see 
-	 * {@link #newTagsetEntry(List)}.
+	 * {@link #newTagsetEntry(Tagset, TagsetValue...)}.
 	 * 
 	 * Delegates the creation of a {@link TagsetEntry}
 	 * to the factory implementation.
 	 * 
-	 * @param layers The list of layers of the entry
-	 * @param elementTypes The list of element types of the entry
-	 * @param namespaces The list of namespaces of the entry
-	 * @param names The list of annotation names of the entry
-	 * @param values The list of annotation values of the entry
 	 * @param tagset The tagset containing this tagset entry
+	 * @param layer The layer of the entry
+	 * @param elementType The element type of the entry
+	 * @param namespace The annotation namespace of the entry
+	 * @param name The annotation name of the entry
+	 * @param values The valid annotation values of the entry
 	 * 
 	 * @return the tagset entry built by the factory implementation.
 	 */
-	public static TagsetEntry createTagsetEntry(List<String> layers, List<SALT_TYPE> elementTypes, List<String> namespaces, List<String> names, List<TagsetValue> values, Tagset tagset) {
-		return factory.createTagsetEntry(layers, elementTypes, namespaces, names, values, tagset);
+	public static TagsetEntry createTagsetEntry(Tagset tagset, String layer, SALT_TYPE elementType, String namespace, String name, TagsetValue... values) {
+		return factory.createTagsetEntry(tagset, layer, elementType, namespace, name, values);
 	}
 	
 	/**
@@ -99,53 +96,53 @@ public class TagsetFactory {
 	 * 
 	 * @return a tagset entry configures with the passed values 
 	 */
-	public static TagsetFactory newTagsetEntry(Tagset tagset, TagsetValue ... values) {
+	public static TagsetFactory newTagsetEntry(Tagset tagset, TagsetValue... values) {
 		TagsetFactory self = new TagsetFactory();
 		self.values = values;
 		return self;
 	}
 	
 	/**
-	 * Configures the factory with layers for the entry.
+	 * Configures the factory with a layer for the entry.
 	 * 
-	 * @param layers The layers to include in the tagset entry build
+	 * @param layer The layer to include in the tagset entry build
 	 * @return the configured {@link TagsetFactory}
 	 */
-	public TagsetFactory withLayers(String ... layers) {
-		this.layers = layers;
+	public TagsetFactory withLayer(String layer) {
+		this.layer = layer;
 		return this;
 	}
 	
 	/**
-	 * Configures the factory with element types for the entry.
+	 * Configures the factory with an element type for the entry.
 	 * 
-	 * @param elementTypes The element types to include in the tagset entry build
+	 * @param elementType The element type to include in the tagset entry build
 	 * @return the configured {@link TagsetFactory}
 	 */
-	public TagsetFactory withElementTypes(SALT_TYPE ... elementTypes) {
-		this.elementTypes = elementTypes;
+	public TagsetFactory withElementType(SALT_TYPE elementType) {
+		this.elementType = elementType;
 		return this;
 	}
 	
 	/**
-	 * Configures the factory with namespaces for the entry.
+	 * Configures the factory with a namespace for the entry.
 	 * 
-	 * @param namespaces The namespaces to include in the tagset entry build
+	 * @param namespace The namespace to include in the tagset entry build
 	 * @return the configured {@link TagsetFactory}
 	 */
-	public TagsetFactory withNamespaces(String ... namespaces) {
-		this.namespaces = namespaces;
+	public TagsetFactory withNamespace(String namespace) {
+		this.namespace = namespace;
 		return this;
 	}
 	
 	/**
-	 * Configures the factory with names for the entry.
+	 * Configures the factory with an annotation name for the entry.
 	 * 
-	 * @param names The names to include in the tagset entry build
+	 * @param name The name to include in the tagset entry build
 	 * @return the configures {@link TagsetFactory}
 	 */
-	public TagsetFactory withNames(String ... names) {
-		this.names = names;
+	public TagsetFactory withName(String name) {
+		this.name = name;
 		return this;
 	}
 	
@@ -158,12 +155,7 @@ public class TagsetFactory {
 	 */
 	public TagsetEntry build() {
 		validate();
-		return factory.createTagsetEntry(layers == null ? null : Arrays.asList(layers),
-				elementTypes == null ? null : Arrays.asList(elementTypes),
-				namespaces == null ? null : Arrays.asList(namespaces), 
-				names == null ? null : Arrays.asList(names),
-				values == null ? null : Arrays.asList(values), 
-				tagset);
+		return factory.createTagsetEntry(tagset, layer, elementType, namespace, name, values);
 	}
 
 	/**

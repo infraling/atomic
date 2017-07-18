@@ -3,8 +3,6 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
-import java.util.List; 
-
 import org.corpus_tools.atomic.tagset.ITagsetFactory;
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetEntry;
@@ -13,7 +11,7 @@ import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
 
 /**
- * // TODO Add description
+ * A simple implementation of a {@link ITagsetFactory}.
  *
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
@@ -31,9 +29,9 @@ final class JavaTagsetFactoryImpl implements ITagsetFactory {
 	}
 
 	@Override
-	public TagsetEntry createTagsetEntry(List<String> layers, List<SALT_TYPE> elementTypes, List<String> namespaces,
-			List<String> names, List<TagsetValue> values, Tagset tagset) {
-		return new JavaTagsetEntryImpl(layers, elementTypes, namespaces, names, values, tagset);
+	public TagsetEntry createTagsetEntry(Tagset tagset, String layer, SALT_TYPE elementType, String namespace,
+			String name, TagsetValue... values) {
+		return new JavaTagsetEntryImpl(tagset, layer, elementType, namespace, name, values);
 	}
 
 }
