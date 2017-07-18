@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1497138607">
+<target name="Atomic Target Platform" sequenceNumber="1500387216">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.3.v20170301-0400"/>
@@ -64,10 +64,10 @@
       <repository location="http://download.eclipse.org/technology/swtbot/releases/2.5.0/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.junit" version="4.12.0.v201504281640"/>
-      <unit id="org.mockito" version="1.9.5.v201605172210"/>
-      <unit id="org.hamcrest" version="1.1.0.v20090501071000"/>
-      <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
+      <unit id="junit" version="4.12.0"/>
+      <unit id="org.mockito.mockito-core" version="2.8.47"/>
+      <unit id="org.hamcrest.all" version="1.3.0"/>
+      <repository location="http://sdruskat.net/mockhamcrestunit"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.e4.tools.spy" version="0.18.0.v20170601-0901"/>
