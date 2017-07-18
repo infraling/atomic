@@ -25,7 +25,7 @@ final class JavaTagsetFactoryImpl implements ITagsetFactory {
 
 	@Override
 	public TagsetValue createTagsetValue(String value, String description) {
-		return new JavaTagsetValueImpl();
+		return new JavaTagsetValueImpl(value, description);
 	}
 
 	@Override

@@ -16,6 +16,17 @@ public class JavaTagsetValueImpl implements TagsetValue {
 	private String value;
 	private String description;
 	private boolean regexValue;
+	
+	/**
+	 * Constructor setting value and description.
+	 * 
+	 * @param value The value of the {@link JavaTagsetValueImpl}
+	 * @param description The description of the {@link JavaTagsetValueImpl}
+	 */
+	public JavaTagsetValueImpl(String value, String description) {
+		setValue(value);
+		setDescription(description);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.corpus_tools.atomic.tagset.TagsetValue#setValue(java.lang.String)
