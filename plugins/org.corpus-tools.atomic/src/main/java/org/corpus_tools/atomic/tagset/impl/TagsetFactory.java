@@ -11,7 +11,7 @@ import org.corpus_tools.atomic.tagset.TagsetEntry;
 import org.corpus_tools.atomic.tagset.ITagsetFactory;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SCorpus;
 import org.eclipse.core.runtime.Assert;
 
 /**
@@ -44,13 +44,13 @@ public class TagsetFactory {
 	 * Delegates the creation of a {@link Tagset}
 	 * to the factory implementation.
 	 * 
-	 * @param graph The document graph this tagset is for 
+	 * @param corpus The corpus this tagset is for 
 	 * @param name The tagset name 
 	 * 
 	 * @return the tagset built by the factory implementation.
 	 */
-	public static Tagset createTagset(SDocumentGraph graph, String name) {
-		return (tagset = factory.createTagset(graph, name));
+	public static Tagset createTagset(SCorpus corpus, String name) {
+		return (tagset = factory.createTagset(corpus, name));
 	}
 	
 	/**

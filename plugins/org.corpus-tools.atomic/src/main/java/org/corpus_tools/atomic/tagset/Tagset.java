@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SLayer;
 import org.eclipse.emf.common.util.URI;
@@ -99,16 +99,16 @@ public interface Tagset extends Serializable {
 	void setName(String name);
 	
 	/**
-	 * Sets the {@link SDocumentGraph} for which this
+	 * Sets the {@link SCorpus} for which this
 	 * tagset provides valid annotation values.
 	 * 
-	 * @param graph The document graph this tagset is for
+	 * @param corpus The corpus this tagset is for
 	 */
-	void setDocumentGraph(SDocumentGraph graph);
+	void setCorpus(SCorpus corpus);
 	
 	/**
-	 * @return the {@link SDocumentGraph} this tagset is for
+	 * @return the {@link SCorpus} this tagset is for
 	 */
-	SDocumentGraph getDocumentGraph();
+	SCorpus getCorpus();
 	
 }

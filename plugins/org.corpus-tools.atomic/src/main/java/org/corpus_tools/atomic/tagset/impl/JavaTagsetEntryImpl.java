@@ -3,14 +3,12 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetEntry;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.core.SLayer;
 
 /**
  * A simple implementation of a {@link TagsetEntry}.
@@ -20,7 +18,7 @@ import org.corpus_tools.salt.core.SLayer;
  */
 public class JavaTagsetEntryImpl implements TagsetEntry {
 
-	private List<SLayer> layers;
+	private List<String> layers;
 	private List<SALT_TYPE> elementTypes;
 	private List<String> namespaces;
 	private List<String> names;
@@ -53,18 +51,14 @@ public class JavaTagsetEntryImpl implements TagsetEntry {
 	 */
 	@Override
 	public void setLayers(List<String> layers) {
-		List<SLayer> sLayers = new ArrayList<>(); 
-		for (String layerName : layers) {
-			sLayers.addAll(getTagset().getDocumentGraph().getLayerByName(layerName));
-		}
-		this.layers = sLayers;
+		this.layers = layers;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.corpus_tools.atomic.tagset.TagsetEntry#getLayers()
 	 */
 	@Override
-	public List<SLayer> getLayers() {
+	public List<String> getLayers() {
 		return layers;
 	}
 

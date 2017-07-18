@@ -6,7 +6,6 @@ package org.corpus_tools.atomic.tagset;
 import java.util.List;
 
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.core.SLayer;
 
 /**
  * An entry in a {@link Tagset}.
@@ -30,7 +29,7 @@ public interface TagsetEntry {
 	/**
 	 * @return the list of layers for which the entry's values are valid
 	 */
-	List<SLayer> getLayers();
+	List<String> getLayers();
 	
 	/**
 	 * @param elementTypes The list of Salt element types for which the entry's values are valid

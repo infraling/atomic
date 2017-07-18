@@ -3,7 +3,7 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
-import java.io.File;
+import java.io.File; 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetEntry;
-import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SCorpus;
 import org.eclipse.emf.common.util.URI;
 
 /**
@@ -34,7 +34,7 @@ public class JavaTagsetImpl implements Tagset {
 	private final List<TagsetEntry> entries = new ArrayList<>();
 	private String name;
 
-	private SDocumentGraph graph;
+	private SCorpus corpus;
 
 	/**
 	 * Unique serial version identifier for version 1L.
@@ -45,12 +45,12 @@ public class JavaTagsetImpl implements Tagset {
 	/**
 	 * Constructor taking and setting the name of the tagset.
 	 * 
-	 * @param graph The document graph the tagset is for 
+	 * @param corpus The corpus the tagset is for 
 	 * @param name The name of the tagset
 	 */
-	public JavaTagsetImpl(SDocumentGraph graph, String name) {
+	public JavaTagsetImpl(SCorpus corpus, String name) {
 		setName(name);
-		setDocumentGraph(graph);
+		setCorpus(corpus);
 	}
 
 	/* (non-Javadoc)
@@ -140,20 +140,14 @@ public class JavaTagsetImpl implements Tagset {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.corpus_tools.atomic.tagset.Tagset#setDocumentGraph(org.corpus_tools.salt.common.SDocumentGraph)
-	 */
 	@Override
-	public void setDocumentGraph(SDocumentGraph graph) {
-		this.graph = graph;
+	public void setCorpus(SCorpus corpus) {
+		this.corpus = corpus;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.corpus_tools.atomic.tagset.Tagset#getDocumentGraph()
-	 */
 	@Override
-	public SDocumentGraph getDocumentGraph() {
-		return graph;
+	public SCorpus getCorpus() {
+		return corpus;
 	}
 
 }

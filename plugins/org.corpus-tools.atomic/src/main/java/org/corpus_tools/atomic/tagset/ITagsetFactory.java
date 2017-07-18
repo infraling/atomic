@@ -6,7 +6,7 @@ package org.corpus_tools.atomic.tagset;
 import java.util.List;
 
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SCorpus;
 
 /**
  * A factory for creating tagset-related objects.
@@ -18,14 +18,14 @@ public interface ITagsetFactory {
 	
 	/**
 	 * Creates a new instance of an implementation of {@link Tagset}
-	 * for a specific {@link SDocumentGraph}.
+	 * for a specific {@link SCorpus}.
 	 * 
-	 * @param graph The document graph this tagset is for
+	 * @param corpus The corpus this tagset is for
 	 * @param name The name of the tagset
 	 * 
 	 * @return the created tagset
 	 */
-	public Tagset createTagset(SDocumentGraph graph, String name);
+	public Tagset createTagset(SCorpus corpus, String name);
 	
 	/**
 	 * Creates a new instance of an implementation of {@link TagsetEntry}.
