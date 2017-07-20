@@ -65,11 +65,33 @@ public interface Tagset extends Serializable {
 	boolean removeEntry(TagsetEntry entry);
 	
 	/**
+	 * Removes all tagset entries matching the given parameters from the tagset. 
+	 * 
+	 * @param layer The layer for the entry to remove
+	 * @param elementType The element type for the entry to remove
+	 * @param namespace The namespace for the entry to remove
+	 * @param name The name for the entry to remove
+	 * @return `true` if the entry has been removed as a result of this call
+	 */
+	boolean removeEntry(String layer, SALT_TYPE elementType, String namespace, String name);
+	
+	/**
 	 * Provides a list of all entries in the tagset.
 	 * 
 	 * @return a {@link List} of all {@link TagsetEntry}s currently in the tagset
 	 */
-	List<TagsetEntry> getEntries();
+	Set<TagsetEntry> getEntries();
+	
+	/**
+	 * Retrieves the {@link TagsetEntry} with the given parameters.
+	 * 
+	 * @param layer The layer name of the {@link TagsetEntry} to retrieve
+	 * @param elementType The element type of the {@link TagsetEntry} to retrieve
+	 * @param namespace The annotation namespace of the {@link TagsetEntry} to retrieve
+	 * @param name The annotation name of the {@link TagsetEntry} to retrieve
+	 * @return The {@link TagsetEntry} with the given parameters, or `null` if no such entry exists.
+	 */
+	TagsetEntry getEntryWithParameters(String layer, SALT_TYPE elementType, String namespace, String name);
 	
 	/**
 	 * Retrieves the valid values for the given combination of layer,

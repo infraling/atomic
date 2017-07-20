@@ -76,5 +76,10 @@ public class JavaTagsetValueImpl implements TagsetValue {
 	public void setRegexValue(boolean isRegexValue) {
 		this.regexValue = isRegexValue;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getValue() + " (" + this.getDescription() + ")";
+	}
 
 }

@@ -80,5 +80,16 @@ public interface TagsetEntry {
 	 * @return the tagset which contains this tagset entry
 	 */
 	Tagset getTagset();
+	
+	/**
+	 * Checks whether the tagset entry has the given parameters.
+	 * 
+	 * @param layer The layer name to check against
+	 * @param elementType The element type to check against
+	 * @param namespace The namespace to check against
+	 * @param name The name to check against
+	 * @return `true` if the {@link TagsetEntry} has all given parameters, `false` otherwise.
+	 */
+	boolean hasParameters(String layer, SALT_TYPE elementType, String namespace, String name);
 
 }

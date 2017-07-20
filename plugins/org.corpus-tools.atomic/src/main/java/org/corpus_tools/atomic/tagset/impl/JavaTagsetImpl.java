@@ -11,11 +11,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +35,7 @@ public class JavaTagsetImpl implements Tagset {
 	
 	private static final Logger log = LogManager.getLogger(JavaTagsetImpl.class);
 	
-	private final List<TagsetEntry> entries = new ArrayList<>();
+	private final Set<TagsetEntry> entries = new HashSet<>();
 	private String name;
 
 	private SCorpus corpus;
@@ -64,7 +62,14 @@ public class JavaTagsetImpl implements Tagset {
 	 */
 	@Override
 	public boolean addEntry(TagsetEntry entry) {
-		return entries.add(entry);
+		for (TagsetEntry existingEntry : getEntries()) {
+			if (existingEntry.hasParameters(entry.getLayer(), entry.getElementType(), entry.getNamespace(), entry.getName())) {
+				existingEntry.getValidValues().addAll(entry.getValidValues());
+				// Return `true` as the tagset has changed as a result of this call
+				return true;
+			}
+		}
+		return getEntries().add(entry);
 	}
 
 	/* (non-Javadoc)
@@ -72,15 +77,40 @@ public class JavaTagsetImpl implements Tagset {
 	 */
 	@Override
 	public boolean removeEntry(TagsetEntry entry) {
-		return entries.remove(entry);
+		return getEntries().remove(entry);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.Tagset#removeEntry(java.lang.String, org.corpus_tools.salt.SALT_TYPE, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean removeEntry(String layer, SALT_TYPE elementType, String namespace, String name) {
+		TagsetEntry entryToRemove = getEntryWithParameters(layer, elementType, namespace, name);
+		if (entryToRemove != null) {
+			return getEntries().remove(entryToRemove);
+		}
+		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.corpus_tools.atomic.tagset.Tagset#getEntries()
 	 */
 	@Override
-	public List<TagsetEntry> getEntries() {
+	public Set<TagsetEntry> getEntries() {
 		return entries;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.Tagset#getEntryWithParameters(java.lang.String, org.corpus_tools.salt.SALT_TYPE, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public TagsetEntry getEntryWithParameters(String layer, SALT_TYPE elementType, String namespace, String name) {
+		for (TagsetEntry entry : getEntries()) {
+			if (entry.hasParameters(layer, elementType, namespace, name)) {
+				return entry;
+			}
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -159,7 +189,10 @@ public class JavaTagsetImpl implements Tagset {
 	@Override
 	public Set<TagsetValue> getValidValues(String layer, SALT_TYPE elementType, String namespace, String name) {
 		Set<TagsetValue> validValues = new HashSet<>();
-		Stream<TagsetEntry> allValidEntries = getEntries().stream().filter(e -> (e.getLayer().equals(layer) && e.getElementType() == elementType && e.getNamespace().equals(namespace) && e.getName().equals(name)));
+		Stream<TagsetEntry> allValidEntries = getEntries().stream().filter(e -> (Objects.equals(e.getLayer(), layer) 
+				&& Objects.equals(e.getElementType(), elementType)
+				&& Objects.equals(e.getNamespace(), namespace) 
+				&& Objects.equals(e.getName(), name)));
 		allValidEntries.forEach(e -> validValues.addAll(e.getValidValues()));
 		return validValues;
 	}

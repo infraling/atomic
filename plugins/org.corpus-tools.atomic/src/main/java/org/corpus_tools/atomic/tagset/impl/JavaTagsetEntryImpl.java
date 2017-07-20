@@ -142,5 +142,39 @@ public class JavaTagsetEntryImpl implements TagsetEntry {
 	public Tagset getTagset() {
 		return tagset;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof TagsetEntry) {
+			TagsetEntry teo = (TagsetEntry) o;
+			if (this.getLayer().equals(teo.getLayer()) &&
+					this.getElementType() == teo.getElementType() &&
+					this.getNamespace().equals(teo.getNamespace()) &&
+					this.getName().equals(teo.getName()) &&
+					this.getValidValues().equals(teo.getValidValues())) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
 
+	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.TagsetEntry#hasParameters(java.lang.String, org.corpus_tools.salt.SALT_TYPE, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean hasParameters(String layer, SALT_TYPE elementType, String namespace, String name) {
+		return (this.layer.equals(layer) &&
+				this.elementType == elementType &&
+				this.namespace.equals(namespace) &&
+				this.name.equals(name));
+	}
+	
 }
