@@ -3,14 +3,12 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
@@ -18,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetEntry;
@@ -38,6 +37,7 @@ import org.junit.Test;
 public class TagsetTest {
 	
 	private Tagset fixture = null;
+	private TagsetValue value1, value2, value3, value4, value5, value6;
 	
 	/**
 	 * Sets up the fixture.
@@ -46,58 +46,76 @@ public class TagsetTest {
 	public void setUp() {
 		SCorpus corpus = SaltFactory.createSCorpus();
 		this.setFixture(TagsetFactory.createTagset(corpus, "test"));
+		createValues();
+	}
+
+	/**
+	 * // TODO Add description
+	 * 
+	 */
+	private void createValues() {
+		this.value1 = mock(TagsetValue.class);
+		when(value1.getValue()).thenReturn("value1");
+		this.value2 = mock(TagsetValue.class);
+		when(value2.getValue()).thenReturn("value2");
+		this.value3 = mock(TagsetValue.class);
+		when(value3.getValue()).thenReturn("value3");
+		this.value4 = mock(TagsetValue.class);
+		when(value4.getValue()).thenReturn("value4");
+		this.value5 = mock(TagsetValue.class);
+		when(value5.getValue()).thenReturn("value5");
+		this.value6 = mock(TagsetValue.class);
+		when(value6.getValue()).thenReturn("value6");
 	}
 
 	/**
 	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#addEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public final void testEntries() {
-		TagsetEntry entry1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", TagsetFactory.createTagsetValue("value1", "Value 1"), TagsetFactory.createTagsetValue("value2", "Value 2"));
+		TagsetEntry entry1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", value1, value2);
 		getFixture().addEntry(entry1);
 		assertEquals(1, getFixture().getEntries().size());
-		assertThat(entry1.getValidValues(), containsInAnyOrder(hasProperty("value", is("value1")), hasProperty("value", is("value2"))));
-		TagsetEntry entry1_1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", TagsetFactory.createTagsetValue("value3", "Value 3"), TagsetFactory.createTagsetValue("value4", "Value 4"));
+		assertThat(entry1.getValidValues(), containsInAnyOrder(value1, value2));
+		TagsetEntry entry1_1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", value3, value4);
 		getFixture().addEntry(entry1_1);
-		TagsetEntry entry2 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.SSPAN, "namespace2", "name2", TagsetFactory.createTagsetValue("value3", "Value 3"), TagsetFactory.createTagsetValue("value4", "Value 4"));
 		assertEquals(1, getFixture().getEntries().size());
-		assertThat(entry1.getValidValues(), containsInAnyOrder(hasProperty("value", is("value1")), hasProperty("value", is("value2")), hasProperty("value", is("value3")), hasProperty("value", is("value4"))));
-		assertEquals(4, getFixture().getEntries().iterator().next().getValidValues().size());
+		assertEquals(4, getFixture().getEntries().stream().filter(te -> te.equals(entry1)).collect(Collectors.toList()).get(0).getValidValues().size());
+		TagsetEntry entry2 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.SSPAN, "namespace2", "name2", value3, value4);
 		getFixture().addEntry(entry2);
+		assertThat(entry2.getValidValues(), containsInAnyOrder(value3, value4));
 		assertEquals(2, getFixture().getEntries().size());
-		TagsetEntry nullEntry = TagsetFactory.createTagsetEntry(getFixture(), null, null, null, "name3", TagsetFactory.createTagsetValue("value5", "Value 5"), TagsetFactory.createTagsetValue("value6", "Value 6"));
+		TagsetEntry nullEntry = TagsetFactory.createTagsetEntry(getFixture(), null, null, null, "name3", value5, value6);
 		getFixture().addEntry(nullEntry);
 		assertEquals(3, getFixture().getEntries().size());
 		Set<TagsetValue> retrievedValues1 = getFixture().getValidValues("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
-		assertThat(retrievedValues1, containsInAnyOrder(hasProperty("value", is("value1")), hasProperty("value", is("value2")), hasProperty("value", is("value3")), hasProperty("value", is("value4"))));
+		assertThat(retrievedValues1, containsInAnyOrder(value1, value2, value3, value4));
 		Set<TagsetValue> retrievedValues2 = getFixture().getValidValues("layer1", SALT_TYPE.SSPAN, "namespace2", "name2");
-		assertThat(retrievedValues2, containsInAnyOrder(hasProperty("value", is("value3")), hasProperty("value", is("value4"))));
+		assertThat(retrievedValues2, containsInAnyOrder(value3, value4));
 		Set<TagsetValue> retrievedValues3 = getFixture().getValidValues(null, null, null, "name3");
-		assertThat(retrievedValues3, containsInAnyOrder(hasProperty("value", is("value5")), hasProperty("value", is("value6"))));
+		assertThat(retrievedValues3, containsInAnyOrder(value5, value6));
 	}
 
 	/**
 	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#addEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public final void testFluentEntries() {
-		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), TagsetFactory.createTagsetValue("value1", "Value 1"), TagsetFactory.createTagsetValue("value2", "Value 2")).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
+		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), value1, value2).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
 		getFixture().addEntry(entry1);
 		assertEquals(1, getFixture().getEntries().size());
-		TagsetEntry entry2 = TagsetFactory.newTagsetEntry(getFixture(), TagsetFactory.createTagsetValue("value3", "Value 3"), TagsetFactory.createTagsetValue("value4", "Value 4")).withLayer("layer1").withElementType(SALT_TYPE.SSPAN).withNamespace("namespace2").withName("name2").build();
+		TagsetEntry entry2 = TagsetFactory.newTagsetEntry(getFixture(), value3, value4).withLayer("layer1").withElementType(SALT_TYPE.SSPAN).withNamespace("namespace2").withName("name2").build();
 		getFixture().addEntry(entry2);
 		assertEquals(2, getFixture().getEntries().size());
-		TagsetEntry nullEntry = TagsetFactory.newTagsetEntry(getFixture(), TagsetFactory.createTagsetValue("value5", "Value 5"), TagsetFactory.createTagsetValue("value6", "Value 6")).withLayer(null).withElementType(null).withNamespace(null).withName("name3").build();
+		TagsetEntry nullEntry = TagsetFactory.newTagsetEntry(getFixture(), value5, value6).withLayer(null).withElementType(null).withNamespace(null).withName("name3").build();
 		getFixture().addEntry(nullEntry);
 		assertEquals(3, getFixture().getEntries().size());
 		Set<TagsetValue> retrievedValues1 = getFixture().getValidValues("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
-		assertThat(retrievedValues1, containsInAnyOrder(hasProperty("value", is("value1")), hasProperty("value", is("value2"))));
+		assertThat(retrievedValues1, containsInAnyOrder(value1, value2));
 		Set<TagsetValue> retrievedValues2 = getFixture().getValidValues("layer1", SALT_TYPE.SSPAN, "namespace2", "name2");
-		assertThat(retrievedValues2, containsInAnyOrder(hasProperty("value", is("value3")), hasProperty("value", is("value4"))));
+		assertThat(retrievedValues2, containsInAnyOrder(value3, value4));
 		Set<TagsetValue> retrievedValues3 = getFixture().getValidValues(null, null, null, "name3");
-		assertThat(retrievedValues3, containsInAnyOrder(hasProperty("value", is("value5")), hasProperty("value", is("value6"))));
+		assertThat(retrievedValues3, containsInAnyOrder(value5, value6));
 	}
 
 	/**
@@ -183,7 +201,7 @@ public class TagsetTest {
 	 */
 	@Test
 	public final void testGetName() {
-		assertEquals(null, getFixture().getName());
+		assertEquals("test", getFixture().getName());
 		getFixture().setName("name");
 		assertEquals("name", getFixture().getName());
 	}
