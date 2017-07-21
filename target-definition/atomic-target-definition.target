@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1500596286">
+<target name="Atomic Target Platform" sequenceNumber="1500628880">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.junit" version="4.12.0.v201504281640"/>
@@ -12,10 +12,6 @@
       <unit id="org.hamcrest" version="1.1.0.v20090501071000"/>
       <unit id="org.mockito" version="1.9.5.v201605172210"/>
       <repository location="http://download.eclipse.org/tools/orbit/R-builds/R20170516192513/repository"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.hamcrest.all" version="1.3.0"/>
-      <repository location="http://sdruskat.net/mockhamcrestunit"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rcp.feature.group" version="4.6.3.v20170301-0400"/>
@@ -52,7 +48,6 @@
       <repository location="http://download.eclipse.org/nattable/releases/1.5.0/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.assertj.core" version="3.8.0"/>
       <unit id="com.lmax.disruptor" version="3.3.2"/>
       <unit id="net.sdruskat.fragment.sun.misc" version="1.0.0"/>
       <unit id="org.corpus-tools.salt-api" version="3.3.1"/>
@@ -69,7 +64,7 @@
       <unit id="org.eclipse.aether.util" version="1.0.2.v20150114"/>
       <unit id="com.github.hazendaz.javabean-tester" version="1.4.0"/>
       <unit id="org.antlr.antlr4-runtime" version="4.6.0"/>
-      <unit id="org.corpus-tools.graphannis-api" version="0.4.0.20170721012516"/>
+      <unit id="org.corpus-tools.graphannis-api" version="0.4.0.20170721110300"/>
       <repository location="http://corpus-tools.org/p2/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
