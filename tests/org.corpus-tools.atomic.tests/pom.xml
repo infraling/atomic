@@ -6,9 +6,9 @@
   <name>Atomic Core Tests</name>
   <description>Includes all unit tests for the host plugin</description>
   <parent>
-  	<groupId>org.corpus-tools.atomic</groupId>
-  	<artifactId>parent</artifactId>
-  	<version>0.3.0-SNAPSHOT</version>
-  	<relativePath>../..</relativePath>
+    <groupId>org.corpus-tools.atomic</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
   </parent>
 </project>
