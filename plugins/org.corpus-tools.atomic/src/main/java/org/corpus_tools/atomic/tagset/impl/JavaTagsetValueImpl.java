@@ -145,8 +145,8 @@ public class JavaTagsetValueImpl extends AbstractBean implements TagsetValue {
 	public String toString() {
 		return this.getValue() + " (" + this.getDescription() + ")\n" +
 				"\t(Layer name: " + getLayer() + "), " +
-				"(Element type: " + getElementType() + ")," +
-				"(Namespace: " + getNamespace() + ")," +
+				"(Element type: " + getElementType() + "), " +
+				"(Namespace: " + getNamespace() + "), " +
 				"(Annotation name: " + getName() + ")";
 	}
 
