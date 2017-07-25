@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.common.SCorpus;
 import org.eclipse.emf.common.util.URI;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * A set of valid {@link TagsetValue}s for a given corpus.
@@ -17,6 +18,7 @@ import org.eclipse.emf.common.util.URI;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
+@JsonDeserialize(using = TagsetDeserializer.class)
 public interface Tagset extends Serializable {
 
 	boolean addValue(TagsetValue value);
@@ -55,16 +57,16 @@ public interface Tagset extends Serializable {
 	void setName(String name);
 	
 	/**
-	 * Sets the {@link SCorpus} for which this
+	 * Sets the identifier id of the corpus for which this
 	 * tagset provides valid annotation values.
 	 * 
-	 * @param corpus The corpus this tagset is for
+	 * @param corpusId The identifier id of corpus this tagset is for
 	 */
-	void setCorpus(SCorpus corpus);
+	void setCorpusId(String corpusId);
 	
 	/**
-	 * @return the {@link SCorpus} this tagset is for
+	 * @return the identifier id of the corpus this tagset is for
 	 */
-	SCorpus getCorpus();
+	String getCorpusId();
 	
 }

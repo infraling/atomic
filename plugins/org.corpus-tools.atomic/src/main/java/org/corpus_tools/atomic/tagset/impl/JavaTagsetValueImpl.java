@@ -7,12 +7,15 @@ import org.corpus_tools.atomic.models.AbstractBean;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
  * A simple implementation of a {@link TagsetValue}.
  *
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
+@JsonDeserialize(as = JavaTagsetValueImpl.class)
 public class JavaTagsetValueImpl extends AbstractBean implements TagsetValue {
 
 	private String layer;
@@ -22,6 +25,13 @@ public class JavaTagsetValueImpl extends AbstractBean implements TagsetValue {
 	private String value;
 	private boolean regularExpression;
 	private String description;
+	
+	/**
+	 * Default constructor, needed to adhere to Java Bean specs.
+	 */
+	public JavaTagsetValueImpl() {
+		// Do nothing, needed for serialization/deserialization
+	}
 
 	/**
 	 * // TODO Add description

@@ -44,7 +44,8 @@ public class TagsetTest {
 	@Before
 	public void setUp() {
 		SCorpus corpus = SaltFactory.createSCorpus();
-		this.setFixture(TagsetFactory.createTagset(corpus, "test"));
+		corpus.setId("ID");
+		this.setFixture(TagsetFactory.createTagset(corpus.getIdentifier().getId(), "test"));
 		createValues();
 	}
 

@@ -8,6 +8,7 @@ import org.corpus_tools.atomic.tagset.ITagsetFactory;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 
 /**
@@ -34,13 +35,13 @@ public class TagsetFactory {
 	 * Delegates the creation of a {@link Tagset}
 	 * to the factory implementation.
 	 * 
-	 * @param corpus The corpus this tagset is for 
+	 * @param corpusId The {@link Identifier} id of the {@link SCorpus} this tagset is for 
 	 * @param name The tagset name 
 	 * 
 	 * @return the tagset built by the factory implementation.
 	 */
-	public static Tagset createTagset(SCorpus corpus, String name) {
-		return factory.createTagset(corpus, name);
+	public static Tagset createTagset(String corpusId, String name) {
+		return factory.createTagset(corpusId, name);
 	}
 	
 	/**

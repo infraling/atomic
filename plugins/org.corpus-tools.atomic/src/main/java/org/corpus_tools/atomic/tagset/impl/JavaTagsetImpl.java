@@ -4,10 +4,7 @@
 package org.corpus_tools.atomic.tagset.impl;
 
 import java.io.File; 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +20,11 @@ import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * A simple implementation of a {@link Tagset}.
@@ -31,14 +32,22 @@ import org.eclipse.emf.common.util.URI;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
+@JsonDeserialize(as = JavaTagsetImpl.class)
 public class JavaTagsetImpl extends AbstractBean implements Tagset {
+	
+	/**
+	 * Default constructor, needed to adhere to Java Bean specs.
+	 */
+	public JavaTagsetImpl() {
+		// Do nothing, needed for serialization/deserialization
+	}
 	
 	private static final Logger log = LogManager.getLogger(JavaTagsetImpl.class);
 	
 	private String name;
 	private List<TagsetValue> values;
 
-	private SCorpus corpus;
+	private String corpus;
 
 	/**
 	 * Unique serial version identifier for version 1L.
@@ -49,12 +58,12 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	/**
 	 * Constructor taking and setting the name of the tagset.
 	 * 
-	 * @param corpus The corpus the tagset is for 
+	 * @param corpusId The {@link Identifier} id of the {@link SCorpus} the tagset is for 
 	 * @param name The name of the tagset
 	 */
-	public JavaTagsetImpl(SCorpus corpus, String name) {
+	public JavaTagsetImpl(String corpusId, String name) {
 		setName(name);
-		setCorpus(corpus);
+		setCorpusId(corpusId);
 		this.values = new ArrayList<>();	
 	}
 
@@ -63,20 +72,13 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	 */
 	@Override
 	public boolean save(URI uri) {
-		FileOutputStream fos = null;
+		ObjectMapper mapper = new ObjectMapper();
 		String path = uri.toFileString();
 		try {
-			fos = new FileOutputStream(new File(path));
+			mapper.writeValue(new File(path), this);
 		}
-		catch (FileNotFoundException e) {
-			log.error("Error while trying to write the tagset file to location {}!", path, e);
-			return false;
-		}
-		try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-			oos.writeObject(this);
-		}
-		catch (IOException e) {
-			log.error("Error while creating the tagset file to be saved at {}!", path, e);
+		catch (IOException e1) {
+			log.error("Error writing JSON file from tagset {}!", getName(), e1);
 			return false;
 		}
 		return true;
@@ -102,7 +104,7 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	 * @see org.corpus_tools.atomic.tagset.Tagset#setCorpus(org.corpus_tools.salt.common.SCorpus)
 	 */
 	@Override
-	public void setCorpus(SCorpus corpus) {
+	public void setCorpusId(String corpus) {
 		this.corpus = corpus;
 	}
 
@@ -110,7 +112,7 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	 * @see org.corpus_tools.atomic.tagset.Tagset#getCorpus()
 	 */
 	@Override
-	public SCorpus getCorpus() {
+	public String getCorpusId() {
 		return corpus;
 	}
 

@@ -19,6 +19,7 @@ import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.common.SaltProject;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -76,14 +77,19 @@ public class TagsetEditor extends EditorPart {
 	
 	private SCorpus corpus;
 	private Tagset tagset;
+	private URI tagsetFileURI;
+	private boolean dirty;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
+		for (TagsetValue v : tagset.getValues()) {
+			v.setDescription("AUTO-WRITTEN BY EDITOR (c)");
+		}
+		tagset.save(tagsetFileURI);
+		setDirty(false);
 	}
 
 	/* (non-Javadoc)
@@ -109,6 +115,7 @@ public class TagsetEditor extends EditorPart {
 		else {
 			String filePath = ((FileEditorInput) input).getPath().makeAbsolute().toOSString();
 			log.trace("Input for editor {} is file '{}'.", this.getClass().getName(), filePath);
+			tagsetFileURI = URI.createFileURI(filePath);
 			IProject iProject = ((FileEditorInput) input).getFile().getProject();
 			
 			// Get corpus for tagset via SaltProject
@@ -144,10 +151,10 @@ public class TagsetEditor extends EditorPart {
 				return;
 			}
 			if (tagsetFileSize == 0) {
-				tagset = TagsetFactory.createTagset(corpus, corpus.getName());
+				tagset = TagsetFactory.createTagset(corpus.getIdentifier().getId(), corpus.getName());
 			}
 			else {
-				tagset = TagsetFactory.load(URI.createFileURI(filePath));
+				tagset = TagsetFactory.load(tagsetFileURI);
 			}
 			if (tagset == null) {
 				log.error("Could not read tagset from tagset file {}.", filePath);
@@ -178,8 +185,17 @@ public class TagsetEditor extends EditorPart {
 	 */
 	@Override
 	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
+		return dirty;
+	}
+	
+	/**
+	 * Sets {@link #dirty} and fires a property change.
+	 * 
+	 * @param dirty the dirty to set
+	 */
+	public final void setDirty(boolean dirty) {
+		this.dirty = dirty;
+		firePropertyChange(PROP_DIRTY);
 	}
 
 	/* (non-Javadoc)
@@ -235,6 +251,8 @@ public class TagsetEditor extends EditorPart {
 		        natTable.removePaintListener(this);
 		    }
 		});
+		
+		setDirty(true);
 	}
 
 	private IDataProvider setupBodyDataProvider() {

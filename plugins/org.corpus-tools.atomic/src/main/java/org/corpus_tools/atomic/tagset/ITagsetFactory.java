@@ -5,6 +5,7 @@ package org.corpus_tools.atomic.tagset;
 
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 
 /**
@@ -19,12 +20,12 @@ public interface ITagsetFactory {
 	 * Creates a new instance of an implementation of {@link Tagset}
 	 * for a specific {@link SCorpus}.
 	 * 
-	 * @param corpus The corpus this tagset is for
+	 * @param corpusId The {@link Identifier} id of the {@link SCorpus} this tagset is for
 	 * @param name The name of the tagset
 	 * 
 	 * @return the created tagset
 	 */
-	public Tagset createTagset(SCorpus corpus, String name);
+	public Tagset createTagset(String corpusId, String name);
 	
 	/**
 	 * Creates a new instance of an implementation of {@link TagsetValue}.

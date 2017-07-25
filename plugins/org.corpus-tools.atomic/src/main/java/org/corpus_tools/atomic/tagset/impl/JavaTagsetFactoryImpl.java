@@ -4,20 +4,17 @@
 package org.corpus_tools.atomic.tagset.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.tagset.ITagsetFactory;
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.common.SCorpus;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A simple implementation of a {@link ITagsetFactory}.
@@ -34,7 +31,7 @@ final class JavaTagsetFactoryImpl implements ITagsetFactory {
 	 * @see org.corpus_tools.atomic.tagset.ITagsetFactory#createTagset(org.corpus_tools.salt.common.SCorpus, java.lang.String)
 	 */
 	@Override
-	public Tagset createTagset(SCorpus corpus, String name) {
+	public Tagset createTagset(String corpus, String name) {
 		return new JavaTagsetImpl(corpus, name);
 	}
 
@@ -43,21 +40,14 @@ final class JavaTagsetFactoryImpl implements ITagsetFactory {
 	 */
 	@Override
 	public Tagset load(URI uri) {
-		Tagset tagset = null;
+		JavaTagsetImpl tagset = null;
 		String path = uri.toFileString();
-		FileInputStream fis = null;
+		ObjectMapper mapper = new ObjectMapper();
 		try {
-			fis = new FileInputStream(new File(path));
+			tagset = mapper.readValue(new File(path), JavaTagsetImpl.class);
 		}
-		catch (FileNotFoundException e) {
-			log.info("No tagset file found at {}!", path);
-			return null;
-		}
-		try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-			tagset = (Tagset) ois.readObject();
-		}
-		catch (IOException | ClassNotFoundException e) {
-			log.error("Error reading the tagset from tagset file {}!", path, e);
+		catch (IOException e) {
+			log.error("An error occurred while reading the tagset from the tagset file {}!", path, e);
 		}
 		return tagset;
 	}

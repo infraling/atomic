@@ -6,6 +6,8 @@ package org.corpus_tools.atomic.tagset;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.core.SLayer;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
  * A valid value in a {@link Tagset}.
  * 
@@ -23,6 +25,7 @@ import org.corpus_tools.salt.core.SLayer;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
+@JsonDeserialize(using = TagsetValueDeserializer.class)
 public abstract interface TagsetValue {
 	
 	/**
