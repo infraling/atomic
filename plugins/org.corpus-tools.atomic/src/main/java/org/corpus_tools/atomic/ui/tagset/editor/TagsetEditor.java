@@ -250,8 +250,6 @@ public class TagsetEditor extends EditorPart {
 		        natTable.removePaintListener(this);
 		    }
 		});
-		
-		setDirty(true);
 	}
 
 	private IDataProvider setupBodyDataProvider() {
