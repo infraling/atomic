@@ -136,7 +136,7 @@
       <wizard
             canFinishEarly="false"
             category="org.corpus_tools.atomic.AtomicNewWizardCategory"
-            class="org.corpus_tools.atomic.ui.tagset.TagsetWizard"
+            class="org.corpus_tools.atomic.ui.tagset.wizard.TagsetWizard"
             icon="icons/obj16/atomic.png"
             id="org.corpus_tools.atomic.newAtomicTagsetWizard"
             name="New Tagset"

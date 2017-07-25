@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.corpus_tools.atomic.ui.tagset;
+package org.corpus_tools.atomic.ui.tagset.wizard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -84,12 +83,10 @@ public class TagsetWizardPage extends WizardPage {
 		List<IProject> projectsWithoutTagsets = new ArrayList<>();
 		for (IProject iProject : allProjects) {
 			IFile tagsetFile = iProject.getFile(iProject.getName().replaceAll(" ", "-") + ".ats");
-			log.info("TAGSET FILE {}", tagsetFile);
 			if (!tagsetFile.exists()) {
 				projectsWithoutTagsets.add(iProject);
 			}
 		}
-		log.info(projectsWithoutTagsets);
 		return projectsWithoutTagsets;
 	}
 

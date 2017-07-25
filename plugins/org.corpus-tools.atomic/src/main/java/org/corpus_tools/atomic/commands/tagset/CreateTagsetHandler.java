@@ -3,7 +3,7 @@
  */
 package org.corpus_tools.atomic.commands.tagset;
 
-import org.corpus_tools.atomic.ui.tagset.TagsetWizard;
+import org.corpus_tools.atomic.ui.tagset.wizard.TagsetWizard;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
