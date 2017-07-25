@@ -4,7 +4,11 @@
 package org.corpus_tools.atomic.ui.tagset.wizard;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
@@ -73,8 +77,9 @@ public class TagsetWizard extends Wizard implements IWizard, INewWizard {
 		    InputStream source = new ByteArrayInputStream(bytes);
 		    try {
 				file.create(source, IResource.NONE, null);
+				log.info("Wrote tagset file {} with size {}.", file.getName(), Files.size(Paths.get(file.getRawLocationURI())));
 			}
-			catch (CoreException e) {
+			catch (CoreException | IOException e) {
 				log.error("Could not create the tagset file for project {}.", project.getName(), e);
 			}
 		}
