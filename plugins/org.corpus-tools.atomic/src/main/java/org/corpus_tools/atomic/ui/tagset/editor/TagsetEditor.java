@@ -19,7 +19,6 @@ import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.common.SaltProject;
-import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
