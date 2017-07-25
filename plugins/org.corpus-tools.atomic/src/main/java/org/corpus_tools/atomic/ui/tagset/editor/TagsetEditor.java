@@ -6,12 +6,15 @@ package org.corpus_tools.atomic.ui.tagset.editor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.exceptions.AtomicGeneralException;
 import org.corpus_tools.atomic.tagset.Tagset;
+import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
@@ -23,7 +26,33 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
+import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.ReflectiveColumnPropertyAccessor;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.layer.ColumnHeaderLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
+import org.eclipse.nebula.widgets.nattable.hideshow.ColumnHideShowLayer;
+import org.eclipse.nebula.widgets.nattable.layer.AbstractLayerTransform;
+import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
+import org.eclipse.nebula.widgets.nattable.reorder.ColumnReorderLayer;
+import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
+import org.eclipse.nebula.widgets.nattable.selection.command.SelectCellCommand;
+import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -37,6 +66,11 @@ import org.eclipse.ui.part.FileEditorInput;
  * 
  */
 public class TagsetEditor extends EditorPart {
+	
+	private IDataProvider bodyDataProvider;
+    private String[] propertyNames;
+    private BodyLayerStack bodyLayer;
+    private Map<String, String> propertyToLabels;
 	
 	private static final Logger log = LogManager.getLogger(TagsetEditor.class); 
 	
@@ -104,7 +138,10 @@ public class TagsetEditor extends EditorPart {
 				log.trace("Tagset file {} has size {}.", filePath, String.valueOf(tagsetFileSize));
 			}
 			catch (IOException e) {
-				log.warn("Failed to calculate tagset file size for {}.", filePath, e);
+				MessageDialog.openError(Display.getCurrent().getActiveShell(), "File error", "Failed to load tagset file " + filePath + " in order to calculate its size.");
+				log.warn("Failed to load tagset file {} in order to calculate its size.", filePath, e);
+				closeEditor(filePath);
+				return;
 			}
 			if (tagsetFileSize == 0) {
 				tagset = TagsetFactory.createTagset(corpus, corpus.getName());
@@ -114,6 +151,8 @@ public class TagsetEditor extends EditorPart {
 			}
 			if (tagset == null) {
 				log.error("Could not read tagset from tagset file {}.", filePath);
+				closeEditor(filePath);
+				return;
 			}
 			log.info("Loaded tagset {} ({}) from {}.", tagset, tagset.getName(), filePath);
 			setPartName("Tagset \"" + tagset.getName() + "\"");
@@ -122,6 +161,16 @@ public class TagsetEditor extends EditorPart {
 		}
 
 
+	}
+
+	private void closeEditor(String filePath) {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				getSite().getPage().closeEditor(TagsetEditor.this, false); 
+			}
+		});
+		log.info("Attempt to open tagset editor for tagset file {} aborted.", filePath);
 	}
 
 	/* (non-Javadoc)
@@ -138,7 +187,6 @@ public class TagsetEditor extends EditorPart {
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -147,8 +195,58 @@ public class TagsetEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
+		parent.setLayout(new GridLayout(1, false));
+		
+		/* ############################################
+		 * Grid
+		 * ############################################
+		 */
+		this.bodyDataProvider = setupBodyDataProvider();
+		DefaultColumnHeaderDataProvider colHeaderDataProvider = new DefaultColumnHeaderDataProvider(this.propertyNames,
+				this.propertyToLabels);
+		DefaultRowHeaderDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(this.bodyDataProvider);
 
+		this.bodyLayer = new BodyLayerStack(this.bodyDataProvider);
+		ColumnHeaderLayerStack columnHeaderLayer = new ColumnHeaderLayerStack(colHeaderDataProvider);
+		RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(rowHeaderDataProvider);
+		DefaultCornerDataProvider cornerDataProvider = new DefaultCornerDataProvider(colHeaderDataProvider,
+				rowHeaderDataProvider);
+		CornerLayer cornerLayer = new CornerLayer(new DataLayer(cornerDataProvider), rowHeaderLayer, columnHeaderLayer);
+
+		GridLayer gridLayer = new GridLayer(this.bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
+		NatTable natTable = new NatTable(parent, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED
+				| SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER, gridLayer, false);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
+
+		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
+		natTable.addConfiguration(new TagsetEditorConfiguration());
+		natTable.configure();
+
+		/* 
+		 * Necessary to select the first cell, activated for 
+		 * keyboard navigation!
+		 * Cf. https://www.eclipse.org/forums/index.php?t=msg&th=1083775&goto=1752061&#msg_1752061
+		 */
+		natTable.addPaintListener(new PaintListener() {
+		    @Override
+		    public void paintControl(PaintEvent e) {
+		        natTable.setFocus();
+		        natTable.doCommand(new SelectCellCommand(bodyLayer.getSelectionLayer(), 0, 0, false, false));
+		        natTable.removePaintListener(this);
+		    }
+		});
+	}
+
+	private IDataProvider setupBodyDataProvider() {
+		this.propertyToLabels = new HashMap<>();
+        this.propertyToLabels.put("layer", "Layer");
+        this.propertyToLabels.put("elementType", "Element type");
+        this.propertyToLabels.put("namespace", "Annotation namespace");
+        this.propertyToLabels.put("name", "Annotation name");
+        this.propertyToLabels.put("value", "Annotation value");
+        this.propertyToLabels.put("description", "Description");
+        this.propertyNames = new String[] {"layer","elementType","namespace","name","value","description"};
+        return new ListDataProvider<>(tagset.getValues(), new ReflectiveColumnPropertyAccessor<TagsetValue>(this.propertyNames));
 	}
 
 	/* (non-Javadoc)
@@ -158,6 +256,52 @@ public class TagsetEditor extends EditorPart {
 	public void setFocus() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	
+	private class BodyLayerStack extends AbstractLayerTransform {
+
+		private SelectionLayer selectionLayer;
+
+		public BodyLayerStack(IDataProvider dataProvider) {
+			DataLayer bodyDataLayer = new DataLayer(dataProvider);
+			bodyDataLayer.setColumnPercentageSizing(true);
+			bodyDataLayer.setColumnWidthPercentageByPosition(0, 16);
+			bodyDataLayer.setColumnWidthPercentageByPosition(1, 16);
+			bodyDataLayer.setColumnWidthPercentageByPosition(2, 16);
+			bodyDataLayer.setColumnWidthPercentageByPosition(3, 16);
+			bodyDataLayer.setColumnWidthPercentageByPosition(4, 16);
+			bodyDataLayer.setColumnWidthPercentageByPosition(5, 16);
+			ColumnReorderLayer columnReorderLayer = new ColumnReorderLayer(bodyDataLayer);
+			ColumnHideShowLayer columnHideShowLayer = new ColumnHideShowLayer(columnReorderLayer);
+			this.selectionLayer = new SelectionLayer(columnHideShowLayer);
+			ViewportLayer viewportLayer = new ViewportLayer(this.selectionLayer);
+			setUnderlyingLayer(viewportLayer);
+		}
+
+		public SelectionLayer getSelectionLayer() {
+			return this.selectionLayer;
+		}
+	}
+
+	private class ColumnHeaderLayerStack extends AbstractLayerTransform {
+
+		public ColumnHeaderLayerStack(IDataProvider dataProvider) {
+			DataLayer dataLayer = new DataLayer(dataProvider);
+			ColumnHeaderLayer colHeaderLayer = new ColumnHeaderLayer(dataLayer, TagsetEditor.this.bodyLayer,
+					TagsetEditor.this.bodyLayer.getSelectionLayer());
+			setUnderlyingLayer(colHeaderLayer);
+		}
+	}
+
+	private class RowHeaderLayerStack extends AbstractLayerTransform {
+
+		public RowHeaderLayerStack(IDataProvider dataProvider) {
+			DataLayer dataLayer = new DataLayer(dataProvider, 50, 20);
+			RowHeaderLayer rowHeaderLayer = new RowHeaderLayer(dataLayer, TagsetEditor.this.bodyLayer,
+					TagsetEditor.this.bodyLayer.getSelectionLayer());
+			setUnderlyingLayer(rowHeaderLayer);
+		}
 	}
 
 }
