@@ -4,6 +4,7 @@
 package org.corpus_tools.atomic.tagset;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import org.corpus_tools.salt.SALT_TYPE;
@@ -22,14 +23,14 @@ public interface Tagset extends Serializable {
 	
 	boolean removeValue(TagsetValue value);
 	
-	void setValues(Set<TagsetValue> values);
+	void setValues(List<TagsetValue> values);
 	
 	/**
 	 * // TODO Add description
 	 * 
 	 * @return the set of **valid** values for this tagset's corpus
 	 */
-	Set<TagsetValue> getValues();
+	List<TagsetValue> getValues();
 	
 	Set<TagsetValue> getValuesForParameters(String layer, SALT_TYPE elementType, String namespace, String name);
 	

@@ -9,7 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -34,7 +36,7 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	private static final Logger log = LogManager.getLogger(JavaTagsetImpl.class);
 	
 	private String name;
-	private Set<TagsetValue> values;
+	private List<TagsetValue> values;
 
 	private SCorpus corpus;
 
@@ -53,7 +55,7 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	public JavaTagsetImpl(SCorpus corpus, String name) {
 		setName(name);
 		setCorpus(corpus);
-		this.values = new HashSet<>();	
+		this.values = new ArrayList<>();	
 	}
 
 	/* (non-Javadoc)
@@ -117,7 +119,7 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	 */
 	@Override
 	public boolean addValue(TagsetValue value) {
-		Set<TagsetValue> newValues = this.getValues();
+		List<TagsetValue> newValues = this.getValues();
 		boolean isNewlyAdded = newValues.add(value);
 		setValues(newValues);
 		return isNewlyAdded;
@@ -128,7 +130,7 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	 */
 	@Override
 	public boolean removeValue(TagsetValue value) {
-		Set<TagsetValue> newValues = this.getValues();
+		List<TagsetValue> newValues = this.getValues();
 		boolean hadContainedValue = newValues.remove(value);
 		setValues(newValues);
 		return hadContainedValue;
@@ -138,8 +140,8 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	 * @see org.corpus_tools.atomic.tagset.Tagset#setValues(java.util.Set)
 	 */
 	@Override
-	public void setValues(Set<TagsetValue> values) {
-		Set<TagsetValue> oldValues = this.values;
+	public void setValues(List<TagsetValue> values) {
+		List<TagsetValue> oldValues = this.values;
 		this.values = values;
 		firePropertyChange("values", oldValues, this.values);
 	}
@@ -148,7 +150,7 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	 * @see org.corpus_tools.atomic.tagset.Tagset#getValues()
 	 */
 	@Override
-	public Set<TagsetValue> getValues() {
+	public List<TagsetValue> getValues() {
 		return values;
 	}
 
