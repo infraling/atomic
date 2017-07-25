@@ -17,7 +17,6 @@ import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 
 /**
