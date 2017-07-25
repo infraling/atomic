@@ -5,6 +5,7 @@ package org.corpus_tools.atomic.tagset;
 
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
+import org.eclipse.emf.common.util.URI;
 
 /**
  * A factory for creating tagset-related objects.
@@ -26,28 +27,40 @@ public interface ITagsetFactory {
 	public Tagset createTagset(SCorpus corpus, String name);
 	
 	/**
-	 * Creates a new instance of an implementation of {@link TagsetEntry}.
-	 * 
-	 * @param tagset The tagset containing this tagset entry
-	 * @param layer The layer for this tagset entry 
-	 * @param elementType The Salt model element type for this tagset entry
-	 * @param namespace The annotation namespace for this tagset entry
-	 * @param name The annotation name for this tagset entry 
-	 * @param values The list of valid values and their descriptions for this tagset entry
-	 * 
-	 * @return the created tagset entry
-	 */
-	public TagsetEntry createTagsetEntry(Tagset tagset, String layer, SALT_TYPE elementType, String namespace,
-			String name, TagsetValue... values);
-	
-	/**
 	 * Creates a new instance of an implementation of {@link TagsetValue}.
 	 * 
-	 * @param value The actual annotation value for this tagset value 
-	 * @param description A description for the tagset value 
+	 * @param layer The layer for which this tagset value is valid 
+	 * @param elementType The Salt model element type for which this tagset value is valid
+	 * @param namespace The annotation namespace for which this tagset value is valid
+	 * @param name The annotation name for which this tagset value is valid 
+	 * @param value The actual annotation value
+	 * @param isRegularExpression Whether the value is a regular expression
+	 * @param description A decription of the domain properties of the value
 	 * 
 	 * @return the created tagset value
 	 */
-	public TagsetValue createTagsetValue(String value, String description);
-
+	public TagsetValue createTagsetValue(String layer, SALT_TYPE elementType, String namespace,
+			String name, String value, boolean isRegularExpression, String description);
+	
+	/**
+	 * Loads a tagset from the provided URI.
+	 * 
+	 * @param uri The {@link URI} from which to load the tagset
+	 * @return The tagset which has been serialized at the given URI, or `null` if no tagset could be loaded
+	 */
+	Tagset load(URI uri);
+	
+	/**
+	 * Prepares a standardized tagset file name from an
+	 * input String.
+	 * 
+	 * Implementations must make sure that the input
+	 * projectName is stripped of path prefixes and
+	 * file extensions.
+	 * 
+	 * @param projectName The project name for which to get a valid file name
+	 * @return a valid tagset file name
+	 */
+	String getTagsetFileName(String projectName);
+	
 }

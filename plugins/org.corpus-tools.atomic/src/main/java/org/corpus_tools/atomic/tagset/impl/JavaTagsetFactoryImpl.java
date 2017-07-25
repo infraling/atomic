@@ -3,12 +3,22 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.tagset.ITagsetFactory;
 import org.corpus_tools.atomic.tagset.Tagset;
-import org.corpus_tools.atomic.tagset.TagsetEntry;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SCorpus;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.URI;
 
 /**
  * A simple implementation of a {@link ITagsetFactory}.
@@ -17,21 +27,60 @@ import org.corpus_tools.salt.common.SCorpus;
  * 
  */
 final class JavaTagsetFactoryImpl implements ITagsetFactory {
+	
+	private static final Logger log = LogManager.getLogger(JavaTagsetFactoryImpl.class);
+	private static final String TAGSET_FILE_ENDING = "ats";
 
+	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.ITagsetFactory#createTagset(org.corpus_tools.salt.common.SCorpus, java.lang.String)
+	 */
 	@Override
 	public Tagset createTagset(SCorpus corpus, String name) {
 		return new JavaTagsetImpl(corpus, name);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.Tagset#load(org.eclipse.emf.common.util.URI)
+	 */
 	@Override
-	public TagsetValue createTagsetValue(String value, String description) {
-		return new JavaTagsetValueImpl(value, description);
+	public Tagset load(URI uri) {
+		Tagset tagset = null;
+		String path = uri.toFileString();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(new File(path));
+		}
+		catch (FileNotFoundException e) {
+			log.info("No tagset file found at {}!", path);
+			return null;
+		}
+		try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+			tagset = (Tagset) ois.readObject();
+		}
+		catch (IOException | ClassNotFoundException e) {
+			log.error("Error reading the tagset from tagset file {}!", path, e);
+		}
+		return tagset;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.ITagsetFactory#createTagsetValue(java.lang.String, org.corpus_tools.salt.SALT_TYPE, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String)
+	 */
 	@Override
-	public TagsetEntry createTagsetEntry(Tagset tagset, String layer, SALT_TYPE elementType, String namespace,
-			String name, TagsetValue... values) {
-		return new JavaTagsetEntryImpl(tagset, layer, elementType, namespace, name, values);
+	public TagsetValue createTagsetValue(String layer, SALT_TYPE elementType, String namespace, String name,
+			String value, boolean isRegularExpression, String description) {
+		return new JavaTagsetValueImpl(layer, elementType, namespace, name, value, isRegularExpression, description);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.ITagsetFactory#getTagsetFileName(java.lang.String)
+	 */
+	@Override
+	public String getTagsetFileName(String projectName) {
+		Assert.isNotNull(projectName, "Cannot parse null project names.");
+		return projectName.replace(" ", "-").concat(".").concat(TAGSET_FILE_ENDING);
+	}
+
+
 
 }

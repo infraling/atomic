@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.corpus_tools.atomic.tagset.Tagset;
-import org.corpus_tools.atomic.tagset.TagsetEntry;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.SaltFactory;
@@ -68,79 +67,79 @@ public class TagsetTest {
 		when(value6.getValue()).thenReturn("value6");
 	}
 
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#addEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
-	 */
-	@Test
-	public final void testEntries() {
-		TagsetEntry entry1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", value1, value2);
-		getFixture().addEntry(entry1);
-		assertEquals(1, getFixture().getEntries().size());
-		assertThat(entry1.getValidValues(), containsInAnyOrder(value1, value2));
-		TagsetEntry entry1_1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", value3, value4);
-		getFixture().addEntry(entry1_1);
-		assertEquals(1, getFixture().getEntries().size());
-		assertEquals(4, getFixture().getEntries().stream().filter(te -> te.equals(entry1)).collect(Collectors.toList()).get(0).getValidValues().size());
-		TagsetEntry entry2 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.SSPAN, "namespace2", "name2", value3, value4);
-		getFixture().addEntry(entry2);
-		assertThat(entry2.getValidValues(), containsInAnyOrder(value3, value4));
-		assertEquals(2, getFixture().getEntries().size());
-		TagsetEntry nullEntry = TagsetFactory.createTagsetEntry(getFixture(), null, null, null, "name3", value5, value6);
-		getFixture().addEntry(nullEntry);
-		assertEquals(3, getFixture().getEntries().size());
-		Set<TagsetValue> retrievedValues1 = getFixture().getValidValues("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
-		assertThat(retrievedValues1, containsInAnyOrder(value1, value2, value3, value4));
-		Set<TagsetValue> retrievedValues2 = getFixture().getValidValues("layer1", SALT_TYPE.SSPAN, "namespace2", "name2");
-		assertThat(retrievedValues2, containsInAnyOrder(value3, value4));
-		Set<TagsetValue> retrievedValues3 = getFixture().getValidValues(null, null, null, "name3");
-		assertThat(retrievedValues3, containsInAnyOrder(value5, value6));
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#addEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
-	 */
-	@Test
-	public final void testFluentEntries() {
-		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), value1, value2).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
-		getFixture().addEntry(entry1);
-		assertEquals(1, getFixture().getEntries().size());
-		TagsetEntry entry2 = TagsetFactory.newTagsetEntry(getFixture(), value3, value4).withLayer("layer1").withElementType(SALT_TYPE.SSPAN).withNamespace("namespace2").withName("name2").build();
-		getFixture().addEntry(entry2);
-		assertEquals(2, getFixture().getEntries().size());
-		TagsetEntry nullEntry = TagsetFactory.newTagsetEntry(getFixture(), value5, value6).withLayer(null).withElementType(null).withNamespace(null).withName("name3").build();
-		getFixture().addEntry(nullEntry);
-		assertEquals(3, getFixture().getEntries().size());
-		Set<TagsetValue> retrievedValues1 = getFixture().getValidValues("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
-		assertThat(retrievedValues1, containsInAnyOrder(value1, value2));
-		Set<TagsetValue> retrievedValues2 = getFixture().getValidValues("layer1", SALT_TYPE.SSPAN, "namespace2", "name2");
-		assertThat(retrievedValues2, containsInAnyOrder(value3, value4));
-		Set<TagsetValue> retrievedValues3 = getFixture().getValidValues(null, null, null, "name3");
-		assertThat(retrievedValues3, containsInAnyOrder(value5, value6));
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#removeEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
-	 */
-	@Test
-	public final void testRemoveEntry() {
-		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), TagsetFactory.createTagsetValue("value1", "Value 1"), TagsetFactory.createTagsetValue("value2", "Value 2")).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
-		getFixture().addEntry(entry1);
-		assertEquals(1, getFixture().getEntries().size());
-		getFixture().removeEntry(entry1);
-		assertTrue(getFixture().getEntries().isEmpty());
-	}
-
-	/**
-	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#removeEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
-	 */
-	@Test
-	public final void testRemoveEntryViaParameters() {
-		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), TagsetFactory.createTagsetValue("value1", "Value 1"), TagsetFactory.createTagsetValue("value2", "Value 2")).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
-		getFixture().addEntry(entry1);
-		assertEquals(1, getFixture().getEntries().size());
-		getFixture().removeEntry("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
-		assertTrue(getFixture().getEntries().isEmpty());
-	}
+//	/**
+//	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#addEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
+//	 */
+//	@Test
+//	public final void testEntries() {
+//		TagsetEntry entry1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", value1, value2);
+//		getFixture().addEntry(entry1);
+//		assertEquals(1, getFixture().getEntries().size());
+//		assertThat(entry1.getValidValues(), containsInAnyOrder(value1, value2));
+//		TagsetEntry entry1_1 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.STOKEN, "namespace1", "name1", value3, value4);
+//		getFixture().addEntry(entry1_1);
+//		assertEquals(1, getFixture().getEntries().size());
+//		assertEquals(4, getFixture().getEntries().stream().filter(te -> te.equals(entry1)).collect(Collectors.toList()).get(0).getValidValues().size());
+//		TagsetEntry entry2 = TagsetFactory.createTagsetEntry(getFixture(), "layer1", SALT_TYPE.SSPAN, "namespace2", "name2", value3, value4);
+//		getFixture().addEntry(entry2);
+//		assertThat(entry2.getValidValues(), containsInAnyOrder(value3, value4));
+//		assertEquals(2, getFixture().getEntries().size());
+//		TagsetEntry nullEntry = TagsetFactory.createTagsetEntry(getFixture(), null, null, null, "name3", value5, value6);
+//		getFixture().addEntry(nullEntry);
+//		assertEquals(3, getFixture().getEntries().size());
+//		Set<TagsetValue> retrievedValues1 = getFixture().getValidValues("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
+//		assertThat(retrievedValues1, containsInAnyOrder(value1, value2, value3, value4));
+//		Set<TagsetValue> retrievedValues2 = getFixture().getValidValues("layer1", SALT_TYPE.SSPAN, "namespace2", "name2");
+//		assertThat(retrievedValues2, containsInAnyOrder(value3, value4));
+//		Set<TagsetValue> retrievedValues3 = getFixture().getValidValues(null, null, null, "name3");
+//		assertThat(retrievedValues3, containsInAnyOrder(value5, value6));
+//	}
+//
+//	/**
+//	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#addEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
+//	 */
+//	@Test
+//	public final void testFluentEntries() {
+//		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), value1, value2).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
+//		getFixture().addEntry(entry1);
+//		assertEquals(1, getFixture().getEntries().size());
+//		TagsetEntry entry2 = TagsetFactory.newTagsetEntry(getFixture(), value3, value4).withLayer("layer1").withElementType(SALT_TYPE.SSPAN).withNamespace("namespace2").withName("name2").build();
+//		getFixture().addEntry(entry2);
+//		assertEquals(2, getFixture().getEntries().size());
+//		TagsetEntry nullEntry = TagsetFactory.newTagsetEntry(getFixture(), value5, value6).withLayer(null).withElementType(null).withNamespace(null).withName("name3").build();
+//		getFixture().addEntry(nullEntry);
+//		assertEquals(3, getFixture().getEntries().size());
+//		Set<TagsetValue> retrievedValues1 = getFixture().getValidValues("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
+//		assertThat(retrievedValues1, containsInAnyOrder(value1, value2));
+//		Set<TagsetValue> retrievedValues2 = getFixture().getValidValues("layer1", SALT_TYPE.SSPAN, "namespace2", "name2");
+//		assertThat(retrievedValues2, containsInAnyOrder(value3, value4));
+//		Set<TagsetValue> retrievedValues3 = getFixture().getValidValues(null, null, null, "name3");
+//		assertThat(retrievedValues3, containsInAnyOrder(value5, value6));
+//	}
+//
+//	/**
+//	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#removeEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
+//	 */
+//	@Test
+//	public final void testRemoveEntry() {
+//		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), TagsetFactory.createTagsetValue("value1", "Value 1"), TagsetFactory.createTagsetValue("value2", "Value 2")).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
+//		getFixture().addEntry(entry1);
+//		assertEquals(1, getFixture().getEntries().size());
+//		getFixture().removeEntry(entry1);
+//		assertTrue(getFixture().getEntries().isEmpty());
+//	}
+//
+//	/**
+//	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#removeEntry(org.corpus_tools.atomic.tagset.TagsetEntry)}.
+//	 */
+//	@Test
+//	public final void testRemoveEntryViaParameters() {
+//		TagsetEntry entry1 = TagsetFactory.newTagsetEntry(getFixture(), TagsetFactory.createTagsetValue("value1", "Value 1"), TagsetFactory.createTagsetValue("value2", "Value 2")).withLayer("layer1").withElementType(SALT_TYPE.STOKEN).withNamespace("namespace1").withName("name1").build();
+//		getFixture().addEntry(entry1);
+//		assertEquals(1, getFixture().getEntries().size());
+//		getFixture().removeEntry("layer1", SALT_TYPE.STOKEN, "namespace1", "name1");
+//		assertTrue(getFixture().getEntries().isEmpty());
+//	}
 
 	/**
 	 * Test method for {@link org.corpus_tools.atomic.tagset.impl.JavaTagsetImpl#load(org.eclipse.emf.common.util.URI)}.
@@ -150,23 +149,23 @@ public class TagsetTest {
 		String userHome = System.getProperty("user.home");
 		String path = userHome + "/atomic-tagset.ats";
 		getFixture().save(URI.createFileURI(path));
-		Tagset success = getFixture().load(URI.createFileURI(path));
-		assertThat(success, instanceOf(Tagset.class));
-		try {
-			Files.delete(Paths.get(path));
-		}
-		catch (
-
-		NoSuchFileException x) {
-			fail(path + ": no such file or directory");
-		}
-		catch (DirectoryNotEmptyException x) {
-			fail(path + " not empty");
-		}
-		catch (IOException x) {
-			// File permission problems are caught here.
-			System.err.println(x);
-		}
+//		Tagset success = getFixture().load(URI.createFileURI(path));
+//		assertThat(success, instanceOf(Tagset.class));
+//		try {
+//			Files.delete(Paths.get(path));
+//		}
+//		catch (
+//
+//		NoSuchFileException x) {
+//			fail(path + ": no such file or directory");
+//		}
+//		catch (DirectoryNotEmptyException x) {
+//			fail(path + " not empty");
+//		}
+//		catch (IOException x) {
+//			// File permission problems are caught here.
+//			System.err.println(x);
+//		}
 	}
 
 	/**
