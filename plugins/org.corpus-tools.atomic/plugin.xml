@@ -538,5 +538,16 @@
             name="Corpus Export">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.corpus_tools.atomic.ui.tagset.editor.TagsetEditor"
+            default="false"
+            extensions="ats"
+            icon="icons/obj16/atomic.png"
+            id="org.corpus_tools.atomic.TagsetEditor"
+            name="Tagset Editor">
+      </editor>
+   </extension>
 
 </plugin>
