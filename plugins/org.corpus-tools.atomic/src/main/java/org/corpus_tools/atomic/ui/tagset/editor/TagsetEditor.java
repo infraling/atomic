@@ -58,6 +58,10 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * // TODO Add description
@@ -66,6 +70,8 @@ import org.eclipse.ui.part.FileEditorInput;
  * 
  */
 public class TagsetEditor extends EditorPart {
+	public TagsetEditor() {
+	}
 	
 	private IDataProvider bodyDataProvider;
     private String[] propertyNames;
@@ -212,6 +218,21 @@ public class TagsetEditor extends EditorPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 		
+		Composite buttonContainer = new Composite(parent, SWT.NONE);
+		buttonContainer.setLayout(new GridLayout(2, false));
+		
+		Button btnNewButton = new Button(buttonContainer, SWT.NONE);
+		btnNewButton.setText("&New entry");
+		
+		Button btnRemoveButton = new Button(buttonContainer, SWT.NONE);
+		btnRemoveButton.setText("&Remove entry");
+		btnRemoveButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				log.info("REMOVE");
+			}
+		});
+		
 		/* ############################################
 		 * Grid
 		 * ############################################
@@ -229,6 +250,7 @@ public class TagsetEditor extends EditorPart {
 		CornerLayer cornerLayer = new CornerLayer(new DataLayer(cornerDataProvider), rowHeaderLayer, columnHeaderLayer);
 
 		GridLayer gridLayer = new GridLayer(this.bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
+		
 		NatTable natTable = new NatTable(parent, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED
 				| SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER, gridLayer, false);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
@@ -249,6 +271,15 @@ public class TagsetEditor extends EditorPart {
 		        natTable.doCommand(new SelectCellCommand(bodyLayer.getSelectionLayer(), 0, 0, false, false));
 		        natTable.removePaintListener(this);
 		    }
+		});
+
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Add below current selection
+				tagset.addValue(TagsetFactory.createTagsetValue(null, null, null, null, null, false, null));
+				natTable.refresh();
+			}
 		});
 	}
 
