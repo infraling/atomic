@@ -3,11 +3,19 @@
  */
 package org.corpus_tools.atomic.ui.tagset.editor;
 
-import java.io.IOException;
+import java.io.IOException; 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,8 +36,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
+import org.eclipse.nebula.widgets.nattable.coordinate.Range;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ReflectiveColumnPropertyAccessor;
@@ -43,9 +53,14 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.hideshow.ColumnHideShowLayer;
 import org.eclipse.nebula.widgets.nattable.layer.AbstractLayerTransform;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
+import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.reorder.ColumnReorderLayer;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.command.SelectCellCommand;
+import org.eclipse.nebula.widgets.nattable.selection.event.ISelectionEvent;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
@@ -243,6 +258,8 @@ public class TagsetEditor extends EditorPart {
 		DefaultRowHeaderDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(this.bodyDataProvider);
 
 		this.bodyLayer = new BodyLayerStack(this.bodyDataProvider);
+		final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyLayer.getBodyDataLayer());
+        bodyLayer.getBodyDataLayer().setConfigLabelAccumulator(columnLabelAccumulator);
 		ColumnHeaderLayerStack columnHeaderLayer = new ColumnHeaderLayerStack(colHeaderDataProvider);
 		RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(rowHeaderDataProvider);
 		DefaultCornerDataProvider cornerDataProvider = new DefaultCornerDataProvider(colHeaderDataProvider,
@@ -256,7 +273,7 @@ public class TagsetEditor extends EditorPart {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
 
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-		natTable.addConfiguration(new TagsetEditorConfiguration());
+		natTable.addConfiguration(new TagsetEditorConfiguration(this, columnLabelAccumulator));
 		natTable.configure();
 
 		/* 
@@ -276,11 +293,41 @@ public class TagsetEditor extends EditorPart {
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Add below current selection
-				tagset.addValue(TagsetFactory.createTagsetValue(null, null, null, null, null, false, null));
+				Set<Range> selectedRows = bodyLayer.getSelectionLayer().getSelectedRowPositions();
+				if (!selectedRows.isEmpty()) {
+					List<Range> rangesList = Arrays.asList(selectedRows.toArray(new Range[(selectedRows.size())]));
+					sortRangesByEnd(rangesList);
+					Range lastRange = rangesList.get(rangesList.size() - 1);
+					int lastRowIndex = lastRange.end - 1;
+					TagsetValue lastEntry = tagset.getValues().get(lastRowIndex);
+					tagset.addValue(lastRowIndex + 1,
+							TagsetFactory.createTagsetValue(lastEntry.getLayer(), lastEntry.getElementType(),
+									lastEntry.getNamespace(), lastEntry.getName(), null, false, null));
+					bodyLayer.getSelectionLayer().setSelectedCell(4, lastRowIndex + 1); // FIXME: Doesn't work yet
+				}
+				else {
+					if (tagset.getValues().isEmpty()) {
+						tagset.addValue(TagsetFactory.createTagsetValue(null, null, null, null, null, false, null));
+					}
+					else {
+						TagsetValue lastValue = tagset.getValues().get(tagset.getValues().size() - 1);
+						tagset.addValue(TagsetFactory.createTagsetValue(lastValue.getLayer(), lastValue.getElementType(), lastValue.getNamespace(), lastValue.getName(), null, false, null));
+					}
+				}
 				natTable.refresh();
 			}
+
+			private void sortRangesByEnd(List<Range> ranges) {
+				Collections.sort(ranges, new Comparator<Range>() {
+		            @Override
+		            public int compare(Range range1, Range range2) {
+		                return Integer.valueOf(range1.end).compareTo(
+		                        Integer.valueOf(range2.end));
+		            }
+		        });
+			}
 		});
+		
 	}
 
 	private IDataProvider setupBodyDataProvider() {
@@ -305,12 +352,13 @@ public class TagsetEditor extends EditorPart {
 	}
 	
 	
-	private class BodyLayerStack extends AbstractLayerTransform {
+	class BodyLayerStack extends AbstractLayerTransform {
 
 		private SelectionLayer selectionLayer;
+		private DataLayer bodyDataLayer;
 
 		public BodyLayerStack(IDataProvider dataProvider) {
-			DataLayer bodyDataLayer = new DataLayer(dataProvider);
+			this.bodyDataLayer = new DataLayer(dataProvider);
 			bodyDataLayer.setColumnPercentageSizing(true);
 			bodyDataLayer.setColumnWidthPercentageByPosition(0, 16);
 			bodyDataLayer.setColumnWidthPercentageByPosition(1, 16);
@@ -328,6 +376,11 @@ public class TagsetEditor extends EditorPart {
 		public SelectionLayer getSelectionLayer() {
 			return this.selectionLayer;
 		}
+
+		public final DataLayer getBodyDataLayer() {
+			return bodyDataLayer;
+		}
+
 	}
 
 	private class ColumnHeaderLayerStack extends AbstractLayerTransform {
@@ -348,6 +401,20 @@ public class TagsetEditor extends EditorPart {
 					TagsetEditor.this.bodyLayer.getSelectionLayer());
 			setUnderlyingLayer(rowHeaderLayer);
 		}
+	}
+
+	/**
+	 * @return the tagset
+	 */
+	public final Tagset getTagset() {
+		return tagset;
+	}
+
+	/**
+	 * @return the bodyLayer
+	 */
+	public final BodyLayerStack getBodyLayer() {
+		return bodyLayer;
 	}
 
 }

@@ -23,6 +23,8 @@ public interface Tagset extends Serializable {
 
 	boolean addValue(TagsetValue value);
 	
+	boolean addValue(int index, TagsetValue value);
+	
 	boolean removeValue(TagsetValue value);
 	
 	void setValues(List<TagsetValue> values);

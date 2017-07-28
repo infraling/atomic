@@ -128,6 +128,17 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.corpus_tools.atomic.tagset.Tagset#addValue(int, org.corpus_tools.atomic.tagset.TagsetValue)
+	 */
+	public boolean addValue(int index, TagsetValue value) {
+		List<TagsetValue> newValues = this.getValues();
+		int oldSize = newValues.size();
+		newValues.add(index, value);
+		setValues(newValues);
+		return newValues.size() > oldSize;
+	}
+
+	/* (non-Javadoc)
 	 * @see org.corpus_tools.atomic.tagset.Tagset#removeValue(org.corpus_tools.atomic.tagset.TagsetValue)
 	 */
 	@Override
