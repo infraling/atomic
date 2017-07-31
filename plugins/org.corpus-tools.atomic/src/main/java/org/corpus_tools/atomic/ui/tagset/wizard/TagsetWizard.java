@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
+import org.corpus_tools.atomic.ui.tagset.editor.TagsetEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -21,8 +22,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * // TODO Add description
@@ -88,6 +95,16 @@ public class TagsetWizard extends Wizard implements IWizard, INewWizard {
 		}
 		catch (CoreException e) {
 			log.error("An error occurred while refreshing the workspace to show the new tagset file.", e);
+		}
+		IEditorInput editorInput = new FileEditorInput(file);
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchPage page = window.getActivePage();
+		try {
+			page.openEditor(editorInput, TagsetEditor.ID);
+		}
+		catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return true;
 	}
