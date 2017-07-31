@@ -7,15 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
-import org.corpus_tools.atomic.ui.tagset.editor.TagsetEditorConfiguration.NewValueCreatingTextCellEditor;
-import org.corpus_tools.atomic.ui.tagset.editor.TagsetEditorConfiguration.RightMovingTextCellEditor;
 import org.corpus_tools.salt.SALT_TYPE;
-import org.corpus_tools.salt.common.SToken;
-import org.corpus_tools.salt.core.SAnnotation;
-import org.corpus_tools.salt.core.SNode;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
@@ -71,8 +63,8 @@ public class TagsetEditorConfiguration extends AbstractRegistryConfiguration {
 				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new ElementTypeComboBoxEditor(getElementTypes()), DisplayMode.EDIT, ELEMENT_TYPE_COLUMN_LABEL);
 				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new RightMovingTextCellEditor(), DisplayMode.EDIT, NAMESPACE_COLUMN_LABEL);
 				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new RightMovingTextCellEditor(), DisplayMode.EDIT, NAME_COLUMN_LABEL);
-				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new RightMovingTextCellEditor(), DisplayMode.EDIT, VALUE_COLUMN_LABEL);
-				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new NewValueCreatingTextCellEditor(), DisplayMode.EDIT, DESCRIPTION_COLUMN_LABEL);
+				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new UnmovingTextCellEditor(), DisplayMode.EDIT, VALUE_COLUMN_LABEL);
+				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new UnmovingTextCellEditor(), DisplayMode.EDIT, DESCRIPTION_COLUMN_LABEL);
 	}
 
 	private List<SALT_TYPE> getElementTypes() {
@@ -128,8 +120,6 @@ public class TagsetEditorConfiguration extends AbstractRegistryConfiguration {
 		 */
 	private class ElementTypeComboBoxEditor extends ComboBoxCellEditor {
 		
-		private final Logger log = LogManager.getLogger(ElementTypeComboBoxEditor.class); 
-
 		private Object originalCanonicalValue = null;
 
 		public ElementTypeComboBoxEditor(List<SALT_TYPE> elementTypes) {
@@ -169,13 +159,18 @@ public class TagsetEditorConfiguration extends AbstractRegistryConfiguration {
 
 		@Override
 	    protected Control activateCell(final Composite parent, Object originalCanonicalValue) {
-			this.originalCanonicalValue = (String) originalCanonicalValue;
+			this.originalCanonicalValue = String.valueOf(originalCanonicalValue);
 			return super.activateCell(parent, originalCanonicalValue);
 		}
 
 		@Override
 		public boolean commit(MoveDirectionEnum direction, boolean closeAfterCommit, boolean skipValidation) {
-			if (!getCanonicalValue().equals(originalCanonicalValue)) {
+			if (getCanonicalValue() != null) {
+				if (!getCanonicalValue().equals(originalCanonicalValue)) {
+					TagsetEditorConfiguration.this.editor.setDirty(true);
+				}
+			}
+			else if (originalCanonicalValue != null) {
 				TagsetEditorConfiguration.this.editor.setDirty(true);
 			}
 			return super.commit(MoveDirectionEnum.RIGHT, true, true);
@@ -190,24 +185,27 @@ public class TagsetEditorConfiguration extends AbstractRegistryConfiguration {
 		 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
 		 * 
 		 */
-	public class NewValueCreatingTextCellEditor extends TextCellEditor {
+	public class UnmovingTextCellEditor extends TextCellEditor {
+		
 		private String originalCanonicalValue;
-
+		
 		@Override
 	    protected Control activateCell(final Composite parent, Object originalCanonicalValue) {
-			this.originalCanonicalValue = (String) originalCanonicalValue;
+			this.originalCanonicalValue = String.valueOf(originalCanonicalValue);
 			return super.activateCell(parent, originalCanonicalValue);
 		}
 
 		@Override
 		public boolean commit(MoveDirectionEnum direction, boolean closeAfterCommit, boolean skipValidation) {
-			if (!getCanonicalValue().equals(originalCanonicalValue)) {
+			if (getCanonicalValue() != null) {
+				if (!getCanonicalValue().equals(originalCanonicalValue)) {
+					TagsetEditorConfiguration.this.editor.setDirty(true);
+				}
+			}
+			else if (originalCanonicalValue != null) {
 				TagsetEditorConfiguration.this.editor.setDirty(true);
 			}
-//			int thisRowIndex = TagsetEditorConfiguration.this.editor.getBodyLayer().getSelectionLayer().getSelectedRowPositions().iterator().next().end;
-//			TagsetEditorConfiguration.this.editor.getTagset().addValue(thisRowIndex, TagsetFactory.createTagsetValue("DIDI", null, "DADA", "DUDU", "DÖDÖ", false, null));
-			
-			return super.commit(MoveDirectionEnum.DOWN, true, true);
+			return super.commit(MoveDirectionEnum.NONE, true, true);
 		}
 	
 	}

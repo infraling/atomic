@@ -6,17 +6,13 @@ package org.corpus_tools.atomic.ui.tagset.editor;
 import java.io.IOException; 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
@@ -36,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.coordinate.Range;
@@ -53,14 +48,10 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.hideshow.ColumnHideShowLayer;
 import org.eclipse.nebula.widgets.nattable.layer.AbstractLayerTransform;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
-import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
-import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
-import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.reorder.ColumnReorderLayer;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.command.SelectCellCommand;
-import org.eclipse.nebula.widgets.nattable.selection.event.ISelectionEvent;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
@@ -74,7 +65,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
@@ -85,29 +75,29 @@ import org.eclipse.swt.events.SelectionEvent;
  * 
  */
 public class TagsetEditor extends EditorPart {
-	public TagsetEditor() {
-	}
 	
 	private IDataProvider bodyDataProvider;
     private String[] propertyNames;
     private BodyLayerStack bodyLayer;
     private Map<String, String> propertyToLabels;
 	
-	private static final Logger log = LogManager.getLogger(TagsetEditor.class); 
+	private static final Logger log = LogManager.getLogger(TagsetEditor.class);
+	/**
+	 * TODO
+	 */
+	public static final String ID = "org.corpus_tools.atomic.TagsetEditor"; 
 	
 	private SCorpus corpus;
 	private Tagset tagset;
 	private URI tagsetFileURI;
 	private boolean dirty;
+	private NatTable natTable;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		for (TagsetValue v : tagset.getValues()) {
-			v.setDescription("AUTO-WRITTEN BY EDITOR (c)");
-		}
 		tagset.save(tagsetFileURI);
 		setDirty(false);
 	}
@@ -241,12 +231,6 @@ public class TagsetEditor extends EditorPart {
 		
 		Button btnRemoveButton = new Button(buttonContainer, SWT.NONE);
 		btnRemoveButton.setText("&Remove entry");
-		btnRemoveButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				log.info("REMOVE");
-			}
-		});
 		
 		/* ############################################
 		 * Grid
@@ -268,7 +252,7 @@ public class TagsetEditor extends EditorPart {
 
 		GridLayer gridLayer = new GridLayer(this.bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
 		
-		NatTable natTable = new NatTable(parent, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED
+		natTable = new NatTable(parent, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED
 				| SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER, gridLayer, false);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
 
@@ -289,6 +273,13 @@ public class TagsetEditor extends EditorPart {
 		        natTable.removePaintListener(this);
 		    }
 		});
+		
+		btnRemoveButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.err.println(bodyLayer.getSelectionLayer().getSelectedRowPositions());
+			}
+		});
 
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -303,18 +294,25 @@ public class TagsetEditor extends EditorPart {
 					tagset.addValue(lastRowIndex + 1,
 							TagsetFactory.createTagsetValue(lastEntry.getLayer(), lastEntry.getElementType(),
 									lastEntry.getNamespace(), lastEntry.getName(), null, false, null));
-					bodyLayer.getSelectionLayer().setSelectedCell(4, lastRowIndex + 1); // FIXME: Doesn't work yet
+					natTable.refresh();
+					natTable.setFocus();
+			        natTable.doCommand(new SelectCellCommand(bodyLayer.getSelectionLayer(), 4, lastRowIndex + 1, false, false));
 				}
 				else {
 					if (tagset.getValues().isEmpty()) {
 						tagset.addValue(TagsetFactory.createTagsetValue(null, null, null, null, null, false, null));
+						natTable.refresh();
+						natTable.setFocus();
+						natTable.doCommand(new SelectCellCommand(bodyLayer.getSelectionLayer(), 0, 0, false, false));
 					}
 					else {
 						TagsetValue lastValue = tagset.getValues().get(tagset.getValues().size() - 1);
 						tagset.addValue(TagsetFactory.createTagsetValue(lastValue.getLayer(), lastValue.getElementType(), lastValue.getNamespace(), lastValue.getName(), null, false, null));
+						natTable.refresh();
+						natTable.setFocus();
+						natTable.doCommand(new SelectCellCommand(bodyLayer.getSelectionLayer(), 4, tagset.getValues().size() - 1, false, false));
 					}
 				}
-				natTable.refresh();
 			}
 
 			private void sortRangesByEnd(List<Range> ranges) {
@@ -347,7 +345,9 @@ public class TagsetEditor extends EditorPart {
 	 */
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
+		if (natTable != null) {
+			natTable.setFocus();
+		}
 
 	}
 	
