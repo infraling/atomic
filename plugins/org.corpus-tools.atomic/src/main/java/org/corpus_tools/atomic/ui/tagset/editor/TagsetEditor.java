@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
@@ -38,6 +41,8 @@ import org.eclipse.nebula.widgets.nattable.coordinate.Range;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ReflectiveColumnPropertyAccessor;
+import org.eclipse.nebula.widgets.nattable.edit.command.UpdateDataCommand;
+import org.eclipse.nebula.widgets.nattable.edit.command.UpdateDataCommandHandler;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
@@ -49,6 +54,7 @@ import org.eclipse.nebula.widgets.nattable.hideshow.ColumnHideShowLayer;
 import org.eclipse.nebula.widgets.nattable.layer.AbstractLayerTransform;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.layer.event.CellVisualChangeEvent;
 import org.eclipse.nebula.widgets.nattable.reorder.ColumnReorderLayer;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.command.SelectCellCommand;
@@ -76,6 +82,8 @@ import org.eclipse.swt.events.SelectionEvent;
  */
 public class TagsetEditor extends EditorPart {
 	
+
+
 	private IDataProvider bodyDataProvider;
     private String[] propertyNames;
     private BodyLayerStack bodyLayer;
@@ -366,6 +374,11 @@ public class TagsetEditor extends EditorPart {
 			bodyDataLayer.setColumnWidthPercentageByPosition(3, 16);
 			bodyDataLayer.setColumnWidthPercentageByPosition(4, 16);
 			bodyDataLayer.setColumnWidthPercentageByPosition(5, 16);
+			
+			// CustomUpdateHandler
+			this.bodyDataLayer.unregisterCommandHandler(UpdateDataCommand.class);
+            this.bodyDataLayer.registerCommandHandler(new TagsetUpdateDataCommandHandler(bodyDataLayer));
+			
 			ColumnReorderLayer columnReorderLayer = new ColumnReorderLayer(bodyDataLayer);
 			ColumnHideShowLayer columnHideShowLayer = new ColumnHideShowLayer(columnReorderLayer);
 			this.selectionLayer = new SelectionLayer(columnHideShowLayer);
@@ -415,6 +428,65 @@ public class TagsetEditor extends EditorPart {
 	 */
 	public final BodyLayerStack getBodyLayer() {
 		return bodyLayer;
+	}
+
+	/**
+	 * // TODO Add description
+	 *
+	 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+	 * 
+	 */
+	public class TagsetUpdateDataCommandHandler extends UpdateDataCommandHandler {
+
+		private final Logger log = LogManager.getLogger(TagsetUpdateDataCommandHandler.class);
+
+		private DataLayer dataLayer;
+
+		public TagsetUpdateDataCommandHandler(DataLayer dataLayer) {
+			super(dataLayer);
+			this.dataLayer = dataLayer;
+		}
+
+		@Override
+		protected boolean doCommand(UpdateDataCommand command) {
+			try {
+				int columnPosition = command.getColumnPosition();
+				int rowPosition = command.getRowPosition();
+
+				Object currentValue = this.dataLayer.getDataValueByPosition(columnPosition, rowPosition);
+				if (currentValue == null || command.getNewValue() == null
+						|| !currentValue.equals(command.getNewValue())) {
+					this.dataLayer.setDataValueByPosition(columnPosition, rowPosition, command.getNewValue());
+					this.dataLayer
+							.fireLayerEvent(new CellVisualChangeEvent(this.dataLayer, columnPosition, rowPosition));
+
+					if (command.getColumnPosition() == 4) {
+						Object newValue = command.getNewValue();
+						if (newValue instanceof String) {
+							if (((String) newValue).startsWith("/") && ((String) newValue).endsWith("/")) {
+								boolean isRegex = true;
+								try {
+									String pattern = ((String) newValue).substring(1, ((String) newValue).length() - 1);
+									Pattern.compile(pattern);
+								}
+								catch (PatternSyntaxException exception) {
+									isRegex = false;
+									MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Invalid regular expression",
+											"The value you have entered is not a valid regular expression!\n\nError: "
+													+ exception.getMessage());
+								}
+								tagset.getValues().get(command.getRowPosition()).setRegularExpression(isRegex);
+							}
+						}
+					}
+				}
+				return true;
+			}
+			catch (Exception e) {
+				log.error("Failed to update value to: " + command.getNewValue(), e); //$NON-NLS-1$
+				return false;
+			}
+		}
 	}
 
 }
