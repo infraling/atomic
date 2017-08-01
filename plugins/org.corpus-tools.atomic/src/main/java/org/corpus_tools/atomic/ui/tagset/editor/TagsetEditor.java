@@ -376,6 +376,11 @@ public class TagsetEditor extends EditorPart {
 			bodyDataLayer.setColumnWidthPercentageByPosition(5, 16);
 			
 			// CustomUpdateHandler
+			/* 
+			 * FIXME: Remove next two lines and handle
+			 * invalid regexes via viual marking on cell 
+			 * instead of MessageDialog
+			 */
 			this.bodyDataLayer.unregisterCommandHandler(UpdateDataCommand.class);
             this.bodyDataLayer.registerCommandHandler(new TagsetUpdateDataCommandHandler(bodyDataLayer));
 			
