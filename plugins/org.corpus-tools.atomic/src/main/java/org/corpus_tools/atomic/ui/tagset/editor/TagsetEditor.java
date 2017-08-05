@@ -23,6 +23,7 @@ import org.corpus_tools.atomic.exceptions.AtomicGeneralException;
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
+import org.corpus_tools.atomic.ui.tagset.editor.configuration.CustomLabelAccumulator;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.common.SaltProject;
@@ -39,6 +40,7 @@ import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.coordinate.Range;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ReflectiveColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.edit.command.UpdateDataCommand;
@@ -250,7 +252,9 @@ public class TagsetEditor extends EditorPart {
 		DefaultRowHeaderDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(this.bodyDataProvider);
 
 		this.bodyLayer = new BodyLayerStack(this.bodyDataProvider);
-		final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyLayer.getBodyDataLayer());
+		@SuppressWarnings("unchecked")
+		IRowDataProvider<TagsetValue> rowDataProvider = (IRowDataProvider<TagsetValue>) bodyLayer.getBodyDataLayer().getDataProvider();
+		final ColumnOverrideLabelAccumulator columnLabelAccumulator = new CustomLabelAccumulator(bodyLayer.getBodyDataLayer(), rowDataProvider);
         bodyLayer.getBodyDataLayer().setConfigLabelAccumulator(columnLabelAccumulator);
 		ColumnHeaderLayerStack columnHeaderLayer = new ColumnHeaderLayerStack(colHeaderDataProvider);
 		RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(rowHeaderDataProvider);
@@ -459,14 +463,12 @@ public class TagsetEditor extends EditorPart {
 				int rowPosition = command.getRowPosition();
 
 				Object currentValue = this.dataLayer.getDataValueByPosition(columnPosition, rowPosition);
-				if (currentValue == null || command.getNewValue() == null
-						|| !currentValue.equals(command.getNewValue())) {
-					this.dataLayer.setDataValueByPosition(columnPosition, rowPosition, command.getNewValue());
-					this.dataLayer
-							.fireLayerEvent(new CellVisualChangeEvent(this.dataLayer, columnPosition, rowPosition));
-
+				Object newValue = command.getNewValue();
+				if (currentValue == null || newValue == null
+						|| !currentValue.equals(newValue)) {
+					this.dataLayer.setDataValueByPosition(columnPosition, rowPosition, newValue);
+					this.dataLayer.fireLayerEvent(new CellVisualChangeEvent(this.dataLayer, columnPosition, rowPosition));
 					if (command.getColumnPosition() == 4) {
-						Object newValue = command.getNewValue();
 						if (newValue instanceof String) {
 							if (((String) newValue).startsWith("/") && ((String) newValue).endsWith("/")) {
 								boolean isRegex = true;
@@ -476,9 +478,6 @@ public class TagsetEditor extends EditorPart {
 								}
 								catch (PatternSyntaxException exception) {
 									isRegex = false;
-									MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Invalid regular expression",
-											"The value you have entered is not a valid regular expression!\n\nError: "
-													+ exception.getMessage());
 								}
 								tagset.getValues().get(command.getRowPosition()).setRegularExpression(isRegex);
 							}

@@ -3,6 +3,9 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.corpus_tools.atomic.models.AbstractBean;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
@@ -159,5 +162,23 @@ public class JavaTagsetValueImpl extends AbstractBean implements TagsetValue {
 				"(Namespace: " + getNamespace() + "), " +
 				"(Annotation name: " + getName() + ")";
 	}
+	
+//	public static boolean isValidValue(TagsetValue value) {
+//		String valueString = value.getValue();
+//		if (valueString != null) {
+//		if (valueString.startsWith("/") && valueString.endsWith("/")) {
+//			try {
+//				String pattern = valueString.substring(1, valueString.length() - 1);
+//				Pattern.compile(pattern);
+//			}
+//			catch (PatternSyntaxException exception) {
+//				return false;
+//			}
+//			return true;
+//		}return true;}
+//		else {
+//			return true;
+//		}
+//	}
 
 }

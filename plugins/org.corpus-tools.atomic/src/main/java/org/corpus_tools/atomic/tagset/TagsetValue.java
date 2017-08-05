@@ -3,6 +3,9 @@
  */
 package org.corpus_tools.atomic.tagset;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.core.SLayer;
 
@@ -73,4 +76,20 @@ public abstract interface TagsetValue {
 	void setName(String annotationName);
 	
 	String getName();
+	
+	static boolean isValidValue(TagsetValue value) {
+		String valueString = value.getValue();
+		if (valueString != null) {
+			if (valueString.startsWith("/") && valueString.endsWith("/")) {
+				try {
+					String pattern = valueString.substring(1, valueString.length() - 1);
+					Pattern.compile(pattern);
+				}
+				catch (PatternSyntaxException exception) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }
