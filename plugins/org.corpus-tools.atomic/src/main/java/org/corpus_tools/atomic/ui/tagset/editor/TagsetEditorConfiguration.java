@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.corpus_tools.atomic.tagset.TagsetValue;
-import org.corpus_tools.atomic.tagset.impl.JavaTagsetValueImpl;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;

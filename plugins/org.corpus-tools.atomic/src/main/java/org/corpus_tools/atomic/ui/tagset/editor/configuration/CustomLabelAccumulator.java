@@ -4,7 +4,6 @@
 package org.corpus_tools.atomic.ui.tagset.editor.configuration;
 
 import org.corpus_tools.atomic.tagset.TagsetValue;
-import org.corpus_tools.atomic.tagset.impl.JavaTagsetValueImpl;
 import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
 import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
