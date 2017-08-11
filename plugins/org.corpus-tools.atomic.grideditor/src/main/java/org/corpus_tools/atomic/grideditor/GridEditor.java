@@ -8,11 +8,13 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
+import org.corpus_tools.atomic.api.editors.TagsetAwareEditor;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorSelectionConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridSpanningDataProvider;
 import org.corpus_tools.atomic.grideditor.selection.MultiCellSelection;
 import org.corpus_tools.atomic.grideditor.selection.SingleCellSelection;
+import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
@@ -70,7 +72,7 @@ import org.eclipse.swt.events.PaintListener;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-public class GridEditor extends DocumentGraphEditor implements ISelectionProvider {
+public class GridEditor extends DocumentGraphEditor implements ISelectionProvider, TagsetAwareEditor {
 
 	private static final Logger log = LogManager.getLogger(GridEditor.class);
 	private AnnotationGridDataProvider dataProvider = null;
@@ -78,6 +80,8 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	
 	private ListenerList<ISelectionChangedListener> selectionListeners = new ListenerList<>();
 	private NatTable natTable;
+	private Tagset tagset = null;
+	private boolean hasTagset = false;
 	
 	
 	public GridEditor() {
@@ -90,6 +94,14 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		super.init(site, input);
 		if (isInputValid()) {
 			annotationGrid = compileAnnotationGrid(graph);
+		}
+		this.tagset = loadTagset(input);
+		if (tagset != null) {
+			log.info("Set tagset for editor to {}.", tagset.getName());
+			hasTagset = true;
+		}
+		else {
+			log.info("No tagset found for this document.");
 		}
 	}
 	
