@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 
 /**
  * // TODO Add description
@@ -34,7 +34,15 @@ public interface TagsetAwareEditor extends IEditorPart {
 
 	default public Tagset loadTagset(IEditorInput input) {
 		Tagset tagset = null;
-		IProject iProject = ((FileEditorInput) input).getFile().getProject();
+		IFileEditorInput fileEditorInput = null;
+		if (input instanceof IFileEditorInput) {
+			fileEditorInput = (IFileEditorInput) input;
+		}
+		else {
+			log.info("Cannot retrieve project from editor input that is not based on a file.");
+			return null;
+		}
+		IProject iProject = fileEditorInput.getFile().getProject();
 
 		IFile tagsetFileResource = null;
 		File tagsetFile = null;
