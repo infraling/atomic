@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -173,12 +175,22 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 	@Override
 	public Set<TagsetValue> getValuesForParameters(String layer, SALT_TYPE elementType, String namespace, String name) {
 		Set<TagsetValue> validValues = new HashSet<>();
-		Stream<TagsetValue> allValidEntries = getValues().stream().filter(e -> (Objects.equals(e.getLayer(), layer) 
-				&& Objects.equals(e.getElementType(), elementType)
-				&& Objects.equals(e.getNamespace(), namespace) 
-				&& Objects.equals(e.getName(), name)));
+		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+				(Objects.equals(value.getLayer(), layer) || value.getLayer() == null) 
+				&& (Objects.equals(value.getElementType(), elementType) || value.getElementType() == null)
+				&& (Objects.equals(value.getNamespace(), namespace) || value.getNamespace() == null) 
+				&& Objects.equals(value.getName(), name)));
 		allValidEntries.forEach(e -> validValues.add(e));
 		return validValues;
+	}
+
+	@Override
+	public Set<String> getAnnotationNamesForParameters(String layer, SALT_TYPE elementType, String namespace) {
+		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+				(Objects.equals(value.getLayer(), layer) || value.getLayer() == null) 
+				&& (Objects.equals(value.getElementType(), elementType) || value.getElementType() == null)
+				&& (Objects.equals(value.getNamespace(), namespace) || value.getNamespace() == null)));
+		return allValidEntries.map(TagsetValue::getName).distinct().collect(Collectors.toCollection(HashSet<String>::new));
 	}
 
 }
