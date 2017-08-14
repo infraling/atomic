@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -290,7 +291,22 @@ public class TagsetEditor extends EditorPart {
 		btnRemoveButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.err.println(bodyLayer.getSelectionLayer().getSelectedRowPositions());
+				Set<Range> selectedRows = bodyLayer.getSelectionLayer().getSelectedRowPositions();
+				if (!selectedRows.isEmpty()) {
+					List<Range> rangesList = Arrays.asList(selectedRows.toArray(new Range[(selectedRows.size())]));
+					Set<TagsetValue> valuesToRemove = new HashSet<>();
+					for (Range range : rangesList) {
+						for (Integer m : range.getMembers()) {
+							valuesToRemove.add(tagset.getValues().get(m));
+						}
+					}
+					for (TagsetValue v : valuesToRemove) {
+						tagset.removeValue(v);
+					}
+					natTable.refresh();
+					natTable.setFocus();
+			        natTable.doCommand(new SelectCellCommand(bodyLayer.getSelectionLayer(), 0, 0, false, false));
+				}
 			}
 		});
 
@@ -327,18 +343,18 @@ public class TagsetEditor extends EditorPart {
 					}
 				}
 			}
-
-			private void sortRangesByEnd(List<Range> ranges) {
-				Collections.sort(ranges, new Comparator<Range>() {
-		            @Override
-		            public int compare(Range range1, Range range2) {
-		                return Integer.valueOf(range1.end).compareTo(
-		                        Integer.valueOf(range2.end));
-		            }
-		        });
-			}
 		});
 		
+	}
+
+	private void sortRangesByEnd(List<Range> ranges) {
+		Collections.sort(ranges, new Comparator<Range>() {
+	        @Override
+	        public int compare(Range range1, Range range2) {
+	            return Integer.valueOf(range1.end).compareTo(
+	                    Integer.valueOf(range2.end));
+	        }
+	    });
 	}
 
 	private IDataProvider setupBodyDataProvider() {
