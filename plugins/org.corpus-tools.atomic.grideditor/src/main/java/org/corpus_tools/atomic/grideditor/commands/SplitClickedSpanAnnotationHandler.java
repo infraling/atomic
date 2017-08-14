@@ -70,7 +70,7 @@ public class SplitClickedSpanAnnotationHandler extends AbstractHandler {
 			SDocumentGraph graph = grid.getGraph();
 			List<SToken> sortedTokens = graph.getSortedTokenByText();
 			int columnIndex = clickedCell.getColumnIndex();
-			String header = grid.getHeaderMap().get(columnIndex);
+			String header = grid.getColumnHeaderMap().get(columnIndex);
 			/* 
 			 * Create a new span with annotation for all tokens in span index range,
 			 * and update the grid accordingly.

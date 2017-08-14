@@ -47,9 +47,16 @@ public class CustomGridLabelAccumulator extends ColumnOverrideLabelAccumulator {
 		if (rowObject instanceof SAnnotation) {
 			String annoVal = ((SAnnotation) rowObject).getValue_STEXT();
 //		String rowObject = this.rowDataProvider.getRowObject(rowPosition);
-		String[] headerSplit = grid.getHeaderMap().get(columnPosition).split("::");
-		String namespace = headerSplit[0];
-		String name = headerSplit[1];
+		String namespace = null;
+		String name = null;
+		String[] headerSplit = grid.getColumnHeaderMap().get(columnPosition).split("::");
+		if (headerSplit.length == 2) {
+			namespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+			name = headerSplit[1];
+		}
+		else if (headerSplit.length == 1) {
+			name = headerSplit[0];
+		}
 		Set<TagsetValue> values = tagset.getValuesForParameters(null, null, namespace, name);
 		Collection<String> valueStrings = values.stream().map(TagsetValue::getValue).collect(Collectors.toCollection(ArrayList::new));
 		// Check if annotation value validifies

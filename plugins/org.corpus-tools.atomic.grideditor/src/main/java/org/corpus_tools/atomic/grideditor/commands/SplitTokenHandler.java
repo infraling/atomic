@@ -102,7 +102,7 @@ public class SplitTokenHandler extends AbstractHandler {
 		}
 		grid.getRowMap().remove(clickIndex);
 		for (int i = 0; i < tokensToAdd.size(); i++) {
-			grid.record(clickIndex + i, 0, grid.getHeaderMap().get(0), tokensToAdd.get(i));
+			grid.record(clickIndex + i, 0, grid.getColumnHeaderMap().get(0), tokensToAdd.get(i));
 		}
 		tempRowMap.entrySet().stream().forEach(e -> grid.getRowMap().put(e.getKey(), e.getValue()));
 		// Refresh and set dirty

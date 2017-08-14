@@ -51,12 +51,27 @@ public class CreateSpanHandler extends AbstractHandler {
 						tokenIndices.add(((TranslatedLayerCell) e).getRowIndex());
 						if (annotationName == null && colIndex == -1) {
 							colIndex = ((TranslatedLayerCell) e).getColumnIndex();
-							String[] headerSplit = grid.getHeaderMap().get(colIndex).split("::");
-							annotationNamespace = headerSplit[0].equals("null") ? null : headerSplit[0];
-							annotationName = headerSplit[1];
+							String[] headerSplit = grid.getColumnHeaderMap().get(colIndex).split("::");
+							if (headerSplit.length == 2) {
+								annotationNamespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+								annotationName = headerSplit[1];
+							}
+							else if (headerSplit.length == 1) {
+								annotationName = headerSplit[0];
+							}
 						}
 						else {
-							if (!annotationName.equals(grid.getHeaderMap().get(colIndex).split("::")[1]) && !annotationNamespace.equals(grid.getHeaderMap().get(colIndex).split("::")[0].toString())) {
+							String[] headerSplit = grid.getColumnHeaderMap().get(colIndex).split("::");
+							String headerName = null;
+							String headerNamespace = null;
+							if (headerSplit.length == 2) {
+								headerNamespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+								headerName = headerSplit[1];
+							}
+							else if (headerSplit.length == 1) {
+								headerName = headerSplit[0];
+							}
+							if (!annotationName.equals(headerName) && !annotationNamespace.equals(headerNamespace)) {
 								MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", "Can not create span over more than one column.\nSelect cells from one column only");
 								return null;
 							}

@@ -27,13 +27,13 @@ public class GridColumnHeaderDataProvider extends DefaultColumnHeaderDataProvide
 	
 	@Override
 	public String getColumnHeaderLabel(int columnIndex) {
-		String label = annotationTable.getHeaderMap().get(columnIndex);//FluentIterable.from(annotationTable.columnKeySet()).skip(columnIndex).limit(columnIndex + 1).toList().get(0);
+		String label = annotationTable.getColumnHeaderMap().get(columnIndex);//FluentIterable.from(annotationTable.columnKeySet()).skip(columnIndex).limit(columnIndex + 1).toList().get(0);
 		return label;
 	}
 	
 	@Override
     public int getColumnCount() {
-        return annotationTable.getHeaderMap().size();//columnKeySet().size();
+        return annotationTable.getColumnHeaderMap().size();//columnKeySet().size();
     }
 
 }

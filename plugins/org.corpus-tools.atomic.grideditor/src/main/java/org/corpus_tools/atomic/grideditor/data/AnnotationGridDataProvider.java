@@ -46,16 +46,23 @@ public class AnnotationGridDataProvider implements IDataProvider {
 		SDocumentGraph graph = annotationGrid.getGraph();
 		if (previous instanceof SAnnotation) {
 			((SAnnotation) previous).setValue(newValue);
-			annotationGrid.record(rowIndex, columnIndex, annotationGrid.getHeaderMap().get(columnIndex), previous);
+			annotationGrid.record(rowIndex, columnIndex, annotationGrid.getColumnHeaderMap().get(columnIndex), previous);
 		}
 		else if (previous == null) {
 			SToken token = graph.getSortedTokenByText().get(rowIndex);
 			SSpan span = graph.createSpan(token);
-			String[] headerSplit = annotationGrid.getHeaderMap().get(columnIndex).split("::");
-			String namespace = headerSplit[0].equals("null") ? null : headerSplit[0];
-			String name = headerSplit[1];
+			String namespace = null;
+			String name = null;
+			String[] headerSplit = annotationGrid.getColumnHeaderMap().get(columnIndex).split("::");
+			if (headerSplit.length == 2) {
+				namespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+				name = headerSplit[1];
+			}
+			else if (headerSplit.length == 1) {
+				name = headerSplit[0];
+			}
 			SAnnotation newAnno = span.createAnnotation(namespace, name, newValue);
-			annotationGrid.record(rowIndex, columnIndex, annotationGrid.getHeaderMap().get(columnIndex), newAnno);
+			annotationGrid.record(rowIndex, columnIndex, annotationGrid.getColumnHeaderMap().get(columnIndex), newAnno);
 		}
 		else {
 			// Not null, not an SAnnotation
@@ -68,7 +75,7 @@ public class AnnotationGridDataProvider implements IDataProvider {
 	 */
 	@Override
 	public int getColumnCount() {
-		return annotationGrid != null ? annotationGrid.getHeaderMap().size() : 0;
+		return annotationGrid != null ? annotationGrid.getColumnHeaderMap().size() : 0;
 	}
 
 	/* (non-Javadoc)

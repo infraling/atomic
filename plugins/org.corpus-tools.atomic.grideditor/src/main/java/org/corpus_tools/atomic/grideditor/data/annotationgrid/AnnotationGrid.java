@@ -51,7 +51,7 @@ import com.google.common.collect.HashBiMap;
 public class AnnotationGrid {
 
 	Map<Integer, Row> rowMap = new HashMap<>();
-	BiMap<Integer, String> headerMap = HashBiMap.create();
+	BiMap<Integer, String> columnHeaderMap = HashBiMap.create();
 	private final SDocumentGraph graph;
 
 	public AnnotationGrid(SDocumentGraph graph) {
@@ -104,10 +104,10 @@ public class AnnotationGrid {
 	}
 
 	/**
-	 * @return the headerMap
+	 * @return the columnHeaderMap
 	 */
-	public Map<Integer, String> getHeaderMap() {
-		return headerMap;
+	public BiMap<Integer, String> getColumnHeaderMap() {
+		return columnHeaderMap;
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class AnnotationGrid {
 	 * 
 	 * The method iterates over the {@link #rowMap} and
 	 * checks whether for each row, there is a cell for
-	 * each column header (using the {@link #headerMap},
+	 * each column header (using the {@link #columnHeaderMap},
 	 * which at this point must be complete, i.e., this
 	 * method should only be run after all values have 
 	 * been added to the grid, and re-run after each 
@@ -143,18 +143,18 @@ public class AnnotationGrid {
 	 * If there is no cell for a column header, a new
 	 * cell is added to the {@link Row}, using the
 	 * respective index for the column header from the
-	 * {@link #headerMap}, the value from the created
+	 * {@link #columnHeaderMap}, the value from the created
 	 * header-to-cell-value map, and the header from
-	 * the {@link #headerMap}. 
+	 * the {@link #columnHeaderMap}. 
 	 */
 	public void layout() {
 		Iterator<Entry<Integer, Row>> it = rowMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<Integer, Row> current = it.next();
 			Row currentRow = current.getValue();
-			if (headerMap.size() != currentRow.getCells().size()) {
+			if (columnHeaderMap.size() != currentRow.getCells().size()) {
 				Map<String, Object> cellHeaderMap = currentRow.getCells().entrySet().stream().collect(Collectors.toMap(e -> e.getValue().getColumnHeader(), e -> e.getValue().getValue()));
-				for (Entry<String, Integer> headerEntry : headerMap.inverse().entrySet()) {
+				for (Entry<String, Integer> headerEntry : columnHeaderMap.inverse().entrySet()) {
 					currentRow.getCells().put(headerEntry.getValue(), new Cell(cellHeaderMap.get(headerEntry.getKey()), headerEntry.getKey()));
 				}
 			}
@@ -194,11 +194,11 @@ public class AnnotationGrid {
 		 */
 		public void put(int colIndex, String colHeader, Object value) {
 			// Check if columnHeader already exists
-			if (headerMap.inverse().containsKey(colHeader)) {
-				colIndex = headerMap.inverse().get(colHeader);
+			if (columnHeaderMap.inverse().containsKey(colHeader)) {
+				colIndex = columnHeaderMap.inverse().get(colHeader);
 			} 
 			else { 
-				headerMap.put(colIndex, colHeader);
+				columnHeaderMap.put(colIndex, colHeader);
 			}
 			cells.put(colIndex, new Cell(value, colHeader));
 		}

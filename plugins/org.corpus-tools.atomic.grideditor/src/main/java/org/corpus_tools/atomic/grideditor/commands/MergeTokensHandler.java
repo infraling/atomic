@@ -88,7 +88,7 @@ public class MergeTokensHandler extends AbstractHandler {
 		int surplusRowsCount = lastRowIndex - firstRowIndex;
 		// Add new token to first row
 		grid.getRowMap().remove(firstRowIndex);
-		grid.record(firstRowIndex, 0, grid.getHeaderMap().get(0), mergedToken);
+		grid.record(firstRowIndex, 0, grid.getColumnHeaderMap().get(0), mergedToken);
 		// Remove remaining merged rows and record all rows after them
 		List<Entry<Integer, Row>> tempRowList = new ArrayList<>();
 		Iterator<Entry<Integer, Row>> rowIterator = grid.getRowMap().entrySet().iterator();

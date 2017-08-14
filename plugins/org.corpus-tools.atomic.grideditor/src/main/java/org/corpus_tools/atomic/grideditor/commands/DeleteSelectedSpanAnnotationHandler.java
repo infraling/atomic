@@ -55,14 +55,14 @@ public class DeleteSelectedSpanAnnotationHandler extends AbstractHandler {
 				if (!cell.isSpannedCell()) {
 					// If the cell doesn't span more than one row, just set the
 					// value to `null`.
-					row.put(cell.getColumnIndex(), grid.getHeaderMap().get(cell.getColumnIndex()), null);
+					row.put(cell.getColumnIndex(), grid.getColumnHeaderMap().get(cell.getColumnIndex()), null);
 				}
 				else {
 					for (int i = indexRange.lowerEndpoint(); i < indexRange.upperEndpoint() + 1; i++) {
 						row = grid.getRowMap().get(i);
 						if (row != null) {
 							if (row.get(colIndex).getValue() == value) {
-								row.put(colIndex, grid.getHeaderMap().get(colIndex), null);
+								row.put(colIndex, grid.getColumnHeaderMap().get(colIndex), null);
 								grid.getRowMap().put(i, row);
 							}
 						}
