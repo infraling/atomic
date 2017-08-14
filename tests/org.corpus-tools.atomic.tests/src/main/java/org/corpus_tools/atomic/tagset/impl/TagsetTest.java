@@ -3,8 +3,6 @@
  */
 package org.corpus_tools.atomic.tagset.impl;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -15,7 +13,9 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.corpus_tools.atomic.tagset.Tagset;
@@ -213,6 +213,28 @@ public class TagsetTest {
 	public final void testSetName() {
 		getFixture().setName("name");
 		assertEquals("name", getFixture().getName());
+	}
+	
+	@Test
+	public final void testGetValuesForParameters() {
+		URI tagsetURI = URI.createFileURI(getClass().getClassLoader().getResource("test.ats").getFile());
+		Tagset tagset = TagsetFactory.load(tagsetURI);
+		Set<TagsetValue> values = tagset.getValuesForParameters("layer1", SALT_TYPE.STOKEN, "ns1", "name1");
+		assertEquals(8, values.size());
+		TreeSet<String> valuesSet = values.stream().map(TagsetValue::getValue).collect(Collectors.toCollection(TreeSet::new));
+		TreeSet<String> set = new TreeSet<>(Arrays.asList(new String[]{"value1","value2","value3","value4","value5","value6","value7","value8"}));
+		assertEquals(set, valuesSet);
+	}
+	
+	@Test
+	public final void testGetNamesForParameters() {
+		URI tagsetURI = URI.createFileURI(getClass().getClassLoader().getResource("test.ats").getFile());
+		Tagset tagset = TagsetFactory.load(tagsetURI);
+		Set<String> values = tagset.getAnnotationNamesForParameters("layer2", SALT_TYPE.SSPAN, "ns2");
+		assertEquals(9, values.size());
+		TreeSet<String> valuesSet = values.stream().collect(Collectors.toCollection(TreeSet::new));
+		TreeSet<String> set = new TreeSet<>(Arrays.asList(new String[]{"name1","name2","name3","name4","name5","name6","name7","name8","name9"}));
+		assertEquals(set, valuesSet);
 	}
 
 	/**
