@@ -31,12 +31,10 @@ public class CustomLabelAccumulator extends ColumnOverrideLabelAccumulator {
 			int rowPosition) {
 		super.accumulateConfigLabels(configLabels, columnPosition, rowPosition);
 
-		//get the row object out of the dataprovider
-		TagsetValue rowObject = this.bodyRowDataProvider
-					.getRowObject(rowPosition);
+		// Get the row object via data provider
+		TagsetValue rowObject = this.bodyRowDataProvider.getRowObject(rowPosition);
 
-		//in column 3 and 4 there are the values that 
-		//are cross validated
+		// Check if annotation value validifies
 		if (columnPosition == 4) {
 			if (!TagsetValue.isValidValue(rowObject)) {
 				configLabels.addLabel("INVALID");
