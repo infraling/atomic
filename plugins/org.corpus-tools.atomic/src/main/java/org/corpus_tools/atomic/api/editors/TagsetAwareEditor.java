@@ -24,6 +24,10 @@ import org.eclipse.ui.IFileEditorInput;
 
 /**
  * // TODO Add description
+ * FIXME Add note to not implement this but extend *WithTagsetSupportEditor
+ * instead, create new class DocumentGraphEditorWithTagset, include
+ * logic from e.g. GridEditor init there, and let editors (ridEditor)
+ * extend that
  *
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
