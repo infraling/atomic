@@ -8,7 +8,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -23,9 +27,12 @@ import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 
 /**
  * Unit tests for {@link Tagset}.
@@ -217,7 +224,17 @@ public class TagsetTest {
 	
 	@Test
 	public final void testGetValuesForParameters() {
-		URI tagsetURI = URI.createFileURI(getClass().getClassLoader().getResource("test.ats").getFile());
+		Bundle bundle = Platform.getBundle("org.corpus_tools.atomic.tests");
+		URL fileURL = bundle.getEntry("src/main/resources/test.ats");
+		File file = null;
+		try {
+		    file = new File(FileLocator.resolve(fileURL).toURI());
+		} catch (URISyntaxException e1) {
+		    e1.printStackTrace();
+		} catch (IOException e1) {
+		    e1.printStackTrace();
+		}
+		URI tagsetURI = URI.createFileURI(file.getAbsolutePath());
 		Tagset tagset = TagsetFactory.load(tagsetURI);
 		Set<TagsetValue> values = tagset.getValuesForParameters("layer1", SALT_TYPE.STOKEN, "ns1", "name1");
 		assertEquals(8, values.size());
@@ -228,7 +245,18 @@ public class TagsetTest {
 	
 	@Test
 	public final void testGetNamesForParameters() {
-		URI tagsetURI = URI.createFileURI(getClass().getClassLoader().getResource("test.ats").getFile());
+		Bundle bundle = Platform.getBundle("org.corpus_tools.atomic.tests");
+		URL fileURL = bundle.getEntry("src/main/resources/test.ats");
+		File file = null;
+		try {
+		    file = new File(FileLocator.resolve(fileURL).toURI());
+		} catch (URISyntaxException e1) {
+		    e1.printStackTrace();
+		} catch (IOException e1) {
+		    e1.printStackTrace();
+		}
+		URI tagsetURI = URI.createFileURI(file.getAbsolutePath());
+		
 		Tagset tagset = TagsetFactory.load(tagsetURI);
 		Set<String> values = tagset.getAnnotationNamesForParameters("layer2", SALT_TYPE.SSPAN, "ns2");
 		assertEquals(9, values.size());
