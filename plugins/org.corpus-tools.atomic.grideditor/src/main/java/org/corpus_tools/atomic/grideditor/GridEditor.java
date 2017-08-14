@@ -80,8 +80,8 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	
 	private ListenerList<ISelectionChangedListener> selectionListeners = new ListenerList<>();
 	private NatTable natTable;
-	private Tagset tagset = null;
-	private boolean hasTagset = false;
+	public Tagset tagset = null;
+	public boolean hasTagset = false;
 	
 	
 	public GridEditor() {
@@ -315,6 +315,20 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 				throw new InterruptedException("Annotation grid compilation has been cancelled.");
 			}
 		}
+	}
+
+	/**
+	 * @return the tagset
+	 */
+	public final Tagset getTagset() {
+		return tagset;
+	}
+
+	/**
+	 * @return the annotationGrid
+	 */
+	public final AnnotationGrid getAnnotationGrid() {
+		return annotationGrid;
 	}
 
 }

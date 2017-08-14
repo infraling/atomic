@@ -51,7 +51,10 @@ public class AnnotationGridDataProvider implements IDataProvider {
 		else if (previous == null) {
 			SToken token = graph.getSortedTokenByText().get(rowIndex);
 			SSpan span = graph.createSpan(token);
-			SAnnotation newAnno = span.createAnnotation(null, annotationGrid.getHeaderMap().get(columnIndex), newValue); // FIXME Introduce namespace
+			String[] headerSplit = annotationGrid.getHeaderMap().get(columnIndex).split("::");
+			String namespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+			String name = headerSplit[1];
+			SAnnotation newAnno = span.createAnnotation(namespace, name, newValue);
 			annotationGrid.record(rowIndex, columnIndex, annotationGrid.getHeaderMap().get(columnIndex), newAnno);
 		}
 		else {

@@ -41,6 +41,7 @@ public class CreateSpanHandler extends AbstractHandler {
 		Set<Integer> tokenIndices = new HashSet<>();
 		ISelection currentSelection = HandlerUtil.getCurrentSelectionChecked(event);
 		String annotationName = null;
+		String annotationNamespace = null;
 		int colIndex = -1;
 		if (currentSelection instanceof StructuredSelection) {
 			Object firstElement = ((StructuredSelection) currentSelection).getFirstElement(); 
@@ -50,10 +51,12 @@ public class CreateSpanHandler extends AbstractHandler {
 						tokenIndices.add(((TranslatedLayerCell) e).getRowIndex());
 						if (annotationName == null && colIndex == -1) {
 							colIndex = ((TranslatedLayerCell) e).getColumnIndex();
-							annotationName = grid.getHeaderMap().get(colIndex);
+							String[] headerSplit = grid.getHeaderMap().get(colIndex).split("::");
+							annotationNamespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+							annotationName = headerSplit[1];
 						}
 						else {
-							if (!annotationName.equals(grid.getHeaderMap().get(colIndex))) {
+							if (!annotationName.equals(grid.getHeaderMap().get(colIndex).split("::")[1]) && !annotationNamespace.equals(grid.getHeaderMap().get(colIndex).split("::")[0].toString())) {
 								MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", "Can not create span over more than one column.\nSelect cells from one column only");
 								return null;
 							}
@@ -68,9 +71,9 @@ public class CreateSpanHandler extends AbstractHandler {
 			spanTokens.add(sortedTokens.get(i));
 		});
 		SSpan span = grid.getGraph().createSpan(spanTokens);
-		SAnnotation annotation = span.createAnnotation(null, annotationName, null);
+		SAnnotation annotation = span.createAnnotation(annotationNamespace, annotationName, null);
 		int col = colIndex;
-		String colName = annotationName;
+		String colName = annotationNamespace.toString().concat("::").concat(annotationName);
 		tokenIndices.stream().forEach(i -> {
 			grid.record(i, col, colName, annotation);
 		});
