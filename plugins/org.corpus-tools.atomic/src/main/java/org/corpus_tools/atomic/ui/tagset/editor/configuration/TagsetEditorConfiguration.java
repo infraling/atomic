@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.corpus_tools.atomic.ui.tagset.editor;
+package org.corpus_tools.atomic.ui.tagset.editor.configuration;
 
 import java.util.ArrayList;  
 import java.util.EnumSet;
@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.corpus_tools.atomic.tagset.TagsetValue;
+import org.corpus_tools.atomic.ui.tagset.editor.TagsetEditor;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;

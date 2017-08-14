@@ -24,6 +24,7 @@ import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.atomic.tagset.impl.TagsetFactory;
 import org.corpus_tools.atomic.ui.tagset.editor.configuration.CustomLabelAccumulator;
+import org.corpus_tools.atomic.ui.tagset.editor.configuration.TagsetEditorConfiguration;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.common.SaltProject;
