@@ -32,11 +32,44 @@ public interface Tagset extends Serializable {
 	/**
 	 * // TODO Add description
 	 * 
-	 * @return the set of **valid** values for this tagset's corpus
+	 * @return the list of **valid** values for this tagset's corpus
 	 */
 	List<TagsetValue> getValues();
 	
+	/**
+	 * Gets the complete set of **valid** values for the given parameters,
+	 * i.e., all annotation values for which 
+	 * 
+	 * - the tagset layer name equals the given layer name (i.e., the name of 
+	 * one of the layers the annotation's container is added to, and those
+	 * for which the tagset layer name is `null`, i.e., not restricted
+	 * - the tagset element type equals the given element type (i.e.,
+	 * the {@link SALT_TYPE} of the annotation's container, and those for
+	 * which the tagset element type is `null`, i.e., not restricted
+	 * - the tagset annotation namespace equals the namespace of the
+	 * annotation, and those for which the namespace is `null`, i.e., 
+	 * not restricted
+	 * - for which the tagset annotation name equals the annotations's
+	 * name.  
+	 * 
+	 * @param layer The name of one of the layers the annotation's container is added to
+	 * @param elementType The {@link SALT_TYPE} of the annotation's container
+	 * @param namespace The annotation's namespace
+	 * @param name The annotation's name
+	 * @return the complete set of **valid** values for the combination of given parameters 
+	 */
 	Set<TagsetValue> getValuesForParameters(String layer, SALT_TYPE elementType, String namespace, String name);
+	
+	/**
+	 * Gets a complete set of **valid** annotation names for the given
+	 * parameters.
+	 * 
+	 * @param layer
+	 * @param elementType
+	 * @param namespace
+	 * @return the complete set of **valid** annotation names for the given parameters
+	 */
+	Set<String> getAnnotationNamesForParameters(String layer, SALT_TYPE elementType, String namespace);
 	
 	/**
 	 * Saves the tagset at the given URI
