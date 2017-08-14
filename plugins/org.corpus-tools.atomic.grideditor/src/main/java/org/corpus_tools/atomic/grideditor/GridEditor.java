@@ -9,12 +9,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
 import org.corpus_tools.atomic.api.editors.TagsetAwareEditor;
+import org.corpus_tools.atomic.grideditor.configuration.CustomGridLabelAccumulator;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorSelectionConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridSpanningDataProvider;
 import org.corpus_tools.atomic.grideditor.selection.MultiCellSelection;
 import org.corpus_tools.atomic.grideditor.selection.SingleCellSelection;
 import org.corpus_tools.atomic.tagset.Tagset;
+import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
@@ -46,6 +48,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.layer.ColumnHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
@@ -129,8 +132,10 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		 * The Accumulator registers label constants for all columns,
 		 * which makes them addressable for column-based customizations.
 		 */
-        final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayer);
+		final ColumnOverrideLabelAccumulator columnLabelAccumulator = new CustomGridLabelAccumulator(bodyDataLayer, spanningProvider, tagset, annotationGrid);
         bodyDataLayer.setConfigLabelAccumulator(columnLabelAccumulator);
+//        final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayer);
+//        bodyDataLayer.setConfigLabelAccumulator(columnLabelAccumulator);
         // Selection layer
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
 		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationGrid));

@@ -3,14 +3,11 @@
  */
 package org.corpus_tools.atomic.grideditor.configuration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Set;
 
 import org.corpus_tools.atomic.grideditor.GridEditor;
-import org.corpus_tools.atomic.grideditor.configuration.GridEditorConfiguration.AnnotationComboEditor;
-import org.corpus_tools.atomic.grideditor.configuration.GridEditorConfiguration.TagsetValuesDataProvider;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.tagset.TagsetValue;
@@ -22,6 +19,7 @@ import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SLayer;
 import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.graph.LabelableElement;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
@@ -34,8 +32,17 @@ import org.eclipse.nebula.widgets.nattable.edit.editor.ICellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.IComboBoxDataProvider;
 import org.eclipse.nebula.widgets.nattable.edit.editor.TextCellEditor;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.painter.cell.ImagePainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.CellPainterDecorator;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer.MoveDirectionEnum;
+import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
+import org.eclipse.nebula.widgets.nattable.style.IStyle;
+import org.eclipse.nebula.widgets.nattable.style.Style;
+import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
+import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -48,6 +55,8 @@ import org.eclipse.swt.widgets.Control;
 public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 
 	private static final String TOKEN_TEXT_COLUMN_LABEL = "Token";
+	private static final String INVALID = "INVALID";
+	private final static Image ERROR_IMAGE = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
 	private final GridEditor editor;
 	private final ColumnOverrideLabelAccumulator accumulator;
 
@@ -77,6 +86,19 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 		configRegistry.registerConfigAttribute(EditConfigAttributes.SUPPORT_MULTI_EDIT, false);
 		// Disable editing of token text
 		configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.NEVER_EDITABLE, DisplayMode.EDIT, TOKEN_TEXT_COLUMN_LABEL);
+		
+		
+		
+		
+		CellPainterDecorator errorDecoration = new CellPainterDecorator(new TextPainter(), CellEdgeEnum.TOP_LEFT,
+				new ImagePainter(ERROR_IMAGE), false);
+		configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, errorDecoration, DisplayMode.NORMAL,
+				INVALID);
+		IStyle validationErrorStyle = new Style();
+		validationErrorStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_RED);
+
+		configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, validationErrorStyle,
+				DisplayMode.NORMAL, INVALID);
 	}
 
 	private void registerConfigLabelsOnColumns() {
@@ -153,8 +175,6 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 		 */
 	public class AnnotationComboEditor extends ComboBoxCellEditor {
 		
-		private int columnIndex;
-
 		public AnnotationComboEditor(IComboBoxDataProvider provider) {
 			super(provider);
 			this.freeEdit = true;
@@ -216,7 +236,6 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 						else if (container instanceof SToken) {
 							elementType = SALT_TYPE.STOKEN;
 						}
-						String layer = null;
 						String namespace = annotation.getNamespace();
 						String name = annotation.getName();
 						SStructuredNode node = (SStructuredNode) container;
@@ -238,7 +257,6 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 				// FIXME: THEN ADD LAYER TO NEWLY CREATED ANNOTATION!
 				String header = grid.getHeaderMap().get(columnIndex);
 				String[] headerSplit = header.split("::");
-				System.err.println(Arrays.toString(headerSplit));
 				String namespace = headerSplit[0];
 				String name = headerSplit[1];
 				Set<TagsetValue> values = tagset.getValuesForParameters(null, null, namespace, name);
