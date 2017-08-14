@@ -255,10 +255,17 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 				// gridObject is null
 				// FIXME: INTRODUCE LAYER IN DISPLAY (in grid column header, add layer name)
 				// FIXME: THEN ADD LAYER TO NEWLY CREATED ANNOTATION!
-				String header = grid.getHeaderMap().get(columnIndex);
+				String header = grid.getColumnHeaderMap().get(columnIndex);
+				String namespace = null;
+				String name = null;
 				String[] headerSplit = header.split("::");
-				String namespace = headerSplit[0];
-				String name = headerSplit[1];
+				if (headerSplit.length == 2) {
+					namespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+					name = headerSplit[1];
+				}
+				else if (headerSplit.length == 1) {
+					name = headerSplit[0];
+				}
 				Set<TagsetValue> values = tagset.getValuesForParameters(null, null, namespace, name);
 				values.stream().forEach(v -> validValues.add(v.getValue()));
 			}
