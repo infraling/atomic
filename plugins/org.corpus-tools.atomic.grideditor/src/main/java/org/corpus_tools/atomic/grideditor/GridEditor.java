@@ -1,6 +1,6 @@
 package org.corpus_tools.atomic.grideditor;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.InvocationTargetException; 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +16,6 @@ import org.corpus_tools.atomic.grideditor.configuration.GridSpanningDataProvider
 import org.corpus_tools.atomic.grideditor.selection.MultiCellSelection;
 import org.corpus_tools.atomic.grideditor.selection.SingleCellSelection;
 import org.corpus_tools.atomic.tagset.Tagset;
-import org.corpus_tools.atomic.tagset.TagsetValue;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
@@ -48,7 +47,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
-import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.layer.ColumnHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
@@ -293,9 +291,8 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 			monitor.beginTask("Compiling annotation grid", this.orderedTokens.size() + 1);
 			monitor.subTask("Compiling rows per token");
 	
+			int colIndex = 0;
 			for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {
-				int colIndex = 0;
-	
 				SToken t = orderedTokens.get(rowIndex);
 				grid.record(rowIndex, 0, "Token", t);
 				for (SAnnotation a : t.getAnnotations()) {
@@ -306,7 +303,13 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 					SNode src = null;
 					if ((src = r.getSource()) instanceof SSpan) {
 						for (SAnnotation a : src.getAnnotations()) {
-							grid.record(rowIndex, ++colIndex, a.getQName(), a);
+							if (grid.getColumnHeaderMap().containsValue(a.getQName())) {
+								colIndex = grid.getColumnHeaderMap().inverse().get(a.getQName());
+							}
+							else {
+								colIndex = colIndex + 1;
+							}
+							grid.record(rowIndex, colIndex, a.getQName(), a);
 						}
 					}
 				}
