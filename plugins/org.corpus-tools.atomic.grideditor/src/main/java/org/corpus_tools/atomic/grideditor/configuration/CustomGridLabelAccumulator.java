@@ -36,33 +36,32 @@ public class CustomGridLabelAccumulator extends ColumnOverrideLabelAccumulator {
 	}
 	
 	@Override
-	public void accumulateConfigLabels(
-			LabelStack configLabels, 
-			int columnPosition, 
-			int rowPosition) {
+	public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
 		super.accumulateConfigLabels(configLabels, columnPosition, rowPosition);
 
-		// Get the row object via data provider
-		Object rowObject = rowDataProvider.getDataValue(columnPosition, rowPosition);
-		if (rowObject instanceof SAnnotation) {
-			String annoVal = ((SAnnotation) rowObject).getValue_STEXT();
-//		String rowObject = this.rowDataProvider.getRowObject(rowPosition);
-		String namespace = null;
-		String name = null;
-		String[] headerSplit = grid.getColumnHeaderMap().get(columnPosition).split("::");
-		if (headerSplit.length == 2) {
-			namespace = headerSplit[0].equals("null") ? null : headerSplit[0];
-			name = headerSplit[1];
-		}
-		else if (headerSplit.length == 1) {
-			name = headerSplit[0];
-		}
-		Set<TagsetValue> values = tagset.getValuesForParameters(null, null, namespace, name);
-		Collection<String> valueStrings = values.stream().map(TagsetValue::getValue).collect(Collectors.toCollection(ArrayList::new));
-		// Check if annotation value validifies
-		if (!valueStrings.contains(annoVal)) {
-			configLabels.addLabel("INVALID");
-		}
+		if (tagset != null) {
+			// Get the row object via data provider
+			Object rowObject = rowDataProvider.getDataValue(columnPosition, rowPosition);
+			if (rowObject instanceof SAnnotation) {
+				String annoVal = ((SAnnotation) rowObject).getValue_STEXT();
+				String namespace = null;
+				String name = null;
+				String[] headerSplit = grid.getColumnHeaderMap().get(columnPosition).split("::");
+				if (headerSplit.length == 2) {
+					namespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+					name = headerSplit[1];
+				}
+				else if (headerSplit.length == 1) {
+					name = headerSplit[0];
+				}
+				Set<TagsetValue> values = tagset.getValuesForParameters(null, null, namespace, name);
+				Collection<String> valueStrings = values.stream().map(TagsetValue::getValue)
+						.collect(Collectors.toCollection(ArrayList::new));
+				// Check if annotation value validifies
+				if (!valueStrings.contains(annoVal)) {
+					configLabels.addLabel("INVALID");
+				}
+			}
 		}
 	}
 
