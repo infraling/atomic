@@ -88,7 +88,7 @@ public class CreateSpanHandler extends AbstractHandler {
 		SSpan span = grid.getGraph().createSpan(spanTokens);
 		SAnnotation annotation = span.createAnnotation(annotationNamespace, annotationName, null);
 		int col = colIndex;
-		String colName = annotationNamespace.toString().concat("::").concat(annotationName);
+		String colName = (annotationNamespace == null ? "null" : annotationNamespace.toString()).concat("::").concat(annotationName);
 		tokenIndices.stream().forEach(i -> {
 			grid.record(i, col, colName, annotation);
 		});
