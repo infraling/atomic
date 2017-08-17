@@ -222,10 +222,27 @@ public class TagsetTest {
 		assertEquals("name", getFixture().getName());
 	}
 	
+	/**
+	 * Tests all combinations of `null` and non-`null`
+	 * layers, element types, and namespaces.
+	 * 
+	 * ````
+	 * L E N
+	 * 0 0 0 (1)
+	 * 1 1 1 (2) 
+	 * 1 0 0 (3)
+	 * 1 1 0 (4)
+	 * 1 0 1 (5)
+	 * 0 1 0 (6)
+	 * 0 1 1 (7)
+	 * 0 0 1 (8)
+	 * ````
+	 * 
+	 */
 	@Test
 	public final void testGetValuesForParameters() {
 		Bundle bundle = Platform.getBundle("org.corpus_tools.atomic.tests");
-		URL fileURL = bundle.getEntry("src/main/resources/test.ats");
+		URL fileURL = bundle.getEntry("src/main/resources/test-combination.ats");
 		File file = null;
 		try {
 		    file = new File(FileLocator.resolve(fileURL).toURI());
@@ -236,11 +253,23 @@ public class TagsetTest {
 		}
 		URI tagsetURI = URI.createFileURI(file.getAbsolutePath());
 		Tagset tagset = TagsetFactory.load(tagsetURI);
-		Set<TagsetValue> values = tagset.getValuesForParameters("layer1", SALT_TYPE.STOKEN, "ns1", "name1");
-		assertEquals(8, values.size());
-		TreeSet<String> valuesSet = values.stream().map(TagsetValue::getValue).collect(Collectors.toCollection(TreeSet::new));
-		TreeSet<String> set = new TreeSet<>(Arrays.asList(new String[]{"value1","value2","value3","value4","value5","value6","value7","value8"}));
-		assertEquals(set, valuesSet);
+		Set<TagsetValue> values1 = tagset.getValuesForParameters(null, null, null, "n"); // (1)
+		Set<TagsetValue> values2 = tagset.getValuesForParameters("1", SALT_TYPE.STEXTUAL_DS, "1", "n"); // (2)
+		Set<TagsetValue> values3 = tagset.getValuesForParameters("1", null, null, "n"); // (3)
+		Set<TagsetValue> values4 = tagset.getValuesForParameters("1", SALT_TYPE.STEXTUAL_DS, null, "n"); // (4)
+		Set<TagsetValue> values5 = tagset.getValuesForParameters("1", null, "1", "n"); // (5)
+		Set<TagsetValue> values6 = tagset.getValuesForParameters(null, SALT_TYPE.STEXTUAL_DS, null, "n"); // (6)
+		Set<TagsetValue> values7 = tagset.getValuesForParameters(null, SALT_TYPE.STEXTUAL_DS, "1", "n"); // (7)
+		Set<TagsetValue> values8 = tagset.getValuesForParameters(null, null, "1", "n"); // (8)
+		
+		assertEquals(8, values1.size());
+		assertEquals(1, values2.size());
+		assertEquals(4, values3.size());
+		assertEquals(2, values4.size());
+		assertEquals(2, values5.size());
+		assertEquals(4, values6.size());
+		assertEquals(2, values7.size());
+		assertEquals(4, values8.size());
 	}
 	
 	@Test
