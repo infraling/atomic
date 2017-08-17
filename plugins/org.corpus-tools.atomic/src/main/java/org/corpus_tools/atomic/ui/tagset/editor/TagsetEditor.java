@@ -300,12 +300,17 @@ public class TagsetEditor extends EditorPart {
 							valuesToRemove.add(tagset.getValues().get(m));
 						}
 					}
+					int removedValues = 0;
 					for (TagsetValue v : valuesToRemove) {
-						tagset.removeValue(v);
+						boolean isRemoved = tagset.removeValue(v);
+						if (isRemoved) {
+							removedValues++;
+						}
 					}
 					natTable.refresh();
 					natTable.setFocus();
 			        natTable.doCommand(new SelectCellCommand(bodyLayer.getSelectionLayer(), 0, 0, false, false));
+			        setDirty(removedValues > 0);
 				}
 			}
 		});
