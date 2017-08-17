@@ -229,32 +229,31 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 					SAnnotation annotation = (SAnnotation) gridObject;
 					LabelableElement container = annotation.getContainer();
 					if (container instanceof SStructuredNode) {
-						SALT_TYPE elementType = null;
-						if (container instanceof SSpan) {
-							elementType = SALT_TYPE.SSPAN;
-						}
-						else if (container instanceof SToken) {
-							elementType = SALT_TYPE.STOKEN;
-						}
+						/*
+						 * TODO In this iteration of the editor, no element types
+						 * are queried.
+						 */
 						String namespace = annotation.getNamespace();
 						String name = annotation.getName();
 						SStructuredNode node = (SStructuredNode) container;
 						Set<SLayer> layers = node.getLayers();
 						if (layers.size() != 0) {
 							for (SLayer l : layers) {
-								tagset.getValuesForParameters(l.getName(), elementType, namespace, name).forEach(v -> validValues.add(v.getValue()));
+								tagset.getValuesForParameters(l.getName(), null, namespace, name).forEach(v -> validValues.add(v.getValue()));
 							}
 						}
 						else {
-							tagset.getValuesForParameters(null, elementType, namespace, name).forEach(v -> validValues.add(v.getValue()));
+							tagset.getValuesForParameters(null, null, namespace, name).forEach(v -> validValues.add(v.getValue()));
 						}
 					}
 				}
 			}
 			else {
 				// gridObject is null
-				// FIXME: INTRODUCE LAYER IN DISPLAY (in grid column header, add layer name)
-				// FIXME: THEN ADD LAYER TO NEWLY CREATED ANNOTATION!
+				/* 
+				 * TODO: INTRODUCE LAYER IN DISPLAY (in grid column header, add layer name)
+				 * THEN ADD LAYER TO NEWLY CREATED ANNOTATION!
+				 */
 				String header = grid.getColumnHeaderMap().get(columnIndex);
 				String namespace = null;
 				String name = null;
