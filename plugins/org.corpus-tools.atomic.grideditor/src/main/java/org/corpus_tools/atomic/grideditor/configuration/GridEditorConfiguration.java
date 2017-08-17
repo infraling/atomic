@@ -235,16 +235,17 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 						 */
 						String namespace = annotation.getNamespace();
 						String name = annotation.getName();
-						SStructuredNode node = (SStructuredNode) container;
-						Set<SLayer> layers = node.getLayers();
-						if (layers.size() != 0) {
-							for (SLayer l : layers) {
-								tagset.getValuesForParameters(l.getName(), null, namespace, name).forEach(v -> validValues.add(v.getValue()));
-							}
-						}
-						else {
+//						SStructuredNode node = (SStructuredNode) container;
+//						Set<SLayer> layers = node.getLayers();
+//						if (layers.size() != 0) {
+//							for (SLayer l : layers) {
+//								tagset.getValuesForParameters(l.getName(), null, namespace, name).forEach(v -> validValues.add(v.getValue()));
+//							}
+//						}
+//						else {
+							// FIXME: Document that GridEditor does not support layers and element types yet!
 							tagset.getValuesForParameters(null, null, namespace, name).forEach(v -> validValues.add(v.getValue()));
-						}
+//						}
 					}
 				}
 			}
@@ -265,6 +266,7 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 				else if (headerSplit.length == 1) {
 					name = headerSplit[0];
 				}
+				// FIXME: Document that GridEditor does not support layers and element types yet!
 				Set<TagsetValue> values = tagset.getValuesForParameters(null, null, namespace, name);
 				values.stream().forEach(v -> validValues.add(v.getValue()));
 			}
@@ -274,3 +276,4 @@ public class GridEditorConfiguration extends AbstractRegistryConfiguration {
 	}
 
 }
+	
