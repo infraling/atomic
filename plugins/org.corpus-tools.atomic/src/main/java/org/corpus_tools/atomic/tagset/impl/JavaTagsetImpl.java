@@ -169,21 +169,144 @@ public class JavaTagsetImpl extends AbstractBean implements Tagset {
 		return values;
 	}
 
-	/* (non-Javadoc)
+
+	/** 
+	 * Implementation determining which parameters should be
+	 * taken into account when querying the valid values.
+	 * 
+	 * As annotations in Salt **always** have a name, the
+	 * parameters which determine the set are *layer*,
+	 * *elementType* and *namespace*. Thus, there are 8
+	 * possible combinations of `null`/non-`null` values:
+	 * 
+	 * ````
+	 * L E N Case
+	 * ----------
+	 * 1 1 1 1 
+	 * 0 0 0 2
+	 * 1 0 0 3
+	 * 1 1 0 4
+	 * 1 0 1 5
+	 * 0 1 0 6
+	 * 0 1 1 7
+	 * 0 0 1 8
+	 * ````
+	 * 
+	 * Depending on the combination of parameter values,
+	 * another method is called to return the correct value set.
+	 * 
 	 * @see org.corpus_tools.atomic.tagset.Tagset#getValuesForParameters(java.lang.String, org.corpus_tools.salt.SALT_TYPE, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Set<TagsetValue> getValuesForParameters(String layer, SALT_TYPE elementType, String namespace, String name) {
+		if (layer == null) {
+			if (elementType == null) {
+				if (namespace == null) { // Case 2
+					return getValuesForParameters(name);
+				}
+				else { // Case 8
+					return getValuesForParameters(namespace, false, name);
+				}
+			}
+			else {
+				if (namespace == null) { // Case 6
+					return getValuesForParameters(elementType, name);
+				}
+				else { // Case 7
+					return getValuesForParameters(elementType, namespace, name);
+				}
+			}
+		}
+		else {
+			if (elementType == null) {
+				if (namespace == null) { // Case 3
+					return getValuesForParameters(layer, true, name);
+				}
+				else { // Case 5
+					return getValuesForParameters(layer, namespace, name);
+				}
+			}
+			else {
+				if (namespace == null) { // Case 4 
+					return getValuesForParameters(layer, elementType, name);
+				}
+				else { // Case 1
+					Set<TagsetValue> validValues = new HashSet<>();
+					Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+							Objects.equals(value.getLayer(), layer) 
+							&& Objects.equals(value.getElementType(), elementType)
+							&& Objects.equals(value.getNamespace(), namespace) 
+							&& Objects.equals(value.getName(), name)));
+					allValidEntries.forEach(e -> validValues.add(e));
+					return validValues;
+				}
+			}
+		}
+	}
+	
+	private Set<TagsetValue> getValuesForParameters(String name) {
 		Set<TagsetValue> validValues = new HashSet<>();
-		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
-				(Objects.equals(value.getLayer(), layer) || value.getLayer() == null) 
-				&& (Objects.equals(value.getElementType(), elementType) || value.getElementType() == null)
-				&& (Objects.equals(value.getNamespace(), namespace) || value.getNamespace() == null) 
-				&& Objects.equals(value.getName(), name)));
+		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (Objects.equals(value.getName(), name)));
 		allValidEntries.forEach(e -> validValues.add(e));
 		return validValues;
 	}
 
+	private Set<TagsetValue> getValuesForParameters(String layerOrNamespace, boolean isFirstParameterLayerString, String name) {
+		Set<TagsetValue> validValues = new HashSet<>();
+		if (isFirstParameterLayerString) {
+			Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+					Objects.equals(value.getLayer(), layerOrNamespace) 
+					&& Objects.equals(value.getName(), name)));
+			allValidEntries.forEach(e -> validValues.add(e));
+		}
+		else {
+			Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+					Objects.equals(value.getNamespace(), layerOrNamespace) 
+					&& Objects.equals(value.getName(), name)));
+			allValidEntries.forEach(e -> validValues.add(e));
+		}
+		return validValues;
+	}
+	
+	private Set<TagsetValue> getValuesForParameters(String layer, SALT_TYPE elementType, String name) {
+		Set<TagsetValue> validValues = new HashSet<>();
+		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+				Objects.equals(value.getLayer(), layer) 
+				&& Objects.equals(value.getElementType(), elementType)
+				&& Objects.equals(value.getName(), name)));
+		allValidEntries.forEach(e -> validValues.add(e));
+		return validValues;
+	}
+	
+	private Set<TagsetValue> getValuesForParameters(String layer, String namespace, String name) {
+		Set<TagsetValue> validValues = new HashSet<>();
+		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+				Objects.equals(value.getLayer(), layer) 
+				&& Objects.equals(value.getNamespace(), namespace) 
+				&& Objects.equals(value.getName(), name)));
+		allValidEntries.forEach(e -> validValues.add(e));
+		return validValues;
+	}
+	
+	private Set<TagsetValue> getValuesForParameters(SALT_TYPE elementType, String name) {
+		Set<TagsetValue> validValues = new HashSet<>();
+		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+				Objects.equals(value.getElementType(), elementType)
+				&& Objects.equals(value.getName(), name)));
+		allValidEntries.forEach(e -> validValues.add(e));
+		return validValues;
+	}
+	
+	private Set<TagsetValue> getValuesForParameters(SALT_TYPE elementType, String namespace, String name) {
+		Set<TagsetValue> validValues = new HashSet<>();
+		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
+				Objects.equals(value.getElementType(), elementType)
+				&& Objects.equals(value.getNamespace(), namespace) 
+				&& Objects.equals(value.getName(), name)));
+		allValidEntries.forEach(e -> validValues.add(e));
+		return validValues;
+	}
+	
 	@Override
 	public Set<String> getAnnotationNamesForParameters(String layer, SALT_TYPE elementType, String namespace) {
 		Stream<TagsetValue> allValidEntries = getValues().stream().filter(value -> (
