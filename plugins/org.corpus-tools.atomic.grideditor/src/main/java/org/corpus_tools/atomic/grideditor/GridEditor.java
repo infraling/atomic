@@ -1,6 +1,6 @@
 package org.corpus_tools.atomic.grideditor;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.InvocationTargetException; 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,11 +8,14 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.editors.DocumentGraphEditor;
+import org.corpus_tools.atomic.api.editors.TagsetAwareEditor;
+import org.corpus_tools.atomic.grideditor.configuration.CustomGridLabelAccumulator;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridEditorSelectionConfiguration;
 import org.corpus_tools.atomic.grideditor.configuration.GridSpanningDataProvider;
 import org.corpus_tools.atomic.grideditor.selection.MultiCellSelection;
 import org.corpus_tools.atomic.grideditor.selection.SingleCellSelection;
+import org.corpus_tools.atomic.tagset.Tagset;
 import org.corpus_tools.atomic.grideditor.data.AnnotationGridDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridColumnHeaderDataProvider;
 import org.corpus_tools.atomic.grideditor.data.GridRowHeaderDataProvider;
@@ -70,7 +73,7 @@ import org.eclipse.swt.events.PaintListener;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-public class GridEditor extends DocumentGraphEditor implements ISelectionProvider {
+public class GridEditor extends DocumentGraphEditor implements ISelectionProvider, TagsetAwareEditor {
 
 	private static final Logger log = LogManager.getLogger(GridEditor.class);
 	private AnnotationGridDataProvider dataProvider = null;
@@ -78,6 +81,8 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 	
 	private ListenerList<ISelectionChangedListener> selectionListeners = new ListenerList<>();
 	private NatTable natTable;
+	public Tagset tagset = null;
+	public boolean hasTagset = false;
 	
 	
 	public GridEditor() {
@@ -90,6 +95,14 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		super.init(site, input);
 		if (isInputValid()) {
 			annotationGrid = compileAnnotationGrid(graph);
+		}
+		this.tagset = loadTagset(input);
+		if (tagset != null) {
+			log.info("Set tagset for editor to {}.", tagset.getName());
+			hasTagset = true;
+		}
+		else {
+			log.info("No tagset found for this document.");
 		}
 	}
 	
@@ -117,8 +130,10 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		 * The Accumulator registers label constants for all columns,
 		 * which makes them addressable for column-based customizations.
 		 */
-        final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayer);
+		final ColumnOverrideLabelAccumulator columnLabelAccumulator = new CustomGridLabelAccumulator(bodyDataLayer, spanningProvider, tagset, annotationGrid);
         bodyDataLayer.setConfigLabelAccumulator(columnLabelAccumulator);
+//        final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayer);
+//        bodyDataLayer.setConfigLabelAccumulator(columnLabelAccumulator);
         // Selection layer
 		final SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer, false);
 		selectionLayer.addConfiguration(new GridEditorSelectionConfiguration(annotationGrid));
@@ -276,9 +291,8 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 			monitor.beginTask("Compiling annotation grid", this.orderedTokens.size() + 1);
 			monitor.subTask("Compiling rows per token");
 	
+			int colIndex = 0;
 			for (int rowIndex = 0; rowIndex < orderedTokens.size(); rowIndex++) {
-				int colIndex = 0;
-	
 				SToken t = orderedTokens.get(rowIndex);
 				grid.record(rowIndex, 0, "Token", t);
 				for (SAnnotation a : t.getAnnotations()) {
@@ -289,7 +303,13 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 					SNode src = null;
 					if ((src = r.getSource()) instanceof SSpan) {
 						for (SAnnotation a : src.getAnnotations()) {
-							grid.record(rowIndex, ++colIndex, a.getQName(), a);
+							if (grid.getColumnHeaderMap().containsValue(a.getQName())) {
+								colIndex = grid.getColumnHeaderMap().inverse().get(a.getQName());
+							}
+							else {
+								colIndex = colIndex + 1;
+							}
+							grid.record(rowIndex, colIndex, a.getQName(), a);
 						}
 					}
 				}
@@ -303,6 +323,20 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 				throw new InterruptedException("Annotation grid compilation has been cancelled.");
 			}
 		}
+	}
+
+	/**
+	 * @return the tagset
+	 */
+	public final Tagset getTagset() {
+		return tagset;
+	}
+
+	/**
+	 * @return the annotationGrid
+	 */
+	public final AnnotationGrid getAnnotationGrid() {
+		return annotationGrid;
 	}
 
 }

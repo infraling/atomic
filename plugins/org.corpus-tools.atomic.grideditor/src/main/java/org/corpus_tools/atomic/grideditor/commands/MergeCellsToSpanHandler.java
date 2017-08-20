@@ -59,7 +59,7 @@ public class MergeCellsToSpanHandler extends AbstractHandler {
 		List<Integer> tokenIndices = new ArrayList<>();
 		sortedSelectedCells.stream().forEach(c -> {
 			Row row = grid.getRowMap().get(c.getRowIndex());
-			row.put(c.getColumnIndex(), grid.getHeaderMap().get(c.getColumnIndex()), firstValue);
+			row.put(c.getColumnIndex(), grid.getColumnHeaderMap().get(c.getColumnIndex()), firstValue);
 			grid.getRowMap().put(c.getRowIndex(), row);
 			if (c.getDataValue() instanceof SAnnotation) {
 				SAnnotation annotation = (SAnnotation) c.getDataValue();

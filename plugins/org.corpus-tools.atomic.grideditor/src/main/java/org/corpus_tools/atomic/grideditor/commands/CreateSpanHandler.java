@@ -41,6 +41,7 @@ public class CreateSpanHandler extends AbstractHandler {
 		Set<Integer> tokenIndices = new HashSet<>();
 		ISelection currentSelection = HandlerUtil.getCurrentSelectionChecked(event);
 		String annotationName = null;
+		String annotationNamespace = null;
 		int colIndex = -1;
 		if (currentSelection instanceof StructuredSelection) {
 			Object firstElement = ((StructuredSelection) currentSelection).getFirstElement(); 
@@ -50,10 +51,27 @@ public class CreateSpanHandler extends AbstractHandler {
 						tokenIndices.add(((TranslatedLayerCell) e).getRowIndex());
 						if (annotationName == null && colIndex == -1) {
 							colIndex = ((TranslatedLayerCell) e).getColumnIndex();
-							annotationName = grid.getHeaderMap().get(colIndex);
+							String[] headerSplit = grid.getColumnHeaderMap().get(colIndex).split("::");
+							if (headerSplit.length == 2) {
+								annotationNamespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+								annotationName = headerSplit[1];
+							}
+							else if (headerSplit.length == 1) {
+								annotationName = headerSplit[0];
+							}
 						}
 						else {
-							if (!annotationName.equals(grid.getHeaderMap().get(colIndex))) {
+							String[] headerSplit = grid.getColumnHeaderMap().get(colIndex).split("::");
+							String headerName = null;
+							String headerNamespace = null;
+							if (headerSplit.length == 2) {
+								headerNamespace = headerSplit[0].equals("null") ? null : headerSplit[0];
+								headerName = headerSplit[1];
+							}
+							else if (headerSplit.length == 1) {
+								headerName = headerSplit[0];
+							}
+							if (!annotationName.equals(headerName) && !annotationNamespace.equals(headerNamespace)) {
 								MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", "Can not create span over more than one column.\nSelect cells from one column only");
 								return null;
 							}
@@ -68,9 +86,9 @@ public class CreateSpanHandler extends AbstractHandler {
 			spanTokens.add(sortedTokens.get(i));
 		});
 		SSpan span = grid.getGraph().createSpan(spanTokens);
-		SAnnotation annotation = span.createAnnotation(null, annotationName, null);
+		SAnnotation annotation = span.createAnnotation(annotationNamespace, annotationName, null);
 		int col = colIndex;
-		String colName = annotationName;
+		String colName = (annotationNamespace == null ? "null" : annotationNamespace.toString()).concat("::").concat(annotationName);
 		tokenIndices.stream().forEach(i -> {
 			grid.record(i, col, colName, annotation);
 		});

@@ -27,6 +27,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,8 +41,8 @@ public class SwitchWorkspaceHandlerTest {
 
 	private static SWTWorkbenchBot bot;
 
-	@Before
-	public void beforeAllTests() {
+	@BeforeClass
+	public static void beforeAllTests() {
 		bot = new SWTWorkbenchBot();
 		bot.resetWorkbench();
 	}

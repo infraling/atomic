@@ -48,7 +48,10 @@ public abstract class DocumentGraphEditor extends EditorPart {
 	private static final Logger log = LogManager.getLogger(DocumentGraphEditor.class);
 
 
-	private static final String SALT_PROJECT_FILE_NAME = "saltProject.salt";
+	/**
+	 * The default name for {@link SaltProject} serialization files.
+	 */
+	public static final String SALT_PROJECT_FILE_NAME = "saltProject.salt";
 	
 	
 	protected SDocumentGraph graph = null;

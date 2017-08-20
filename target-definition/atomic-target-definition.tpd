@@ -1,6 +1,16 @@
 // see https://github.com/mbarbero/fr.obeo.releng.targetplatform for documentation
 target "Atomic Target Platform" with source requirements
 
+location "http://download.eclipse.org/eclipse/updates/4.6/R-4.6-201606061100/" {
+	org.junit 4.12.0
+}
+
+location "http://download.eclipse.org/tools/orbit/R-builds/R20170516192513/repository" {
+	org.hamcrest.text 1.1.0
+	org.hamcrest 1.1.0
+	org.mockito 1.9.5
+}
+
 location "http://download.eclipse.org/releases/neon" {
 
 	org.eclipse.rcp.feature.group
@@ -57,8 +67,10 @@ location "http://corpus-tools.org/p2/" {
 	com.github.hazendaz.javabean-tester
 	org.antlr.antlr4-runtime
 	
-	org.corpus-tools.graphannis-api [0.2.0, 0.3.0)
+	org.corpus-tools.graphannis-api
+	
 }
+
 
 location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
 	org.eclipse.swtbot.junit4_x
@@ -66,11 +78,6 @@ location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
 	org.eclipse.swtbot.go
 }
 
-location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/" {
-	org.junit
-	org.mockito [1.9.5, 2.0.0)
-	org.hamcrest
-}
 
 location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/" {
 	org.eclipse.e4.tools.spy
