@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>repository-review</artifactId>
+	<artifactId>repository-preview</artifactId>
 	<packaging>eclipse-repository</packaging>
 	<parent>
 		<groupId>org.corpus-tools.atomic</groupId>
@@ -37,8 +37,8 @@
         <configuration>
 			<products>
 				<product>
-					<id>org.corpus_tools.atomic.review.product</id>
-					<archiveFileName>atomic-review-${project.version}</archiveFileName>
+					<id>org.corpus_tools.atomic.preview.product</id>
+					<archiveFileName>atomic-preview-${project.version}</archiveFileName>
 					<rootFolder>atomic</rootFolder>
 				</product>
 			</products>

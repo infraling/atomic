@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.corpus_tools.atomic.feature.review"
-      label="Atomic Feature for reviewable features"
+      id="org.corpus_tools.atomic.feature.preview"
+      label="Atomic Feature for previewable features"
       version="0.3.0.qualifier"
       provider-name="Humboldt-Universität zu Berlin"
       os="linux,macosx,win32"
       arch="x86_64">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+      Includes unstable features fresh out of development.
    </description>
 
    <copyright url="http://www.example.com/copyright">

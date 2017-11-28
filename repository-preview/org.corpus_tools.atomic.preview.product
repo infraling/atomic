@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Atomic" uid="org.corpus_tools.atomic.review.product" id="org.corpus_tools.atomic.review.product" application="org.corpus_tools.atomic.application" version="0.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Atomic" uid="org.corpus_tools.atomic.preview.product" id="org.corpus_tools.atomic.preview.product" application="org.corpus_tools.atomic.application" version="0.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -22,7 +22,6 @@
    <splash
       location="org.corpus_tools.atomic" />
    <launcher name="atomic">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -130,7 +129,7 @@
 
    <features>
       <feature id="org.corpus_tools.atomic.feature" version="0.3.0.qualifier"/>
-      <feature id="org.corpus_tools.atomic.feature.review" version="0.3.0.qualifier"/>
+      <feature id="org.corpus_tools.atomic.feature.preview" version="0.3.0.qualifier"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.help"/>
