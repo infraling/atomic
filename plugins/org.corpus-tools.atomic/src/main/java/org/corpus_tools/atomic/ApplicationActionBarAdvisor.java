@@ -17,6 +17,8 @@ package org.corpus_tools.atomic;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
@@ -28,6 +30,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     @Override
 	protected void makeActions(IWorkbenchWindow window) {
+    	IWorkbenchAction deleteAction = ActionFactory.DELETE.create(window);
+    	IWorkbenchAction copyAction = ActionFactory.COPY.create(window);
+    	IWorkbenchAction cutAction = ActionFactory.CUT.create(window);
+    	IWorkbenchAction pasteAction = ActionFactory.PASTE.create(window);
+   		register(deleteAction);
+   		register(copyAction);
+   		register(cutAction);
+   		register(pasteAction);
     }
 
     @Override
