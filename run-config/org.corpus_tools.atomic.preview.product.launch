@@ -29,6 +29,7 @@
 <stringAttribute key="product" value="org.corpus_tools.atomic.preview.product"/>
 <stringAttribute key="productFile" value="/repository-preview/org.corpus_tools.atomic.review.product"/>
 <setAttribute key="selected_features">
+<setEntry value="org.corpus_tools.atomic.feature.preview:default"/>
 <setEntry value="org.corpus_tools.atomic.feature:default"/>
 <setEntry value="org.eclipse.e4.rcp:default"/>
 <setEntry value="org.eclipse.ecf.core.feature:default"/>
