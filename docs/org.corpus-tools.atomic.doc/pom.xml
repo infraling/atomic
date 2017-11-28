@@ -185,9 +185,10 @@
                   <executable>pandoc</executable>
                   <arguments>
                     <argument>-s</argument>
-                    <argument>-S</argument>
+                    <!-- With Pandoc 2.0.3, the -S flag has been replaced by +/-smart, and is + per default-->
+                    <!--<argument>-S</argument>-->
                     <argument>-f</argument>
-                    <argument>markdown+yaml_metadata_block</argument>
+                    <argument>markdown+yaml_metadata_block+smart</argument>
                     <argument>-t</argument>
                     <argument>docbook</argument>
                     <argument>${project.basedir}/src/main/pandoc/documentation.md</argument>
@@ -212,7 +213,8 @@
                   <executable>pandoc</executable>
                   <arguments>
                     <argument>-s</argument>
-                    <argument>-S</argument>
+                    <!-- With Pandoc 2.0.3, the -S flag has been replaced by +/-smart, and is + per default-->
+                    <!--<argument>-S</argument>-->
                     <argument>-f</argument>
                     <argument>markdown+yaml_metadata_block</argument>
                     <argument>${project.basedir}/src/main/pandoc/documentation.md</argument>
