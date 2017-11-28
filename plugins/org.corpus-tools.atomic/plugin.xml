@@ -84,6 +84,20 @@
                   style="push"
                   tooltip="Closes the workbench and quits Atomic">
             </command>
+            <command
+                  commandId="org.eclipse.ui.file.import"
+                  id="importcorpus"
+                  label="Import corpus"
+                  mnemonic="I"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.export"
+                  id="exportcorpus"
+                  label="Export corpus"
+                  mnemonic="E"
+                  style="push">
+            </command>
          </menu>
          <menu
                id="org.corpus_tools.atomic.menus.help"
@@ -184,6 +198,16 @@
             commandId="org.eclipse.ui.help.displayHelp"
             schemeId="org.corpus_tools.atomic.keyscheme"
             sequence="F1">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.export"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="M1+E">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.import"
+            schemeId="org.corpus_tools.atomic.keyscheme"
+            sequence="M1+I">
       </key>
    </extension>
    <extension
