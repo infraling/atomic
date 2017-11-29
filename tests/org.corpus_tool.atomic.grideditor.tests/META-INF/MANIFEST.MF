@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atomic Grid Editor Tests
-Bundle-SymbolicName: org.corpus_tools.atomic.grideditor.test
+Bundle-SymbolicName: org.corpus_tools.atomic.grideditor.tests
 Bundle-Version: 0.3.0.qualifier
 Bundle-Vendor: Humboldt-Universität zu Berlin
 Fragment-Host: org.corpus_tools.atomic.grideditor;bundle-version="0.3.0"

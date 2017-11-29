@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.corpus_tools.atomic</groupId>
-	<artifactId>org.corpus_tools.atomic.grideditor.test</artifactId>
+	<artifactId>org.corpus_tools.atomic.grideditor.tests</artifactId>
   <packaging>eclipse-test-plugin</packaging>
   <name>Atomic Grid Editor Tests</name>
   <parent>
