@@ -151,7 +151,6 @@
 		<module>tests/org.corpus_tools.atomic.tests.gui</module>
 		<module>plugins/org.corpus-tools.atomic.grideditor</module>
 		<module>tests/org.corpus_tool.atomic.grideditor.tests</module>
-		<module>tests/org.corpus_tool.atomic.grideditor.tests.gui</module>
 		<module>repository</module>
 		<module>repository-experimental</module>
 		<module>repository-preview</module>
@@ -164,5 +163,6 @@
 			plugins/de.uni_jena.iaa.linktype.atomic.atomical
 		</module>
 		<module>features/org.corpus-tools.atomic.feature.preview</module>
+		<module>tests/org.corpus_tool.atomic.grideditor.tests.gui</module>
 	</modules>
 </project>
