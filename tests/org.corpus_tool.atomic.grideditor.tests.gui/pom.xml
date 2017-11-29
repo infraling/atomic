@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.corpus_tools.atomic.grideditor.tests.gui</artifactId>
+  <packaging>rcpttTest</packaging>
+  <parent>
+    <groupId>org.corpus-tools.atomic</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
+  </parent>
+  <properties>
+    <autPath>${project.parent.basedir}/repository-preview/target/products/org.corpus_tools.atomic.preview.product/linux/gtk/x86_64/atomic/</autPath>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.rcptt</groupId>
+        <artifactId>rcptt-maven-plugin</artifactId>
+        <version>2.2.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <aut>
+            <explicit>${autPath}</explicit>
+          </aut>
+          <suites>
+            <suite>grid-editor-delete-last-token</suite>
+          </suites>
+          <runner>
+            <version>2.2.0</version>
+          </runner>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>rcptt-snapshots</id>
+      <name>RCPTT Maven Snapshots repository</name>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <url>https://repo.eclipse.org/content/repositories/rcptt-snapshots/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>rcptt-releases</id>
+      <name>RCPTT Maven repository</name>
+      <url>https://repo.eclipse.org/content/repositories/rcptt-releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
+</project>
