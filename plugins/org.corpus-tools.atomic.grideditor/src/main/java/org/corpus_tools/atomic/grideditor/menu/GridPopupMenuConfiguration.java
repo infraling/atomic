@@ -46,6 +46,7 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 	private static final String MENU_CREATE_TOKEN_AFTER_THIS = "Create token after the clicked one";
 	private static final String MENU_CREATE_TOKEN_BEFORE_FIRST = "Create token before first";
 	private static final String MENU_DELETE_TOKEN = "Delete token";
+	private static final String MENU_PURGE_TOKEN = "Purge token";
 	private static final String MENU_MERGE_TOKEN = "Merge token";
 	private static final String MENU_SPLIT_TOKEN = "Split token";
 	private final Menu menu;
@@ -65,6 +66,8 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
                 .withVisibleState(MENU_CREATE_TOKEN_BEFORE_FIRST, new TokenMenuBeforeFirstItemState())
                 .withMenuItemProvider(MENU_DELETE_TOKEN, new DeleteTokenMenuItemProvider())
                 .withVisibleState(MENU_DELETE_TOKEN, new TokenMenuItemState())
+                .withMenuItemProvider(MENU_PURGE_TOKEN, new PurgeTokenMenuItemProvider())
+                .withVisibleState(MENU_PURGE_TOKEN, new TokenMenuItemState())
                 .withMenuItemProvider(MENU_MERGE_TOKEN, new MergeTokenMenuItemProvider())
                 .withVisibleState(MENU_MERGE_TOKEN, new MultiTokenSelectionMenuItemState())
                 .withMenuItemProvider(MENU_SPLIT_TOKEN, new SplitTokenMenuItemProvider())
@@ -181,6 +184,46 @@ public class GridPopupMenuConfiguration extends AbstractUiBindingConfiguration {
 		}
 	
 	}
+	
+	/**
+	 * // TODO Add description
+	 *
+	 * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
+	 * 
+	 */
+public class PurgeTokenMenuItemProvider implements IMenuItemProvider {
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.nebula.widgets.nattable.ui.menu.IMenuItemProvider#addMenuItem(org.eclipse.nebula.widgets.nattable.NatTable, org.eclipse.swt.widgets.Menu)
+	 */
+	@Override
+	public void addMenuItem(NatTable natTable, Menu popupMenu) {
+		MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
+        menuItem.setText("Purge token");
+        menuItem.setEnabled(true);
+        menuItem.addSelectionListener(new SelectionAdapter() {
+        	@Override
+        	public void widgetSelected(SelectionEvent event) {
+        		executePurgeTokenCommand();
+        	}
+
+			private void executePurgeTokenCommand() {
+				IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IHandlerService.class);
+				
+				Event event = new Event();
+				event.data = new Object[]{clickedCell, grid};
+				event.widget = natTable;
+				try {
+					handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.purgeToken", event);
+				}
+				catch (Exception e1) {
+					throw new RuntimeException("Command org.corpus_tools.atomic.grideditor.commands.purgeToken not found!", e1);
+				}
+			}
+        });
+	}
+
+}
 
 	/**
 		 * // TODO Add description

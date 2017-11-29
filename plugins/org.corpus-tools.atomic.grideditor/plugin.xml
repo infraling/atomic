@@ -47,6 +47,10 @@
             name="Delete Token Command">
       </command>
       <command
+            id="org.corpus_tools.atomic.grideditor.commands.purgeToken"
+            name="Purge Token Command">
+      </command>
+      <command
             id="org.corpus_tools.atomic.grideditor.commands.mergeTokens"
             name="Merge Tokens Command">
       </command>
@@ -88,6 +92,10 @@
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.DeleteTokenHandler"
             commandId="org.corpus_tools.atomic.grideditor.commands.deleteToken">
+      </handler>
+      <handler
+            class="org.corpus_tools.atomic.grideditor.commands.PurgeTokenHandler"
+            commandId="org.corpus_tools.atomic.grideditor.commands.purgeToken">
       </handler>
       <handler
             class="org.corpus_tools.atomic.grideditor.commands.MergeTokensHandler"
