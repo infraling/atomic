@@ -1,12 +1,12 @@
 --- RCPTT testcase ---
 Format-Version: 1.0
-Element-Name: test-purge-last-token
+Element-Name: test-delete-token
 Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
-Id: _7STk0NUfEee7GfC3Nj9ulw
+Id: _JiZh8NUCEee7GfC3Nj9ulw
 Runtime-Version: 2.2.0.201706152316
-Save-Time: 11/29/17 5:11 PM
+Save-Time: 11/29/17 6:24 PM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -19,22 +19,37 @@ with [get-editor "Grid Editor" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
     get-property "getRowCount()" | equals 12 | verify-true
 }
+// Delete token "?"
 with [get-editor "Grid Editor" | get-canvas] {
 	mouse-press 150 230 button3
 	mouse-release 150 230 button3
-	get-menu "Purge token" | click
+	get-menu "Delete token" | click
+}
+// Delete token "than"
+with [get-editor "Grid Editor" | get-canvas] {
+	mouse-press 150 130 button3
+	mouse-release 150 130 button3
+	get-menu "Delete token" | click
 }
 with [get-editor "Grid Editor" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
-    get-property "getRowCount()" | equals 11 | verify-true
+    get-property "getRowCount()" | equals 10 | verify-true
 }
 get-editor "Grid Editor" | get-canvas | key-type "M1+w"
-get-window "Save Resource" | get-button No | click
+get-window "Save Resource" | get-button Yes | click
 get-view Navigation | get-tree | select "simple-corpus/test-corpus/test-corpus.salt" | get-menu 
     -path "Open With/Grid Editor" | click
 with [get-editor "Grid Editor" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
-    get-property "getRowCount()" | equals 12 | verify-true
+    get-property "getRowCount()" | equals 10 | verify-true
 }
 get-editor "Grid Editor" | get-canvas | key-type "M1+w"
+with [get-view Navigation | get-tree] {
+    select "simple-corpus/test-corpus/test-corpus.salt" | key-type F5
+    select "simple-corpus/test-corpus/test-corpus.salt" | get-menu -path "Open With/Text Editor" | click
+}
+get-editor "test-corpus.salt" | get-text-viewer | get-property text | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"saltCommon\" name=\"SDATA\" value=\"T::Is this example more complicated than it appears to be?\"/>\n" | verify-true
+with [get-editor "test-corpus.salt" | get-text-viewer] {
+    key-type "M1+w"
+}
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--
