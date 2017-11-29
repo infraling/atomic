@@ -21,7 +21,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author Stephan Druskat <[mail@sdruskat.net](mailto:mail@sdruskat.net)>
  * 
  */
-public class DeleteTokenHandler extends AbstractHandler {
+public class PurgeTokenHandler extends AbstractHandler {
 
 	/*
 	 * (non-Javadoc)
@@ -35,7 +35,7 @@ public class DeleteTokenHandler extends AbstractHandler {
 		NatTable table = (NatTable) ((Event) event.getTrigger()).widget;
 		ILayerCell clickedCell = (ILayerCell) ((Object[]) ((Event) event.getTrigger()).data)[0];
 		AnnotationGrid grid = (AnnotationGrid) ((Object[]) ((Event) event.getTrigger()).data)[1];
-		new TokenHandlerUtil(false, clickedCell, grid).deleteToken(false);
+		new TokenHandlerUtil(true, clickedCell, grid).deleteToken(true);
 		// Refresh table widget and set editor dirty
 		table.refresh();
 		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
