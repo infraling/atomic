@@ -23,7 +23,7 @@
             <explicit>${autPath}</explicit>
           </aut>
           <suites>
-            <suite>grid-editor-delete-last-token</suite>
+            <suite>grid-editor-delete-token</suite>
           </suites>
           <runner>
             <version>2.2.0</version>
