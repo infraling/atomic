@@ -154,6 +154,8 @@ public abstract class DocumentGraphEditor extends EditorPart {
 			}
 			log.trace("Loaded document graph {}.", graph);
 			
+			// Set name of editor
+			setPartName(((FileEditorInput) input).getPath().lastSegment());
 			// Set up editor for automatic context switches on activation/deactivation 
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new PartContextListener(site.getId(), site.getPluginId()));
 		}
