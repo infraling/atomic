@@ -86,7 +86,34 @@ public final class TokenHandlerUtil {
 					break relLoop;
 				}
 			}
-			// FIXME
+			boolean first = false, last = false;
+			// Token to delete is the first token
+			if (deleteStart == 0) {
+				first = true;
+			}
+			// Token to delete is the last token
+			if (deleteEnd == dataSource.getText().length()) {
+				last = true;
+			}
+			String wrappedTokenText = dataSource.getText().substring(deleteStart - (first ? 0 : 1), deleteEnd + (last ? 0 : 1));
+			// If first token is followed by a whitespace, extend the text area to delete to token end index + 1
+			if (first) {
+				if (wrappedTokenText.endsWith(" ")) {
+					deleteEnd += 1;
+				}
+			}
+			// If last token is preceded by a whitespace, extend the text area to delete to token start index - 1
+			else if (last) {
+				if (wrappedTokenText.startsWith(" ")) {
+					deleteStart -= 1;
+				}
+			}
+			// If token is wrapped by whitespaces, extend the text area to delete to token start index - 1
+			else {
+				if (wrappedTokenText.startsWith(" ") && wrappedTokenText.endsWith(" ")) {
+					deleteStart -= 1;
+				}
+			}
 			final int deletedTokenLength = deleteEnd - deleteStart;
 			// Update tokens in remaining rows with new indices
 			/*
