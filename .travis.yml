@@ -18,6 +18,7 @@ before_script:
  - metacity --sm-disable --replace 2> metacity.err &
  
 script: 
+  - pwd
   - ls -R
   - mvn package
 
