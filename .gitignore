@@ -1,3 +1,4 @@
 /pepper-modules/
 target/
 rebel.xml
+*.log
