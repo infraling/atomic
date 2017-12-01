@@ -1,0 +1,19 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: atomic-grid-editor-add-first-tokens
+Element-Type: testsuite
+Element-Version: 2.0
+Id: _AqMpsNaYEeeJo-_tAgpxAQ
+Manually-Ordered: true
+Runtime-Version: 2.2.0.201706152316
+Save-Time: 12/1/17 2:04 PM
+
+------=_testcase-items-62c497da-4241-31f4-811a-6b453a3ecff8
+Content-Type: text/testcase
+Entry-Name: testcase-items
+
+_EqptsNTzEee7GfC3Nj9ulw	// kind: 'test' name: 'test-create-simple-corpus-project-with-tokenization' path: 'test-create-simple-corpus-project-with-tokenization.test'
+_oypbMNaWEeeJo-_tAgpxAQ	// kind: 'test' name: 'test-add-first-token-with-whitespace' path: 'test-add-first-token-with-whitespace.test'
+_rI_ngNaWEeeJo-_tAgpxAQ	// kind: 'test' name: 'test-add-first-token-without-whitespace' path: 'test-add-first-token-without-whitespace.test'
+
+------=_testcase-items-62c497da-4241-31f4-811a-6b453a3ecff8--
