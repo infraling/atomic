@@ -24,6 +24,7 @@
           </aut>
           <suites>
             <suite>atomic-grid-editor-delete-token</suite>
+            <suite>atomic-grid-editor-add-tokens</suite>
           </suites>
           <runner>
             <version>2.2.0</version>

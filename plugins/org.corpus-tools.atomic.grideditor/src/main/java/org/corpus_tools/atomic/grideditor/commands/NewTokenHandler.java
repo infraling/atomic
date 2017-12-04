@@ -72,107 +72,107 @@ public class NewTokenHandler extends AbstractHandler {
 		else {
 			return null;
 		}
-		int realTokenLength = newTokenText.length();
 		@SuppressWarnings("rawtypes")
-		List<SRelation> tokenOutRelations = clickedToken.getOutRelations();
-		STextualRelation textRel = null;
+		List<SRelation> clickedTokenOutRelations = clickedToken.getOutRelations();
+		STextualRelation clickedTokenTextRel = null;
 		relLoop:
-		for (@SuppressWarnings("rawtypes") SRelation rel : tokenOutRelations) {
+		for (@SuppressWarnings("rawtypes") SRelation rel : clickedTokenOutRelations) {
 			if (rel instanceof STextualRelation) {
-				textRel = (STextualRelation) rel;
+				clickedTokenTextRel = (STextualRelation) rel;
 				break relLoop;
 			}
 		}
 		// Change STextualDS
-		STextualDS ds = textRel.getTarget(); 
+		STextualDS ds = clickedTokenTextRel.getTarget(); 
+		int clickedTokenEndIndex = clickedTokenTextRel.getEnd();
+		String originalText = ds.getText();
+		// Is the clicked token followed by a whitespace?
+		boolean clickedTokenFollowedByWhitespace = originalText.substring(clickedTokenEndIndex).startsWith(" ");
+		// Is the new token to be the new last token?
+		boolean createNewLastToken = originalText.length() == clickedTokenEndIndex;
+		/*
+		 * FIXME: Move to JavaDoc for method Unless the new token is to be the
+		 * new first token, where the start index will always be 0, the
+		 * following applies. If the clicked token is followed by a whitespace,
+		 * this whitespace is preserved in the source text, but will not be
+		 * covered by the new token, i.e., the start index of the new token is
+		 * moved to the end index of the clicked token + 1.
+		 */
+		int newTokenStartIndex = 0;
 		if (!addBeforeFirst) {
-			int startIndex = textRel.getEnd();
-			String originalText = ds.getText();
-			boolean followedByWhitespace = originalText.substring(startIndex).startsWith(" ");
-			int endIndex = startIndex
-					+ (addWhitespace ? realTokenLength + (followedByWhitespace ? 1 : 2) : realTokenLength);
-			int textToAddLength = endIndex - startIndex;
-			String textToAdd = (addWhitespace ? " " : "") + newTokenText
-					+ (followedByWhitespace ? "" : (addWhitespace ? " " : ""));
-			String newText = new StringBuilder(originalText).insert(startIndex, textToAdd).toString();
-			ds.setText(newText);
-			// Change indices for following tokens
-			List<SToken> sortedTokens = graph.getSortedTokenByText();
-			List<SToken> tokenChangeList = sortedTokens.subList(clickedCell.getRowIndex() + 1,
-					graph.getSortedTokenByText().size());
-			tokenChangeList.stream().forEach(t -> {
-				t.getOutRelations().forEach(r -> {
-					if (r instanceof STextualRelation) {
-						Integer oldStart = ((STextualRelation) r).getStart();
-						Integer oldEnd = ((STextualRelation) r).getEnd();
-						((STextualRelation) r).setStart(oldStart + textToAddLength);
-						((STextualRelation) r).setEnd(oldEnd + textToAddLength);
-					}
-				});
-			});
-			// Create new token
-			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst, clickedToken);
-			// Update grid
-			Map<Integer, Row> tempRowMap = new HashMap<>();
-			for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
-				Entry<Integer, Row> entry = iterator.next();
-				if (entry.getKey() >= clickIndex + 1) {
-					tempRowMap.put(entry.getKey() + 1, entry.getValue());
-					iterator.remove();
-				}
+			newTokenStartIndex = clickedTokenEndIndex + (clickedTokenFollowedByWhitespace ? 1 : 0);
+			/*
+			 * FIXME Move to JavaDoc If the new token should be surrounded by
+			 * whitespaces (as per dialog setting), and the clicked token is
+			 * already followed by a whitespace, the start index is left as is,
+			 * otherwise, it is incremented by 1, and the new token text
+			 * prefixed with a whitespace.
+			 */
+			if (addWhitespace && !clickedTokenFollowedByWhitespace) {
+				newTokenStartIndex = newTokenStartIndex + 1;
+				newTokenText = " " + newTokenText;
 			}
-			grid.getRowMap().remove(clickIndex + 1);
-			grid.record(clickIndex + 1, 0, "Token", newToken);
-			tempRowMap.entrySet().stream().forEach(e -> grid.getRowMap().put(e.getKey(), e.getValue()));
 		}
-		else {
-			int startIndex = 0;
-			String originalText = ds.getText();
-			boolean followedByWhitespace = originalText.substring(startIndex).startsWith(" ");
-			int endIndex = startIndex + (addWhitespace ? realTokenLength + (followedByWhitespace ? 0 : 1) : realTokenLength);
-			int textToAddLength = endIndex - startIndex;
-			String textToAdd = newTokenText + (followedByWhitespace ? "" : (addWhitespace ? " " : ""));
-			String newText = new StringBuilder(originalText).insert(startIndex, textToAdd).toString();
-			ds.setText(newText);
-			// Change indices for following tokens
-			List<SToken> sortedTokens = graph.getSortedTokenByText();
-			// FIXME: Use intStream as in DeleteTokenHandler to use fromm tokenindex + 1!
-			sortedTokens.stream().forEach(t -> {
-				t.getOutRelations().forEach(r -> {
-					if (r instanceof STextualRelation) {
-						Integer oldStart = ((STextualRelation) r).getStart();
-						Integer oldEnd = ((STextualRelation) r).getEnd();
-						((STextualRelation) r).setStart(oldStart + textToAddLength);
-						((STextualRelation) r).setEnd(oldEnd + textToAddLength);
-					}
-				});
+		/*
+		 * FIXME Move to JavaDoc If the new token will be the new last token,
+		 * i.e., will cover the end of the data source text, no whitespace will
+		 * be appended, independent of the `addWhiteSpace` value. Else, the new
+		 * token text will be appended with a whitespace if it should be
+		 * surrounded with whitespaces.
+		 */
+		if (!createNewLastToken && addWhitespace) {
+			newTokenText = newTokenText + " ";
+		}
+		// Calculate the end index of the new token
+		int newTokenTextLength = newTokenText.length();
+		// Avoid StringIndexOutOfBoundsException for newTokenStartIndex on ds text
+		if (createNewLastToken && addWhitespace) {
+			newTokenStartIndex = newTokenStartIndex - 1;
+		}
+		String newText = new StringBuilder(originalText).insert(newTokenStartIndex, newTokenText).toString();
+		ds.setText(newText);
+		// Change indices for following tokens
+		List<SToken> sortedTokens = graph.getSortedTokenByText();
+		List<SToken> tokenChangeList = addBeforeFirst ? sortedTokens : sortedTokens.subList(clickedCell.getRowIndex() + 1, sortedTokens.size());
+		tokenChangeList.stream().forEach(t -> {
+			t.getOutRelations().forEach(r -> {
+				if (r instanceof STextualRelation) {
+					Integer oldStart = ((STextualRelation) r).getStart();
+					Integer oldEnd = ((STextualRelation) r).getEnd();
+					((STextualRelation) r).setStart(oldStart + newTokenTextLength);
+					((STextualRelation) r).setEnd(oldEnd + newTokenTextLength);
+				}
 			});
-			// Create new token
-			SToken newToken = createToken(startIndex, realTokenLength, ds, graph, addWhitespace, addBeforeFirst, clickedToken);
-			// Update grid
-			Map<Integer, Row> tempRowMap = new HashMap<>();
-			for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
-				Entry<Integer, Row> entry = iterator.next();
+		});
+		// Create new token
+		SToken newToken = createToken(newTokenStartIndex, newTokenTextLength, ds, graph, addBeforeFirst, clickedToken);
+		// Update grid
+		int key = addBeforeFirst ? 0 : clickIndex + 1;
+		Map<Integer, Row> tempRowMap = new HashMap<>();
+		for (Iterator<Entry<Integer, Row>> iterator = grid.getRowMap().entrySet().iterator(); iterator.hasNext();) {
+			Entry<Integer, Row> entry = iterator.next();
+			if (entry.getKey() >= key) {
 				tempRowMap.put(entry.getKey() + 1, entry.getValue());
 				iterator.remove();
 			}
-			grid.record(0, 0, "Token", newToken);
-			tempRowMap.entrySet().stream().forEach(e -> grid.getRowMap().put(e.getKey(), e.getValue()));
 		}
+		grid.getRowMap().remove(key);
+		grid.record(key, 0, "Token", newToken);
+		tempRowMap.entrySet().stream().forEach(e -> grid.getRowMap().put(e.getKey(), e.getValue()));
+		
 		table.refresh();
 		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
 		return null;
 	}
 
-	private SToken createToken(int startIndex, int realTokenLength, STextualDS ds, SDocumentGraph graph, boolean addWhitespace, boolean addBeforeFirst, SToken clickedToken) {
+	private SToken createToken(int startIndex, int realTokenLength, STextualDS ds, SDocumentGraph graph, boolean addBeforeFirst, SToken clickedToken) {
 		SToken token = SaltFactory.createSToken();
 		graph.addNode(token);
 		STextualRelation textRel = SaltFactory.createSTextualRelation();
 		textRel.setSource(token);
 		textRel.setTarget(ds);
-		int start = addWhitespace ? (addBeforeFirst ? 0 : startIndex + 1) : startIndex;
-		textRel.setStart(start);
-		int end = start + realTokenLength;
+		textRel.setStart(startIndex);
+		int end = startIndex + realTokenLength;
 		textRel.setEnd(end);
 		graph.addRelation(textRel);
 		// Change/add order relations
