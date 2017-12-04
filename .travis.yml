@@ -18,6 +18,7 @@ before_script:
  - metacity --sm-disable --replace 2> metacity.err &
  
 script: 
+  - CAT /home/travis/build/infraling/atomic/tests/org.corpus_tool.atomic.grideditor.tests.gui/src/test/resources/test-corpus.txt
   - mvn package
 
 before_deploy:
