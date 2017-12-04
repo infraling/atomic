@@ -6,7 +6,7 @@ Element-Version: 3.0
 External-Reference: 
 Id: _7STk0NUfEee7GfC3Nj9ulw
 Runtime-Version: 2.2.0.201706152316
-Save-Time: 12/4/17 2:44 PM
+Save-Time: 12/4/17 4:51 PM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -41,6 +41,8 @@ get-editor "test-corpus.salt" | get-canvas | key-type "M1+w"
 get-window "Save Resource" | get-button Yes | click
 get-view Navigation | get-tree | select "simple-corpus/test-corpus/test-corpus.salt" | get-menu 
     -path "Open With/Grid Editor" | click
+// Wait for grid to compile
+wait 5000
 with [get-editor "test-corpus.salt" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
     get-property "getRowCount()" | equals 8 | verify-true
@@ -59,6 +61,8 @@ get-editor "test-corpus.salt" | get-canvas | key-type "M1+w"
 get-window "Save Resource" | get-button Yes | click
 get-view Navigation | get-tree | select "simple-corpus/test-corpus/test-corpus.salt" | get-menu 
     -path "Open With/Grid Editor" | click
+// Wait for grid to compile
+wait 5000
 with [get-editor "test-corpus.salt" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
     get-property "getRowCount()" | equals 7 | verify-true
@@ -77,6 +81,8 @@ get-editor "test-corpus.salt" | get-canvas | key-type "M1+w"
 get-window "Save Resource" | get-button Yes | click
 get-view Navigation | get-tree | select "simple-corpus/test-corpus/test-corpus.salt" | get-menu 
     -path "Open With/Grid Editor" | click
+// Wait for grid to compile
+wait 5000
 with [get-editor "test-corpus.salt" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
     get-property "getRowCount()" | equals 6 | verify-true
@@ -86,6 +92,7 @@ with [get-view Navigation | get-tree] {
     select "simple-corpus/test-corpus/test-corpus.salt" | key-type F5
     select "simple-corpus/test-corpus/test-corpus.salt" | get-menu -path "Open With/Text Editor" | click
 }
+wait 5000
 get-editor "test-corpus.salt" | get-text-viewer | get-property text | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"saltCommon\" name=\"SDATA\" value=\"T::this example complicated than it appears ?\"/>\n" | verify-true
 with [get-editor "test-corpus.salt" | get-text-viewer] {
     key-type "M1+w"
