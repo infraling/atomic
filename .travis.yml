@@ -19,6 +19,7 @@ before_script:
  
 script: 
   - mvn package
+  - ls -laR .
 
 before_deploy:
   - MVN_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
