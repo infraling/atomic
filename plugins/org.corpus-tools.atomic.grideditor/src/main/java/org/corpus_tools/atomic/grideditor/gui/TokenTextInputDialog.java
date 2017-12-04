@@ -55,7 +55,7 @@ public class TokenTextInputDialog extends Dialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         
         btnCheckButton = new Button(composite, SWT.CHECK);
-        btnCheckButton.setText("Add single whitespace before and after.");
+        btnCheckButton.setText("Pad token with single whitespaces.");
         btnCheckButton.setSelection(true);
         
         applyDialogFont(composite);
