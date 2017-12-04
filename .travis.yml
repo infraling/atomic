@@ -19,7 +19,10 @@ before_script:
  
 script: 
   - mvn package
-  - ls -laR .
+  - git checkout -b travis-build
+  - git add -f .
+  - git commit -m "Travis build $TRAVIS_BUILD_NUMBER"
+  - git push -u origin travis-build
 
 before_deploy:
   - MVN_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
