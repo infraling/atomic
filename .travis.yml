@@ -20,4 +20,4 @@ before_install:
 - sleep 5
 - metacity --sm-disable --replace 2> metacity.err &
 script:
-- .travis/build.sh
+- mvn clean package
