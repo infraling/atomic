@@ -7,7 +7,7 @@ Element-Version: 3.0
 External-Reference: 
 Id: _36GbINaZEeeJo-_tAgpxAQ
 Runtime-Version: 2.2.0.201706152316
-Save-Time: 12/6/17 1:31 PM
+Save-Time: 12/6/17 3:46 PM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -23,8 +23,8 @@ with [get-editor "test-corpus.salt" | get-canvas] {
     get-property "getRowCount()" | equals 12 | verify-true
 }
 with [get-editor "test-corpus.salt" | get-canvas] {
-	mouse-press 150 230 button3
-	mouse-release 150 230 button3
+	mouse-press 150 239 button3
+	mouse-release 150 239 button3
 	get-menu "Create new token" | click
 }
 with [get-window -class TokenTextInputDialog] {
