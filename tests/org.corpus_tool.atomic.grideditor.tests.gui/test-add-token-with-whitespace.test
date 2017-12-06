@@ -1,12 +1,13 @@
 --- RCPTT testcase ---
 Format-Version: 1.0
+Contexts: _q1hZ8NpcEeefcsJnEUtqog
 Element-Name: test-add-token-with-whitespace
 Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
 Id: _-tSMsNjqEeey-tcMAr57kg
 Runtime-Version: 2.2.0.201706152316
-Save-Time: 12/4/17 2:44 PM
+Save-Time: 12/6/17 9:29 AM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -19,8 +20,9 @@ get-view Navigation | get-tree | select "simple-corpus/test-corpus/test-corpus.s
 wait 5000
 with [get-editor "test-corpus.salt" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
-    get-property "getRowCount()" | equals 16 | verify-true
+    get-property "getRowCount()" | equals 12 | verify-true
 }
+// Create token after "this"
 with [get-editor "test-corpus.salt" | get-canvas] {
 	mouse-press 150 50 button3
 	mouse-release 150 50 button3
@@ -32,7 +34,7 @@ with [get-window -class TokenTextInputDialog] {
 }
 with [get-editor "test-corpus.salt" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
-    get-property "getRowCount()" | equals 17 | verify-true
+    get-property "getRowCount()" | equals 13 | verify-true
 }
 with [get-editor "test-corpus.salt" | get-canvas] {
     key-type "M1+s"
@@ -42,13 +44,13 @@ get-view Navigation | get-tree | select "simple-corpus/test-corpus/test-corpus.s
     -path "Open With/Grid Editor" | click
 with [get-editor "test-corpus.salt" | get-canvas] {
     get-property className | equals "org.eclipse.nebula.widgets.nattable.NatTable" | verify-true
-    get-property "getRowCount()" | equals 17 | verify-true
+    get-property "getRowCount()" | equals 13 | verify-true
 }
 get-editor "test-corpus.salt" | get-canvas | key-type "M1+w"
 with [get-view Navigation | get-tree] {
     select "simple-corpus/test-corpus/test-corpus.salt" | key-type F5
     select "simple-corpus/test-corpus/test-corpus.salt" | get-menu -path "Open With/Text Editor" | click
 }
-get-editor "test-corpus.salt" | get-text-viewer | get-property text | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"saltCommon\" name=\"SDATA\" value=\"T::NewfirstFirst Mid Is this example more complicated than it appears to be? LastNewlast\"/>\n" | verify-true
+get-editor "test-corpus.salt" | get-text-viewer | get-property text | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"saltCommon\" name=\"SDATA\" value=\"T::Is this Mid example more complicated than it appears to be?\"/>\n" | verify-true
 get-editor "test-corpus.salt" | get-text-viewer | key-type "M1+w"
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--
