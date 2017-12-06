@@ -15,8 +15,7 @@ addons:
 
 before_script:
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/cucumber_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16
-# - sh -e /etc/init.d/xvfb start
- - metacity --sm-disable --replace 2> metacity.err &
+  - metacity --sm-disable --replace 2> metacity.err &
  
 script: 
   - mvn package
