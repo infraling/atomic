@@ -2,3 +2,10 @@
 target/
 rebel.xml
 *.log
+atomic-user-guide.pdf
+.settings/
+**/doc/help/
+!**/doc/help/README.txt
+logs/
+screenshots/
+!repository-preview/target/products/org.corpus_tools.atomic.preview.product/linux/gtk/x86_64/atomic/purge.png
