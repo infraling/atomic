@@ -48,4 +48,5 @@ Export-Package: org.corpus_tools.atomic.api.commands,
  org.corpus_tools.atomic.api.events,
  org.corpus_tools.atomic.api.salt,
  org.corpus_tools.atomic.exceptions,
+ org.corpus_tools.atomic.models,
  org.corpus_tools.atomic.tagset

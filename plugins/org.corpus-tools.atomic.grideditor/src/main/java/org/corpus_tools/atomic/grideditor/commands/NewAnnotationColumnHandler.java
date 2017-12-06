@@ -8,9 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.commands.DocumentGraphAwareHandler;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid.Row;
+import org.corpus_tools.atomic.grideditor.gui.AnnotationColInputDialog;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.swt.widgets.Display;
@@ -38,17 +38,19 @@ public class NewAnnotationColumnHandler extends DocumentGraphAwareHandler {
 		NatTable table = (NatTable) ((Event) event.getTrigger()).widget;
 		
 		// Query annotation key
-		String key = null;
-		InputDialog inputDial = new InputDialog(Display.getDefault().getActiveShell(), "Annotation key", "Please enter the annotation key for the column.", null, null);
+		String namespace = null;
+		String name = null;
+		AnnotationColInputDialog inputDial = new AnnotationColInputDialog(Display.getDefault().getActiveShell());
 		if (inputDial.open() == Window.OK) {
-			key = inputDial.getValue().trim();
+			namespace = inputDial.getNamespace();
+			name = inputDial.getName();
 		}
-		if (key == null || key.isEmpty()) {
-			log.trace("User input (new annotation key) is null/empty."); 
+		if (name == null || name.isEmpty()) {
+			log.trace("User input (new annotation name) is null/empty."); 
 			return null;
 		}
 		for (Row row : grid.getRowMap().values()) {
-			row.put(row.getCells().size(), key, null);
+			row.put(row.getCells().size(), (namespace == null || namespace.isEmpty()) ? name : namespace + "::" + name, null);
 		}
 		table.refresh();
 		return null;
