@@ -19,25 +19,34 @@ before_script:
  
 script: 
   - mvn package
-  - git checkout -b travis-build
-  - git add -f .
-  - git commit -m "Travis build $TRAVIS_BUILD_NUMBER"
-  - git push -u origin travis-build
 
-before_deploy:
-  - MVN_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-deploy:
-  provider: releases
-  skip_cleanup: true
-  api_key:
-    secure: "BiIpY2KWsO+GDj/+CWcBY9dwmPlYEEwWXqI0uXEKZNNWy4uWjWn625f1x+krTy5RzfH29r1IWub9w0Xf80vtIkqVBEpxGUPYPayHKC1Lal8YIgXCxPTstOKPNuYAWdf2/xoD3tiQrbBt6gAGm/+Pg9knOFRq+T1mYKHZKQTIsSDpZyb7FEG0a67fylJlRY+HGwEdDGc166DLottSMjiwLRbwd7rkYhLTNPeouT7KF7GiAeNXezRwKSylSnkpsibS5J/XWDOuyu+7oW8P11TIaVy22BeMj8SWN9KUQYozqMg+XWjt8zYlZjhB/bF+WiJ21zgw/TTtdnyZJmAuR7xMWj7auRouw4vQuinyTfjn8EmUw2TnOch/1I7yNgAmcF8vTmm2EdueIKEo6BHIH0tb03I1BGDR+bmyfsG9+K5WexsgNuU5UTPss+Jaebq+ZH7u2bVrutYoPGJEHOOCUyO+qgrT/6LlrDO8WBLbmplhh6Wdanf5Z3uvLrqFBngxeAGkLTG5u8BX49rvCgkcKYzUbvL60QNkKQ3OeFOs3JFxj3PJ36hqs6x8j8hRKvBwFpXtUr4QxZUy7QuvDa5zZvbb7QiWZZ6wckiiqhr9LqsdIXm6TzsXKYgTFHjhRyDQIZd9vPzlOrCYVOrc+ocdqvLpXDJFxAtoHNxu8hUemyVzNig="
-  file: 
-    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-win32.win32.x86_64.zip'
-    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-linux.gtk.x86_64.zip'
-    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-macosx.cocoa.x86_64.zip'
-    - './repository/target/products/atomic-$MVN_VERSION-linux.gtk.x86_64.zip'
-    - './repository/target/products/atomic-$MVN_VERSION-win32.win32.x86_64.zip'
-    - './repository/target/products/atomic-$MVN_VERSION-macosx.cocoa.x86_64.zip'
-  on:
-    repo: infraling/atomic
-    tags: true
+
+after_failure:
+  - git checkout -b test-results
+  - git -f add .
+  - git commit "Test results $TRAVIS_BUILD_NUMBER"
+  - git push -u origin test-results
+
+env:
+  global:
+    secure: BiIpY2KWsO+GDj/+CWcBY9dwmPlYEEwWXqI0uXEKZNNWy4uWjWn625f1x+krTy5RzfH29r1IWub9w0Xf80vtIkqVBEpxGUPYPayHKC1Lal8YIgXCxPTstOKPNuYAWdf2/xoD3tiQrbBt6gAGm/+Pg9knOFRq+T1mYKHZKQTIsSDpZyb7FEG0a67fylJlRY+HGwEdDGc166DLottSMjiwLRbwd7rkYhLTNPeouT7KF7GiAeNXezRwKSylSnkpsibS5J/XWDOuyu+7oW8P11TIaVy22BeMj8SWN9KUQYozqMg+XWjt8zYlZjhB/bF+WiJ21zgw/TTtdnyZJmAuR7xMWj7auRouw4vQuinyTfjn8EmUw2TnOch/1I7yNgAmcF8vTmm2EdueIKEo6BHIH0tb03I1BGDR+bmyfsG9+K5WexsgNuU5UTPss+Jaebq+ZH7u2bVrutYoPGJEHOOCUyO+qgrT/6LlrDO8WBLbmplhh6Wdanf5Z3uvLrqFBngxeAGkLTG5u8BX49rvCgkcKYzUbvL60QNkKQ3OeFOs3JFxj3PJ36hqs6x8j8hRKvBwFpXtUr4QxZUy7QuvDa5zZvbb7QiWZZ6wckiiqhr9LqsdIXm6TzsXKYgTFHjhRyDQIZd9vPzlOrCYVOrc+ocdqvLpXDJFxAtoHNxu8hUemyVzNig=
+
+ 
+
+#before_deploy:
+#  - MVN_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+#deploy:
+#  provider: releases
+#  skip_cleanup: true
+#  api_key:
+#    secure: "BiIpY2KWsO+GDj/+CWcBY9dwmPlYEEwWXqI0uXEKZNNWy4uWjWn625f1x+krTy5RzfH29r1IWub9w0Xf80vtIkqVBEpxGUPYPayHKC1Lal8YIgXCxPTstOKPNuYAWdf2/xoD3tiQrbBt6gAGm/+Pg9knOFRq+T1mYKHZKQTIsSDpZyb7FEG0a67fylJlRY+HGwEdDGc166DLottSMjiwLRbwd7rkYhLTNPeouT7KF7GiAeNXezRwKSylSnkpsibS5J/XWDOuyu+7oW8P11TIaVy22BeMj8SWN9KUQYozqMg+XWjt8zYlZjhB/bF+WiJ21zgw/TTtdnyZJmAuR7xMWj7auRouw4vQuinyTfjn8EmUw2TnOch/1I7yNgAmcF8vTmm2EdueIKEo6BHIH0tb03I1BGDR+bmyfsG9+K5WexsgNuU5UTPss+Jaebq+ZH7u2bVrutYoPGJEHOOCUyO+qgrT/6LlrDO8WBLbmplhh6Wdanf5Z3uvLrqFBngxeAGkLTG5u8BX49rvCgkcKYzUbvL60QNkKQ3OeFOs3JFxj3PJ36hqs6x8j8hRKvBwFpXtUr4QxZUy7QuvDa5zZvbb7QiWZZ6wckiiqhr9LqsdIXm6TzsXKYgTFHjhRyDQIZd9vPzlOrCYVOrc+ocdqvLpXDJFxAtoHNxu8hUemyVzNig="
+#  file: 
+#    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-win32.win32.x86_64.zip'
+#    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-linux.gtk.x86_64.zip'
+#    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-macosx.cocoa.x86_64.zip'
+#    - './repository/target/products/atomic-$MVN_VERSION-linux.gtk.x86_64.zip'
+#    - './repository/target/products/atomic-$MVN_VERSION-win32.win32.x86_64.zip'
+#    - './repository/target/products/atomic-$MVN_VERSION-macosx.cocoa.x86_64.zip'
+#  on:
+#    repo: infraling/atomic
+#    tags: true
