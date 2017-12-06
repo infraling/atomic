@@ -19,7 +19,7 @@ before_script:
  
 script: 
   - mvn package
-#  - cat ./tests/org.corpus_tool.atomic.grideditor.tests.gui/target/results/aut-console-0_startlog.log
+  - cat ./tests/org.corpus_tool.atomic.grideditor.tests.gui/target/results/aut-console-0_startlog.log
 
 #before_deploy:
 #  - MVN_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
