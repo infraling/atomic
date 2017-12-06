@@ -8,7 +8,7 @@ env:
   matrix:
   - DISPLAY=:99.0
   global:
-    secure: "tPRTksh9Jd9IEd0F+A2OsrPg5VpMdiR6g6aFMlCE/ELAnHDqrNi8nPn0LGq0zfM7H+9ZTSyRTBulQ24ox2l5olhCQb7yL0NU95r30oxJWZbRQ5CipV+ZW9N9gW4vPELmMOeYW68O4DEjwk+Di7RQbRBfOAcqBh/mGC1KWocFaiPLDeMBsZhHSL+fdhYPKRvrLS+bN+MWx2cyeV0dy+4P5vbqKvKomZvg6kz1gDS9nR3HZUcsdT7i+iXL0eqSQaG1ZC2oj9RMQliKaaJmnXbQItyln8jvm8dqra/LSis9CkdVaY97S+1fk2Sefzq7svWVdKTtimHJp6v1aydy/K0bpmzSZXaSiEVdBl9f3SrWVUWMOT8PozWTBJMTlS9qwCIL9HoL2zL77BJFWexIxOrETYwJt7nP/x3NxncMcYhnsx9ZkQYP2BKXOu3WDSBJ6XdgW/9+9YlQ7WpuzVeyqlO1w15nnk/GmivcaNrx7uiM1U64hRa8EdOyNWvMgJBsubL4+nOiPkoDwLrugUpFnwv+p8QkHuph6e+0tUlva28W3vVGnrMz7xlLNu3plGqv+zw1M26Sbgfbz1BUOkXDDnxoQJUuLEfvTQFo2XKqQWNlDmtEQv8FviOLtOUmb3Nbow871CSHXjiP/pvrkRlBCYPBGPFgFwdB0knscVmhhmRw35E="
+    secure: "sgzv5nuMFcFv9c5v+Mm4hR1C0VQ5Ms39HTTayew5D9qivrasunPUnSpbOmjKME65dVv+IMtXwAqXfRoL8qBFnnaBWS0bDBp871a16QRyxNOb3Pa/8NHtYig//bqLIXbiFZwqeAW7mNJIPCTM6ADBR7Zzy9xU1IfHXrdxjcP7BIPMBoI/JDZuJsYqf3oD9+ld+zP2zMM2PfW7lNWdCmnAbqBj1Jzq2jNxGylqTMvoBkz5dWvUCYsuBQ3Y9y8FzAvkQHvVQ25CnVhXASGuGEtBHxFZkehQjYhpcY1b94cf76lGuPAAZk+kqlAyUJroLct0H2TayYvMFwqsJ9Sr4P1yRk/LfQnFh0Q09A61cICqoIKo82I3xcGS3/3U8tBaIhxxfrsS3Plhue0NyomrRnkT03f4beB4J8gPNVasPEZWHR8cj3Yc6Jm3jmzlAUTp8UgC75J++nkrTGHKGury7uIcpqwpw7+TLHfI6jqbzziuISY5HxYL8fiMUMxtqFflQb2/RiKjvwNCcgxKvMPtoQWrQN0a7Bmb0XxOkXG8belJkH9U6m7B23sWSWAVVfoReS3OqaoxcJqJ5ICSYFAISEnBnY/C7ZjDu3gj/aESrD81PcZYITuaQrm9gLnXZWBhDtTIDfDDdwBAfr73IKN+sxsQrLvzDcw45TAzBlRlGHSs0IY="
 addons:
   apt:
     packages:
@@ -20,6 +20,4 @@ before_install:
 - sleep 5
 - metacity --sm-disable --replace 2> metacity.err &
 script:
-- mvn clean package
-after_success:
-- .travis/push.sh
+- .travis/build.sh
