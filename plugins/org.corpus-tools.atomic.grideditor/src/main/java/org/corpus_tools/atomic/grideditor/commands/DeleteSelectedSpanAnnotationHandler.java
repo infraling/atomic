@@ -80,7 +80,7 @@ public class DeleteSelectedSpanAnnotationHandler extends AbstractHandler {
 		 * Check if the columns from which cells have been deleted contain any
 		 * further values, if not, delete the column itself.
 		 */
-//		FIXME When deleting cells that aren't after another, the last one doesn't get cleared!
+		// FIXME When deleting columns that aren't after another, the last one doesn't get cleared!
 		Set<Integer> colsToDelete = new HashSet<>();
 		colloop:
 		for (Integer col : cols) {
