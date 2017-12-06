@@ -1,50 +1,25 @@
 sudo: false
-
 language: java
-
-cache:  
-  directories:  
-    - $HOME/.m2
-
+cache:
+  directories:
+  - "$HOME/.m2"
 jdk: oraclejdk8
-
-env: DISPLAY=:99.0
-
+env:
+  matrix:
+  - DISPLAY=:99.0
+  global:
+    secure: "tPRTksh9Jd9IEd0F+A2OsrPg5VpMdiR6g6aFMlCE/ELAnHDqrNi8nPn0LGq0zfM7H+9ZTSyRTBulQ24ox2l5olhCQb7yL0NU95r30oxJWZbRQ5CipV+ZW9N9gW4vPELmMOeYW68O4DEjwk+Di7RQbRBfOAcqBh/mGC1KWocFaiPLDeMBsZhHSL+fdhYPKRvrLS+bN+MWx2cyeV0dy+4P5vbqKvKomZvg6kz1gDS9nR3HZUcsdT7i+iXL0eqSQaG1ZC2oj9RMQliKaaJmnXbQItyln8jvm8dqra/LSis9CkdVaY97S+1fk2Sefzq7svWVdKTtimHJp6v1aydy/K0bpmzSZXaSiEVdBl9f3SrWVUWMOT8PozWTBJMTlS9qwCIL9HoL2zL77BJFWexIxOrETYwJt7nP/x3NxncMcYhnsx9ZkQYP2BKXOu3WDSBJ6XdgW/9+9YlQ7WpuzVeyqlO1w15nnk/GmivcaNrx7uiM1U64hRa8EdOyNWvMgJBsubL4+nOiPkoDwLrugUpFnwv+p8QkHuph6e+0tUlva28W3vVGnrMz7xlLNu3plGqv+zw1M26Sbgfbz1BUOkXDDnxoQJUuLEfvTQFo2XKqQWNlDmtEQv8FviOLtOUmb3Nbow871CSHXjiP/pvrkRlBCYPBGPFgFwdB0knscVmhhmRw35E="
 addons:
   apt:
     packages:
     - metacity
-
 before_install:
-  - export DISPLAY=:99.0
-  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16"
-  - sleep 5
-  - metacity --sm-disable --replace 2> metacity.err &
- 
-script: 
-  - mvn clean package
-
+- export DISPLAY=:99.0
+- "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile
+  --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16"
+- sleep 5
+- metacity --sm-disable --replace 2> metacity.err &
+script:
+- mvn clean package
 after_success:
 - .travis/push.sh
-
-env:
-  global:
-    secure: "BiIpY2KWsO+GDj/+CWcBY9dwmPlYEEwWXqI0uXEKZNNWy4uWjWn625f1x+krTy5RzfH29r1IWub9w0Xf80vtIkqVBEpxGUPYPayHKC1Lal8YIgXCxPTstOKPNuYAWdf2/xoD3tiQrbBt6gAGm/+Pg9knOFRq+T1mYKHZKQTIsSDpZyb7FEG0a67fylJlRY+HGwEdDGc166DLottSMjiwLRbwd7rkYhLTNPeouT7KF7GiAeNXezRwKSylSnkpsibS5J/XWDOuyu+7oW8P11TIaVy22BeMj8SWN9KUQYozqMg+XWjt8zYlZjhB/bF+WiJ21zgw/TTtdnyZJmAuR7xMWj7auRouw4vQuinyTfjn8EmUw2TnOch/1I7yNgAmcF8vTmm2EdueIKEo6BHIH0tb03I1BGDR+bmyfsG9+K5WexsgNuU5UTPss+Jaebq+ZH7u2bVrutYoPGJEHOOCUyO+qgrT/6LlrDO8WBLbmplhh6Wdanf5Z3uvLrqFBngxeAGkLTG5u8BX49rvCgkcKYzUbvL60QNkKQ3OeFOs3JFxj3PJ36hqs6x8j8hRKvBwFpXtUr4QxZUy7QuvDa5zZvbb7QiWZZ6wckiiqhr9LqsdIXm6TzsXKYgTFHjhRyDQIZd9vPzlOrCYVOrc+ocdqvLpXDJFxAtoHNxu8hUemyVzNig="
-
-#before_deploy:
-#  - MVN_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-#deploy:
-#  provider: releases
-#  skip_cleanup: true
-#  api_key:
-#    secure: "BiIpY2KWsO+GDj/+CWcBY9dwmPlYEEwWXqI0uXEKZNNWy4uWjWn625f1x+krTy5RzfH29r1IWub9w0Xf80vtIkqVBEpxGUPYPayHKC1Lal8YIgXCxPTstOKPNuYAWdf2/xoD3tiQrbBt6gAGm/+Pg9knOFRq+T1mYKHZKQTIsSDpZyb7FEG0a67fylJlRY+HGwEdDGc166DLottSMjiwLRbwd7rkYhLTNPeouT7KF7GiAeNXezRwKSylSnkpsibS5J/XWDOuyu+7oW8P11TIaVy22BeMj8SWN9KUQYozqMg+XWjt8zYlZjhB/bF+WiJ21zgw/TTtdnyZJmAuR7xMWj7auRouw4vQuinyTfjn8EmUw2TnOch/1I7yNgAmcF8vTmm2EdueIKEo6BHIH0tb03I1BGDR+bmyfsG9+K5WexsgNuU5UTPss+Jaebq+ZH7u2bVrutYoPGJEHOOCUyO+qgrT/6LlrDO8WBLbmplhh6Wdanf5Z3uvLrqFBngxeAGkLTG5u8BX49rvCgkcKYzUbvL60QNkKQ3OeFOs3JFxj3PJ36hqs6x8j8hRKvBwFpXtUr4QxZUy7QuvDa5zZvbb7QiWZZ6wckiiqhr9LqsdIXm6TzsXKYgTFHjhRyDQIZd9vPzlOrCYVOrc+ocdqvLpXDJFxAtoHNxu8hUemyVzNig="
-#  file: 
-#    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-win32.win32.x86_64.zip'
-#    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-linux.gtk.x86_64.zip'
-#    - './repository-preview/target/products/atomic-preview-$MVN_VERSION-macosx.cocoa.x86_64.zip'
-#    - './repository/target/products/atomic-$MVN_VERSION-linux.gtk.x86_64.zip'
-#    - './repository/target/products/atomic-$MVN_VERSION-win32.win32.x86_64.zip'
-#    - './repository/target/products/atomic-$MVN_VERSION-macosx.cocoa.x86_64.zip'
-#  on:
-#    repo: infraling/atomic
-#    tags: true
