@@ -339,4 +339,11 @@ public class GridEditor extends DocumentGraphEditor implements ISelectionProvide
 		return annotationGrid;
 	}
 
+	/**
+	 * @param annotationGrid the annotationGrid to set
+	 */
+	public final void setAnnotationGrid(AnnotationGrid annotationGrid) {
+		this.annotationGrid = annotationGrid;
+	}
+
 }

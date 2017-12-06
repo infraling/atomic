@@ -3,12 +3,15 @@
  */
 package org.corpus_tools.atomic.grideditor.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.corpus_tools.atomic.grideditor.GridEditor;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid.Row;
 import org.corpus_tools.atomic.grideditor.utils.CellUtils;
-import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.core.commands.AbstractHandler;
@@ -35,13 +38,16 @@ public class DeleteSelectedSpanAnnotationHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		NatTable table = (NatTable) ((Event) event.getTrigger()).widget;
+		@SuppressWarnings("unchecked")
 		Collection<ILayerCell> selectedCells = (Collection<ILayerCell>) ((Object[]) ((Event) event.getTrigger()).data)[0];
 		AnnotationGrid grid = (AnnotationGrid) ((Object[]) ((Event) event.getTrigger()).data)[1];
+		List<Integer> cols = new ArrayList<>(); 
 		// FIXME Use try catch for ClassCastExceptions for above code
 		for (ILayerCell cell : selectedCells) {
 			Range<Integer> indexRange = CellUtils.getRowIndicesForCell(cell);
 			int rowIndex = cell.getRowIndex();
 			int colIndex = cell.getColumnIndex();
+			cols.add(colIndex);
 			Object value = cell.getDataValue();
 			if (value instanceof SAnnotation && ((SAnnotation) value).getContainer() instanceof SSpan) {
 				SSpan parent = null;
@@ -68,10 +74,28 @@ public class DeleteSelectedSpanAnnotationHandler extends AbstractHandler {
 						}
 					}
 				}
-				table.refresh();
 			}
-			((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
 		}
+		/*
+		 * Check if the columns from which cells have been deleted contain any
+		 * further values, if not, delete the column itself.
+		 */
+//		FIXME When deleting cells that aren't after another, the last one doesn't get cleared!
+		Set<Integer> colsToDelete = new HashSet<>();
+		colloop:
+		for (Integer col : cols) {
+			for (Row row : grid.getRowMap().values()) {
+				if (row.getValue(col) != null) {
+					continue colloop;
+				}
+			}
+			colsToDelete.add(col);
+		}
+		for (Integer colToDelete : colsToDelete) {
+			grid.removeColumn(colToDelete);
+		}
+		table.refresh();
+		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);
 		return null;
 	}
 

@@ -119,6 +119,54 @@ public class AnnotationGrid {
 	public Map<Integer, Row> getRowMap() {
 		return rowMap;
 	}
+	
+	/**
+	 * // TODO Add description FIXME
+	 * Remove col:
+	 * - Remove col in each row
+	 * - Decrement cell indices in all cells with index > colindexToDelete by 1
+	 * - Remove header from header map 
+	 * - Decrement header indices in all headers with index > colindexToDelete by 1
+	 * 
+	 * @param colIndex
+	 */
+	public void removeColumn(Integer colIndex) {
+		int colIndexInt = colIndex.intValue();
+		Map<Integer, Row> tempRowMap = new HashMap<>();
+		BiMap<Integer, String> tempColumnHeaderMap = HashBiMap.create();
+		
+		for (Row row : rowMap.values()) {
+			row.removeCell(colIndexInt);
+		}
+		columnHeaderMap.remove(colIndexInt);
+		columnHeaderMap.forEach((i,s) -> {
+			int iInt = i.intValue();
+			if (iInt < colIndexInt) {
+				tempColumnHeaderMap.put(i, s);
+			}
+			else if (iInt > colIndexInt) {
+				tempColumnHeaderMap.put(i - 1, s);
+			}
+		});
+		columnHeaderMap = tempColumnHeaderMap;
+		rowMap.entrySet().forEach(e -> {
+			Integer rowIndex = e.getKey();
+			Row row = e.getValue();
+			Map<Integer, Cell> tempCells = new HashMap<>();
+			row.getCells().forEach((i,c) -> {
+				int intI = i.intValue();
+				if (intI < colIndexInt) {
+					tempCells.put(i, c);
+				}
+				else if (intI > colIndexInt) {
+					tempCells.put(i - 1, c);
+				}
+			});
+			row.setCells(tempCells);
+			tempRowMap.put(rowIndex, row);
+		});
+		rowMap = tempRowMap;
+	}
 
 	/**
 	 * Lays out the annotation grid so that it can be used
@@ -175,7 +223,7 @@ public class AnnotationGrid {
 	 */
 	public class Row {
 	
-		private final Map<Integer, Cell> cells = new HashMap<>();
+		private Map<Integer, Cell> cells = new HashMap<>();
 	
 		/**
 		 * Adds cells to this row.
@@ -204,6 +252,18 @@ public class AnnotationGrid {
 				columnHeaderMap.put(colIndex, colHeader);
 			}
 			cells.put(colIndex, new Cell(value, colHeader));
+		}
+		
+		/**
+		 * // TODO Add description FIXME
+		 * 
+		 * @param colIndex
+		 * @return
+		 */
+		public Row removeCell(int colIndex) {
+			Row row = this;
+			row.getCells().remove(colIndex);
+			return row;
 		}
 	
 		/**
@@ -236,6 +296,22 @@ public class AnnotationGrid {
 		public Map<Integer, Cell> getCells() {
 			return cells;
 		}
+		
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			for (Entry<Integer, Cell> c : getCells().entrySet()) {
+				sb.append(c.getKey() + ":" + c.getValue() + " | ");
+			}
+			return sb.toString();
+		}
+
+		/**
+		 * @param cells the cells to set
+		 */
+		public final void setCells(Map<Integer, Cell> cells) {
+			this.cells = cells;
+		}
 	
 	}
 
@@ -253,6 +329,12 @@ public class AnnotationGrid {
 		private Object value;
 		private String columnHeader;
 	
+		/**
+		 * // TODO Add description
+		 * 
+		 * @param value
+		 * @param columnHeader
+		 */
 		public Cell(Object value, String columnHeader) {
 			this.value = value;
 			this.columnHeader = columnHeader;
