@@ -18,8 +18,9 @@ before_script:
   - metacity --sm-disable --replace 2> metacity.err &
  
 script: 
-  - mvn package
+  - mvn clean package
   - cat ./tests/org.corpus_tool.atomic.grideditor.tests.gui/target/results/aut-console-0_startlog.log
+  - cat ./tests/org.corpus_tool.atomic.grideditor.tests.gui/target/results/aut-console-0_console.log
 
 
 after_failure:
