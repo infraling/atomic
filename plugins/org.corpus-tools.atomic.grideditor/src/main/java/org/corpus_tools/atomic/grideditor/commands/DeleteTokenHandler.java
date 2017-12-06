@@ -35,7 +35,7 @@ public class DeleteTokenHandler extends AbstractHandler {
 		NatTable table = (NatTable) ((Event) event.getTrigger()).widget;
 		ILayerCell clickedCell = (ILayerCell) ((Object[]) ((Event) event.getTrigger()).data)[0];
 		AnnotationGrid grid = (AnnotationGrid) ((Object[]) ((Event) event.getTrigger()).data)[1];
-		new TokenHandlerUtil(false, clickedCell, grid).deleteToken(false);
+		new TokenHandlerUtil(clickedCell, grid).deleteToken(false);
 		// Refresh table widget and set editor dirty
 		table.refresh();
 		((GridEditor) HandlerUtil.getActiveEditor(event)).setDirty(true);

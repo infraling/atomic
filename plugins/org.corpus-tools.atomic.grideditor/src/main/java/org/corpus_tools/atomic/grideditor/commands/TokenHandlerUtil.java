@@ -42,7 +42,7 @@ public final class TokenHandlerUtil {
 	 * @param cell
 	 * @param grid
 	 */
-	public TokenHandlerUtil(boolean purge, ILayerCell cell, AnnotationGrid grid) {
+	public TokenHandlerUtil(ILayerCell cell, AnnotationGrid grid) {
 		this.grid = grid;
 		this.clickedIndex = cell.getRowIndex();
 		this.tokenToDelete = (SToken) cell.getDataValue();
