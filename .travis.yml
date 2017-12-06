@@ -14,14 +14,15 @@ addons:
 # - sudo apt-get install metacity
 
 before_script:
- - sh -e /etc/init.d/xvfb start
+  - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/cucumber_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16
+# - sh -e /etc/init.d/xvfb start
  - metacity --sm-disable --replace 2> metacity.err &
  
 script: 
   - mvn package
   - cat ./tests/org.corpus_tool.atomic.grideditor.tests.gui/target/results/aut-console-0_startlog.log
 
-  
+
 after_failure:
   - git checkout -b test-results
   - git -f add .
