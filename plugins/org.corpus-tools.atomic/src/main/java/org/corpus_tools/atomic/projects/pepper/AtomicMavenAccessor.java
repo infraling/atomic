@@ -426,7 +426,7 @@ public class AtomicMavenAccessor {
 				}
 				List<RemoteRepository> repoList = new ArrayList<>();
 				repoList.add(repos.get(CENTRAL_REPO));
-//				repoList.add(repos.get(SONATYPE_SNAPSHOTS_REPO));
+				repoList.add(repos.get(SONATYPE_SNAPSHOTS_REPO));
 				repoList.add(repos.get(repositoryUrl));
 				if (artifactResult != null && artifactResult.getArtifact().getFile().exists()) {
 					try {
