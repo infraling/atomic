@@ -79,7 +79,7 @@ location "http://download.eclipse.org/technology/swtbot/releases/2.5.0/" {
 }
 
 
-location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/latest/" {
+location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/neon/" {
 	org.eclipse.e4.tools.spy
 	org.eclipse.e4.tools.model.spy
 }
