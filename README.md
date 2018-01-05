@@ -5,11 +5,13 @@ Software for multi-level annotation of linguistic corpora
 
 ## Build
 
-`mvn install` creates three different versions of Atomic:
+`mvn install` builds the core plugins for Atomic.
 
-1. Stable (in *repository/target/products/*): Includes only stable features.
-2. Preview (in *repository-preview/target/products/*): Includes features that can be used productively with caution, and that may include bugs.
-3. Experimental (in *repository-experimental/target/products/*): Includes features that are experimental, and hence should not be used productively.
+Then there are also three Maven profiles, each of which builds a specific version of Atomic:
+
+1. `mvn install -P stable` builds only stable features into *repository/target/products/*.
+2. `mvn install -P preview` builds stable features and those that can be used productively with caution, and that may include bugs, into *repository-preview/target/products/*.
+3. `mvn install -P experimental` builds stable and preview features, and those that are experimental, and hence should not be used productively, into *repository-experimental/target/products/*).
 
 ### Build documentation
 
