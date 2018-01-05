@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.corpus_tools.atomic.grideditor.GridEditor;
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
-import org.corpus_tools.atomic.tagset.Tagset;
-import org.corpus_tools.atomic.tagset.TagsetValue;
+import org.corpus_tools.atomic.tagset.api.Tagset;
+import org.corpus_tools.atomic.tagset.api.TagsetValue;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.common.SSpan;
 import org.corpus_tools.salt.common.SStructuredNode;

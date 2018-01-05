@@ -1,0 +1,28 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: test-tagset-wizard
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _JAIgAPIaEeePGMCaHL-QCw
+Runtime-Version: 2.2.0.201706152316
+Save-Time: 1/5/18 2:46 PM
+Testcase-Type: ecl
+
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
+Content-Type: text/plain
+Entry-Name: .description
+
+Tests that the main menu entry "Tagset" does not exist
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa--
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-menu -path "Tagset"
+get-menu -path "Tagset/Create\\/edit tagset" | click
+
+get-window Tagset | get-label "Corpus tagset" | get-property caption | equals "Corpus tagset" | verify-true
+get-window Tagset | get-editbox -after [get-label "Corpus tagset"] | get-property text 
+    | equals "Choose the corpus you want to create a tagset for." | verify-true
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

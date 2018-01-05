@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atomic Tagset Plugin Tests
+Bundle-SymbolicName: org.corpus_tools.atomic.tagset.tests
+Bundle-Version: 0.3.0.qualifier
+Bundle-Vendor: Stephan Druskat
+Fragment-Host: org.corpus_tools.atomic.tagset;bundle-version="0.3.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.12.0",
+ org.mockito;bundle-version="1.9.5",
+ org.hamcrest;bundle-version="1.1.0",
+ com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.8.0"

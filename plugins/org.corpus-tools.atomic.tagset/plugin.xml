@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            canFinishEarly="false"
+            category="org.corpus_tools.atomic.AtomicNewWizardCategory"
+            class="org.corpus_tools.atomic.ui.tagset.wizard.TagsetWizard"
+            icon="platform:/plugin/org.corpus_tools.atomic/icons/obj16/atomic.png"
+            id="org.corpus_tools.atomic.newAtomicTagsetWizard"
+            name="New Tagset"
+            project="false">
+      </wizard>
+         
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+         <menuContribution
+               allPopups="false"
+               locationURI="menu:org.eclipse.ui.main.menu">
+            <menu
+                  id="org.corpus_tools.atomic.menus.tagset"
+                  label="Tagset"
+                  mnemonic="T">
+               <command
+                     commandId="org.corpus_tools.atomic.createTagsetCommand"
+                     label="Create/edit tagset"
+                     style="push"
+                     tooltip="Creates and configures a tagset for a corpus">
+               </command>
+            </menu>
+         </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.corpus_tools.atomic.tagset.commands.CreateTagsetHandler"
+            description="Creates and configures a tagset for a corpus"
+            id="org.corpus_tools.atomic.createTagsetCommand"
+            name="Create Tagset Command">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.corpus_tools.atomic.tagset.ui.editor.TagsetEditor"
+            default="false"
+            extensions="ats"
+            icon="platform:/plugin/org.corpus_tools.atomic/icons/obj16/atomic.png"
+            id="org.corpus_tools.atomic.TagsetEditor"
+            name="Tagset Editor">
+      </editor>
+   </extension>
+</plugin>

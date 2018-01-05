@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.corpus_tools.atomic.grideditor.data.annotationgrid.AnnotationGrid;
-import org.corpus_tools.atomic.tagset.Tagset;
-import org.corpus_tools.atomic.tagset.TagsetValue;
+import org.corpus_tools.atomic.tagset.api.Tagset;
+import org.corpus_tools.atomic.tagset.api.TagsetValue;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
 import org.eclipse.nebula.widgets.nattable.layer.LabelStack;

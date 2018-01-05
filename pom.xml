@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.corpus-tools.atomic</groupId>
 	<artifactId>parent</artifactId>
@@ -67,14 +68,9 @@
 							<ws>win32</ws>
 							<arch>x86_64</arch>
 						</environment>
-						<!-- Since Mars, cocoa-x86 is not included anymore, cf.
-						https://www.eclipse.org/projects/project-plan.php?planurl=/eclipse/development/plans/eclipse_project_plan_4_5.xml#target_environments -->
-						<!-- 
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86</arch>
-						</environment>-->
+						<!-- Since Mars, cocoa-x86 is not included anymore, cf. https://www.eclipse.org/projects/project-plan.php?planurl=/eclipse/development/plans/eclipse_project_plan_4_5.xml#target_environments -->
+						<!-- <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> -->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
@@ -94,7 +90,7 @@
 						<version>1.1</version>
 					</docletArtifact>
 					<useStandardDocletOptions>true</useStandardDocletOptions>
-          			<show>private</show> <!-- TODO Decide if this should stay -->
+					<show>private</show> <!-- TODO Decide if this should stay -->
 				</configuration>
 			</plugin>
 		</plugins>
@@ -119,7 +115,7 @@
 								<inherited>true</inherited>
 								<configuration>
 									<removeExistingSignatures>true</removeExistingSignatures>
-									<archiveDirectory/>
+									<archiveDirectory />
 									<includes>
 										<include>${project.build.directory}/${project.build.finalName}.apk
 										</include>
@@ -140,29 +136,55 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<!-- Documentation is built from within the module itself -->
+				<!-- <module>docs/org.corpus_tools.atomic.doc</module> -->
+				<module>plugins/org.corpus-tools.atomic</module>
+				<module>tests/org.corpus-tools.atomic.tests</module>
+				<module>tests/org.corpus_tools.atomic.tests.gui</module>
+				<module>features/org.corpus-tools.atomic.feature</module>
+				<module>plugins/org.corpus-tools.atomic.logging</module>
+				<module>target-definition</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>stable</id>
+			<modules>
+				<module>repository</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>preview</id>
+			<modules>
+				<module>plugins/org.corpus-tools.atomic.grideditor</module>
+				<module>tests/org.corpus_tool.atomic.grideditor.tests</module>
+				<module>tests/org.corpus_tool.atomic.grideditor.tests.gui</module>
+				<module>repository-preview</module>
+				<module>features/org.corpus-tools.atomic.feature.preview</module>
+				<module>tests/org.corpus_tools.atomic.repository-preview.tests.gui</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>experimental</id>
+			<modules>
+				<module>plugins/org.corpus-tools.atomic.grideditor</module>
+				<module>tests/org.corpus_tool.atomic.grideditor.tests</module>
+				<module>tests/org.corpus_tool.atomic.grideditor.tests.gui</module>
+				<module>features/org.corpus-tools.atomic.feature.preview</module>
+				<module>plugins/org.corpus-tools.atomic.tagset</module>
+				<module>tests/org.corpus-tools.atomic.tagset.tests</module>
+				<module>plugins/org.corpus-tools.atomic.visjs</module>
+				<module>plugins/org.corpus-tools.atomic.search</module>
+				<module>features/org.corpus-tools.atomic.feature.experimental</module>
+				<module>plugins/de.uni_jena.iaa.linktype.atomic.atomical</module>
+				<module>tests/org.corpus_tools.atomic.repository-experimental.tests.gui</module>
+				<module>repository-experimental</module>
+			</modules>
+		</profile>
 	</profiles>
-	<modules>
-		<!-- Documentation is built from within the module itself -->
-		<!-- <module>docs/org.corpus_tools.atomic.doc</module> -->
-		<module>plugins/org.corpus-tools.atomic</module>
-		<module>tests/org.corpus-tools.atomic.tests</module>
-		<module>plugins/org.corpus-tools.atomic.visjs</module>
-		<module>plugins/org.corpus-tools.atomic.search</module>
-		<module>tests/org.corpus_tools.atomic.tests.gui</module>
-		<module>plugins/org.corpus-tools.atomic.grideditor</module>
-		<module>tests/org.corpus_tool.atomic.grideditor.tests</module>
-		<module>repository</module>
-		<module>repository-experimental</module>
-		<module>repository-preview</module>
-		<module>target-definition</module>
-		<module>features/org.corpus-tools.atomic.feature</module>
-		<module>features/org.corpus-tools.atomic.feature.experimental
-		</module>
-		<module>plugins/org.corpus-tools.atomic.logging</module>
-		<module>
-			plugins/de.uni_jena.iaa.linktype.atomic.atomical
-		</module>
-		<module>features/org.corpus-tools.atomic.feature.preview</module>
-		<module>tests/org.corpus_tool.atomic.grideditor.tests.gui</module>
-	</modules>
 </project>
