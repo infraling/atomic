@@ -9,7 +9,7 @@
     <relativePath>../..</relativePath>
   </parent>
   <properties>
-    <autPath>${project.parent.basedir}/repository-preview/target/products/org.corpus_tools.atomic.experimental.product/linux/gtk/x86_64/atomic/</autPath>
+    <autPath>${project.parent.basedir}/repository-experimental/target/products/org.corpus_tools.atomic.experimental.product/linux/gtk/x86_64/atomic/</autPath>
   </properties>
   <build>
     <plugins>
