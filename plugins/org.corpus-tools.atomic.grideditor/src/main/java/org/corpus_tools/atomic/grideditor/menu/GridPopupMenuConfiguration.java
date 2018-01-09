@@ -404,7 +404,7 @@ public class PurgeTokenMenuItemProvider implements IMenuItemProvider {
 		@Override
 		public void addMenuItem(NatTable natTable, Menu popupMenu) {
 			MenuItem menuItem = new MenuItem(popupMenu, SWT.PUSH);
-            menuItem.setText("Create span");
+            menuItem.setText("Merge to single span");
             menuItem.setEnabled(true);
 
 			menuItem.addSelectionListener(new SelectionAdapter() {

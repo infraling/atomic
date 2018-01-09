@@ -1,13 +1,13 @@
 --- RCPTT testcase ---
 Format-Version: 1.0
 Contexts: _q1hZ8NpcEeefcsJnEUtqog
-Element-Name: test-add-span
+Element-Name: test-split-span
 Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
-Id: _6CLKcPOvEee_lfuMUw2ewQ
+Id: _k0gA0PR1Eee2Rr087-c7LA
 Runtime-Version: 2.2.0.201706152316
-Save-Time: 1/8/18 2:20 PM
+Save-Time: 1/8/18 2:27 PM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -41,14 +41,27 @@ with [get-editor "test-corpus.salt" | get-canvas] {
     key-type "M1+s"
     key-type "M1+w"
 }
-read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<nodes xsi:type=\"sDocumentStructure:SSpan\">" | verify-true
+get-view Navigation | get-tree | select "simple-corpus/test-corpus/test-corpus.salt" | get-menu 
+    -path "Open With/Grid Editor" | click
+// Wait for grid to compile
+wait 5000
+// Split span
+with [get-editor "test-corpus.salt" | get-canvas] {
+    mouse-press 220 90 button3
+	mouse-release 220 90 button3
+	get-menu "Split span" | click
+    key-type "M1+s"
+    key-type "M1+w"
+}
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SAnnotation\" namespace=\"ns\" name=\"n\"/>" | verify-true
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpan1\"/>" | verify-true
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpan1\"/>" | verify-true
+read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpan2\"/>" | verify-true
+read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpan2\"/>" | verify-true
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.4\">" | verify-true
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel1\"/>" | verify-true
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel1\"/>" | verify-true
-read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.5\">" | verify-true
+read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.13\" target=\"//@nodes.5\">" | verify-true
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel2\"/>" | verify-true
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel2\"/>" | verify-true
 
