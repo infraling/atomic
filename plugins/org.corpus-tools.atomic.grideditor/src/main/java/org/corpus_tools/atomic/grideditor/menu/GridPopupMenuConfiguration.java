@@ -375,7 +375,10 @@ public class PurgeTokenMenuItemProvider implements IMenuItemProvider {
 							.getService(IHandlerService.class);
 
 					Event event = new Event();
-					event.data = grid;
+//					if (selectedCells == null) {
+//						throw new RuntimeException("The collection of selected cells is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
+//					}
+					event.data = new Object[] {selectedCells, grid};
 					event.widget = natTable;
 					try {
 						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.createSpan", event);
@@ -417,12 +420,11 @@ public class PurgeTokenMenuItemProvider implements IMenuItemProvider {
 					IHandlerService handlerService = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 							.getService(IHandlerService.class);
 
-					Event event = new Event(
-							);
-					if (selectedCells == null) {
-						throw new RuntimeException("The collection of selected cells is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
-					}
-					event.data = new Object[]{selectedCells, grid};
+					Event event = new Event();
+//					if (selectedCells == null) {
+//						throw new RuntimeException("The collection of selected cells is null which shouldn't be the case!"); // FIME Use log, provide better info, etc.
+//					}
+					event.data = new Object[] {selectedCells, grid};
 					event.widget = natTable;
 					try {
 						handlerService.executeCommand("org.corpus_tools.atomic.grideditor.commands.mergeCellsToSpan", event);
