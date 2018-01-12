@@ -1,13 +1,13 @@
 --- RCPTT testcase ---
 Format-Version: 1.0
 Contexts: _q1hZ8NpcEeefcsJnEUtqog
-Element-Name: test-create-span-over-null-and-non-empty-cells
+Element-Name: test-create-span-over-two-single-annotated-cells
 Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
-Id: _ut7wcPasEeeJFIAxuvfJ9A
+Id: _-xrx8PeeEee3Otemt4Ky7A
 Runtime-Version: 2.2.0.201706152316
-Save-Time: 1/12/18 1:32 PM
+Save-Time: 1/12/18 2:51 PM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -33,24 +33,48 @@ with [get-window -class AnnotationColInputDialog] {
 }
 // Check that no spans exist
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<nodes xsi:type=\"sDocumentStructure:SSpan\">" | verify-false
-// Create empty span in single cell
+// Create annotated span in single cell
 with [get-editor "test-corpus.salt" | get-canvas] {
 	mouse-press 220 90 button1
-	type-text " "
+	type-text "t"
     with [get-editbox] {
-        set-text ""
+        set-text "test"
     }
     key-type "M1+s"
 }
 // Check if single span has been created
 read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<nodes xsi:type=\"sDocumentStructure:SSpan\">" | verify-true
+// Create second annotated span in single cell
+with [get-editor "test-corpus.salt" | get-canvas] {
+	mouse-press 220 110 button1
+	type-text "t"
+    with [get-editbox] {
+        set-text "test"
+    }
+    key-type "M1+s"
+}
+// Check if second span has been created
+with [read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt"] {
+	contains "<nodes xsi:type=\"sDocumentStructure:SSpan\">" | verify-true
+	contains "		<labels xsi:type=\"saltCore:SAnnotation\" namespace=\"ns\" name=\"n\" value=\"T::test\"/>\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpan1\"/>\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpan1\"/>\n" | verify-true
+    contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.4\">\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpan2\"/>\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpan2\"/>\n" | verify-true
+	contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.13\" target=\"//@nodes.5\">\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpan3\"/>\n" | verify-false
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpan3\"/>\n" | verify-false
+	contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.14\" target=\"//@nodes.5\">\n" | verify-false
+	contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.13\" target=\"//@nodes.6\">\n" | verify-false
+}
 // Create actual span
 with [get-editor "test-corpus.salt" | get-canvas] {
 	mouse-press 220 90 button1
     key-type "M2+ARROW_DOWN"
     mouse-press 220 90 button3
 	mouse-release 220 90 button3
-	get-menu "Create new span" | click
+	get-menu "Merge to single span" | click
     key-type "M1+s"
     key-type "M1+w"
 }
@@ -110,7 +134,7 @@ read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt"
     + "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sTok11\"/>\n"
     + "	</nodes>\n"
     + "	<nodes xsi:type=\"sDocumentStructure:SSpan\">\n"
-    + "		<labels xsi:type=\"saltCore:SAnnotation\" namespace=\"ns\" name=\"n\"/>\n"
+    + "		<labels xsi:type=\"saltCore:SAnnotation\" namespace=\"ns\" name=\"n\" value=\"T::test\"/>\n"
     + "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpan1\"/>\n"
     + "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpan1\"/>\n"
     + "	</nodes>\n"

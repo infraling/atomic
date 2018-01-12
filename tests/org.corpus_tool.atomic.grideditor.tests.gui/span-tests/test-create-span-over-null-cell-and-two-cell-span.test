@@ -1,13 +1,13 @@
 --- RCPTT testcase ---
 Format-Version: 1.0
 Contexts: _q1hZ8NpcEeefcsJnEUtqog
-Element-Name: test-create-span-over-null-and-non-empty-cells
+Element-Name: test-create-span-over-null-cell-and-two-cell-span
 Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
-Id: _ut7wcPasEeeJFIAxuvfJ9A
+Id: _KOszYPeVEee3Otemt4Ky7A
 Runtime-Version: 2.2.0.201706152316
-Save-Time: 1/12/18 1:32 PM
+Save-Time: 1/12/18 1:48 PM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -31,20 +31,22 @@ with [get-window -class AnnotationColInputDialog] {
     get-editbox -after [get-label "Name:"] | set-text n
     get-button OK | click
 }
-// Check that no spans exist
-read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<nodes xsi:type=\"sDocumentStructure:SSpan\">" | verify-false
-// Create empty span in single cell
+// Create actual span
 with [get-editor "test-corpus.salt" | get-canvas] {
 	mouse-press 220 90 button1
-	type-text " "
-    with [get-editbox] {
-        set-text ""
-    }
+    key-type "M2+ARROW_DOWN"
+    mouse-press 220 90 button3
+	mouse-release 220 90 button3
+	get-menu "Create new span" | click
     key-type "M1+s"
 }
-// Check if single span has been created
-read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt" | contains "<nodes xsi:type=\"sDocumentStructure:SSpan\">" | verify-true
-// Create actual span
+// Check if two-cell span has been created
+with [read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt"] {
+	contains "<nodes xsi:type=\"sDocumentStructure:SSpan\">" | verify-true
+	contains "<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.4\">" | verify-true
+	contains "<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.4\">" | verify-true
+}
+// Create new span from empty span and null cell
 with [get-editor "test-corpus.salt" | get-canvas] {
 	mouse-press 220 90 button1
     key-type "M2+ARROW_DOWN"
@@ -55,8 +57,8 @@ with [get-editor "test-corpus.salt" | get-canvas] {
     key-type "M1+w"
 }
 wait 1000
-read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt"
-    | equals "<?xml version='1.0' encoding='UTF-8'?>\n"
+with [read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt"] {
+    contains "<?xml version='1.0' encoding='UTF-8'?>\n"
     + "<sDocumentStructure:SDocumentGraph xmlns:sDocumentStructure=\"sDocumentStructure\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:saltCore=\"saltCore\" xmi:version=\"2.0\">\n"
     + "	<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus\"/>\n"
     + "	\n"
@@ -179,14 +181,21 @@ read-file -uri "workspace:/simple-corpus/test-corpus/test-corpus.salt"
     + "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sTextRel11\"/>\n"
     + "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SSTART\" value=\"N::54\"/>\n"
     + "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sTextRel11\"/>\n"
-    + "	</edges>\n"
-    + "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.4\">\n"
-    + "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel1\"/>\n"
-    + "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel1\"/>\n"
-    + "	</edges>\n"
-    + "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.5\">\n"
-    + "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel2\"/>\n"
-    + "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel2\"/>\n"
-    + "	</edges>\n"
-    + "</sDocumentStructure:SDocumentGraph>" | verify-true
+    + "	</edges>\n" | verify-true
+    contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.5\">\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel1\"/>\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel1\"/>\n" | verify-true
+    contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.4\">\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel2\"/>\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel2\"/>\n" | verify-true
+    contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.6\">\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel3\"/>\n" | verify-true
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel3\"/>\n" | verify-true
+    contains "	<edges xsi:type=\"sDocumentStructure:SSpanningRelation\" source=\"//@nodes.12\" target=\"//@nodes.7\">\n" | verify-false
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpanRel4\"/>\n" | verify-false
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpanRel4\"/>\n" | verify-false
+    contains "		<labels xsi:type=\"saltCore:SElementId\" namespace=\"salt\" name=\"id\" value=\"T::salt:/test-corpus/test-corpus#sSpan2\"/>\n" | verify-false
+    contains "		<labels xsi:type=\"saltCore:SFeature\" namespace=\"salt\" name=\"SNAME\" value=\"T::sSpan2\"/>\n" | verify-false
+}
+    
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--
