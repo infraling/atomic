@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1514884343">
+<target name="Atomic Target Platform" sequenceNumber="1518876425">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.junit" version="4.12.0.v201504281640"/>
@@ -41,7 +41,24 @@
       <unit id="org.eclipse.osgi.util" version="3.3.100.v20150423-1351"/>
       <unit id="org.eclipse.osgi" version="3.11.3.v20170209-1843"/>
       <unit id="org.eclipse.aether.maven" version="3.1.0.v20140706-2237"/>
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
+      <unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
+      <unit id="org.eclipse.sdk.ide" version="4.6.3.M20170301-0400"/>
       <repository location="http://download.eclipse.org/releases/neon"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.gef.common.sdk.feature.group" version="5.0.0.201711130301"/>
+      <unit id="org.eclipse.gef.geometry.sdk.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.fx.sdk.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.mvc.sdk.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.mvc.examples.source.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.layout.sdk.feature.group" version="5.0.0.201711130301"/>
+      <unit id="org.eclipse.gef.graph.sdk.feature.group" version="5.0.0.201711130301"/>
+      <unit id="org.eclipse.gef.zest.sdk.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.zest.examples.source.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.dot.sdk.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.cloudio.sdk.feature.group" version="5.0.2.201711130301"/>
+      <repository location="http://download.eclipse.org/tools/gef/updates/releases"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.nebula.widgets.nattable.core" version="1.5.0.201703192131"/>
