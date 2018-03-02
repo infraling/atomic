@@ -28,3 +28,4 @@ Require-Bundle: javax.inject,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Import-Package: org.eclipse.ui.part
+Export-Package: org.corpus_tools.search.service
