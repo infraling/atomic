@@ -11,7 +11,7 @@
       </programArgs>
       <programArgsLin>--launcher.GTK_version 2
       </programArgsLin>
-      <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dorg.eclipse.update.reconcile=false
+      <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dorg.eclipse.update.reconcile=false -Dosgi.framework.extensions=org.eclipse.fx.osgi
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -22,7 +22,6 @@
    <splash
       location="org.corpus_tools.atomic" />
    <launcher name="atomic">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -134,6 +133,7 @@
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.help"/>
+      <feature id="org.corpus_tools.atomic.grapheditor.feature" version="0.4.0.qualifier"/>
    </features>
 
    <configurations>
