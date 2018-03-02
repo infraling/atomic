@@ -45,6 +45,7 @@ location "http://download.eclipse.org/releases/neon" {
 	org.eclipse.xtext.sdk.feature.group [2.10.0,3.0.0)
 	org.eclipse.emf.sdk.feature.group [2.12.0,3.0.0)
 	org.eclipse.sdk.ide [4.6.0,5.0.0)
+	
 }
 
 location "http://download.eclipse.org/tools/gef/updates/releases" {
@@ -59,6 +60,13 @@ location "http://download.eclipse.org/tools/gef/updates/releases" {
 	org.eclipse.gef.zest.examples.source.feature.group [5.0.0,6.0.0)
 	org.eclipse.gef.dot.sdk.feature.group [5.0.0,6.0.0)
 	org.eclipse.gef.cloudio.sdk.feature.group [5.0.0,6.0.0)
+	org.eclipse.gef.mvc.fx.ui.feature.group [5.0.0,6.0.0)
+	org.eclipse.gef.mvc.fx.feature.group [5.0.0,6.0.0)
+	org.eclipse.gef.fx.feature.group [5.0.0,6.0.0)
+ 	org.eclipse.gef.geometry.feature.group [5.0.0,6.0.0)
+ 	org.eclipse.gef.common.feature.group [5.0.0,6.0.0)
+ 	org.eclipse.gef.fx.swt.feature.group [5.0.0,6.0.0)
+	
 }
 
 location "http://download.eclipse.org/nattable/releases/1.5.0/repository/" {
@@ -82,7 +90,7 @@ location "http://corpus-tools.org/p2/" {
 	org.eclipse.aether.util
 	com.github.hazendaz.javabean-tester
 	org.antlr.antlr4-runtime
-	org.corpus-tools.graphannis-api
+	org.corpus-tools.graphannis-api [0.5.0, 1.0.0)
 
 }
 
