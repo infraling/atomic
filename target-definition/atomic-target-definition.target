@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1518876425">
+<target name="Atomic Target Platform" sequenceNumber="1519986144">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.junit" version="4.12.0.v201504281640"/>
@@ -58,6 +58,12 @@
       <unit id="org.eclipse.gef.zest.examples.source.feature.group" version="5.0.2.201711130301"/>
       <unit id="org.eclipse.gef.dot.sdk.feature.group" version="5.0.2.201711130301"/>
       <unit id="org.eclipse.gef.cloudio.sdk.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.mvc.fx.ui.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.mvc.fx.feature.group" version="5.0.2.201711130301"/>
+      <unit id="org.eclipse.gef.fx.feature.group" version="5.0.1.201711130301"/>
+      <unit id="org.eclipse.gef.geometry.feature.group" version="5.0.0.201711130301"/>
+      <unit id="org.eclipse.gef.common.feature.group" version="5.0.0.201711130301"/>
+      <unit id="org.eclipse.gef.fx.swt.feature.group" version="5.0.2.201711130301"/>
       <repository location="http://download.eclipse.org/tools/gef/updates/releases"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -81,7 +87,7 @@
       <unit id="org.eclipse.aether.util" version="1.0.2.v20150114"/>
       <unit id="com.github.hazendaz.javabean-tester" version="1.4.0"/>
       <unit id="org.antlr.antlr4-runtime" version="4.6.0"/>
-      <unit id="org.corpus-tools.graphannis-api" version="0.4.0"/>
+      <unit id="org.corpus-tools.graphannis-api" version="0.5.0"/>
       <repository location="http://corpus-tools.org/p2/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
