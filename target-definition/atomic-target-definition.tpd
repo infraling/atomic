@@ -104,3 +104,5 @@ location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/neon/" {
 	org.eclipse.e4.tools.spy
 	org.eclipse.e4.tools.model.spy
 }
+
+
