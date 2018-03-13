@@ -133,7 +133,7 @@
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.help"/>
-      <feature id="org.corpus_tools.atomic.grapheditor.feature" version="0.4.0.qualifier"/>
+      <feature id="org.corpus_tools.atomic.grapheditor.feature" version="0.1.0.qualifier"/>
    </features>
 
    <configurations>
