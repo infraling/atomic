@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Atomic Target Platform" sequenceNumber="1520875089">
+<target name="Atomic Target Platform" sequenceNumber="1521030596">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.junit" version="4.12.0.v201504281640"/>
@@ -100,6 +100,10 @@
       <unit id="org.eclipse.e4.tools.spy" version="0.18.0.v20160520-1109"/>
       <unit id="org.eclipse.e4.tools.model.spy" version="0.12.0.v20160114-2207"/>
       <repository location="http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/neon/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.fx.target.rcp4.feature.feature.group" version="2.6.0.201703310602"/>
+      <repository location="http://download.eclipse.org/efxclipse/runtime-released/2.6.0/site/"/>
     </location>
   </locations>
 </target>

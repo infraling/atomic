@@ -106,3 +106,6 @@ location "http://download.eclipse.org/e4/snapshots/org.eclipse.e4.tools/neon/" {
 }
 
 
+location "http://download.eclipse.org/efxclipse/runtime-released/2.6.0/site/" {
+	org.eclipse.fx.target.rcp4.feature.feature.group
+}
