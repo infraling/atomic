@@ -11,7 +11,7 @@
       </programArgs>
       <programArgsLin>--launcher.GTK_version 2
       </programArgsLin>
-      <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dorg.eclipse.update.reconcile=false -Dosgi.framework.extensions=org.eclipse.fx.osgi
+      <vmArgs>-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -Dorg.eclipse.update.reconcile=false -Dorg.osgi.framework.bundle.parent=ext
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
