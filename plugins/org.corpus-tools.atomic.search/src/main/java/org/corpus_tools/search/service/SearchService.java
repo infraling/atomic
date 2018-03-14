@@ -1,8 +1,13 @@
 package org.corpus_tools.search.service;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,11 +52,13 @@ public class SearchService {
 	private static final Logger log = LogManager.getLogger(SearchService.class);
 	
 	private final CorpusStorageManager corpusManager;
+
+	private File corpusIndexLocation;
 	
 	
 	public SearchService() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		File corpusIndexLocation  = new File(workspace.getRoot().getLocation().toOSString(), IDX_FOLDER);
+		corpusIndexLocation  = new File(workspace.getRoot().getLocation().toOSString(), IDX_FOLDER);
 		this.corpusManager  = new CorpusStorageManager(corpusIndexLocation.getAbsolutePath());
 	}
 	
@@ -76,6 +83,23 @@ public class SearchService {
 	
 	public void reindexAllDocuments(boolean blockUI) {
 		
+		/* 
+		 * First of all, delete the old index folder, as a) it has no
+		 * further use anyway, and b) can break stuff in Windows... 
+		 */
+		if (corpusIndexLocation.exists()) {
+			Path path = Paths.get(corpusIndexLocation.getAbsolutePath());
+			try {
+				Files.walk(path)
+				  .sorted(Comparator.reverseOrder())
+				  .map(Path::toFile)
+				  .forEach(File::delete);
+			}
+			catch (IOException e) {
+				log.error("Error deleting ANNIS index folder!", e);
+			}
+		    assert Files.exists(path) == false;
+		}
 		
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		if(page != null) {
