@@ -184,4 +184,31 @@ public class SearchService {
 
 	}
 	
+	/**
+	 * Finds matches *only* in the corpus/corpora of
+	 * the specified {@link IProject}s.
+	 * 
+	 * @param query
+	 * @param projectName The name of the {@link IProject} containing the corpus that should be searched.
+	 * @return
+	 */
+	public MatchGroup findInProject(String query, String projectName) {
+		ArrayList<Match> result = new ArrayList<>();
+		
+		/*
+		 * Build StringVector for just the one project
+		 */
+		StringVector vector = new StringVector(new String[] {projectName});
+		
+		StringVector resultRaw = corpusManager.find(vector, QueryToJSON.aqlToJSON(query));
+		result.ensureCapacity((int) resultRaw.size());
+		
+		for(long i=0; i < resultRaw.size(); i++) {
+			result.add(Match.parseFromString(resultRaw.get(i).getString()));
+		}
+		
+		// TODO: sort the result
+		return  new MatchGroup(result);
+	}
+	
 }
