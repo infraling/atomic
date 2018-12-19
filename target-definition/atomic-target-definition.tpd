@@ -73,12 +73,13 @@ location "http://download.eclipse.org/nattable/releases/1.5.0/repository/" {
 	org.eclipse.nebula.widgets.nattable.core
 }
 
-location "http://corpus-tools.org/p2/" {
+location "file://home/stephan/src/corpus-tools-p2/target/repository/" {
 	com.lmax.disruptor [3.3.2,3.4.0)
 	net.sdruskat.fragment.sun.misc
-	org.corpus-tools.salt-api [3.3.0,3.4.0)
-	org.corpus-tools.pepper-framework [3.1.0,3.1.0]
-	org.corpus-tools.pepper-lib [3.1.0,3.1.0]
+	org.corpus-tools.salt-api 3.3.4
+	org.corpus-tools.salt-extensions 3.3.4
+	org.corpus-tools.pepper-framework [3.1.2,3.2.0)
+	org.corpus-tools.pepper-lib [3.1.2,3.2.0)
 	org.apache.commons.io
 	org.codehaus.plexus.utils
 	org.eclipse.aether.api
@@ -91,6 +92,7 @@ location "http://corpus-tools.org/p2/" {
 	com.github.hazendaz.javabean-tester
 	org.antlr.antlr4-runtime
 	org.corpus-tools.graphannis-api [0.6.0, 1.0.0)
+	org.apache.logging.log4j.slf4j-impl
 
 }
 

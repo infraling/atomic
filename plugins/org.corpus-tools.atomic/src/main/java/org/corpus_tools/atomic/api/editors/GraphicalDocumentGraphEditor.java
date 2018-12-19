@@ -3,14 +3,23 @@
  */
 package org.corpus_tools.atomic.api.editors;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.corpus_tools.atomic.api.events.PartContextListener;
 import org.corpus_tools.atomic.exceptions.AtomicGeneralException;
+import org.corpus_tools.salt.ISaltFactory;
 import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SCorpusGraph;
 import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SaltProject;
+import org.corpus_tools.salt.common.impl.SCorpusGraphImpl;
+import org.corpus_tools.salt.extensions.notification.Listener;
+import org.corpus_tools.salt.extensions.notification.SaltNotificationFactory;
+import org.corpus_tools.salt.extensions.notification.Listener.NOTIFICATION_TYPE;
+import org.corpus_tools.salt.graph.GRAPH_ATTRIBUTES;
 import org.corpus_tools.salt.util.SaltUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -146,14 +155,7 @@ public class GraphicalDocumentGraphEditor extends AbstractFXEditor {
 				e.printStackTrace();
 			}
 			String projectFilePath = saltProjectResource.getRawLocation().toOSString();
-			SaltProject saltProject = SaltFactory.createSaltProject();
-			saltProject.loadCorpusStructure(URI.createFileURI(projectFilePath));
-			for (SDocument doc : saltProject.getCorpusGraphs().get(0).getDocuments()) {
-				if (doc.getDocumentGraphLocation().equals(URI.createFileURI(filePath))) {
-					doc.loadDocumentGraph();
-					graph = doc.getDocumentGraph();
-				}
-			}
+			graph = loadDocumentGraph(projectFilePath, filePath);
 			log.trace("Loaded document graph {}.", graph);
 			
 			// Set name of editor
@@ -161,6 +163,50 @@ public class GraphicalDocumentGraphEditor extends AbstractFXEditor {
 			// Set up editor for automatic context switches on activation/deactivation 
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new PartContextListener(site.getId(), site.getPluginId()));
 		}
+	}
+
+	/**
+	 * // TODO Add description
+	 * 
+	 * @param projectFilePath
+	 * @param filePath
+	 * @return
+	 */
+	protected SDocumentGraph loadDocumentGraph(String projectFilePath, String filePath) {
+		SDocumentGraph loadedGraph = null;
+		configureSaltFactory();
+		log.trace("Configured SaltFactory to use an instance of {}.", SaltFactory.getFactory().getClass());
+		SaltProject saltProject = SaltFactory.createSaltProject();
+		saltProject.loadCorpusStructure(URI.createFileURI(projectFilePath));
+		List<SCorpusGraph> cGraphs = saltProject.getCorpusGraphs();
+		System.err.println(cGraphs);
+		SCorpusGraph cGraph = cGraphs.get(0);
+		if (cGraph instanceof SCorpusGraphImpl) {
+			System.err.println(" >>> SHOOT");
+			System.err.println(((SCorpusGraph) cGraph).getDocuments());
+		}
+		if (cGraph.getDocuments().isEmpty()) {
+			System.err.println("EMPTY CGRAPH " + ((SCorpusGraph) cGraph).getDocuments());
+		}
+		System.err.println("CORPUS GRAPH 0 " + saltProject.getCorpusGraphs().get(0));
+		System.err.println("DOCS " + saltProject.getCorpusGraphs().get(0).getDocuments());
+		for (SDocument doc : saltProject.getCorpusGraphs().get(0).getDocuments()) {
+			if (doc.getDocumentGraphLocation().equals(URI.createFileURI(filePath))) {
+				System.err.println("DOC FOUND: " + doc);
+				doc.loadDocumentGraph();
+				loadedGraph = doc.getDocumentGraph();
+				System.err.println("DOC GRAPH " + doc.getDocumentGraph());
+			}
+		}
+		return loadedGraph;
+	}
+
+	/**
+	 * // TODO Add description
+	 * 
+	 */
+	public void configureSaltFactory() {
+		// To be overwritten by clients.
 	}
 
 	/* (non-Javadoc)
