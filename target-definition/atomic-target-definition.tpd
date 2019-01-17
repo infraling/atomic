@@ -73,13 +73,19 @@ location "http://download.eclipse.org/nattable/releases/1.5.0/repository/" {
 	org.eclipse.nebula.widgets.nattable.core
 }
 
-location "file://home/stephan/src/corpus-tools-p2/target/repository/" {
+/*
+ * **NOTE**
+ * 
+ * Salt versions must always be = version of the Salt
+ * included in Pepper!
+ */
+location "http://corpus-tools.org/p2" {
 	com.lmax.disruptor [3.3.2,3.4.0)
 	net.sdruskat.fragment.sun.misc
-	org.corpus-tools.salt-api 3.3.4
-	org.corpus-tools.salt-extensions 3.3.4
-	org.corpus-tools.pepper-framework [3.1.2,3.2.0)
-	org.corpus-tools.pepper-lib [3.1.2,3.2.0)
+	// Not included in Pepper's version of Salt
+	org.corpus-tools.salt-extensions 3.3.6
+	org.corpus-tools.pepper-framework 3.2.7
+	org.corpus-tools.pepper-lib 3.2.7
 	org.apache.commons.io
 	org.codehaus.plexus.utils
 	org.eclipse.aether.api
