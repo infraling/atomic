@@ -163,6 +163,8 @@
 				<!-- Only modules in preview release -->
 				<module>plugins/org.corpus-tools.atomic.grideditor</module>
 				<module>tests/org.corpus_tool.atomic.grideditor.tests</module>
+				<module>plugins/org.corpus-tools.atomic.tagset</module>
+				<module>tests/org.corpus-tools.atomic.tagset.tests</module>
 				<module>features/org.corpus-tools.atomic.feature.preview</module>
 				<!-- Preview product repository -->
 				<module>repository-preview</module>
@@ -179,9 +181,9 @@
 				<module>plugins/org.corpus-tools.atomic.grideditor</module>
 				<module>tests/org.corpus_tool.atomic.grideditor.tests</module>
 				<module>features/org.corpus-tools.atomic.feature.preview</module>
-				<!-- Experimental modules -->
 				<module>plugins/org.corpus-tools.atomic.tagset</module>
 				<module>tests/org.corpus-tools.atomic.tagset.tests</module>
+				<!-- Experimental modules -->
 				<module>plugins/org.corpus-tools.atomic.visjs</module>
 				<module>plugins/org.corpus-tools.atomic.search</module>
 				<module>plugins/de.uni_jena.iaa.linktype.atomic.atomical</module>
