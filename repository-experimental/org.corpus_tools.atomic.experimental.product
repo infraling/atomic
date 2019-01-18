@@ -133,7 +133,6 @@
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.help"/>
-      <feature id="org.corpus_tools.atomic.grapheditor.feature" version="0.1.0.qualifier"/>
       <feature id="org.eclipse.fx.target.rcp4.feature" version="2.6.0.201703310602"/>
    </features>
 
