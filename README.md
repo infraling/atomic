@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/infraling/atomic.svg?branch=development)](https://travis-ci.org/infraling/atomic)
 
+| :exclamation: |	**Repository will be archived soon!** |
+|-|-|
+|:warning:|Please note that Atomic is not developed anymore. It serves as architectural prototype for Hexatomic, which is currently under development at https://github.com/hexatomic/hexatomic.<br/>This repository will be archived soon!|
+
 # Atomic
 Software for multi-level annotation of linguistic corpora
 
